@@ -3,11 +3,11 @@ Android travel expense tracker.
 
 ```
 Copyright 2015 Kirby Banman,
-              Stuart Bildfell,
-              Elliot Colp,
-              Christian Ellinger,
-              Braedy Kuzma,
-              Ryan Thornhill
+                Stuart Bildfell,
+                Elliot Colp,
+                Christian Ellinger,
+                Braedy Kuzma,
+                Ryan Thornhill
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

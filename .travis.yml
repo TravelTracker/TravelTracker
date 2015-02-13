@@ -1,2 +1,23 @@
+language: android
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - platform-tools
+    # - tools
+
+    # The BuildTools version used by your project
+    - build-tools-17.0.0
+
+    # The SDK version used to compile your project
+    - android-17
+
+    # Additional components
+    - addon-google_apis-google-17
+
+    # Specify at least one system image
+    - sys-img-x86-android-17
+
+
 notifications:
   slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov

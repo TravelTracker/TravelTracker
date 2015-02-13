@@ -18,6 +18,8 @@ android:
     # Specify at least one system image
     - sys-img-x86-android-17
 
+install:
+    - ant
 
 notifications:
   slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov

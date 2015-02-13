@@ -1,4 +1,4 @@
-package test.cmput301w15t07.TravelTracker;
+package cmput301w15t07.TravelTracker.activity;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,39 +21,14 @@ package test.cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
-
-import cmput301w15t07.TravelTracker.activity.LoginActivity;
 import android.app.Activity;
-import android.app.Instrumentation;
-import android.test.ActivityInstrumentationTestCase2;
 
 /**
- * Test for entry activity - Logging in.
- * 
- * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
+ * Activity for viewing and managing data related to an individual Expense Item.
  * 
  * @author kdbanman
  *
  */
-public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
-
-	Instrumentation instrumentation;
-	Activity login;
-	
-	public LoginActivityTest(Class<LoginActivity> activityClass) {
-		super(activityClass);
-	}
-	
-	public void testLoginExistingUser() {
-		// should transition to claims list
-		// should be claimant role
-	}
-	
-	public void testLoginNewUser() {
-		// getting existing claims must return none
-		
-		// should transition to empty claims list
-		// should be claimant role
-	}
+public class ItemInfoActivity extends Activity {
 
 }

@@ -21,39 +21,37 @@ package test.cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
-
-import cmput301w15t07.TravelTracker.activity.LoginActivity;
-import android.app.Activity;
-import android.app.Instrumentation;
+import cmput301w15t07.TravelTracker.activity.ManageTagsActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**
- * Test for entry activity - Logging in.
+ * Test for tag management activities.
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman
  *
  */
-public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
+public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<ManageTagsActivity> {
 
-	Instrumentation instrumentation;
-	Activity login;
-	
-	public LoginActivityTest(Class<LoginActivity> activityClass) {
+	public ManageTagsActivityTest(Class<ManageTagsActivity> activityClass) {
 		super(activityClass);
 	}
 	
-	public void testLoginExistingUser() {
-		// should transition to claims list
-		// should be claimant role
+	public void testManageTags() {
+		// bad name for original use case.  tests listing behaviour
 	}
 	
-	public void testLoginNewUser() {
-		// getting existing claims must return none
+	public void testCreateTag() {
 		
-		// should transition to empty claims list
-		// should be claimant role
+	}
+	
+	public void testEditTag() {
+		
+	}
+	
+	public void testDeleteTag() {
+		
 	}
 
 }

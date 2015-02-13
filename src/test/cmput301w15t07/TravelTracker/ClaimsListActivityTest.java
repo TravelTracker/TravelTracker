@@ -21,39 +21,53 @@ package test.cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
-
-import cmput301w15t07.TravelTracker.activity.LoginActivity;
-import android.app.Activity;
-import android.app.Instrumentation;
+import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**
- * Test for entry activity - Logging in.
+ * Test for activity listing claims.
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman
  *
  */
-public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
+public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<ClaimsListActivity> {
 
-	Instrumentation instrumentation;
-	Activity login;
-	
-	public LoginActivityTest(Class<LoginActivity> activityClass) {
+	public ClaimsListActivityTest(Class<ClaimsListActivity> activityClass) {
 		super(activityClass);
 	}
 	
-	public void testLoginExistingUser() {
-		// should transition to claims list
-		// should be claimant role
+	public void testListExpenseClaimsClaimant() {
+		
 	}
 	
-	public void testLoginNewUser() {
-		// getting existing claims must return none
+	public void testListExpenseClaimsApprover() {
 		
-		// should transition to empty claims list
-		// should be claimant role
+	}
+	
+	public void testCreateExpenseClaim() {
+		
+	}
+	
+	public void testEditExpenseClaim() {
+		
+	}
+	
+	public void testDeleteExpenseClaim() {
+		
+	}
+	
+	public void testViewExpenseClaimApprover() {
+		
+	}
+	
+	public void testViewExpenseClaimClaimant() {
+		
+	}
+	
+	public void testFilterClaimsByTag() {
+		
 	}
 
 }

@@ -1,12 +1,7 @@
-package cmput301w15t07.model;
+package cmput301w15t07.TravelTracker.utility;
 
 /*
- *   Copyright 2015 Kirby Banman,
- *                  Stuart Bildfell,
- *                  Elliot Colp,
- *                  Christian Ellinger,
- *                  Braedy Kuzma,
- *                  Ryan Thornhill
+ *    Copyright 2015 Kirby Banman
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,11 +17,11 @@ package cmput301w15t07.model;
  */
 
 /**
- * Model enum for Claim Comments made by Users acting as Approvers.
+ * Interface to tease strings out of java enums. The type parameter is
+ * necessary to get generics (like Android Adapters) to play nice with enums.
  * 
  * @author kdbanman
- *
  */
-public class ClaimComment {
-
+public interface Stringable<T> {
+	public String toString();
 }

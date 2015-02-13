@@ -1,4 +1,4 @@
-package cmput301w15t07.model;
+package cmput301w15t07.TravelTracker.model;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -22,11 +22,11 @@ package cmput301w15t07.model;
  */
 
 /**
- * Model object for Claim Tags for Claimant use.
+ * Model object for Users.
  * 
  * @author kdbanman
  *
  */
-public class Tag {
+public class User {
 
 }

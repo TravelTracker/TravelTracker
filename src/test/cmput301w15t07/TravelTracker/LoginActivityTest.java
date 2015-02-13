@@ -1,4 +1,4 @@
-package cmput301w15t07.model;
+package test.cmput301w15t07.TravelTracker;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,12 +21,35 @@ package cmput301w15t07.model;
  *  limitations under the License.
  */
 
+
+import cmput301w15t07.TravelTracker.activity.LoginActivity;
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.test.ActivityInstrumentationTestCase2;
+
 /**
- * Model object for Claim made by Users acting as Claimants.
+ * Test for entry activity - Logging in.
  * 
  * @author kdbanman
  *
  */
-public class Claim {
+public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
+
+	Instrumentation instrumentation;
+	Activity login;
+	
+	public LoginActivityTest(Class<LoginActivity> activityClass) {
+		super(activityClass);
+	}
+	
+	public void testExistingUser() {
+		// should transition to claims list
+	}
+	
+	public void testNonexistentUser() {
+		// getting existing claims must return none
+		
+		// should transition to empty claims list
+	}
 
 }

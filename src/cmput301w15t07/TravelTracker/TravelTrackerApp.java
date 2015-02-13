@@ -1,4 +1,4 @@
-package cmput301w15t07.model;
+package cmput301w15t07.TravelTracker;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,29 +21,14 @@ package cmput301w15t07.model;
  *  limitations under the License.
  */
 
-import cmput301w15t07.utility.Stringable;
+import android.app.Application;
 
 /**
- * Model enum for Claim Status.  Implements Stringable for easy Android
- * Spinner generation.
+ * Main application container for TravelTracker.
  * 
  * @author kdbanman
  *
  */
-public enum Status implements Stringable<Status> {
-	IN_PROGRESS("In Progress"),
-	SUBMITTED("Submitted"),
-	RETURNED("Returned"),
-	APPROVED("Approved");
-	
-	private String asString;
-	
-	Status(String asString) {
-		this.asString = asString;
-	}
-	
-	@Override
-	public String toString() {
-		return this.asString;
-	}
+public class TravelTrackerApp extends Application {
+
 }

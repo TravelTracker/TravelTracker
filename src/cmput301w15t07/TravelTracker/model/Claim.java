@@ -1,4 +1,4 @@
-package cmput301w15t07.model;
+package cmput301w15t07.TravelTracker.model;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -22,11 +22,11 @@ package cmput301w15t07.model;
  */
 
 /**
- * Model object for expense Item Receipt data.  (i.e. images)
+ * Model object for Claim made by Users acting as Claimants.
  * 
  * @author kdbanman
  *
  */
-public class Receipt {
+public class Claim {
 
 }

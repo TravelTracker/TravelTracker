@@ -1,4 +1,4 @@
-package cmput301w15t07.model;
+package cmput301w15t07.TravelTracker.model;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,12 +21,36 @@ package cmput301w15t07.model;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.utility.Stringable;
+
 /**
- * Model object for Users.
+ * Model enum for expense Item Category.  Implements Stringable for easy Android
+ * Spinner generation.
  * 
  * @author kdbanman
  *
  */
-public class User {
-
+public enum ItemCategory implements Stringable<ItemCategory> {
+	ACCOMODATION("Accomodation"),
+	AIR_FARE("Air Fare"),
+	FUEL("Fuel"),
+	GROUND_TRANSPORT("Ground Transport"),
+	MEAL("Meal"),
+	MISC("Miscellaneous"),
+	PARKING("Parking"),
+	PRIVATE_AUTOMOBILE("Private Automobile"),
+	REGISTRATION("Registration"),
+	SUPPLIES("Supplies"),
+	VEHICLE_RENTAL("Vehicle Rental");
+	
+	private String asString;
+	
+	ItemCategory(String asString) {
+		this.asString = asString;
+	}
+	
+	@Override
+	public String toString() {
+		return asString;
+	}
 }

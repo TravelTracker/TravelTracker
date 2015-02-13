@@ -1,4 +1,4 @@
-package cmput301w15t07.model;
+package cmput301w15t07.TravelTracker.model;
 
 /*
  *   Copyright 2015 Kirby Banman,

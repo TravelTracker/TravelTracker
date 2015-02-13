@@ -1,4 +1,4 @@
-package cmput301w15t07;
+package cmput301w15t07.TravelTracker.model;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,14 +21,12 @@ package cmput301w15t07;
  *  limitations under the License.
  */
 
-import android.app.Application;
-
 /**
- * Main application container for TravelTracker.
+ * Model enum for Claim Comments made by Users acting as Approvers.
  * 
  * @author kdbanman
  *
  */
-public class TravelTrackerApp extends Application {
+public class ClaimComment {
 
 }

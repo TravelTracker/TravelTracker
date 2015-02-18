@@ -21,40 +21,40 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.utility.Stringable;
+import java.util.Date;
 
 /**
- * Model enum for expense Item Category.  Implements Stringable for easy Android
- * Spinner generation.
+ * Model object representing the comment an Approver can leave on a Claim.
  * 
- * @author kdbanman
  * @author Braedy Kuzma
  *
  */
-public enum ItemCategory implements Stringable<ItemCategory> {
-	ACCOMODATION("Accomodation"),
-	AIR_FARE("Air Fare"),
-	FUEL("Fuel"),
-	GROUND_TRANSPORT("Ground Transport"),
-	MEAL("Meal"),
-	MISC("Miscellaneous"),
-	PARKING("Parking"),
-	PRIVATE_AUTOMOBILE("Private Automobile"),
-	REGISTRATION("Registration"),
-	SUPPLIES("Supplies"),
-	VEHICLE_RENTAL("Vehicle Rental");
+public class ApproverComment {
 	
 	/**
-	 * The string representation of the category.
+	 * The approver that left this comment.
 	 */
-	private String asString;
+	private Approver approver;
 	
-	ItemCategory(String asString) {
-		this.asString = asString;
+	/**
+	 * The actual message.
+	 */
+	private String comment;
+	
+	/**
+	 * The time the message was left.
+	 */
+	private Date date;
+
+	public Approver getApprover() {
+		return approver;
 	}
-	
-	@Override
-	public String toString() {
-		return asString;
+
+	public String getComment() {
+		return comment;
+	}
+
+	public Date getDate() {
+		return date;
 	}
 }

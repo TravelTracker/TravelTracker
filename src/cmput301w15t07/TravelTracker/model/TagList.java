@@ -21,40 +21,19 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.utility.Stringable;
+import java.util.ArrayList;
 
 /**
- * Model enum for expense Item Category.  Implements Stringable for easy Android
- * Spinner generation.
+ * Model object that wraps a list of tags.
  * 
- * @author kdbanman
  * @author Braedy Kuzma
  *
  */
-public enum ItemCategory implements Stringable<ItemCategory> {
-	ACCOMODATION("Accomodation"),
-	AIR_FARE("Air Fare"),
-	FUEL("Fuel"),
-	GROUND_TRANSPORT("Ground Transport"),
-	MEAL("Meal"),
-	MISC("Miscellaneous"),
-	PARKING("Parking"),
-	PRIVATE_AUTOMOBILE("Private Automobile"),
-	REGISTRATION("Registration"),
-	SUPPLIES("Supplies"),
-	VEHICLE_RENTAL("Vehicle Rental");
+public class TagList {
 	
 	/**
-	 * The string representation of the category.
+	 * The actual list of tags.
 	 */
-	private String asString;
-	
-	ItemCategory(String asString) {
-		this.asString = asString;
-	}
-	
-	@Override
-	public String toString() {
-		return asString;
-	}
+	ArrayList<Tag> tags;
+
 }

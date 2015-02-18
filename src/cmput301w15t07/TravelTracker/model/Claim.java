@@ -21,12 +21,100 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import java.util.Date;
+import java.util.UUID;
+
 /**
  * Model object for Claim made by Users acting as Claimants.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public class Claim {
+	/**
+	 * The name or title of the claim.
+	 */
+	private String name;
+	
+	/**
+	 * The UUID of the claim.
+	 */
+	private UUID id;
+	
+	/**
+	 * The list of tags associated with this claim.
+	 */
+	private TagList tags;
+	
+	/**
+	 * The date the claim starts at.
+	 */
+	private Date startDate;
+	
+	/**
+	 * The date the claim ends at.
+	 */
+	private Date endDate;
+	
+	/**
+	 * The list of destinations associated with this claim.
+	 */
+	private DestinationList destinations;
+	
+	/**
+	 * The list of items associated with this claim.
+	 */
+	private ItemList items;
+	
+	/**
+	 * The list of comments placed on this claim.
+	 */
+	private ApproverCommentList comments;
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public TagList getTags() {
+		return tags;
+	}
+
+	public DestinationList getDestinations() {
+		return destinations;
+	}
+
+	public ItemList getItems() {
+		return items;
+	}
+
+	public ApproverCommentList getComments() {
+		return comments;
+	}
+	
+	
 }

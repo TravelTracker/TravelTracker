@@ -21,12 +21,36 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import java.util.UUID;
+
 /**
  * Model object for Claim Tags for Claimant use.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public class Tag {
+	
+	/**
+	 * The Claimant's title for this tag.
+	 */
+	private String title;
+	
+	/**
+	 * The UUID of the tag.
+	 */
+	private UUID id;
+	
+	public UUID getId() {
+		return id;
+	}
 
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
 }

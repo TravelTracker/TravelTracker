@@ -25,8 +25,26 @@ package cmput301w15t07.TravelTracker.model;
  * Model object for Claim Destinations.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public class Destination {
-
+	
+	/**
+	 * The location for a Claimant's travel.
+	 */
+	private String location;
+	
+	/**
+	 * The reason for a Claimant's travel.
+	 */
+	private String reason;
+	
+	public String getLocation() {
+		return location;
+	}
+	
+	public String getReason() {
+		return reason;
+	}
 }

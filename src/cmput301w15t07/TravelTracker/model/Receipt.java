@@ -21,12 +21,27 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import android.graphics.Bitmap;
+
 /**
  * Model object for expense Item Receipt data.  (i.e. images)
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public class Receipt {
+	
+	/**
+	 * The bitmap image of the receipt.
+	 */
+	Bitmap photo;
 
+	public Bitmap getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(Bitmap photo) {
+		this.photo = photo;
+	}
 }

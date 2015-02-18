@@ -21,12 +21,19 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
+
 /**
- * Model enum for Claim Comments made by Users acting as Approvers.
+ * Model object that wraps a list of destinations.
  * 
- * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
-public class ClaimComment {
+public class DestinationList {
+	
+	/**
+	 * The actual list of destinations.
+	 */
+	ArrayList<Destination> destinations;
 
 }

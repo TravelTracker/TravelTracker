@@ -28,5 +28,5 @@ package cmput301w15t07.TravelTracker.model;
  *
  */
 public class Tag {
-
+	private String title;
 }

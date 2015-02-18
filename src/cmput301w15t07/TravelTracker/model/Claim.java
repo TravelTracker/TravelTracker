@@ -31,13 +31,13 @@ import java.util.Date;
  *
  */
 public class Claim {
-	String name;
-	Status status;
-	Date startDate;
-	Date endDate;
-	ArrayList<Destination> destinations;
-	ArrayList<Item> items;
-	ArrayList<ApproverComment> comments;
+	private String name;
+	private Status status;
+	private Date startDate;
+	private Date endDate;
+	private ArrayList<Destination> destinations;
+	private ArrayList<Item> items;
+	private ArrayList<ApproverComment> comments;
 	
 	public String getName() {
 		return name;

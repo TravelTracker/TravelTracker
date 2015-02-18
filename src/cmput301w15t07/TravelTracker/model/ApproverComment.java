@@ -10,9 +10,9 @@ import java.util.Date;
  *
  */
 public class ApproverComment {
-	Approver approver;
-	String comment;
-	Date date;
+	private Approver approver;
+	private String comment;
+	private Date date;
 	
 	public Approver getApprover() {
 		return approver;

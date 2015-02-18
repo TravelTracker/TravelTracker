@@ -30,7 +30,7 @@ import android.graphics.Bitmap;
  *
  */
 public class Receipt {
-	Bitmap photo;
+	private Bitmap photo;
 
 	public Bitmap getPhoto() {
 		return photo;

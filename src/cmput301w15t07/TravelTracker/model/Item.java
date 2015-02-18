@@ -32,12 +32,12 @@ import java.util.Date;
  *
  */
 public class Item {
-	String description;
-	ItemCategory category;
-	Date date;
-	Float ammount;
-	Currency currency;
-	Receipt receipt;
+	private String description;
+	private ItemCategory category;
+	private Date date;
+	private Float ammount;
+	private Currency currency;
+	private Receipt receipt;
 	
 	public String getDescription() {
 		return description;

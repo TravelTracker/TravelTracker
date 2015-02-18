@@ -1,4 +1,4 @@
-package test.cmput301w15t07.TravelTracker;
+package cmput301w15t07.TravelTracker.test;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,29 +21,22 @@ package test.cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
+import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**
- * Test for activity listing claims.
+ * Test for individual claim management activities.
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman
  *
  */
-public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<ClaimsListActivity> {
+public class ClaimInfoActivityTest extends
+		ActivityInstrumentationTestCase2<ClaimInfoActivity> {
 
-	public ClaimsListActivityTest(Class<ClaimsListActivity> activityClass) {
+	public ClaimInfoActivityTest(Class<ClaimInfoActivity> activityClass) {
 		super(activityClass);
-	}
-	
-	public void testListExpenseClaimsClaimant() {
-		
-	}
-	
-	public void testListExpenseClaimsApprover() {
-		
 	}
 	
 	public void testCreateExpenseClaim() {
@@ -66,7 +59,23 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		
 	}
 	
-	public void testFilterClaimsByTag() {
+	public void testSubmitExpenseClaim() {
+		
+	}
+	
+	public void testAddCommentToExpenseItem() {
+		
+	}
+	
+	public void testReturnExpenseClaim() {
+		
+	}
+	
+	public void testApproveExpenseClaim() {
+		
+	}
+	
+	public void testListExpenseItems() {
 		
 	}
 

@@ -1,4 +1,4 @@
-package test.cmput301w15t07.TravelTracker;
+package cmput301w15t07.TravelTracker.test;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,40 +21,37 @@ package test.cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.activity.ItemsListActivity;
+import cmput301w15t07.TravelTracker.activity.ManageTagsActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**
- * Test for expense item list activities.
+ * Test for tag management activities.
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman
  *
  */
-public class ItemsListActivityTest extends ActivityInstrumentationTestCase2<ItemsListActivity> {
+public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<ManageTagsActivity> {
 
-	public ItemsListActivityTest(Class<ItemsListActivity> activityClass) {
+	public ManageTagsActivityTest(Class<ManageTagsActivity> activityClass) {
 		super(activityClass);
 	}
 	
-	public void testListExpenseItems() {
+	public void testManageTags() {
+		// bad name for original use case.  tests listing behaviour
+	}
+	
+	public void testCreateTag() {
 		
 	}
 	
-	public void testCreateExpenseItem() {
+	public void testEditTag() {
 		
 	}
 	
-	public void testViewExpenseItem() {
+	public void testDeleteTag() {
 		
 	}
-	
-	public void testEditExpenseItem() {
-		
-	}
-	
-	public void testDeleteExpenseItem() {
-		
-	}
+
 }

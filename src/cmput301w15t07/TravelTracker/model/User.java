@@ -25,8 +25,17 @@ package cmput301w15t07.TravelTracker.model;
  * Model object for Users.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
-public class User {
+public abstract class User {
+	/**
+	 * User's name.
+	 */
+	private String userName;
 
+	public String getUserName() {
+		return userName;
+	}
+	
 }

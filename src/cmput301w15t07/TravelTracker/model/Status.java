@@ -28,6 +28,7 @@ import cmput301w15t07.TravelTracker.utility.Stringable;
  * Spinner generation.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public enum Status implements Stringable<Status> {
@@ -36,6 +37,9 @@ public enum Status implements Stringable<Status> {
 	RETURNED("Returned"),
 	APPROVED("Approved");
 	
+	/**
+	 * The string representation of the status.
+	 */
 	private String asString;
 	
 	Status(String asString) {

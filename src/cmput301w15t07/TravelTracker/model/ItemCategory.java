@@ -28,6 +28,7 @@ import cmput301w15t07.TravelTracker.utility.Stringable;
  * Spinner generation.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public enum ItemCategory implements Stringable<ItemCategory> {
@@ -43,6 +44,9 @@ public enum ItemCategory implements Stringable<ItemCategory> {
 	SUPPLIES("Supplies"),
 	VEHICLE_RENTAL("Vehicle Rental");
 	
+	/**
+	 * The string representation of the category.
+	 */
 	private String asString;
 	
 	ItemCategory(String asString) {

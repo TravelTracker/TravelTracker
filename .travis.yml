@@ -2,7 +2,7 @@
 # http://blog.crowdint.com/2013/05/24/android-builds-on-travis-ci-with-gradle.html
 # on 17-02-15
 language: android
-jdk: oraclejdk6
+jdk: oraclejdk8
 env:
   matrix:
     - ANDROID_TARGET=android-17  ANDROID-ABI=armeabi-v7a

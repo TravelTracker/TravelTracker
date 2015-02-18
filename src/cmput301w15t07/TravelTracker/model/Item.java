@@ -1,5 +1,8 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.Currency;
+import java.util.Date;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -29,5 +32,48 @@ package cmput301w15t07.TravelTracker.model;
  *
  */
 public class Item {
-
+	private String description;
+	private ItemCategory category;
+	private Date date;
+	private Float ammount;
+	private Currency currency;
+	private Receipt receipt;
+	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public ItemCategory getCategory() {
+		return category;
+	}
+	public void setCategory(ItemCategory category) {
+		this.category = category;
+	}
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	public Float getAmmount() {
+		return ammount;
+	}
+	public void setAmmount(Float ammount) {
+		this.ammount = ammount;
+	}
+	public Currency getCurrency() {
+		return currency;
+	}
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+	public Receipt getReceipt() {
+		return receipt;
+	}
+	public void setReceipt(Receipt receipt) {
+		this.receipt = receipt;
+	}
+	
 }

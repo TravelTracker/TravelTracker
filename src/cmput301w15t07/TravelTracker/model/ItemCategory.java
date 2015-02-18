@@ -21,7 +21,6 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.utility.Stringable;
 
 /**
  * Model enum for expense Item Category.  Implements Stringable for easy Android
@@ -30,7 +29,7 @@ import cmput301w15t07.TravelTracker.utility.Stringable;
  * @author kdbanman
  *
  */
-public enum ItemCategory implements Stringable<ItemCategory> {
+public enum ItemCategory {
 	ACCOMODATION("Accomodation"),
 	AIR_FARE("Air Fare"),
 	FUEL("Fuel"),
@@ -45,7 +44,7 @@ public enum ItemCategory implements Stringable<ItemCategory> {
 	
 	private String asString;
 	
-	ItemCategory(String asString) {
+	private ItemCategory(String asString) {
 		this.asString = asString;
 	}
 	
@@ -53,4 +52,21 @@ public enum ItemCategory implements Stringable<ItemCategory> {
 	public String toString() {
 		return asString;
 	}
+	
+	/**
+	 * This method returns the ItemCategory instance corresponding to the passed string.
+	 * @param text
+	 * @return ItemCategory
+	 */
+	public static ItemCategory fromString(String text) {
+	    if (text != null) {
+	      for (ItemCategory i : ItemCategory.values()) {
+	        if (text.equalsIgnoreCase(i.asString)) {
+	          return i;
+	        }
+	      }
+	    }
+	    return null;
+	  }
+	
 }

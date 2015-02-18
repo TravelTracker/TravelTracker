@@ -21,13 +21,107 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import java.util.Currency;
+import java.util.Date;
+import java.util.UUID;
+
 /**
  * Model object for individual expense Items made by Users acting as Claimants.
  * Expense Items belong to a Claim.
  * 
  * @author kdbanman
+ * @author Braedy Kuzma
  *
  */
 public class Item {
 
+	/**
+	 * The UUID of the item.
+	 */
+	private UUID id;
+	
+	/**
+	 * The description of the item.
+	 */
+	private String description;
+	
+	/**
+	 * The category that this item falls into.
+	 */
+	private ItemCategory category;
+	
+	/**
+	 * The date the expense was incurred on.
+	 */
+	private Date date;
+	
+	/**
+	 * The amount of currency exchanged in the item.
+	 */
+	private float amount;
+	
+	/**
+	 * The currency that was exchanged in the item.
+	 */
+	private Currency currency;
+	
+	/**
+	 * The item receipt.
+	 * Can only be "got", changing the image in the receipt can be done
+	 * through the receipt (i.e. receipt.setPhoto())
+	 * @see Receipt
+	 */
+	private Receipt receipt;
+	
+	public UUID getId() {
+		return id;
+	}
+	
+	public void setId(UUID id) {
+		this.id = id;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public ItemCategory getCategory() {
+		return category;
+	}
+	
+	public void setCategory(ItemCategory category) {
+		this.category = category;
+	}
+	
+	public Date getDate() {
+		return date;
+	}
+	
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	public float getAmount() {
+		return amount;
+	}
+	
+	public void setAmount(float amount) {
+		this.amount = amount;
+	}
+	
+	public Currency getCurrency() {
+		return currency;
+	}
+	
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+	
+	public Receipt getReceipt() {
+		return receipt;
+	}
 }

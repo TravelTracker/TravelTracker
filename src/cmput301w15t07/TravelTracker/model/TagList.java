@@ -21,36 +21,19 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-import java.util.UUID;
+import java.util.ArrayList;
 
 /**
- * Model object for Claim Tags for Claimant use.
+ * Model object that wraps a list of tags.
  * 
- * @author kdbanman
  * @author Braedy Kuzma
  *
  */
-public class Tag {
+public class TagList {
 	
 	/**
-	 * The Claimant's title for this tag.
+	 * The actual list of tags.
 	 */
-	private String title;
-	
-	/**
-	 * The UUID of the tag.
-	 */
-	private UUID id;
-	
-	public UUID getId() {
-		return id;
-	}
+	ArrayList<Tag> tags;
 
-	public String getTitle() {
-		return title;
-	}
-	
-	public void setTitle(String title) {
-		this.title = title;
-	}
 }

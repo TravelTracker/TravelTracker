@@ -53,6 +53,11 @@ public enum ItemCategory {
 		return asString;
 	}
 	
+	/**
+	 * This method returns the ItemCategory instance corresponding to the passed string.
+	 * @param text
+	 * @return ItemCategory
+	 */
 	public static ItemCategory fromString(String text) {
 	    if (text != null) {
 	      for (ItemCategory i : ItemCategory.values()) {

@@ -27,6 +27,15 @@ package cmput301w15t07.TravelTracker.model;
  * @author kdbanman
  *
  */
-public class User {
+public abstract class User {
+	private String userName;
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
 }

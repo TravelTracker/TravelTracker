@@ -44,6 +44,11 @@ public enum Status{
 		return asString;
 	}
 	
+	/**
+	 * This method returns the Status instance corresponding to the passed string.
+	 * @param text
+	 * @return ItemCategory
+	 */
 	public static Status fromString(String text) {
 	    if (text != null) {
 	      for (Status i : Status.values()) {

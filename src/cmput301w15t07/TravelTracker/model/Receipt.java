@@ -1,5 +1,7 @@
 package cmput301w15t07.TravelTracker.model;
 
+import android.graphics.Bitmap;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -28,5 +30,13 @@ package cmput301w15t07.TravelTracker.model;
  *
  */
 public class Receipt {
+	Bitmap photo;
 
+	public Bitmap getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(Bitmap photo) {
+		this.photo = photo;
+	}
 }

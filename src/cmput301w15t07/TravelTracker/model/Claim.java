@@ -1,5 +1,8 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -28,5 +31,55 @@ package cmput301w15t07.TravelTracker.model;
  *
  */
 public class Claim {
-
+	String name;
+	Status status;
+	Date startDate;
+	Date endDate;
+	ArrayList<Destination> destinations;
+	ArrayList<Item> items;
+	ArrayList<ApproverComment> comments;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	public ArrayList<Destination> getDestinations() {
+		return destinations;
+	}
+	public void setDestinations(ArrayList<Destination> destinations) {
+		this.destinations = destinations;
+	}
+	public ArrayList<Item> getItems() {
+		return items;
+	}
+	public void setItems(ArrayList<Item> items) {
+		this.items = items;
+	}
+	public ArrayList<ApproverComment> getComments() {
+		return comments;
+	}
+	public void setComments(ArrayList<ApproverComment> comments) {
+		this.comments = comments;
+	}
+	
 }

@@ -21,30 +21,19 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
+
 /**
- * Model object for Claim Destinations.
+ * Model object that wraps a list of destinations.
  * 
- * @author kdbanman
  * @author Braedy Kuzma
  *
  */
-public class Destination {
+public class DestinationList {
 	
 	/**
-	 * The location for a Claimant's travel.
+	 * The actual list of destinations.
 	 */
-	private String location;
-	
-	/**
-	 * The reason for a Claimant's travel.
-	 */
-	private String reason;
-	
-	public String getLocation() {
-		return location;
-	}
-	
-	public String getReason() {
-		return reason;
-	}
+	ArrayList<Destination> destinations;
+
 }

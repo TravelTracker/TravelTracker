@@ -24,29 +24,48 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.UUID;
 
 /**
- * Model object for Claim Tags for Claimant use.
- * 
- * @author kdbanman
- *
- */
-public class Tag extends Document {
+* Model object corresponding to storage documents.  Used to track cache/remote
+* synchronization status.
+* 
+* @author kdbanman
+*
+*/
+public abstract class Document {
 
-	private String title;
+	// A new document may be synced, but dirty is a safer default.
+	private boolean dirty = true;
+	
+	private UUID docID;
+	
+	public Document(UUID docID) {
+		this.docID = docID;
+	}
 	
 	/**
-	 * Package protected constructor, intended for use only by DataSource.
-	 * 
-	 * @param docID UUID document identifier
+	 * @return Document/object identifier.
 	 */
-	Tag(UUID docID) {
-		super(docID);
+	public UUID getUUID() {
+		return docID;
 	}
-
-	public String getTitle() {
-		return title;
+	
+	/** 
+	 * @return Whether or not the Document has been synced.
+	 */
+	public boolean isDirty() {
+		return dirty;
 	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	
+	/**
+	 * Flag document as modified and not yet synchronized.
+	 */
+	public void setDirty() {
+		dirty = true;
+	}
+	
+	/**
+	 * Flag document as synchronized.
+	 */
+	public void setClean() {
+		dirty = false;
 	}
 }

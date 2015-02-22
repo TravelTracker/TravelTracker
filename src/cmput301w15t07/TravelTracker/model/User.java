@@ -1,5 +1,7 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.UUID;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -27,8 +29,17 @@ package cmput301w15t07.TravelTracker.model;
  * @author kdbanman
  *
  */
-public abstract class User {
+public abstract class User extends Document {
 	private String userName;
+	
+	/**
+	 * Package protected constructor, intended for use only by DataSource.
+	 * 
+	 * @param docID UUID document identifier
+	 */
+	public User(UUID docID) {
+		super(docID);
+	}
 
 	public String getUserName() {
 		return userName;

@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.Currency;
 import java.util.Date;
+import java.util.UUID;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -31,13 +32,22 @@ import java.util.Date;
  * @author kdbanman
  *
  */
-public class Item {
+public class Item extends Document {
 	private String description;
 	private ItemCategory category;
 	private Date date;
 	private Float ammount;
 	private Currency currency;
 	private Receipt receipt;
+	
+	/**
+	 * Package protected constructor, intended for use only by DataSource.
+	 * 
+	 * @param docID UUID document identifier
+	 */
+	Item(UUID docID) {
+		super(docID);
+	}
 	
 	public String getDescription() {
 		return description;

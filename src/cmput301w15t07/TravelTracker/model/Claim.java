@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -30,7 +31,7 @@ import java.util.Date;
  * @author kdbanman
  *
  */
-public class Claim {
+public class Claim extends Document {
 	private String name;
 	private Status status;
 	private Date startDate;
@@ -38,6 +39,15 @@ public class Claim {
 	private ArrayList<Destination> destinations;
 	private ArrayList<Item> items;
 	private ArrayList<ApproverComment> comments;
+	
+	/**
+	 * Package protected constructor, intended for use only by DataSource.
+	 * 
+	 * @param docID UUID document identifier
+	 */
+	public Claim(UUID docID) {
+		super(docID);
+	}
 	
 	public String getName() {
 		return name;

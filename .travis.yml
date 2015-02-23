@@ -33,8 +33,7 @@ android:
 before_script:
    - android -s update sdk --filter android-17,platform-tool --no-ui
    - android -s update project --path . --target "android-17"
-   - cd tests
-   - android -s update test-project --path . -m ../
+   - android -s update test-project --path test -m .
     
    - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
    - emulator -avd test -no-skin -no-audio -no-window &

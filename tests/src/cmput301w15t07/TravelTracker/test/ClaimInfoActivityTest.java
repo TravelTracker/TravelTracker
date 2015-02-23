@@ -35,8 +35,8 @@ import android.test.ActivityInstrumentationTestCase2;
 public class ClaimInfoActivityTest extends
 		ActivityInstrumentationTestCase2<ClaimInfoActivity> {
 
-	public ClaimInfoActivityTest(Class<ClaimInfoActivity> activityClass) {
-		super(activityClass);
+	public ClaimInfoActivityTest() {
+		super(ClaimInfoActivity.class);
 	}
 	
 	public void testCreateExpenseClaim() {

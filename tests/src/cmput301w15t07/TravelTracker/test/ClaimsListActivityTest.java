@@ -34,8 +34,8 @@ import android.test.ActivityInstrumentationTestCase2;
  */
 public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<ClaimsListActivity> {
 
-	public ClaimsListActivityTest(Class<ClaimsListActivity> activityClass) {
-		super(activityClass);
+	public ClaimsListActivityTest() {
+		super(ClaimsListActivity.class);
 	}
 	
 	public void testListExpenseClaimsClaimant() {

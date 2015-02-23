@@ -34,8 +34,8 @@ import android.test.ActivityInstrumentationTestCase2;
  */
 public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<ManageTagsActivity> {
 
-	public ManageTagsActivityTest(Class<ManageTagsActivity> activityClass) {
-		super(activityClass);
+	public ManageTagsActivityTest() {
+		super(ManageTagsActivity.class);
 	}
 	
 	public void testManageTags() {

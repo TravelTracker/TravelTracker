@@ -40,8 +40,8 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 	Instrumentation instrumentation;
 	Activity login;
 	
-	public LoginActivityTest(Class<LoginActivity> activityClass) {
-		super(activityClass);
+	public LoginActivityTest() {
+		super(LoginActivity.class);
 	}
 	
 	public void testLoginExistingUser() {

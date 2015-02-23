@@ -5,8 +5,8 @@ import android.test.ActivityInstrumentationTestCase2;
 
 public class ItemInfoActivityTest extends ActivityInstrumentationTestCase2<ItemInfoActivity> {
 
-	public ItemInfoActivityTest(Class<ItemInfoActivity> activityClass) {
-		super(activityClass);
+	public ItemInfoActivityTest() {
+		super(ItemInfoActivity.class);
 	}
 	
 	public void testCreateExpenseItem() {

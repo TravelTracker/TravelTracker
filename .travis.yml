@@ -44,5 +44,5 @@ before_script:
 script:
     ant clean debug install test
 
-#notifications:
-#  slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov
+notifications:
+  slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov

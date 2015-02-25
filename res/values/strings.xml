@@ -2,4 +2,8 @@
 
     <string name="app_name">TravelTracker</string>
 
+    <!-- Strings used in LoginActivity -->
+    <string name="login_name">Name</string>
+    <string name="login_login">Login</string>
+    
 </resources>

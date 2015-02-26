@@ -21,14 +21,21 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.R;
+
 /**
  * Launch activity.  Log in as a User with a Name.
  * 
- * @author kdbanman
+ * @author kdbanman, colp
  *
  */
 import android.app.Activity;
+import android.os.Bundle;
 
 public class LoginActivity extends Activity {
-
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+        setContentView(R.layout.login_activity);
+	}
 }

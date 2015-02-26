@@ -21,14 +21,28 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.R;
 import android.app.Activity;
+import android.os.Bundle;
+import android.view.Menu;
 
 /**
  * Activity for a Claimant to manage his/her Tags.
  * 
- * @author kdbanman
+ * @author kdbanman, colp
  *
  */
 public class ManageTagsActivity extends Activity {
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.manage_tags_menu, menu);
+        
+        return true;
+    }
+    
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+        setContentView(R.layout.manage_tags_activity);
+	}
 }

@@ -4,42 +4,42 @@
     android:layout_height="match_parent" >
 
     <ListView
-        android:id="@+id/editTagsTagListView"
+        android:id="@+id/manageTagsTagListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTagsNewTagDivider" />
+        android:layout_above="@+id/manageTagsNewTagDivider" />
 
 	<View
-	    android:id="@+id/editTagsNewTagDivider"
+	    android:id="@+id/manageTagsNewTagDivider"
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
-	    android:layout_above="@+id/editTagsNewTagLayout"
+	    android:layout_above="@+id/manageTagsNewTagLayout"
 	    android:background="?android:attr/listDivider" />
 
     <RelativeLayout
-        android:id="@+id/editTagsNewTagLayout"
+        android:id="@+id/manageTagsNewTagLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
         
 	    <EditText
-	        android:id="@+id/editTagsNewTagEditText"
+	        android:id="@+id/manageTagsNewTagEditText"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_toLeftOf="@+id/editTagsAddButton"
-	        android:layout_alignTop="@+id/editTagsAddButton"
-	        android:layout_alignBottom="@+id/editTagsAddButton"
-	        android:hint="@string/edit_tags_add_new_tag" >
+	        android:layout_toLeftOf="@+id/manageTagsAddButton"
+	        android:layout_alignTop="@+id/manageTagsAddButton"
+	        android:layout_alignBottom="@+id/manageTagsAddButton"
+	        android:hint="@string/manage_tags_add_new_tag" >
 	
 	        <requestFocus />
 	    </EditText>
 
 	    <Button
-	        android:id="@+id/editTagsAddButton"
+	        android:id="@+id/manageTagsAddButton"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"
-	        android:text="@string/edit_tags_add" />
+	        android:text="@string/manage_tags_add" />
 
     </RelativeLayout>
 

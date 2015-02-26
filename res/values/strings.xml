@@ -1,9 +1,15 @@
 <resources>
 
+    <!-- Common strings -->
     <string name="app_name">TravelTracker</string>
+    <string name="sign_out">Sign Out</string>
 
     <!-- Strings used in LoginActivity -->
     <string name="login_name">Name</string>
     <string name="login_login">Login</string>
+    
+    <!-- Strings used in EditTagsActivity -->
+    <string name="edit_tags_add_new_tag">Add New Tag</string>
+    <string name="edit_tags_add">Add</string>
     
 </resources>

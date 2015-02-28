@@ -18,5 +18,9 @@
 	<string name="claims_list_add_claim">Add Claim</string>
 	<string name="claims_list_edit_tags">Edit Tags</string>
 	<string name="claims_list_change_role">Change Role</string>
+	
+	
+    <!-- Strings used in ItemListItemView -->
+	<string name="item_list_item_view_error">FIELD NOT FILLED</string>
 	    
 </resources>

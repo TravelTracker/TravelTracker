@@ -23,10 +23,10 @@ package cmput301w15t07.TravelTracker.model;
 
 
 /**
- * Model enum for expense Item Category.  Implements Stringable for easy Android
- * Spinner generation.
+ * Model enum for Expense Item Category.
  * 
  * @author kdbanman
+ *         therabidsquirel
  *
  */
 public enum ItemCategory {

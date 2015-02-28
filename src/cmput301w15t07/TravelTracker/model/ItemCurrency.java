@@ -24,7 +24,7 @@ import java.util.Currency;
  */
 
 /**
- * Model enum for expense ItemCurrency.
+ * Model enum for Expense Item Currency.
  * 
  * @author therabidsquirel
  *

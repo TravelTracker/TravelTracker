@@ -23,8 +23,10 @@ package cmput301w15t07.TravelTracker.model;
 
 
 /**
- * Model enum for Claim Status.  
+ * Model enum for Claim Status.
+ * 
  * @author kdbanman
+ *         therabidsquirel
  *
  */
 public enum Status{
@@ -47,7 +49,7 @@ public enum Status{
 	/**
 	 * This method returns the Status instance corresponding to the passed string.
 	 * @param text
-	 * @return ItemCategory
+	 * @return Status
 	 */
 	public static Status fromString(String text) {
 	    if (text != null) {

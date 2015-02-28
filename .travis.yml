@@ -32,7 +32,7 @@ android:
 # Emulator Management: Create, Start and Wait
 before_script:
    - android -s update sdk --filter android-17,platform-tool --no-ui
-   - android -s update project --path . --target "android-17"
+   - android -s update project --path . --target "android-17" --library ./external/*.jar
    - cd tests
    - android -s update test-project --path . -m ../
     
@@ -44,5 +44,5 @@ before_script:
 script:
     ant clean debug install test
 
-notifications:
-  slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov
+# notifications:
+#   slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov

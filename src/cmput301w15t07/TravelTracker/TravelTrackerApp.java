@@ -21,14 +21,26 @@ package cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.DummyDataSource;
 import android.app.Application;
 
 /**
- * Main application container for TravelTracker.
+ * Main application container for TravelTracker.  Contains the observable
+ * DataSource model server.
  * 
  * @author kdbanman
  *
  */
 public class TravelTrackerApp extends Application {
-
+    private DataSource ds;
+    
+    public DataSource getDataSource() {
+    	return ds;
+    }
+    
+    @Override
+    public void onCreate() {
+    	ds = new DummyDataSource();
+    }
 }

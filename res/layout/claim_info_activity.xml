@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/claimInfoClaimantNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/claim_info_claimant_name" />
+
+    <Button
+        android:id="@+id/claimInfoStartDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/claimInfoClaimantNameTextView"
+        android:text="@string/date_format" />
+
+    <TextView
+        android:id="@+id/claimInfoDateDividerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/claimInfoStartDateButton"
+        android:layout_alignBottom="@+id/claimInfoStartDateButton"
+        android:layout_toEndOf="@+id/claimInfoStartDateButton"
+        android:text="@string/claim_info_date_to" />
+
+    <Button
+        android:id="@+id/claimInfoEndDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/claimInfoDateDividerTextView"
+        android:layout_alignBottom="@+id/claimInfoDateDividerTextView"
+        android:layout_toEndOf="@+id/claimInfoDateDividerTextView"
+        android:text="@string/date_format" />
+
+    <TextView
+        android:id="@+id/claimInfoClaimStatusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/claimInfoStartDateButton"
+        android:text="@string/claim_info_claim_status" />
+
+    <ListView
+        android:id="@+id/claimInfoDestinationsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/claimInfoTagsTextView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/claimInfoClaimStatusTextView" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/claimInfoTagsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="250dp"
+        android:text="@string/claim_info_tags_list" />
+
+    <TextView
+        android:id="@+id/claimInfoSeparatorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/claimInfoTagsTextView" />
+
+    <ListView
+        android:id="@+id/claimInfoCurrencyTotalsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/claimInfoViewItemsButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/claimInfoSeparatorTextView" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/claimInfoItemsCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="98dp"
+        android:text="@string/claim_info_items_count" />
+
+    <Button
+        android:id="@+id/claimInfoViewItemsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/claimInfoItemsCountTextView"
+        android:layout_alignBottom="@+id/claimInfoItemsCountTextView"
+        android:layout_toEndOf="@+id/claimInfoItemsCountTextView"
+        android:text="@string/claim_info_view_items" />
+
+</RelativeLayout>

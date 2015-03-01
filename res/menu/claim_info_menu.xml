@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/claim_info_add_destination" android:orderInCategory="100" android:title="@string/claim_info_add_destination"></item>
+    <item android:id="@+id/claim_info_add_item" android:orderInCategory="200" android:title="@string/claim_info_add_item"></item>
+    <item android:id="@+id/claim_info_delete_claim" android:orderInCategory="300" android:title="@string/claim_info_delete_claim"></item>
+    <item android:id="@+id/claim_info_sign_out" android:orderInCategory="400" android:title="@string/sign_out"></item>
+
+</menu>

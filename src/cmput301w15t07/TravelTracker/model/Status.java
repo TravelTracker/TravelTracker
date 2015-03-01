@@ -25,7 +25,7 @@ package cmput301w15t07.TravelTracker.model;
 /**
  * Model enum for Claim Status.
  * 
- * @author kdbanman
+ * @author kdbanman,
  *         therabidsquirel
  *
  */

@@ -29,6 +29,6 @@ import android.app.Activity;
  * @author kdbanman
  *
  */
-public class ItemInfoActivity extends Activity {
+public class ExpenseItemInfoActivity extends Activity {
 
 }

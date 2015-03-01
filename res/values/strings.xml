@@ -31,8 +31,10 @@
     <string name="claim_info_add_destination">Add Destination</string>
     <string name="claim_info_add_item">Add Expense Item</string>
     <string name="claim_info_delete_claim">Delete Claim</string>
+
+    <!-- Strings used in ExpenseItemsListActivity -->
     
-    <!-- Strings used in ItemListItemView -->
+    <!-- Strings used in ExpenseItemInfoActivity -->
 	<string name="item_list_item_view_error">FIELD NOT FILLED</string>
 	    
 </resources>

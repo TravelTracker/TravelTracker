@@ -21,7 +21,7 @@ package cmput301w15t07.TravelTracker.test;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.activity.ItemsListActivity;
+import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**
@@ -32,10 +32,10 @@ import android.test.ActivityInstrumentationTestCase2;
  * @author kdbanman
  *
  */
-public class ItemsListActivityTest extends ActivityInstrumentationTestCase2<ItemsListActivity> {
+public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCase2<ExpenseItemsListActivity> {
 
-	public ItemsListActivityTest() {
-		super(ItemsListActivity.class);
+	public ExpenseItemsListActivityTest() {
+		super(ExpenseItemsListActivity.class);
 	}
 	
 	public void testListExpenseItems() {

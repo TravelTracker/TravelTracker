@@ -12,6 +12,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
             android:name=".activity.LoginActivity" >
             <intent-filter>
@@ -20,10 +21,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name=".activity.ManageTagsActivity"
             android:label="@string/manage_tags_label">
         </activity>
+        
+        <activity
+            android:name=".activity.ClaimsListActivity"
+            android:label="@string/claims_list_label">
+        </activity>
+        
+        <activity
+            android:name=".activity.ClaimInfoActivity"
+            android:label="@string/claim_info_label">
+        </activity>
+        
+        <activity
+            android:name=".activity.ExpenseItemsListActivity"
+            android:label="@string/expense_items_list_label">
+        </activity>
+        
+        <activity
+            android:name=".activity.ExpenseItemInfoActivity"
+            android:label="@string/expense_item_info_label">
+        </activity>
+        
     </application>
 
 </manifest>

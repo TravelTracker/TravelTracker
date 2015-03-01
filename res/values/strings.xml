@@ -1,43 +1,61 @@
 <resources>
 
     <!-- Common strings -->
-    <string name="app_name">TravelTracker</string>
-    <string name="sign_out">Sign Out</string>
-    <string name="date_format">mm/dd/yyyy</string>
+        <string name="app_name">TravelTracker</string>
     
-    <string name="add_expense_item">Add Expense Item</string>
+        <!-- Used in layouts -->
+        <string name="date_format">mm/dd/yyyy</string>
+    
+        <!-- Used in menus -->
+        <string name="sign_out">Sign Out</string>
+        <string name="add_expense_item">Add Expense Item</string>
 
     <!-- Strings used in LoginActivity -->
-    <string name="login_name">Name</string>
-    <string name="login_login">Login</string>
+        <!-- Used in layout -->
+        <string name="login_name">Name</string>
+        <string name="login_login">Login</string>
     
     <!-- Strings used in ManageTagsActivity -->
-    <string name="manage_tags_label">Manage Tags</string>
-    <string name="manage_tags_add_new_tag">Add New Tag</string>
-    <string name="manage_tags_add">Add</string>
+        <string name="manage_tags_label">Manage Tags</string>
+    
+        <!-- Used in layout -->
+        <string name="manage_tags_add_new_tag">Add New Tag</string>
+        <string name="manage_tags_add">Add</string>
     
     <!-- Strings used in ClaimsListActivity -->
-	<string name="claims_list_filter_by_tag">Filter By Tag</string>
-	<string name="claims_list_manage_tags">Manage Tags</string>
-    <string name="claims_list_add_claim">Add Claim</string>
-	<string name="claims_list_change_role">Change Role</string>
+        <string name="claims_list_label">Claims List</string>
+        
+        <!-- Used in menu -->
+	    <string name="claims_list_filter_by_tag">Filter By Tag</string>
+	    <string name="claims_list_manage_tags">Manage Tags</string>
+        <string name="claims_list_add_claim">Add Claim</string>
+	    <string name="claims_list_change_role">Change Role</string>
 	
     <!-- Strings used in ClaimInfoActivity -->
-    <string name="claim_info_claimant_name">Claimant Name:</string>
-    <string name="claim_info_date_to">to</string>
-    <string name="claim_info_claim_status">Claim Status:</string>
-    <string name="claim_info_tags_list">Tags:</string>
-    <string name="claim_info_items_count">Expense Item Count: 0</string>
-    <string name="claim_info_view_items">Expense Items</string>
+        <string name="claim_info_label">Claim Info</string>
     
-    <string name="claim_info_add_destination">Add Destination</string>
-    <string name="claim_info_delete_claim">Delete Claim</string>
+        <!-- Used in layout -->
+        <string name="claim_info_claimant_name">Claimant Name:</string>
+        <string name="claim_info_date_to">to</string>
+        <string name="claim_info_claim_status">Claim Status:</string>
+        <string name="claim_info_tags_list">Tags:</string>
+        <string name="claim_info_items_count">Expense Item Count: 0</string>
+        <string name="claim_info_view_items">Expense Items</string>
+    
+        <!-- Used in menu -->
+        <string name="claim_info_add_destination">Add Destination</string>
+        <string name="claim_info_delete_claim">Delete Claim</string>
 
     <!-- Strings used in ExpenseItemsListActivity -->
+        <string name="expense_items_list_label">Expense Items List</string>
     
     <!-- Strings used in ExpenseItemInfoActivity -->
-	<string name="expense_item_info_error">FIELD NOT FILLED</string>
+        <string name="expense_item_info_label">Expense Item Info</string>
+    
+        <!-- Used in layout -->
+        <string name="expense_item_info_error">FIELD NOT FILLED</string>
 	
-	<string name="expense_item_info_delete_item">Delete Expense Item</string>
+        <!-- Used in menu -->
+        <string name="expense_item_info_delete_item">Delete Expense Item</string>
 	    
 </resources>

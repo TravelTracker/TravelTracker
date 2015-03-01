@@ -1,5 +1,10 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.Collection;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -30,5 +35,31 @@ package cmput301w15t07.TravelTracker.model;
  */
 public interface DataSource {
 
+	public void addClaim(User user, ResultCallback<Claim> callback);
+	public void addItem(Claim claim, ResultCallback<Item> callback);
+	public void addTag(User user, ResultCallback<Tag> callback);
 	
+	public void deleteClaim(UUID id, ResultCallback<Claim> callback);
+	public void deleteItem(UUID id, ResultCallback<Item> callback);
+	public void deleteTag(UUID id, ResultCallback<Tag> callback);
+	
+	public void getClaim(UUID id, ResultCallback<Claim> callback);
+	public void getItem(UUID id, ResultCallback<Item> callback);
+	public void getTag(UUID id, ResultCallback<Tag> callback);
+	
+	public void getAllClaims(UUID id, ResultCallback<Collection<Claim>> callback);
+	public void getAllItems(UUID id, ResultCallback<Collection<Item>> callback);
+	public void getAllTags(UUID id, ResultCallback<Collection<Tag>> callback);
+	
+	/**
+	 * To be called by model objects within their setters.
+	 * Should result in update calls to all DataSource Observers.
+	 */
+	public void notifyDataChanged();
+	
+	/**
+	 * @return A collection of all documents served by the DataSource which have
+	 * marked themselves dirty.
+	 */
+	public Collection<Document> getDirtyDocuments();
 }

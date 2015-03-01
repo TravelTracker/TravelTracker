@@ -37,7 +37,12 @@ public abstract class Document {
 	
 	private UUID docID;
 	
-	public Document(UUID docID) {
+	/**
+	 * Package protected constructor, intended for use only by DataSource.
+	 * 
+	 * @param docID UUID document identifier
+	 */
+	Document(UUID docID) {
 		this.docID = docID;
 	}
 	

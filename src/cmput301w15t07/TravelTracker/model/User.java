@@ -37,7 +37,7 @@ public abstract class User extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	public User(UUID docID) {
+	User(UUID docID) {
 		super(docID);
 	}
 

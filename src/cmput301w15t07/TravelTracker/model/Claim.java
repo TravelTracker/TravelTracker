@@ -45,7 +45,7 @@ public class Claim extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	public Claim(UUID docID) {
+	Claim(UUID docID) {
 		super(docID);
 	}
 	

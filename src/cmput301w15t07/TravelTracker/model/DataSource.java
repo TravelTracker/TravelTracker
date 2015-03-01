@@ -1,10 +1,5 @@
 package cmput301w15t07.TravelTracker.model;
 
-import android.text.GetChars;
-import android.util.Log;
-import cmput301w15t07.TravelTracker.util.Cache;
-import cmput301w15t07.TravelTracker.util.Observable;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -27,26 +22,13 @@ import cmput301w15t07.TravelTracker.util.Observable;
  */
 
 /**
- * Singleton abstract class for serving Model objects from any persistent storage class.
- * 
+ * Interface for serving model Documents from any persistent storage class.
+ * Implementations should inherit from Observable so views may observe.
  * 
  * @author kdbanman
  *
  */
-public class DataSource extends Observable<DataSource> {
+public interface DataSource {
 
-	private static DataSource instance;  // singleton
 	
-	private Cache helper;
-	
-	private DataSource(Cache helper) {
-		this.helper = helper;
-	}
-	
-	public static DataSource getInstance() {
-		if (instance == null) {
-			instance = new DataSource(new Cache());
-		}
-		return instance;
-	}
 }

@@ -1,6 +1,6 @@
 package cmput301w15t07.TravelTracker.test;
 
-import cmput301w15t07.TravelTracker.activity.ExpenseItemInfoActivity;;
+import cmput301w15t07.TravelTracker.activity.ExpenseItemInfoActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class ExpenseItemInfoActivityTest extends ActivityInstrumentationTestCase2<ExpenseItemInfoActivity> {

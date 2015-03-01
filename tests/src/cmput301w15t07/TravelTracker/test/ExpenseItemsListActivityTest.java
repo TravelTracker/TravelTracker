@@ -21,7 +21,7 @@ package cmput301w15t07.TravelTracker.test;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;;
+import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**

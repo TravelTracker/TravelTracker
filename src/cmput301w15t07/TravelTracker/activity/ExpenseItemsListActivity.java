@@ -30,6 +30,6 @@ import android.app.Activity;
  * @author kdbanman
  *
  */
-public class ItemsListActivity extends Activity {
+public class ExpenseItemsListActivity extends Activity {
 
 }

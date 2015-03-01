@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/claims_list_filter_by_tag" android:orderInCategory="100" android:title="@string/claims_list_filter_by_tag"></item>
-    <item android:id="@+id/claims_list_edit_tags" android:orderInCategory="200" android:title="@string/claims_list_edit_tags"></item>
-    <item android:id="@+id/claims_list_add_claim" android:orderInCategory="300" android:title="@string/claims_list_add_claim"></item>
-    <item android:id="@+id/claims_list_change_role" android:orderInCategory="400" android:title="@string/claims_list_change_role"></item>
-    <item android:id="@+id/claims_list_sign_out" android:orderInCategory="500" android:title="@string/sign_out"></item>
+    
+    <item
+        android:id="@+id/claims_list_filter_by_tag"
+        android:orderInCategory="100"
+        android:title="@string/claims_list_filter_by_tag" />
+    
+    <item
+        android:id="@+id/claims_list_manage_tags"
+        android:orderInCategory="200"
+        android:title="@string/claims_list_manage_tags" />
+    
+    <item
+        android:id="@+id/claims_list_add_claim"
+        android:orderInCategory="300"
+        android:title="@string/claims_list_add_claim" />
+    
+    <item
+        android:id="@+id/claims_list_change_role"
+        android:orderInCategory="400"
+        android:title="@string/claims_list_change_role" />
+    
+    <item
+        android:id="@+id/claims_list_sign_out"
+        android:orderInCategory="500"
+        android:title="@string/sign_out" />
    
 </menu>

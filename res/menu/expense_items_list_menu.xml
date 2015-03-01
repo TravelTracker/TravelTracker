@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+        android:id="@+id/expense_items_list_add_item"
+        android:orderInCategory="100"
+        android:title="@string/add_expense_item" />
+    
+    <item
+        android:id="@+id/expense_items_list_sign_out"
+        android:orderInCategory="200"
+        android:title="@string/sign_out" />
+
+</menu>

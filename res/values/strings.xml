@@ -4,6 +4,8 @@
     <string name="app_name">TravelTracker</string>
     <string name="sign_out">Sign Out</string>
     <string name="date_format">mm/dd/yyyy</string>
+    
+    <string name="add_expense_item">Add Expense Item</string>
 
     <!-- Strings used in LoginActivity -->
     <string name="login_name">Name</string>
@@ -16,8 +18,8 @@
     
     <!-- Strings used in ClaimsListActivity -->
 	<string name="claims_list_filter_by_tag">Filter By Tag</string>
-	<string name="claims_list_add_claim">Add Claim</string>
-	<string name="claims_list_edit_tags">Edit Tags</string>
+	<string name="claims_list_manage_tags">Manage Tags</string>
+    <string name="claims_list_add_claim">Add Claim</string>
 	<string name="claims_list_change_role">Change Role</string>
 	
     <!-- Strings used in ClaimInfoActivity -->
@@ -29,12 +31,13 @@
     <string name="claim_info_view_items">Expense Items</string>
     
     <string name="claim_info_add_destination">Add Destination</string>
-    <string name="claim_info_add_item">Add Expense Item</string>
     <string name="claim_info_delete_claim">Delete Claim</string>
 
     <!-- Strings used in ExpenseItemsListActivity -->
     
     <!-- Strings used in ExpenseItemInfoActivity -->
-	<string name="item_list_item_view_error">FIELD NOT FILLED</string>
+	<string name="expense_item_info_error">FIELD NOT FILLED</string>
+	
+	<string name="expense_item_info_delete_item">Delete Expense Item</string>
 	    
 </resources>

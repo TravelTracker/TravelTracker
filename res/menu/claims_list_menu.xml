@@ -17,11 +17,6 @@
         android:title="@string/claims_list_add_claim" />
     
     <item
-        android:id="@+id/claims_list_change_role"
-        android:orderInCategory="400"
-        android:title="@string/claims_list_change_role" />
-    
-    <item
         android:id="@+id/claims_list_sign_out"
         android:orderInCategory="500"
         android:title="@string/sign_out" />

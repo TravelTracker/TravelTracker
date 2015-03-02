@@ -14,6 +14,8 @@
         <!-- Used in layout -->
         <string name="login_name">Name</string>
         <string name="login_login">Login</string>
+        <string name="login_claimant">Claimant</string>
+        <string name="login_approver">Approver</string>
     
     <!-- Strings used in ManageTagsActivity -->
         <string name="manage_tags_label">Manage Tags</string>

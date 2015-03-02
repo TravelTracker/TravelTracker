@@ -21,15 +21,48 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 
 
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
  * 
- * @author kdbanman
+ * @author kdbanman, colp
  *
  */
 public class ClaimsListActivity extends Activity {
-
+	/** String used to retrieve user name from intent */
+	public static final String USER_NAME = "cmput301w15t07.TravelTracker.userName";
+	
+	/** String used to retrieve user role from intent */
+	public static final String USER_ROLE = "cmput301w15t07.TravelTracker.userRole";
+	
+	/** The name of the user */
+	private String userName;
+	
+	/** The role of the user */
+	private UserRole userRole;
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.claims_list_menu, menu);
+        
+        return true;
+    }
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+        setContentView(R.layout.claims_list_activity);
+        
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userName = bundle.getString(USER_NAME);
+        userRole = (UserRole) bundle.getSerializable(USER_ROLE);
+	}
 }

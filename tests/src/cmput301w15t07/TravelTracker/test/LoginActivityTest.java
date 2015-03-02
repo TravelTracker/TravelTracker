@@ -22,38 +22,122 @@ package cmput301w15t07.TravelTracker.test;
  */
 
 
-import cmput301w15t07.TravelTracker.activity.LoginActivity;
 import android.app.Activity;
 import android.app.Instrumentation;
-import android.test.ActivityInstrumentationTestCase2;
+import android.content.Intent;
+import android.test.ActivityUnitTestCase;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
+import cmput301w15t07.TravelTracker.activity.LoginActivity;
+import cmput301w15t07.TravelTracker.model.UserRole;
 
 /**
  * Test for entry activity - Logging in.
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
- * @author kdbanman
+ * @author kdbanman, colp
  *
  */
-public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
-
+public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
+	/** Timeout time for starting activities */
+	static final long timeOut = 5000;
+	
 	Instrumentation instrumentation;
-	Activity login;
+	Activity activity;
+	EditText nameEditText;
+	Button loginButton;
+	RadioButton claimantButton;
+	RadioButton approverButton;
 	
 	public LoginActivityTest() {
 		super(LoginActivity.class);
 	}
 	
-	public void testLoginExistingUser() {
-		// should transition to claims list
-		// should be claimant role
+	@Override
+	protected void setUp() throws Exception {
+	    super.setUp();
+	    
+	    instrumentation = getInstrumentation();
+	    
+	    Intent intent = new Intent(instrumentation.getTargetContext(), LoginActivity.class);
+	    startActivity(intent, null, null);
+	    
+	    activity = getActivity();
+	    nameEditText = (EditText) activity.findViewById(R.id.loginNameEditText);
+	    loginButton = (Button) activity.findViewById(R.id.loginLoginButton);
+	    claimantButton = (RadioButton) activity.findViewById(R.id.loginClaimantRadioButton);
+	    approverButton = (RadioButton) activity.findViewById(R.id.loginApproverRadioButton);
 	}
 	
-	public void testLoginNewUser() {
-		// getting existing claims must return none
+	public void testLoginEmptyName() {
+	    Intent newIntent = loginWithDetails("", UserRole.CLAIMANT);
 		
-		// should transition to empty claims list
-		// should be claimant role
+		assertNotNull("Error should be displayed", nameEditText.getError());
+		assertEquals("No activity should start", null, newIntent);
+	}
+	
+	public void testLoginClaimant() {
+		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
+		String name = null;
+		UserRole role = null;
+
+		assertNotNull("Activity should start", newIntent);
+		
+		String activityClass = newIntent.resolveActivity(activity.getPackageManager()).getClassName();
+		assertEquals("New activity should list claims",
+					 "cmput301w15t07.TravelTracker.activity.ClaimsListActivity",
+					 activityClass);
+		
+		name = newIntent.getStringExtra(ClaimsListActivity.USER_NAME);
+		role = (UserRole) newIntent.getSerializableExtra(ClaimsListActivity.USER_ROLE);
+		
+		assertEquals("Name should match", "Foobar", name);
+		assertEquals("Role should be claimant", UserRole.CLAIMANT, role);
+	}
+	
+	public void testLoginApprover() {
+		Intent newIntent = loginWithDetails("Foobar", UserRole.APPROVER);
+		String name = null;
+		UserRole role = null;
+
+		assertNotNull("Activity should start", newIntent);
+		
+		String activityClass = newIntent.resolveActivity(activity.getPackageManager()).getClassName();
+		assertEquals("New activity should list claims",
+					 "cmput301w15t07.TravelTracker.activity.ClaimsListActivity",
+					 activityClass);
+		
+		name = newIntent.getStringExtra(ClaimsListActivity.USER_NAME);
+		role = (UserRole) newIntent.getSerializableExtra(ClaimsListActivity.USER_ROLE);
+		
+		assertEquals("Name should match", "Foobar", name);
+		assertEquals("Role should be claimant", UserRole.APPROVER, role);
 	}
 
+	/**
+	 * Log in with the given details.
+	 * @param name The name to use.
+	 * @param role The role to use.
+	 * @return The intent which was created (or null if no intent).
+	 */
+	public Intent loginWithDetails(final String name, final UserRole role) {
+		nameEditText.setText(name);
+		
+		switch (role) {
+		case APPROVER:
+			approverButton.performClick();
+			break;
+			
+		case CLAIMANT:
+			claimantButton.performClick();
+			break;
+		}
+		loginButton.performClick();
+		
+		return getStartedActivityIntent();
+	}
 }

@@ -16,6 +16,7 @@
         <string name="login_login">Login</string>
         <string name="login_claimant">Claimant</string>
         <string name="login_approver">Approver</string>
+        <string name="login_no_name_error">Please enter a name</string>
     
     <!-- Strings used in ManageTagsActivity -->
         <string name="manage_tags_label">Manage Tags</string>

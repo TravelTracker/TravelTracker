@@ -6,28 +6,29 @@ import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.Observable;
+import cmput301w15t07.TravelTracker.util.Observer;
 
-public class DummyDataSource extends Observable<DummyDataSource> implements DataSource {
+public class InMemoryDataSource extends Observable<InMemoryDataSource> implements DataSource, Observer<Document> {
 
 	private HashMap<UUID, Claim> claims;
 	private HashMap<UUID, User> users;
 	private HashMap<UUID, Item> items;
 	private HashMap<UUID, Tag> tags;
 
-	public DummyDataSource() {
+	public InMemoryDataSource() {
 		claims = new HashMap<UUID, Claim>();
 		users = new HashMap<UUID, User>();
 		items = new HashMap<UUID, Item>();
 		tags = new HashMap<UUID, Tag>();
 		
 	}
+	
 	@Override
 	public void addUser(ResultCallback<User> callback) {
 		User user = new Claimant(UUID.randomUUID());
+		user.addObserver(this);
 		
 		users.put(user.getUUID(), user);
-		
-		//TODO add self as observer
 		
 		callback.onResult(user);
 	}
@@ -128,8 +129,13 @@ public class DummyDataSource extends Observable<DummyDataSource> implements Data
 
 	@Override
 	public Collection<Document> getDirtyDocuments() {
-		// TODO Auto-generated method stub
+		// this is for caching, probably not meaningful for in-memory storage.
 		return null;
+	}
+	
+	@Override
+	public void update(Document observable) {
+		updateObservers(this);
 	}
 
 }

@@ -23,6 +23,8 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.util.Observable;
+
 /**
 * Model object corresponding to storage documents.  Used to track cache/remote
 * synchronization status.
@@ -30,7 +32,7 @@ import java.util.UUID;
 * @author kdbanman
 *
 */
-public abstract class Document {
+public abstract class Document extends Observable<Document> {
 
 	// A new document may be synced, but dirty is a safer default.
 	private boolean dirty = true;

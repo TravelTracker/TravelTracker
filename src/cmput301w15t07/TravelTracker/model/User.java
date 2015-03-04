@@ -47,6 +47,8 @@ public abstract class User extends Document {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+		
+		updateObservers(this);
 	}
 	
 }

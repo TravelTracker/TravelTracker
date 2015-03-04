@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Observable<E extends Observable<E>> {
-    private List<Observer<E>> observers;
+    private List<Observer<E>> observers = new ArrayList<Observer<E>>();
 
     public Observable() {
         observers = new ArrayList<Observer<E>>();

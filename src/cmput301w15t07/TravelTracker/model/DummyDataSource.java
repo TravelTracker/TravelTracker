@@ -1,6 +1,7 @@
 package cmput301w15t07.TravelTracker.model;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
@@ -8,10 +9,28 @@ import cmput301w15t07.TravelTracker.util.Observable;
 
 public class DummyDataSource extends Observable<DummyDataSource> implements DataSource {
 
-	private Collection<Claim> claims;
-	private Collection<User> users;
-	private Collection<Item> items;
-	private Collection<Tag> tags;
+	private HashMap<UUID, Claim> claims;
+	private HashMap<UUID, User> users;
+	private HashMap<UUID, Item> items;
+	private HashMap<UUID, Tag> tags;
+
+	public DummyDataSource() {
+		claims = new HashMap<UUID, Claim>();
+		users = new HashMap<UUID, User>();
+		items = new HashMap<UUID, Item>();
+		tags = new HashMap<UUID, Tag>();
+		
+	}
+	@Override
+	public void addUser(ResultCallback<User> callback) {
+		User user = new Claimant(UUID.randomUUID());
+		
+		users.put(user.getUUID(), user);
+		
+		//TODO add self as observer
+		
+		callback.onResult(user);
+	}
 	
 	@Override
 	public void addClaim(User user, ResultCallback<Claim> callback) {
@@ -36,6 +55,12 @@ public class DummyDataSource extends Observable<DummyDataSource> implements Data
 	}
 
 	@Override
+	public void deleteUser(UUID id, ResultCallback<User> callback) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void deleteClaim(UUID id, ResultCallback<Claim> callback) {
 		// TODO Auto-generated method stub
 
@@ -51,6 +76,12 @@ public class DummyDataSource extends Observable<DummyDataSource> implements Data
 	public void deleteTag(UUID id, ResultCallback<Tag> callback) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void getUser(UUID id, ResultCallback<User> callback) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

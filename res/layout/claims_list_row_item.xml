@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+    
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:orientation="vertical">
+	        
+	        <TextView 
+		        android:id="@+id/claimsListRowItemName"
+		        android:paddingTop="10dp"
+		        android:layout_width="match_parent"
+		       	android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	            android:id="@+id/claimsListRowItemDate"
+	            android:layout_width="match_parent"
+	        	android:layout_height="match_parent"/>
+	        
+	        
+	    </LinearLayout>
+	    
+	    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/claims_list_row_item_total"
+        android:textSize="20sp"/>
+	    
+    </LinearLayout>
+
+</LinearLayout>

@@ -21,13 +21,14 @@ package cmput301w15t07.TravelTracker.util;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Observable<E extends Observable<E>> {
     private List<Observer<E>> observers;
 
     public Observable() {
-        System.out.println(this.getClass());
+        observers = new ArrayList<Observer<E>>();
     }
 
     public void addObserver(Observer<E> obs) {

@@ -24,19 +24,24 @@ import android.graphics.Bitmap;
  */
 
 /**
- * Model object for expense Item Receipt data.  (i.e. images)
+ * Model object for expense Item Receipt data.  (i.e. image)
+ * 
+ * Setters are not exposed - object attributes are set at construction time.
+ * This is so that mutations must be made at the Claim for observer notification
+ * and cache dirtying.
  * 
  * @author kdbanman
  *
  */
 public class Receipt {
 	private Bitmap photo;
+	
+	public Receipt(Bitmap photo) {
+		this.photo = photo;
+	}
 
 	public Bitmap getPhoto() {
 		return photo;
 	}
 
-	public void setPhoto(Bitmap photo) {
-		this.photo = photo;
-	}
 }

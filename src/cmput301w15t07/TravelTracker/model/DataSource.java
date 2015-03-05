@@ -55,12 +55,6 @@ public interface DataSource {
 	public void getAllTags(UUID id, ResultCallback<Collection<Tag>> callback);
 	
 	/**
-	 * To be called by model objects within their setters.
-	 * Should result in update calls to all DataSource Observers.
-	 */
-	public void notifyDataChanged();
-	
-	/**
 	 * @return A collection of all documents served by the DataSource which have
 	 * marked themselves dirty.
 	 */

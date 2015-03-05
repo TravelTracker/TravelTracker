@@ -54,36 +54,47 @@ public class Item extends Document {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+		this.updateObservers(this);
 	}
+	
 	public ItemCategory getCategory() {
 		return category;
 	}
 	public void setCategory(ItemCategory category) {
 		this.category = category;
+		this.updateObservers(this);
 	}
+	
 	public Date getDate() {
 		return date;
 	}
 	public void setDate(Date date) {
 		this.date = date;
+		this.updateObservers(this);
 	}
+	
 	public Float getAmmount() {
 		return ammount;
 	}
 	public void setAmmount(Float ammount) {
 		this.ammount = ammount;
+		this.updateObservers(this);
 	}
+	
 	public Currency getCurrency() {
 		return currency;
 	}
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
+		this.updateObservers(this);
 	}
+	
 	public Receipt getReceipt() {
 		return receipt;
 	}
 	public void setReceipt(Receipt receipt) {
 		this.receipt = receipt;
+		this.updateObservers(this);
 	}
 	
 }

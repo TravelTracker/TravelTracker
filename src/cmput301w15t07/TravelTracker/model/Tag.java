@@ -48,5 +48,6 @@ public class Tag extends Document {
 
 	public void setTitle(String title) {
 		this.title = title;
+		this.updateObservers(this);
 	}
 }

@@ -122,12 +122,6 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	}
 
 	@Override
-	public void notifyDataChanged() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public Collection<Document> getDirtyDocuments() {
 		// this is for caching, probably not meaningful for in-memory storage.
 		return null;

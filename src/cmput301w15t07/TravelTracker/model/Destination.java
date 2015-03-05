@@ -24,6 +24,10 @@ package cmput301w15t07.TravelTracker.model;
 /**
  * Model object for Claim Destinations.
  * 
+ * Setters are not exposed - object attributes are set at construction time.
+ * This is so that mutations must be made at the Claim for observer notification
+ * and cache dirtying.
+ * 
  * @author kdbanman
  *
  */
@@ -31,17 +35,17 @@ public class Destination {
 	private String location;
 	private String reason;
 	
+	public Destination(String location, String reason) {
+		this.location = location;
+		this.reason = reason;
+	}
+	
 	public String getLocation() {
 		return location;
 	}
-	public void setLocation(String location) {
-		this.location = location;
-	}
+
 	public String getReason() {
 		return reason;
-	}
-	public void setReason(String reason) {
-		this.reason = reason;
 	}
 	
 }

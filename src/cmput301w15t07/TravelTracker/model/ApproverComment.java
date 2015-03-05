@@ -6,6 +6,10 @@ import java.util.Date;
 /**
  * Model class for the Approver Comment.
  * 
+ * Setters are not exposed - object attributes are set at construction time.
+ * This is so that mutations must be made at the Claim for observer notification
+ * and cache dirtying.
+ * 
  * @author ryant26
  *
  */
@@ -14,23 +18,23 @@ public class ApproverComment {
 	private String comment;
 	private Date date;
 	
+	public ApproverComment(Approver approver, String comment, Date date) {
+		this.approver = approver;
+		this.comment = comment;
+		this.date = date;
+	}
+	
 	public Approver getApprover() {
 		return approver;
 	}
-	public void setApprover(Approver approver) {
-		this.approver = approver;
-	}
+
 	public String getComment() {
 		return comment;
 	}
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+
 	public Date getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
+
 	
 }

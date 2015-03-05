@@ -42,6 +42,7 @@ public class Claimant extends User{
 
 	public void setTags(ArrayList<Tag> tags) {
 		this.tags = tags;
+		this.updateObservers(this);
 	}
 	
 }

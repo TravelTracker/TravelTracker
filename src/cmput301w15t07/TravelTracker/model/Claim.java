@@ -32,6 +32,7 @@ import java.util.UUID;
  *
  */
 public class Claim extends Document {
+	private UUID user;
 	private String name;
 	private Status status;
 	private Date startDate;
@@ -47,6 +48,14 @@ public class Claim extends Document {
 	 */
 	Claim(UUID docID) {
 		super(docID);
+	}
+	
+	public UUID getUser() {
+		return this.user;
+	}
+	public void setUser(UUID user) {
+		this.user = user;
+		this.updateObservers(this);
 	}
 	
 	public String getName() {

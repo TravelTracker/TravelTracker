@@ -30,7 +30,7 @@ import java.util.UUID;
  *
  */
 public class Tag extends Document {
-
+	private UUID user;
 	private String title;
 	
 	/**
@@ -41,11 +41,18 @@ public class Tag extends Document {
 	Tag(UUID docID) {
 		super(docID);
 	}
+	
+	public UUID getUser() {
+		return this.user;
+	}
+	public void setUser(UUID user) {
+		this.user = user;
+		this.updateObservers(this);
+	}
 
 	public String getTitle() {
 		return title;
 	}
-
 	public void setTitle(String title) {
 		this.title = title;
 		this.updateObservers(this);

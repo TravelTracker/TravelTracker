@@ -33,6 +33,7 @@ import java.util.UUID;
  *
  */
 public class Item extends Document {
+	private UUID claim;
 	private String description;
 	private ItemCategory category;
 	private Date date;
@@ -47,6 +48,14 @@ public class Item extends Document {
 	 */
 	Item(UUID docID) {
 		super(docID);
+	}
+	
+	public UUID getClaim() {
+		return this.claim;
+	}
+	public void setClaim(UUID claim) {
+		this.claim = claim;
+		this.updateObservers(this);
 	}
 	
 	public String getDescription() {

@@ -40,6 +40,7 @@ public class Claim extends Document {
 	private ArrayList<Destination> destinations;
 	private ArrayList<Item> items;
 	private ArrayList<ApproverComment> comments;
+	private ArrayList<UUID> tags;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -111,6 +112,14 @@ public class Claim extends Document {
 	}
 	public void setComments(ArrayList<ApproverComment> comments) {
 		this.comments = comments;
+		this.updateObservers(this);
+	}
+	
+	public ArrayList<UUID> getTags() {
+		return this.tags;
+	}
+	public void setTags(ArrayList<UUID> tags) {
+		this.tags = tags;
 		this.updateObservers(this);
 	}
 	

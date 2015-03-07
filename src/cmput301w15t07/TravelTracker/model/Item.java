@@ -37,7 +37,7 @@ public class Item extends Document {
 	private String description;
 	private ItemCategory category;
 	private Date date;
-	private Float ammount;
+	private Float amount;
 	private Currency currency;
 	private Receipt receipt;
 	
@@ -82,11 +82,11 @@ public class Item extends Document {
 		this.updateObservers(this);
 	}
 	
-	public Float getAmmount() {
-		return ammount;
+	public Float getAmount() {
+		return amount;
 	}
-	public void setAmmount(Float ammount) {
-		this.ammount = ammount;
+	public void setAmmunt(Float amount) {
+		this.amount = amount;
 		this.updateObservers(this);
 	}
 	

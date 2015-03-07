@@ -56,7 +56,7 @@ public class SynchronizedResultCallback<T> implements ResultCallback<T> {
     }
 
 	@Override
-    public synchronized void onError() {
+    public synchronized void onError(String message) {
 	    error = "SynchronizedResultCallback failed";
 	    notifyAll();
     }

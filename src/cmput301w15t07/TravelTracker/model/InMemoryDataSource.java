@@ -39,7 +39,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		Claim claim = new Claim(UUID.randomUUID());
 		
 		if (!users.containsValue(user)) {
-			callback.onError();
+			callback.onError("User not found.");
 			return;
 		}
 		
@@ -57,7 +57,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		items.put(item.getUUID(), item);
 		
 		if (!claims.containsValue(claim)) {
-			callback.onError();
+			callback.onError("Claim not found.");
 			return;
 		}
 		
@@ -72,7 +72,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		tags.put(tag.getUUID(), tag);
 		
 		if (!users.containsValue(user)) {
-			callback.onError();
+			callback.onError("User not found.");
 			return;
 		}
 		
@@ -82,7 +82,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	@Override
 	public void deleteUser(UUID id, final ResultCallback<Void> callback) {
 		if (users.get(id) == null) {
-			callback.onError();
+			callback.onError("User not found.");
 			
 		} else {
 			internalDeleteUser(id);
@@ -93,7 +93,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	@Override
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
 		if (claims.get(id) == null) {
-			callback.onError();
+			callback.onError("Claim not found.");
 			
 		} else {
 			internalDeleteClaim(id);
@@ -104,7 +104,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	@Override
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
 		if (items.get(id) == null) {
-			callback.onError();
+			callback.onError("Expense item not found.");
 			
 		} else {
 			internalDeleteItem(id);
@@ -115,7 +115,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	@Override
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
 		if (tags.get(id) == null) {
-			callback.onError();
+			callback.onError("Tag not found.");
 			
 		} else {
 			internalDeleteTag(id);
@@ -128,7 +128,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		User user = users.get(id);
 		
 		if (user == null) {
-			callback.onError();
+			callback.onError("User not found.");
 		} else {
 			callback.onResult(user);
 		}
@@ -139,7 +139,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		Claim claim = claims.get(id);
 		
 		if (claim == null) {
-			callback.onError();
+			callback.onError("Claim not found.");
 		} else {
 			callback.onResult(claim);
 		}
@@ -150,7 +150,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		Item item = items.get(id);
 		
 		if (item == null) {
-			callback.onError();
+			callback.onError("Item not found.");
 		} else {
 			callback.onResult(item);
 		}
@@ -161,7 +161,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		Tag tag = tags.get(id);
 		
 		if (tag == null) {
-			callback.onError();
+			callback.onError("Tag not found.");
 		} else {
 			callback.onResult(tag);
 		}

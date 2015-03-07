@@ -23,5 +23,5 @@ package cmput301w15t07.TravelTracker.serverinterface;
 
 public interface ResultCallback <T>{
 	public void onResult(T result);
-	public void onError();
+	public void onError(String message);
 }

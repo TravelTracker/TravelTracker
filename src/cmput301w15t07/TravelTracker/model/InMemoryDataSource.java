@@ -104,19 +104,25 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	}
 
 	@Override
-	public void getAllClaims(UUID id, ResultCallback<Collection<Claim>> callback) {
+	public void getAllUsers(ResultCallback<Collection<User>> callback) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void getAllItems(UUID id, ResultCallback<Collection<Item>> callback) {
+	public void getAllClaims(ResultCallback<Collection<Claim>> callback) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void getAllTags(UUID id, ResultCallback<Collection<Tag>> callback) {
+	public void getAllItems(ResultCallback<Collection<Item>> callback) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void getAllTags(ResultCallback<Collection<Tag>> callback) {
 		// TODO Auto-generated method stub
 
 	}

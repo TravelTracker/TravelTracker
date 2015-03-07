@@ -49,10 +49,11 @@ public interface DataSource {
 	public void getClaim(UUID id, ResultCallback<Claim> callback);
 	public void getItem(UUID id, ResultCallback<Item> callback);
 	public void getTag(UUID id, ResultCallback<Tag> callback);
-	
-	public void getAllClaims(UUID id, ResultCallback<Collection<Claim>> callback);
-	public void getAllItems(UUID id, ResultCallback<Collection<Item>> callback);
-	public void getAllTags(UUID id, ResultCallback<Collection<Tag>> callback);
+
+	public void getAllUsers(ResultCallback<Collection<User>> callback);
+	public void getAllClaims(ResultCallback<Collection<Claim>> callback);
+	public void getAllItems(ResultCallback<Collection<Item>> callback);
+	public void getAllTags(ResultCallback<Collection<Tag>> callback);
 	
 	/**
 	 * @return A collection of all documents served by the DataSource which have

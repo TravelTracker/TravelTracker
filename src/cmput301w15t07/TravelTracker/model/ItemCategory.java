@@ -1,5 +1,8 @@
 package cmput301w15t07.TravelTracker.model;
 
+import android.content.Context;
+import cmput301w15t07.TravelTracker.R;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,7 +24,6 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-
 /**
  * Model enum for Expense Item Category.
  * 
@@ -29,39 +31,38 @@ package cmput301w15t07.TravelTracker.model;
  *         therabidsquirel
  *
  */
-public enum ItemCategory {
-	ACCOMODATION("Accomodation"),
-	AIR_FARE("Air Fare"),
-	FUEL("Fuel"),
-	GROUND_TRANSPORT("Ground Transport"),
-	MEAL("Meal"),
-	MISC("Miscellaneous"),
-	PARKING("Parking"),
-	PRIVATE_AUTOMOBILE("Private Automobile"),
-	REGISTRATION("Registration"),
-	SUPPLIES("Supplies"),
-	VEHICLE_RENTAL("Vehicle Rental");
+public enum ItemCategory implements ContextStringable {
+	ACCOMODATION(R.string.enum_item_category_accommodation),
+	AIR_FARE(R.string.enum_item_category_air_fare),
+	FUEL(R.string.enum_item_category_fuel),
+	GROUND_TRANSPORT(R.string.enum_item_category_ground_transport),
+	MEAL(R.string.enum_item_category_meal),
+	MISC(R.string.enum_item_category_miscellaneous),
+	PARKING(R.string.enum_item_category_parking),
+	PRIVATE_AUTOMOBILE(R.string.enum_item_category_private_automobile),
+	REGISTRATION(R.string.enum_item_category_registration),
+	SUPPLIES(R.string.enum_item_category_supplies),
+	VEHICLE_RENTAL(R.string.enum_item_category_vehicle_rental);
 	
-	private String asString;
+	private final int id;
 	
-	private ItemCategory(String asString) {
-		this.asString = asString;
+	private ItemCategory(int id) {
+		this.id = id;
 	}
 	
-	@Override
-	public String toString() {
-		return asString;
+	public String getString(Context context) {
+	    return context.getString(id);
 	}
 	
 	/**
 	 * This method returns the ItemCategory instance corresponding to the passed string.
-	 * @param text
+	 * @param text, context
 	 * @return ItemCategory
 	 */
-	public static ItemCategory fromString(String text) {
+	public static ItemCategory fromString(String text, Context context) {
 	    if (text != null) {
 	      for (ItemCategory i : ItemCategory.values()) {
-	        if (text.equalsIgnoreCase(i.asString)) {
+	        if (text.equalsIgnoreCase(i.getString(context))) {
 	          return i;
 	        }
 	      }

@@ -2,6 +2,9 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.Currency;
 
+import cmput301w15t07.TravelTracker.R;
+import android.content.Context;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -29,39 +32,38 @@ import java.util.Currency;
  * @author therabidsquirel
  *
  */
-public enum ItemCurrency {
-    CAD("CAD"),
-    USD("USD"),
-    EUR("EUR"),
-    GBP("GBP"),
-    CHF("CHF"),
-    JPY("JPY"),
-    CNY("CNY");
+public enum ItemCurrency implements ContextStringable {
+    CAD(R.string.enum_item_currency_CAD),
+    USD(R.string.enum_item_currency_USD),
+    EUR(R.string.enum_item_currency_EUR),
+    GBP(R.string.enum_item_currency_GBP),
+    CHF(R.string.enum_item_currency_CHF),
+    JPY(R.string.enum_item_currency_JPY),
+    CNY(R.string.enum_item_currency_CNY);
     
-    private String asString;
+    private final int id;
     
-    private ItemCurrency (String asString) {
-        this.asString = asString;
+    private ItemCurrency(int id) {
+        this.id = id;
     }
     
-    @Override
-    public String toString() {
-        return asString;
+    public String getString(Context context) {
+        return context.getString(id);
     }
     
-    public Currency getCurrency() {
-        return Currency.getInstance(asString);
+    public Currency getCurrency(Context context) {
+        return Currency.getInstance(getString(context));
     }
     
     /**
      * This method returns the ItemCurrency instance corresponding to the passed string.
-     * @param text
+     * @param text, context
      * @return ItemCurrency
      */
-    public static ItemCurrency fromString(String text) {
+    public static ItemCurrency fromString(String text, Context context) {
         if (text != null) {
           for (ItemCurrency i : ItemCurrency.values()) {
-            if (text.equalsIgnoreCase(i.asString)) {
+            if (text.equalsIgnoreCase(i.getString(context))) {
               return i;
             }
           }

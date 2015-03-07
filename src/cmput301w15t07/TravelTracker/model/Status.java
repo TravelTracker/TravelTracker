@@ -1,5 +1,8 @@
 package cmput301w15t07.TravelTracker.model;
 
+import cmput301w15t07.TravelTracker.R;
+import android.content.Context;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,7 +24,6 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-
 /**
  * Model enum for Claim Status.
  * 
@@ -29,32 +31,31 @@ package cmput301w15t07.TravelTracker.model;
  *         therabidsquirel
  *
  */
-public enum Status{
-	IN_PROGRESS("In Progress"),
-	SUBMITTED("Submitted"),
-	RETURNED("Returned"),
-	APPROVED("Approved");
+public enum Status implements ContextStringable {
+	IN_PROGRESS(R.string.enum_status_in_progress),
+	SUBMITTED(R.string.enum_status_submitted),
+	RETURNED(R.string.enum_status_returned),
+	APPROVED(R.string.enum_status_approved);
 	
-	private final String asString;
-	
-	private Status(String asString) {
-		this.asString = asString;
-	}
-	
-	@Override
-	public String toString() {
-		return asString;
-	}
+    private final int id;
+    
+    private Status(int id) {
+        this.id = id;
+    }
+    
+    public String getString(Context context) {
+        return context.getString(id);
+    }
 	
 	/**
 	 * This method returns the Status instance corresponding to the passed string.
-	 * @param text
+	 * @param text, context
 	 * @return Status
 	 */
-	public static Status fromString(String text) {
+	public static Status fromString(String text, Context context) {
 	    if (text != null) {
 	      for (Status i : Status.values()) {
-	        if (text.equalsIgnoreCase(i.asString)) {
+	        if (text.equalsIgnoreCase(i.getString(context))) {
 	          return i;
 	        }
 	      }

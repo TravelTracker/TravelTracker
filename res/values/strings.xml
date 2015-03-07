@@ -59,5 +59,37 @@
 	
         <!-- Used in menu -->
         <string name="expense_item_info_delete_item">Delete Expense Item</string>
-	    
+
+    <!-- Strings used in enum ItemCategory -->
+        <string name="enum_item_category_accommodation">Accommodation</string>
+        <string name="enum_item_category_air_fare">Air Fare</string>
+        <string name="enum_item_category_fuel">Fuel</string>
+        <string name="enum_item_category_ground_transport">Ground Transport</string>
+        <string name="enum_item_category_meal">Meal</string>
+        <string name="enum_item_category_miscellaneous">Miscellaneous</string>
+        <string name="enum_item_category_parking">Parking</string>
+        <string name="enum_item_category_private_automobile">Private Automobile</string>
+        <string name="enum_item_category_registration">Registration</string>
+        <string name="enum_item_category_supplies">Supplies</string>
+        <string name="enum_item_category_vehicle_rental">Vehicle Rental</string>
+
+    <!-- Strings used in enum ItemCurrency -->
+        <string name="enum_item_currency_CAD">CAD</string>
+        <string name="enum_item_currency_USD">USD</string>
+        <string name="enum_item_currency_EUR">EUR</string>
+        <string name="enum_item_currency_GBP">GBP</string>
+        <string name="enum_item_currency_CHF">CHF</string>
+        <string name="enum_item_currency_JPY">JPY</string>
+        <string name="enum_item_currency_CNY">CNY</string>
+
+    <!-- Strings used in enum Status -->
+        <string name="enum_status_in_progress">In Progress</string>
+        <string name="enum_status_submitted">Submitted</string>
+        <string name="enum_status_returned">Returned</string>
+        <string name="enum_status_approved">Approved</string>
+
+    <!-- Strings used in enum UserRole -->
+        <string name="enum_user_role_claimant">Claimant</string>
+        <string name="enum_user_role_approver">Approver</string>
+
 </resources>

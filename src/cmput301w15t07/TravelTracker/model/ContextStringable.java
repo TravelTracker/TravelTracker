@@ -1,6 +1,5 @@
 package cmput301w15t07.TravelTracker.model;
 
-import cmput301w15t07.TravelTracker.R;
 import android.content.Context;
 
 /*
@@ -25,39 +24,12 @@ import android.content.Context;
  */
 
 /**
- * Model enum for User Role.
+ * Interface for enums which should have their string
+ * representations in strings.xml.
  * 
- * @author colp,
- *         therabidsquirel
+ * @author therabidsquirel
  *
  */
-public enum UserRole implements ContextStringable {
-	CLAIMANT(R.string.enum_user_role_claimant),
-	APPROVER(R.string.enum_user_role_approver);
-	
-    private final int id;
-    
-    private UserRole(int id) {
-        this.id = id;
-    }
-    
-    public String getString(Context context) {
-        return context.getString(id);
-    }
-	
-	/**
-	 * This method returns the UserRole instance corresponding to the passed string.
-	 * @param text, context
-	 * @return UserRole
-	 */
-	public static UserRole fromString(String text, Context context) {
-	    if (text != null) {
-	      for (UserRole i : UserRole.values()) {
-	        if (text.equalsIgnoreCase(i.getString(context))) {
-	          return i;
-	        }
-	      }
-	    }
-	    return null;
-	 }
+public interface ContextStringable {
+    public String getString(Context context);
 }

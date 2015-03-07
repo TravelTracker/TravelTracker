@@ -40,10 +40,10 @@ public interface DataSource {
 	public void addItem(Claim claim, ResultCallback<Item> callback);
 	public void addTag(User user, ResultCallback<Tag> callback);
 
-	public void deleteUser(UUID id, ResultCallback<User> callback);
-	public void deleteClaim(UUID id, ResultCallback<Claim> callback);
-	public void deleteItem(UUID id, ResultCallback<Item> callback);
-	public void deleteTag(UUID id, ResultCallback<Tag> callback);
+	public void deleteUser(UUID id, ResultCallback<Void> callback);
+	public void deleteClaim(UUID id, ResultCallback<Void> callback);
+	public void deleteItem(UUID id, ResultCallback<Void> callback);
+	public void deleteTag(UUID id, ResultCallback<Void> callback);
 
 	public void getUser(UUID id, ResultCallback<User> callback);
 	public void getClaim(UUID id, ResultCallback<Claim> callback);

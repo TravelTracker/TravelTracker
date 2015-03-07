@@ -46,3 +46,7 @@ script:
 
 notifications:
   slack: cmput301w15t07:uuNgHWzxTHVkpkrfmUfqZPov
+
+branches:
+  only:
+    - master

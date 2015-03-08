@@ -22,6 +22,7 @@ package cmput301w15t07.TravelTracker;
  */
 
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import android.app.Application;
 
@@ -42,5 +43,6 @@ public class TravelTrackerApp extends Application implements DataSourceSingleton
     @Override
     public void onCreate() {
     	ds = new InMemoryDataSource();
+    	//ds = new GeneratedDataSource(); // Use to generate data at user creation
     }
 }

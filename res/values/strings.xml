@@ -54,13 +54,14 @@
 
     <!-- Strings used in ExpenseItemsListActivity -->
         <string name="expense_items_list_label">Expense Items List</string>
-    
+     
+    <!-- Strings used in ExpenseItemsListItemView -->
+        <!-- Used in layout -->
+        <string name="expense_item_info_error">FIELD NOT FILLED</string>
+    	
     <!-- Strings used in ExpenseItemInfoActivity -->
         <string name="expense_item_info_label">Expense Item Info</string>
     
-        <!-- Used in layout -->
-        <string name="expense_item_info_error">FIELD NOT FILLED</string>
-	
         <!-- Used in menu -->
         <string name="expense_item_info_delete_item">Delete Expense Item</string>
 

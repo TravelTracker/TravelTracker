@@ -29,7 +29,7 @@ import java.util.UUID;
  * Model object for individual expense Items made by Users acting as Claimants.
  * Expense Items belong to a Claim.
  * 
- * @author kdbanman
+ * @author kdbanman, braedy
  *
  */
 public class Item extends Document {
@@ -85,7 +85,7 @@ public class Item extends Document {
 	public Float getAmount() {
 		return amount;
 	}
-	public void setAmmunt(Float amount) {
+	public void setAmount(Float amount) {
 		this.amount = amount;
 		this.updateObservers(this);
 	}

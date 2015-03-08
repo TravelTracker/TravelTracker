@@ -1,104 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/claimInfoClaimantNameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/claim_info_claimant_name" />
-
-    <Button
-        android:id="@+id/claimInfoStartDateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/claimInfoClaimantNameTextView"
-        android:text="@string/date_format" />
-
-    <TextView
-        android:id="@+id/claimInfoDateDividerTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/claimInfoStartDateButton"
-        android:layout_alignBottom="@+id/claimInfoStartDateButton"
-        android:layout_toEndOf="@+id/claimInfoStartDateButton"
-        android:text="@string/claim_info_date_to" />
-
-    <Button
-        android:id="@+id/claimInfoEndDateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/claimInfoDateDividerTextView"
-        android:layout_alignBottom="@+id/claimInfoDateDividerTextView"
-        android:layout_toEndOf="@+id/claimInfoDateDividerTextView"
-        android:text="@string/date_format" />
-
-    <TextView
-        android:id="@+id/claimInfoClaimStatusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/claimInfoStartDateButton"
-        android:text="@string/claim_info_claim_status" />
-
-    <ListView
-        android:id="@+id/claimInfoDestinationsListView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/claimInfoTagsTextView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/claimInfoClaimStatusTextView" >
+        android:orientation="vertical" >
 
-    </ListView>
+        <TextView
+            android:id="@+id/claimInfoClaimantNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_claimant_name" />
 
-    <TextView
-        android:id="@+id/claimInfoTagsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="250dp"
-        android:text="@string/claim_info_tags_list" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/claimInfoSeparatorTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/claimInfoTagsTextView" />
+            <Button
+                android:id="@+id/claimInfoStartDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_format" />
 
-    <ListView
-        android:id="@+id/claimInfoCurrencyTotalsListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/claimInfoViewItemsButton"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/claimInfoSeparatorTextView" >
+            <TextView
+                android:id="@+id/claimInfoDateSeparatorTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/claim_info_date_to" />
 
-    </ListView>
+            <Button
+                android:id="@+id/claimInfoEndDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_format" />
 
-    <TextView
-        android:id="@+id/claimInfoItemsCountTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="98dp"
-        android:text="@string/claim_info_items_count" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/claimInfoViewItemsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/claimInfoItemsCountTextView"
-        android:layout_alignBottom="@+id/claimInfoItemsCountTextView"
-        android:layout_toEndOf="@+id/claimInfoItemsCountTextView"
-        android:text="@string/claim_info_view_items" />
+        <TextView
+            android:id="@+id/claimInfoStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_claim_status" />
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/claimInfoDestinationsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <LinearLayout
+            android:id="@+id/claimInfoTagsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <Space
+            android:id="@+id/claimInfoTagsSpace"
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/claimInfoCurrencyTotalsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_currency_totals" />
+
+        <Button
+            android:id="@+id/claimInfoViewItemsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_view_items" />
+
+        <TextView
+            android:id="@+id/claimInfoLastApproverTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_last_approver" />
+
+        <LinearLayout
+            android:id="@+id/claimInfoCommentsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Button
+            android:id="@+id/claimInfoClaimSubmitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_claim_submit_button" />
+
+        <LinearLayout
+            android:id="@+id/claimInfoApproverButtonsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/claimInfoClaimReturnButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.50"
+                android:text="@string/claim_info_claim_return_button" />
+
+            <Button
+                android:id="@+id/claimInfoClaimApproveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.50"
+                android:text="@string/claim_info_claim_approve_button" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/claimInfoCommentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/claim_info_comment_prompt"
+            android:inputType="textMultiLine" >
+
+        </EditText>
+
+    </LinearLayout>
+
+</ScrollView>

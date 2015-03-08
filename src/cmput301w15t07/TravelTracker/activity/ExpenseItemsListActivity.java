@@ -21,15 +21,21 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.model.UserData;
 import android.app.Activity;
 
 /**
  * Activity for listing all expense Items belonging to a particular Claim.
  * Possible as a Claimant or an Approver.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class ExpenseItemsListActivity extends Activity {
-
+    /** String used to retrieve user data from intent */
+    public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
+    
+    /** Data about the logged-in user. */
+    private UserData userData;
 }

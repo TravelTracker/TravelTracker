@@ -32,13 +32,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
 import cmput301w15t07.TravelTracker.activity.LoginActivity;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.testutils.MockTravelTrackerApp;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 
 /**
@@ -66,7 +66,7 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 	protected void setUp() throws Exception {
 	    super.setUp();
 		
-		TravelTrackerApp app = new TravelTrackerApp();
+		MockTravelTrackerApp app = new MockTravelTrackerApp();
 		setApplication(app);
 		app.onCreate();
 		

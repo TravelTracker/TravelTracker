@@ -1,4 +1,4 @@
-package cmput301w15t07.TravelTracker;
+package cmput301w15t07.TravelTracker.testutils;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -21,26 +21,40 @@ package cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
+import android.test.mock.MockApplication;
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
-import android.app.Application;
 
 /**
- * Main application container for TravelTracker.  Contains the observable
- * DataSource model server.
+ * A mock application for testing TravelTracker which allows a custom
+ * DataSource to be injected.
  * 
- * @author kdbanman
+ * @author colp
  *
  */
-public class TravelTrackerApp extends Application implements DataSourceSingleton {
+public class MockTravelTrackerApp extends MockApplication implements
+        DataSourceSingleton {
+	
     private DataSource ds;
     
     public DataSource getDataSource() {
     	return ds;
     }
     
+    /**
+     * Create the app using the default InMemoryDataSource.
+     */
     @Override
     public void onCreate() {
     	ds = new InMemoryDataSource();
+    }
+    
+    /**
+     * Create the app with the given DataSource.
+     * @param ds The DataSource to use.
+     */
+    public void onCreate(DataSource ds) {
+    	this.ds = ds;
     }
 }

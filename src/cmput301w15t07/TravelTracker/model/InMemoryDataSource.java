@@ -26,7 +26,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	
 	@Override
 	public void addUser(ResultCallback<User> callback) {
-		User user = new Claimant(UUID.randomUUID());
+		User user = new User(UUID.randomUUID());
 		user.addObserver(this);
 		
 		users.put(user.getUUID(), user);

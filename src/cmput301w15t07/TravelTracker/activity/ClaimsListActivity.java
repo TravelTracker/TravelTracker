@@ -21,12 +21,11 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.UserRole;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.UserData;
 
 
 /**
@@ -36,17 +35,11 @@ import android.view.Menu;
  *
  */
 public class ClaimsListActivity extends Activity {
-	/** String used to retrieve user name from intent */
-	public static final String USER_NAME = "cmput301w15t07.TravelTracker.userName";
+	/** String used to retrieve user data from intent */
+	public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
 	
-	/** String used to retrieve user role from intent */
-	public static final String USER_ROLE = "cmput301w15t07.TravelTracker.userRole";
-	
-	/** The name of the user */
-	private String userName;
-	
-	/** The role of the user */
-	private UserRole userRole;
+	/** Data about the logged-in user. */
+	private UserData userData;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,7 +55,6 @@ public class ClaimsListActivity extends Activity {
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
-        userName = bundle.getString(USER_NAME);
-        userRole = (UserRole) bundle.getSerializable(USER_ROLE);
+        userData = (UserData) bundle.getSerializable(USER_DATA);
 	}
 }

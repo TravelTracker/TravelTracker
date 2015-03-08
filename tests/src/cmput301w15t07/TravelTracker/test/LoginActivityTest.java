@@ -22,6 +22,8 @@ package cmput301w15t07.TravelTracker.test;
  */
 
 
+import java.util.UUID;
+
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -30,9 +32,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
 import cmput301w15t07.TravelTracker.activity.LoginActivity;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.User;
+import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 
 /**
  * Test for entry activity - Logging in.
@@ -43,9 +50,7 @@ import cmput301w15t07.TravelTracker.model.UserRole;
  *
  */
 public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
-	/** Timeout time for starting activities */
-	static final long timeOut = 5000;
-	
+	DataSource dataSource;
 	Instrumentation instrumentation;
 	Activity activity;
 	EditText nameEditText;
@@ -55,6 +60,12 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 	
 	public LoginActivityTest() {
 		super(LoginActivity.class);
+		
+		TravelTrackerApp app = new TravelTrackerApp();
+		setApplication(app);
+		app.onCreate();
+		
+		dataSource = app.getDataSource();
 	}
 	
 	@Override
@@ -80,10 +91,8 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 		assertEquals("No activity should start", null, newIntent);
 	}
 	
-	public void testLoginClaimant() {
+	public void testLoginStartsActivity() {
 		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
-		String name = null;
-		UserRole role = null;
 
 		assertNotNull("Activity should start", newIntent);
 		
@@ -91,31 +100,50 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 		assertEquals("New activity should list claims",
 					 "cmput301w15t07.TravelTracker.activity.ClaimsListActivity",
 					 activityClass);
+	}
+	
+	public void testLoginName() {
+		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
+		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		name = newIntent.getStringExtra(ClaimsListActivity.USER_NAME);
-		role = (UserRole) newIntent.getSerializableExtra(ClaimsListActivity.USER_ROLE);
+		assertEquals("Name should match", "Foobar", userData.getName());
+	}
+	
+	public void testLoginClaimant() {
+		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
+		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		assertEquals("Name should match", "Foobar", name);
-		assertEquals("Role should be claimant", UserRole.CLAIMANT, role);
+		assertEquals("Role should be claimant", UserRole.CLAIMANT, userData.getRole());
 	}
 	
 	public void testLoginApprover() {
 		Intent newIntent = loginWithDetails("Foobar", UserRole.APPROVER);
-		String name = null;
-		UserRole role = null;
-
-		assertNotNull("Activity should start", newIntent);
+		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		String activityClass = newIntent.resolveActivity(activity.getPackageManager()).getClassName();
-		assertEquals("New activity should list claims",
-					 "cmput301w15t07.TravelTracker.activity.ClaimsListActivity",
-					 activityClass);
+		assertEquals("Role should be claimant", UserRole.APPROVER, userData.getRole());
+	}
+	
+	public void testLoginNewUser() throws InterruptedException {
+		Intent newIntent = loginWithDetails("New user", UserRole.CLAIMANT);
+		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		name = newIntent.getStringExtra(ClaimsListActivity.USER_NAME);
-		role = (UserRole) newIntent.getSerializableExtra(ClaimsListActivity.USER_ROLE);
+		SynchronizedResultCallback<User> callback = new SynchronizedResultCallback<User>();
+		dataSource.getUser(userData.getUUID(), callback);
 		
-		assertEquals("Name should match", "Foobar", name);
-		assertEquals("Role should be claimant", UserRole.APPROVER, role);
+		assertTrue("User should exist", callback.waitForResult());
+	}
+	
+	public void testLoginExistingUser() {
+		Intent newIntent = loginWithDetails("Existing user", UserRole.CLAIMANT);
+		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
+		UUID originalID = userData.getUUID();
+		
+		// Login again
+		newIntent = loginWithDetails("Existing user", UserRole.CLAIMANT);
+		userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
+		UUID newID = userData.getUUID();
+		
+		assertEquals("Same user should be returned", originalID, newID);
 	}
 
 	/**

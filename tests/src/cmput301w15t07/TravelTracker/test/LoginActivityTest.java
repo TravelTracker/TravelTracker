@@ -60,17 +60,17 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 	
 	public LoginActivityTest() {
 		super(LoginActivity.class);
+	}
+	
+	@Override
+	protected void setUp() throws Exception {
+	    super.setUp();
 		
 		TravelTrackerApp app = new TravelTrackerApp();
 		setApplication(app);
 		app.onCreate();
 		
 		dataSource = app.getDataSource();
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-	    super.setUp();
 	    
 	    instrumentation = getInstrumentation();
 	    

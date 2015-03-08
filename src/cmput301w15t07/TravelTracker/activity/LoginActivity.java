@@ -148,15 +148,15 @@ public class LoginActivity extends Activity {
 				}
 				
 				@Override
-				public void onError() {
-					Toast.makeText(LoginActivity.this, "Failed to create a new user. Please try again.", Toast.LENGTH_LONG).show();
+				public void onError(String message) {
+					Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
 				}
 			});
         }
 
 		@Override
-        public void onError() {
-	        Toast.makeText(LoginActivity.this, "Failed to retrieve user list. Please try again.", Toast.LENGTH_LONG).show();
+        public void onError(String message) {
+	        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
         }
 	}
 }

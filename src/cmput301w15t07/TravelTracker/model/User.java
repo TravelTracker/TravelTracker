@@ -1,5 +1,6 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /*
@@ -29,8 +30,9 @@ import java.util.UUID;
  * @author kdbanman
  *
  */
-public abstract class User extends Document {
+public class User extends Document {
 	private String userName;
+	private ArrayList<Tag> tags;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -51,4 +53,13 @@ public abstract class User extends Document {
 		updateObservers(this);
 	}
 	
+
+	public ArrayList<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(ArrayList<Tag> tags) {
+		this.tags = tags;
+		this.updateObservers(this);
+	}
 }

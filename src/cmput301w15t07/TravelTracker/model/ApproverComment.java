@@ -14,17 +14,17 @@ import java.util.Date;
  *
  */
 public class ApproverComment {
-	private Approver approver;
+	private User approver;
 	private String comment;
 	private Date date;
 	
-	public ApproverComment(Approver approver, String comment, Date date) {
+	public ApproverComment(User approver, String comment, Date date) {
 		this.approver = approver;
 		this.comment = comment;
 		this.date = date;
 	}
 	
-	public Approver getApprover() {
+	public User getApprover() {
 		return approver;
 	}
 

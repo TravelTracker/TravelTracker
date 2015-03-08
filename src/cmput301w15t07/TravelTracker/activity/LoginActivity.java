@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.model.DataSource;
@@ -93,7 +94,7 @@ public class LoginActivity extends Activity {
 		}
 		
 		// Try to get the user's ID to login
-		TravelTrackerApp app = (TravelTrackerApp) getApplication();
+		DataSourceSingleton app = (DataSourceSingleton) getApplication();
 		DataSource source = app.getDataSource();
 		source.getAllUsers(new LoginResultCallback(userName, role));
 	}
@@ -135,7 +136,7 @@ public class LoginActivity extends Activity {
 			}
 			
 			// No user found; create a new one
-			TravelTrackerApp app = (TravelTrackerApp) getApplication();
+			DataSourceSingleton app = (DataSourceSingleton) getApplication();
 			DataSource source = app.getDataSource();
 			source.addUser(new ResultCallback<User>() {
 				@Override

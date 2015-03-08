@@ -22,25 +22,19 @@ package cmput301w15t07.TravelTracker;
  */
 
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
-import android.app.Application;
 
 /**
- * Main application container for TravelTracker.  Contains the observable
- * DataSource model server.
+ * A common interface for MockApplication and the actual Application to supply
+ * a singleton DataSource to activities.
  * 
  * @author kdbanman
  *
  */
-public class TravelTrackerApp extends Application implements DataSourceSingleton {
-    private DataSource ds;
-    
-    public DataSource getDataSource() {
-    	return ds;
-    }
-    
-    @Override
-    public void onCreate() {
-    	ds = new InMemoryDataSource();
-    }
+public interface DataSourceSingleton {
+
+	/**
+	 * 
+	 * @return The single instance of DataSource for the application.
+	 */
+	public DataSource getDataSource();
 }

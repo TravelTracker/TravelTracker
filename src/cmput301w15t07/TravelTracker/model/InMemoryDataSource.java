@@ -205,7 +205,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	 * Delete a User internally, cleaning up any orphan Documents.
 	 * @param id The User's UUID.
 	 */
-	private void internalDeleteUser(UUID id) {
+	protected void internalDeleteUser(UUID id) {
 		// Get all child Claims
 		ArrayList<UUID> claimsToRemove = new ArrayList<UUID>();
 		for (Entry<UUID, Claim> entry : claims.entrySet()) {
@@ -244,7 +244,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	 * Delete a Claim internally, cleaning up any orphan Documents.
 	 * @param id The Claim's UUID.
 	 */
-	private void internalDeleteClaim(UUID id) {
+	protected void internalDeleteClaim(UUID id) {
 		// Get all child Claims
 		ArrayList<UUID> itemsToRemove = new ArrayList<UUID>();
 		for (Entry<UUID, Item> entry : items.entrySet()) {
@@ -268,7 +268,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	 * Delete an Item internally.
 	 * @param id The Item's ID.
 	 */
-	private void internalDeleteItem(UUID id) {
+	protected void internalDeleteItem(UUID id) {
 		items.remove(id);
 	}
 	
@@ -276,7 +276,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	 * Delete a Tag internally.
 	 * @param id The Tag's ID.
 	 */
-	private void internalDeleteTag(UUID id) {
+	protected void internalDeleteTag(UUID id) {
 		tags.remove(id);
 	}
 }

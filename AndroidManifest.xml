@@ -11,7 +11,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name="cmput301w15t07.TravelTracker.TravelTrackerApp" >
         
         <activity
             android:name=".activity.LoginActivity" >

@@ -56,7 +56,9 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		// Want 100 random claims
 		for (int i = 0; i < 100; ++i) {
 			// Create claim and set data
-			Claim claim = new Claim(user.getUUID());
+			Claim claim = new Claim(UUID.randomUUID());
+			claim.setUser(user.getUUID());
+			
 			claim.setName(getRandomString(r, 8, 16)); // Random name
 			claim.setStartDate(new Date()); // The current time
 			claim.setEndDate(new Date()); // The current time
@@ -72,7 +74,9 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			// With 10 items each
 			for (int j = 0; j < 10; ++j) {
 				
-				Item item = new Item(claim.getUUID());
+				Item item = new Item(UUID.randomUUID());
+				item.setClaim(claim.getUUID());
+				
 				item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
 				
 				// Set currency

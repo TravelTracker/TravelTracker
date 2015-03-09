@@ -23,8 +23,11 @@ package cmput301w15t07.TravelTracker.activity;
 
 import io.searchbox.indices.aliases.AddAliasMapping;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Currency;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Context;
@@ -41,13 +44,14 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.Observer;
 
 
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
  * 
- * @author kdbanman, colp
+ * @author kdbanman, colp, thornhil
  *
  */
 public class ClaimsListActivity extends Activity implements Observer<InMemoryDataSource> {
@@ -73,6 +77,9 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
+        
+        //TODO get the data based on user
+        //TODO add menu items
 	}
 	
 	@Override
@@ -115,19 +122,48 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 			TextView date = (TextView) workingView.findViewById(R.id.claimsListRowItemDate);
 			LinearLayout destinationContainer = (LinearLayout) workingView.findViewById(R.id.claimsListDestinationContainer);
 			LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
+			Claim claim = getItem(position);
 			
+			name.setText(claim.getName());
+			date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
 			
+			//TODO add a container in xml with the sole purpose of dynamic additions
+			//Then remove all children from that. Currently we will get into trouble when
+			//views are reused
+			
+			addTotals(claim, totalsContainer);
+			addDestinations(claim, destinationContainer);
 			
 			return workingView;
 		}
 		
-		public void addTotal(Float amt,Currency currency){
-			//TODO implement the dynamic addition of total textviews
+		
+		private void addTotals(Claim claim, ViewGroup parent){
+			for (String total : ClaimUtilities.getTotals(claim)){
+				addTotal(total, parent);
+			}
+			
 		}
 		
-		public void addDestination(Destination dest){
-			//TODO implement the dynamic addition of destination textviews
+		private void addDestinations(Claim claim, ViewGroup parent){
+			for (Destination d : claim.getDestinations()){
+				addDestination(d, parent);
+			}
 		}
+		
+		private void addTotal(String total, ViewGroup parent){
+			TextView dynamicTotal = new TextView(getContext());
+			dynamicTotal.setText(total);
+			parent.addView(dynamicTotal);	
+		}
+		
+		private void addDestination(Destination dest, ViewGroup parent){
+			TextView dynamicDestination = new TextView(getContext());
+			dynamicDestination.setText(dest.getLocation());
+			parent.addView(dynamicDestination);
+		}
+		
+		
 	}
 
 }

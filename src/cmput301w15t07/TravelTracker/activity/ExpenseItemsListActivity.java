@@ -21,6 +21,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.UUID;
+
 import cmput301w15t07.TravelTracker.model.UserData;
 import android.app.Activity;
 
@@ -36,6 +38,12 @@ public class ExpenseItemsListActivity extends Activity {
     /** String used to retrieve user data from intent */
     public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
     
+    /** String used to retrieve claim UUID from intent */
+    public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
+    
     /** Data about the logged-in user. */
     private UserData userData;
+    
+    /** UUID of the claim. */
+    private UUID claimID;
 }

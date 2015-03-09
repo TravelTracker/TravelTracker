@@ -158,10 +158,8 @@ public class ClaimInfoActivity extends Activity {
     public void populateFields(Claim claim) {
     	setContentView(R.layout.claim_info_activity);
     	
-        // TODO Get claim from bundle so its info can be used to populate the activity
-        
         appendNameToTitle();
-        populateClaimInfo();
+        populateClaimInfo(claim);
         
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -273,7 +271,7 @@ public class ClaimInfoActivity extends Activity {
         setTitle(getTitle() + " - " + userData.getName());
     }
 
-    public void populateClaimInfo() {
+    public void populateClaimInfo(Claim claim) {
         // TODO Auto-generated method stub
         
     }
@@ -282,6 +280,7 @@ public class ClaimInfoActivity extends Activity {
         // Start next activity
         Intent intent = new Intent(this, ExpenseItemsListActivity.class);
         intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
         startActivity(intent);
     }
 

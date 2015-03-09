@@ -49,32 +49,32 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		User user = new User(UUID.randomUUID());
 		user.addObserver(this);
 		
-		users.put(user.getUUID(), user);
+		internalAddUser(user);
 
 		Random r = new Random();
 		
 		// Want 100 random claims
 		for (int i = 0; i < 100; ++i) {
 			// Create claim and set data
-			Claim c = new Claim(UUID.randomUUID());
-			c.setName(getRandomString(r, 8, 16)); // Random name
-			c.setStartDate(new Date()); // The current time
-			c.setEndDate(new Date()); // The current time
+			Claim claim = new Claim(UUID.randomUUID());
+			claim.setName(getRandomString(r, 8, 16)); // Random name
+			claim.setStartDate(new Date()); // The current time
+			claim.setEndDate(new Date()); // The current time
 			
 			// Set status
-			c.setStatus(
+			claim.setStatus(
 					Status.values()[r.nextInt(Status.values().length)]);
 			
 			// Could set tags here
 			
-			claims.put(c.getUUID(), c);
+			internalAddClaim(claim);
 			
 			// With 10 items each
 			for (int j = 0; j < 10; ++j) {
 				
 				Item item = new Item(UUID.randomUUID());
 				
-				item.setClaim(c.getUUID()); // Set parent
+				item.setClaim(claim.getUUID()); // Set parent
 				item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
 				
 				// Set currency
@@ -106,7 +106,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				
 				// Set receipt, can't generate a receipt right now
 				//item.setReceipt(receipt);
-				items.put(item.getUUID(), item);
+				internalAddItem(item);
 			}
 		}
 		

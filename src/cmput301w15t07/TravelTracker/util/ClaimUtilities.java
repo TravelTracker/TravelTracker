@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -26,11 +27,11 @@ public class ClaimUtilities {
 	 * @param claim
 	 * @return total strings
 	 */
-	public static ArrayList<String> getTotals(Claim claim){
+	public static ArrayList<String> getTotals(Collection<Item> items){
 		Hashtable<String, Float> totals = new Hashtable<String, Float>();
 		ArrayList<String> out = new ArrayList<String>();
 		
-		for (Item e : claim.getItems()){
+		for (Item e : items){
 			String key = e.getCurrency().toString();
 			Float newAmt = e.getAmount();
 			if (totals.containsKey(key)){

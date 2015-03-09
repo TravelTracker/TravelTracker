@@ -21,30 +21,26 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import io.searchbox.indices.aliases.AddAliasMapping;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Currency;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Set;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.Application;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.model.Claim;
-import cmput301w15t07.TravelTracker.model.Destination;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.util.ClaimUtilities;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.Observer;
 
 
@@ -58,6 +54,10 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 	/** String used to retrieve user data from intent */
 	public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
 	
+	//Class Fields
+	private ClaimAdapter adapter;
+	private DataSource ds;
+	private HashMap<Claim, Collection<Item>> dataTable;
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
@@ -77,8 +77,16 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
+        ds = ((TravelTrackerApp) getApplication()).getDataSource();
+        
+        adapter = new ClaimAdapter(this);
+        ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
+        listView.setAdapter(adapter);
+        updateUI();
         
         //TODO get the data based on user
+        
+        
         //TODO add menu items
 	}
 	
@@ -88,82 +96,61 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 	}
 	
 	public void updateUI(){
-		//TODO do all UI tasks here
+		//TODO start a spinner here
+		ds.getAllClaims(new claimsRetrievedListener(adapter));
 	}
 	
-	private class ClaimAdapter extends ArrayAdapter<Claim>{
-
-		public ClaimAdapter(Context context) {
-			super(context, R.layout.claims_list_row_item);
-		}
+	private class claimsRetrievedListener implements ResultCallback<Collection<Claim>> {
 		
-		/**
-		 * This function rebuilds the list with the passed claims
-		 * @param claims
-		 */
-		public void rebuildList(Claim [] claims){
-			//possible performance bottleneck
-			clear();
-			addAll(claims);
+		private ClaimAdapter adapter;
+		
+		public claimsRetrievedListener(ClaimAdapter adapter) {
+			this.adapter = adapter;
 		}
 		
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View workingView;
-			if (convertView != null){
-				workingView = convertView;
-			} else {
-				LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				workingView = inflator.inflate(R.layout.claims_list_row_item, parent, false);
+		public void onResult(Collection<Claim> result) {
+			for (Claim c : result){
+				dataTable.put(c, null);
 			}
-			
-			// Get all fields 
-			TextView name = (TextView) workingView.findViewById(R.id.claimsListRowItemName);
-			TextView date = (TextView) workingView.findViewById(R.id.claimsListRowItemDate);
-			LinearLayout destinationContainer = (LinearLayout) workingView.findViewById(R.id.claimsListDestinationContainer);
-			LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
-			Claim claim = getItem(position);
-			
-			name.setText(claim.getName());
-			date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
-			
-			//TODO add a container in xml with the sole purpose of dynamic additions
-			//Then remove all children from that. Currently we will get into trouble when
-			//views are reused
-			
-			addTotals(claim, totalsContainer);
-			addDestinations(claim, destinationContainer);
-			
-			return workingView;
+			ds.getAllItems(new itemsRetrievedListener(adapter));
 		}
-		
-		
-		private void addTotals(Claim claim, ViewGroup parent){
-			for (String total : ClaimUtilities.getTotals(claim)){
-				addTotal(total, parent);
-			}
+
+		@Override
+		public void onError(String message) {
+			// TODO raise a toast
 			
 		}
-		
-		private void addDestinations(Claim claim, ViewGroup parent){
-			for (Destination d : claim.getDestinations()){
-				addDestination(d, parent);
-			}
-		}
-		
-		private void addTotal(String total, ViewGroup parent){
-			TextView dynamicTotal = new TextView(getContext());
-			dynamicTotal.setText(total);
-			parent.addView(dynamicTotal);	
-		}
-		
-		private void addDestination(Destination dest, ViewGroup parent){
-			TextView dynamicDestination = new TextView(getContext());
-			dynamicDestination.setText(dest.getLocation());
-			parent.addView(dynamicDestination);
-		}
-		
 		
 	}
+	
+	private class itemsRetrievedListener implements ResultCallback<Collection<Item>>{
+		
+		private ClaimAdapter adapter;
+		
+		public itemsRetrievedListener(ClaimAdapter adapter) {
+			this.adapter = adapter;
+		}
+		
+		@Override
+		public void onResult(Collection<Item> result) {
+			for (Claim c : dataTable.keySet()){
+				if (result.iterator().next().getClaim().equals(c)){
+					dataTable.put(c, result);
+					break;
+				}
+			}
+			
+			adapter.rebuildList(dataTable);
+			
+		}
 
+		@Override
+		public void onError(String message) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 }

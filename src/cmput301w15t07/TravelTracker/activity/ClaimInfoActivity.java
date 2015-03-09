@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.UUID;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -41,44 +42,34 @@ import android.widget.TextView;
  * an Approver.
  * 
  * @author kdbanman,
- *         therabidsquirel
+ *         therabidsquirel,
+ *         colp
  *
  */
 public class ClaimInfoActivity extends Activity {
     /** String used to retrieve user data from intent */
     public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
     
+    /** String used to retrieve claim UUID from intent */
+    public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
+    
     /** Data about the logged-in user. */
     private UserData userData;
+    
+    /** UUID of the claim. */
+    private UUID claimID;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claim_info_menu, menu);
         
-        return true;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.claim_info_activity);
-        
-        // Retrieve user info from bundle
-        Bundle bundle = getIntent().getExtras();
-        userData = (UserData) bundle.getSerializable(USER_DATA);
-        
-        // TODO Get claim from bundle so its info can be used to populate the activity
-        
-        appendNameToTitle();
-        populateClaimInfo();
-        
         // Menu items
-        MenuItem addDestinationMenuItem = (MenuItem) findViewById(R.id.claim_info_add_destination);
-        MenuItem addItemMenuItem = (MenuItem) findViewById(R.id.claim_info_add_item);
-        MenuItem deleteClaimMenuItem = (MenuItem) findViewById(R.id.claim_info_delete_claim);
+        MenuItem addDestinationMenuItem = menu.findItem(R.id.claim_info_add_destination);
+        MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
+        MenuItem deleteClaimMenuItem = menu.findItem(R.id.claim_info_delete_claim);
         
         // Attach sign out listener to sign out menu item
-        MenuItem signOutMenuItem = (MenuItem) findViewById(R.id.claim_info_sign_out);
+        MenuItem signOutMenuItem = menu.findItem(R.id.claim_info_sign_out);
         signOutMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -87,32 +78,6 @@ public class ClaimInfoActivity extends Activity {
             }
         });
         
-        // Claim attributes
-        TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
-        TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
-
-        // Tags list
-        LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
-        Space tagsSpace = (Space) findViewById(R.id.claimInfoTagsSpace);
-
-        // Claimant claim modifiers
-        Button submitClaimButton = (Button) findViewById(R.id.claimInfoClaimSubmitButton);
-        
-        // Approver claim modifiers
-        LinearLayout approverButtonsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverButtonsLinearLayout);
-        Button returnClaimButton = (Button) findViewById(R.id.claimInfoClaimReturnButton);
-        Button approveClaimButton = (Button) findViewById(R.id.claimInfoClaimApproveButton);
-        EditText commentEditText = (EditText) findViewById(R.id.claimInfoCommentEditText);
-        
-        // Attach view items listener to view items button
-        Button viewItemsButton = (Button) findViewById(R.id.claimInfoViewItemsButton);
-        viewItemsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewItems();
-            }
-        });
-
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
             // Attach add destination listener to add destination menu item
             addDestinationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -140,7 +105,58 @@ public class ClaimInfoActivity extends Activity {
                     return false;
                 }
             });
+            
+        } else if (userData.getRole().equals(UserRole.APPROVER)) {
+            // Menu items an approver doesn't need to see or have access to
+            addDestinationMenuItem.setEnabled(false).setVisible(false);
+            addItemMenuItem.setEnabled(false).setVisible(false);
+            deleteClaimMenuItem.setEnabled(false).setVisible(false);
+        }
+        
+        return true;
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.claim_info_activity);
+        
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
+        
+        // TODO Get claim from bundle so its info can be used to populate the activity
+        
+        appendNameToTitle();
+        populateClaimInfo();
+        
+        // Claim attributes
+        TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
+        TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
+
+        // Tags list
+        LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
+        Space tagsSpace = (Space) findViewById(R.id.claimInfoTagsSpace);
+
+        // Claimant claim modifiers
+        Button submitClaimButton = (Button) findViewById(R.id.claimInfoClaimSubmitButton);
+        
+        // Approver claim modifiers
+        LinearLayout approverButtonsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverButtonsLinearLayout);
+        Button returnClaimButton = (Button) findViewById(R.id.claimInfoClaimReturnButton);
+        Button approveClaimButton = (Button) findViewById(R.id.claimInfoClaimApproveButton);
+        EditText commentEditText = (EditText) findViewById(R.id.claimInfoCommentEditText);
+        
+        // Attach view items listener to view items button
+        Button viewItemsButton = (Button) findViewById(R.id.claimInfoViewItemsButton);
+        viewItemsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewItems();
+            }
+        });
+    	
+        if (userData.getRole().equals(UserRole.CLAIMANT)) {
             // Attach edit date listener to start date button
             Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
             startDateButton.setOnClickListener(new View.OnClickListener() {
@@ -191,11 +207,6 @@ public class ClaimInfoActivity extends Activity {
                     approveClaim();
                 }
             });
-
-            // Menu items an approver doesn't need to see or have access to
-            addDestinationMenuItem.setEnabled(false).setVisible(false);
-            addItemMenuItem.setEnabled(false).setVisible(false);
-            deleteClaimMenuItem.setEnabled(false).setVisible(false);
             
             // Views an approver doesn't need to see or have access to
             statusTextView.setVisibility(View.INVISIBLE);
@@ -203,7 +214,6 @@ public class ClaimInfoActivity extends Activity {
             tagsSpace.setVisibility(View.INVISIBLE);
             submitClaimButton.setVisibility(View.INVISIBLE);
         }
-        
     }
 
     public void signOut() {

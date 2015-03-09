@@ -97,4 +97,11 @@
         <string name="enum_user_role_claimant">Claimant</string>
         <string name="enum_user_role_approver">Approver</string>
 
+    <!-- used in ExpenseItemInfoActivity -->
+    <string name= "expense_item_info_staus">ItemStatus</string>
+    <string name= "expense_item_info_date">Expense Date</string>
+    <string name= "expense_item_info_amount">Amount</string>
+    <string name= "expense_item_info_category">Category</string>
+    <string name= "expense_item_info_description">Description</string>
+
 </resources>

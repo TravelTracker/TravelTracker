@@ -40,10 +40,10 @@ import cmput301w15t07.TravelTracker.util.Observer;
  */
 public class InMemoryDataSource extends Observable<InMemoryDataSource> implements DataSource, Observer<Document> {
 
-	protected HashMap<UUID, Claim> claims;
-	protected HashMap<UUID, User> users;
-	protected HashMap<UUID, Item> items;
-	protected HashMap<UUID, Tag> tags;
+	private HashMap<UUID, Claim> claims;
+	private HashMap<UUID, User> users;
+	private HashMap<UUID, Item> items;
+	private HashMap<UUID, Tag> tags;
 
 	public InMemoryDataSource() {
 		claims = new HashMap<UUID, Claim>();
@@ -57,7 +57,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		User user = new User(UUID.randomUUID());
 		user.addObserver(this);
 		
-		users.put(user.getUUID(), user);
+		internalAddUser(user);
 		
 		callback.onResult(user);
 	}
@@ -72,7 +72,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		}
 		
 		claim.setUser(user.getUUID());
-		claims.put(claim.getUUID(), claim);
+		internalAddClaim(claim);
 		
 		callback.onResult(claim);
 	}
@@ -82,7 +82,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		Item item = new Item(UUID.randomUUID());
 		
 		item.setClaim(claim.getUUID());
-		items.put(item.getUUID(), item);
+		internalAddItem(item);
 		
 		if (!claims.containsValue(claim)) {
 			callback.onError("Claim not found.");
@@ -97,7 +97,7 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		Tag tag = new Tag(UUID.randomUUID());
 		
 		tag.setUser(user.getUUID());
-		tags.put(tag.getUUID(), tag);
+		internalAddTag(tag);
 		
 		if (!users.containsValue(user)) {
 			callback.onError("User not found.");
@@ -228,6 +228,14 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	public void update(Document observable) {
 		updateObservers(this);
 	}
+    
+    /**
+     * Add a User internally.
+     * @param u The User to add.
+     */
+    protected void internalAddUser(User u) {
+        users.put(u.getUUID(), u);
+    }
 	
 	/**
 	 * Delete a User internally, cleaning up any orphan Documents.
@@ -267,6 +275,13 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		users.remove(id);
 	}
 
+    /**
+     * Add a Claim internally.
+     * @param c The Claim to add.
+     */
+    protected void internalAddClaim(Claim c) {
+        claims.put(c.getUUID(), c);
+    }
 	
 	/**
 	 * Delete a Claim internally, cleaning up any orphan Documents.
@@ -291,6 +306,14 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 		// Finally, delete the Claim
 		claims.remove(id);
 	}
+    
+    /**
+     * Add an Item internally. 
+     * @param i The Item to add.
+     */
+    protected void internalAddItem(Item i) {
+        items.put(i.getUUID(), i);
+    }
 	
 	/**
 	 * Delete an Item internally.
@@ -299,6 +322,14 @@ public class InMemoryDataSource extends Observable<InMemoryDataSource> implement
 	protected void internalDeleteItem(UUID id) {
 		items.remove(id);
 	}
+    
+    /**
+     * Add a Tag internally.
+     * @param t The Tag to add.
+     */
+    protected void internalAddTag(Tag t) {
+        tags.put(t.getUUID(), t);
+    }
 	
 	/**
 	 * Delete a Tag internally.

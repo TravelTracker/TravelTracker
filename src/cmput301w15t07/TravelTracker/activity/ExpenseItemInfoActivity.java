@@ -62,7 +62,7 @@ public class ExpenseItemInfoActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.expence_info_activity);
+		setContentView(R.layout.expense_info_activity);
 		
 		//user info from bundles
 		Bundle bundle = getIntent().getExtras();

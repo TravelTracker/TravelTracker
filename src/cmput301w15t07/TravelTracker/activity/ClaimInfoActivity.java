@@ -22,9 +22,14 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +41,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity for managing an individual Claim.  Possible as a Claimant or
@@ -119,12 +125,39 @@ public class ClaimInfoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.claim_info_activity);
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	// Show loading circle
+        setContentView(R.layout.loading_indeterminate);
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
         
+        // Get claim info
+        claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
+        DataSourceSingleton app = (DataSourceSingleton) getApplication();
+        DataSource source = app.getDataSource();
+        source.getClaim(claimID, new ResultCallback<Claim>() {
+			@Override
+			public void onResult(Claim result) {
+				populateFields(result);
+			}
+			
+			@Override
+			public void onError(String message) {
+				Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+			}
+		});
+    }
+    
+    public void populateFields(Claim claim) {
+    	setContentView(R.layout.claim_info_activity);
+    	
         // TODO Get claim from bundle so its info can be used to populate the activity
         
         appendNameToTitle();

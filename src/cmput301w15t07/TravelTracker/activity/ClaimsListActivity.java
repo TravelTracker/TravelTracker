@@ -25,8 +25,13 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.Collection;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.TravelTrackerApp;
@@ -55,6 +60,7 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 	private DataSource ds;
 	private Collection<Claim> claims;
 	private Collection<Item> items;
+	private Context context;
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
@@ -70,6 +76,7 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
         setContentView(R.layout.claims_list_activity);
+        context = this;
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
@@ -81,10 +88,11 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
         listView.setAdapter(adapter);
         updateUI();
         
+        
+        listView.setOnItemClickListener(new itemSelectListener());
         //TODO get the data based on user
         
         
-        //TODO add menu items
 	}
 	
 	@Override
@@ -139,6 +147,22 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 		public void onError(String message) {
 			// TODO Auto-generated method stub
 			
+		}
+		
+	}
+	
+	private class itemSelectListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Claim claim = adapter.getItem(position);
+			
+		 	Intent intent = new Intent(context, ClaimInfoActivity.class);
+	    	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
+	    	
+	    	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
+	    	startActivity(intent);
 		}
 		
 	}

@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -70,6 +71,19 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
         getMenuInflater().inflate(R.menu.claims_list_menu, menu);
         
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+		case R.id.claims_list_add_claim:
+			
+			return true;
+
+		default:
+			break;
+		}
+    	return super.onOptionsItemSelected(item);
     }
 	
 	@Override

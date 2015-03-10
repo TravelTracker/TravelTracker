@@ -70,11 +70,13 @@ public class ClaimInfoActivity extends Activity {
     private UUID claimID;
     
     /** The current start date. */
-    Calendar startDate = Calendar.getInstance();
+    private Calendar startDate = Calendar.getInstance();
     
     /** The current end date. */
-    Calendar endDate = Calendar.getInstance();
-	
+    private Calendar endDate = Calendar.getInstance();
+    
+    /** The currently open date picker fragment. */
+    private DatePickerFragment datePicker = null;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -302,22 +304,24 @@ public class ClaimInfoActivity extends Activity {
     }
 
     public void datePressed(final Button dateButton, final Calendar calendar) {
-        DatePickerFragment picker = new DatePickerFragment(calendar.getTime(),
+        datePicker = new DatePickerFragment(calendar.getTime(),
     		new DatePickerFragment.ResultCallback() {
 				@Override
 				public void onDatePickerFragmentResult(Date date) {
 		        	// Update date button and calendar
 					calendar.setTime(date);
 					setButtonDate(dateButton, date);
+					
+					datePicker = null;
 				}
 				
 				@Override
 				public void onDatePickerFragmentCancelled() {
-					// No change needs to be made
+					datePicker = null;
 				}
 			});
         
-        picker.show(getFragmentManager(), "datePicker");
+        datePicker.show(getFragmentManager(), "datePicker");
     }
 
     public void submitClaim() {
@@ -333,6 +337,30 @@ public class ClaimInfoActivity extends Activity {
     public void approveClaim() {
         // TODO Auto-generated method stub
         
+    }
+    
+    /**
+     * Get the currently displayed date picker fragment.
+     * @return The DatePickerFragment, or null if there isn't one.
+     */
+    public DatePickerFragment getDatePickerFragment() {
+    	return datePicker;
+    }
+    
+    /**
+     * Get the start date.
+     * @return The start date.
+     */
+    public Calendar getStartDate() {
+    	return (Calendar) startDate.clone();
+    }
+    
+    /**
+     * Get the end date.
+     * @return The end date.
+     */
+    public Calendar getEndDate() {
+    	return (Calendar) endDate.clone();
     }
     
     private void setButtonDate(Button dateButton, Date date) {

@@ -57,7 +57,8 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 	//Class Fields
 	private ClaimAdapter adapter;
 	private DataSource ds;
-	private HashMap<Claim, Collection<Item>> dataTable;
+	private Collection<Claim> claims;
+	private Collection<Item> items;
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
@@ -110,9 +111,7 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 		
 		@Override
 		public void onResult(Collection<Claim> result) {
-			for (Claim c : result){
-				dataTable.put(c, null);
-			}
+			claims = result;
 			ds.getAllItems(new itemsRetrievedListener(adapter));
 		}
 
@@ -134,14 +133,9 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 		
 		@Override
 		public void onResult(Collection<Item> result) {
-			for (Claim c : dataTable.keySet()){
-				if (result.iterator().next().getClaim().equals(c)){
-					dataTable.put(c, result);
-					break;
-				}
-			}
+			items = result;
 			
-			adapter.rebuildList(dataTable);
+			adapter.rebuildList(claims, items);
 			
 		}
 

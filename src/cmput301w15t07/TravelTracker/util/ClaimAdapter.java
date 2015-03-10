@@ -16,7 +16,8 @@ import cmput301w15t07.TravelTracker.R;
 
 public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
-	private HashMap<Claim, Collection<Item>> dataTable;
+	private Collection<Claim> claims;
+	private Collection<Item> items;
 	
 	public ClaimAdapter(Context context) {
 		super(context, R.layout.claims_list_row_item);
@@ -26,11 +27,12 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	 * This function rebuilds the list with the passed claims
 	 * @param claims
 	 */
-	public void rebuildList(HashMap<Claim, Collection<Item>> dataTable){
-		this.dataTable = dataTable;
+	public void rebuildList(Collection<Claim> claims, Collection<Item> items){
+		this.claims = claims;
+		this.items = items;
 		//possible performance bottleneck
 		clear();
-		addAll(dataTable.keySet());
+		addAll(claims);
 		sort(new Comparator<Claim>() {
 
 			@Override
@@ -74,7 +76,13 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
 	
 	private void addTotals(Claim claim, ViewGroup parent){
-		for (String total : ClaimUtilities.getTotals(dataTable.get(claim))){
+		ArrayList<Item> relevantItems = new ArrayList<Item>();
+		for (Item i : items){
+			if (i.getClaim().equals(claim.getUUID())){
+				relevantItems.add(i);				
+			}
+		}
+		for (String total : ClaimUtilities.getTotals(relevantItems)){
 			addTotal(total, parent);
 		}
 		

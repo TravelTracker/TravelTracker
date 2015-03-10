@@ -3,6 +3,7 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.*;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,6 +96,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
 	private void addTotal(String total, ViewGroup parent){
 		TextView dynamicTotal = new TextView(getContext());
+		dynamicTotal.setGravity(Gravity.END);
 		dynamicTotal.setText(total);
 		parent.addView(dynamicTotal);	
 	}

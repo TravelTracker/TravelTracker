@@ -46,7 +46,7 @@ public class ClaimUtilities {
 		
 		for (String key : totals.keySet()){
 			Float amt = totals.get(key);
-			out.add(amt.toString() + " " + key);
+			out.add(String.format("%.2f", amt) + " " + key);
 		}
 		return out;
 	}

@@ -5,7 +5,6 @@
     android:orientation="horizontal" >
     
 	    <LinearLayout
-	        android:id="@+id/claimsListDestinationContainer" 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical">
@@ -21,11 +20,16 @@
 	            android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"/>
 	        
+	        <LinearLayout
+	        android:id="@+id/claimsListDestinationContainer" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"/>
+	        
 	        
 	    </LinearLayout>
 	    
 	    <LinearLayout 
-	        android:id="@+id/claimsListTotalContainer" 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical">
@@ -35,6 +39,12 @@
 		        android:layout_height="wrap_content"
 		        android:text="@string/claims_list_row_item_total"
 		        android:textSize="20sp"/>
+	        
+	        <LinearLayout 
+	        android:id="@+id/claimsListTotalContainer" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"/>
 	        
 	    </LinearLayout>
 	    

@@ -64,9 +64,8 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		name.setText(claim.getName());
 		date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
 		
-		//TODO add a container in xml with the sole purpose of dynamic additions
-		//Then remove all children from that. Currently we will get into trouble when
-		//views are reused
+		destinationContainer.removeAllViews();
+		totalsContainer.removeAllViews();
 		
 		addTotals(claim, totalsContainer);
 		addDestinations(claim, destinationContainer);

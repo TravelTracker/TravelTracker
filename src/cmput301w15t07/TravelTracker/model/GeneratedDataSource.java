@@ -1,5 +1,6 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
@@ -60,8 +61,16 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			claim.setUser(user.getUUID());
 			
 			claim.setName(getRandomString(r, 8, 16)); // Random name
-			claim.setStartDate(new Date()); // The current time
-			claim.setEndDate(new Date()); // The current time
+			
+			// Random start time (up to 10 days ago)
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_MONTH, -r.nextInt(10));
+			claim.setStartDate(calendar.getTime());
+			
+			// Random end time (up to 10 days from now)
+			calendar = Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(10));
+			claim.setEndDate(calendar.getTime());
 			
 			// Set status
 			claim.setStatus(
@@ -102,8 +111,12 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				}
 				
 				item.setCurrency(curr);
+
+				// Random time (10 days before today to 10 after)
+				calendar = Calendar.getInstance();
+				calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
 				
-				item.setDate(new Date()); // The current time
+				item.setDate(calendar.getTime()); // The current time
 				item.setDescription(getRandomString(r, 20, 76)); // Description 20-75
 				
 				// Set receipt, can't generate a receipt right now

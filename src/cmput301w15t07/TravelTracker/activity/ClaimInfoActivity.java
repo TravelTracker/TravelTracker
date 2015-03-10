@@ -21,6 +21,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
@@ -30,9 +32,11 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +68,13 @@ public class ClaimInfoActivity extends Activity {
     
     /** UUID of the claim. */
     private UUID claimID;
+    
+    /** The current start date. */
+    Calendar startDate = Calendar.getInstance();
+    
+    /** The current end date. */
+    Calendar endDate = Calendar.getInstance();
+	
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,7 +156,7 @@ public class ClaimInfoActivity extends Activity {
         source.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
 			public void onResult(Claim result) {
-				populateFields(result);
+				onGetClaim(result);
 			}
 			
 			@Override
@@ -155,8 +166,11 @@ public class ClaimInfoActivity extends Activity {
 		});
     }
     
-    public void populateFields(Claim claim) {
+    public void onGetClaim(Claim claim) {
     	setContentView(R.layout.claim_info_activity);
+    	
+    	startDate.setTime(claim.getStartDate());
+    	endDate.setTime(claim.getEndDate());
     	
         appendNameToTitle();
         populateClaimInfo(claim);
@@ -189,20 +203,20 @@ public class ClaimInfoActivity extends Activity {
     	
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
             // Attach edit date listener to start date button
-            Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
+            final Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
             startDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(v);
+                    datePressed(startDateButton, startDate);
                 }
             });
             
             // Attach edit date listener to end date button
-            Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
+            final Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
             endDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(v);
+                    datePressed(endDateButton, endDate);
                 }
             });
             
@@ -272,8 +286,11 @@ public class ClaimInfoActivity extends Activity {
     }
 
     public void populateClaimInfo(Claim claim) {
-        // TODO Auto-generated method stub
+        Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
+        setButtonDate(startDateButton, startDate.getTime());
         
+        Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
+        setButtonDate(endDateButton, endDate.getTime());
     }
 
     public void viewItems() {
@@ -284,9 +301,23 @@ public class ClaimInfoActivity extends Activity {
         startActivity(intent);
     }
 
-    public void datePressed(View dateButton) {
-        // TODO Auto-generated method stub
+    public void datePressed(final Button dateButton, final Calendar calendar) {
+        DatePickerFragment picker = new DatePickerFragment(calendar.getTime(),
+    		new DatePickerFragment.ResultCallback() {
+				@Override
+				public void onDatePickerFragmentResult(Date date) {
+		        	// Update date button and calendar
+					calendar.setTime(date);
+					setButtonDate(dateButton, date);
+				}
+				
+				@Override
+				public void onDatePickerFragmentCancelled() {
+					// No change needs to be made
+				}
+			});
         
+        picker.show(getFragmentManager(), "datePicker");
     }
 
     public void submitClaim() {
@@ -302,5 +333,11 @@ public class ClaimInfoActivity extends Activity {
     public void approveClaim() {
         // TODO Auto-generated method stub
         
+    }
+    
+    private void setButtonDate(Button dateButton, Date date) {
+    	java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
+    	String dateString = dateFormat.format(date);
+		dateButton.setText(dateString);
     }
 }

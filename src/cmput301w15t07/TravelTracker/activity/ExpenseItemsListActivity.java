@@ -21,17 +21,24 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.util.ItemsListAdapter;
 import android.app.Activity;
+import android.os.Bundle;
+import android.widget.ListView;
 
 /**
  * Activity for listing all expense Items belonging to a particular Claim.
  * Possible as a Claimant or an Approver.
  * 
  * @author kdbanman,
- *         therabidsquirel
+ *         therabidsquirel,
+ *         braedy
  *
  */
 public class ExpenseItemsListActivity extends Activity {
@@ -46,4 +53,22 @@ public class ExpenseItemsListActivity extends Activity {
     
     /** UUID of the claim. */
     private UUID claimID;
+    
+    /** ListView */
+    private ListView itemsList;
+    
+    /** ListView adapter */
+    private ItemsListAdapter adapter;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.expense_items_list_activity);
+        
+        itemsList = (ListView) findViewById(R.id.itemsListListView);
+        
+        adapter = new ItemsListAdapter(this, new ArrayList<Item>());
+        itemsList.setAdapter(adapter);
+    }
+    
 }

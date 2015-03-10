@@ -23,12 +23,8 @@ package cmput301w15t07.TravelTracker.activity;
 
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Set;
 
 import android.app.Activity;
-import android.app.Application;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ListView;

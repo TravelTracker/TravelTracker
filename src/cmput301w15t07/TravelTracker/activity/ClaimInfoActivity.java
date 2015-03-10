@@ -33,7 +33,6 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -56,7 +55,7 @@ import android.widget.Toast;
  *         colp
  *
  */
-public class ClaimInfoActivity extends Activity {
+public class ClaimInfoActivity extends TravelTrackerActivity {
     /** String used to retrieve user data from intent */
     public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
     
@@ -261,6 +260,8 @@ public class ClaimInfoActivity extends Activity {
             tagsSpace.setVisibility(View.INVISIBLE);
             submitClaimButton.setVisibility(View.INVISIBLE);
         }
+        
+        onLoaded();
     }
 
     public void signOut() {

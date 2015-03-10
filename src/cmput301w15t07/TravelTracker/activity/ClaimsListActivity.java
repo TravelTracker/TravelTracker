@@ -21,22 +21,47 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+
+import java.util.Collection;
+
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.TravelTrackerApp;
+import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.ClaimAdapter;
+import cmput301w15t07.TravelTracker.util.Observer;
 
 
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
  * 
- * @author kdbanman, colp
+ * @author kdbanman, colp, thornhil
  *
  */
-public class ClaimsListActivity extends Activity {
+public class ClaimsListActivity extends Activity implements Observer<InMemoryDataSource> {
 	/** String used to retrieve user data from intent */
 	public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
+	
+	//Class Fields
+	private ClaimAdapter adapter;
+	private DataSource ds;
+	private Collection<Claim> claims;
+	private Collection<Item> items;
+	private Context context;
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
@@ -47,14 +72,113 @@ public class ClaimsListActivity extends Activity {
         
         return true;
     }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+		case R.id.claims_list_add_claim:
+			
+			return true;
+
+		default:
+			break;
+		}
+    	return super.onOptionsItemSelected(item);
+    }
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
         setContentView(R.layout.claims_list_activity);
+        context = this;
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
+        ds = ((TravelTrackerApp) getApplication()).getDataSource();
+        
+        adapter = new ClaimAdapter(this);
+        ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
+        listView.setAdapter(adapter);
+        updateUI();
+        
+        
+        listView.setOnItemClickListener(new itemSelectListener());
+        //TODO get the data based on user
+        
+        
 	}
+	
+	@Override
+	public void update(InMemoryDataSource observable) {
+		updateUI();
+	}
+	
+	public void updateUI(){
+		//TODO start a spinner here
+		ds.getAllClaims(new claimsRetrievedListener(adapter));
+	}
+	
+	private class claimsRetrievedListener implements ResultCallback<Collection<Claim>> {
+		
+		private ClaimAdapter adapter;
+		
+		public claimsRetrievedListener(ClaimAdapter adapter) {
+			this.adapter = adapter;
+		}
+		
+		@Override
+		public void onResult(Collection<Claim> result) {
+			claims = result;
+			ds.getAllItems(new itemsRetrievedListener(adapter));
+		}
+
+		@Override
+		public void onError(String message) {
+			// TODO raise a toast
+			
+		}
+		
+	}
+	
+	private class itemsRetrievedListener implements ResultCallback<Collection<Item>>{
+		
+		private ClaimAdapter adapter;
+		
+		public itemsRetrievedListener(ClaimAdapter adapter) {
+			this.adapter = adapter;
+		}
+		
+		@Override
+		public void onResult(Collection<Item> result) {
+			items = result;
+			
+			adapter.rebuildList(claims, items);
+			
+		}
+
+		@Override
+		public void onError(String message) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class itemSelectListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Claim claim = adapter.getItem(position);
+			
+		 	Intent intent = new Intent(context, ClaimInfoActivity.class);
+	    	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
+	    	
+	    	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
+	    	startActivity(intent);
+		}
+		
+	}
+	
 }

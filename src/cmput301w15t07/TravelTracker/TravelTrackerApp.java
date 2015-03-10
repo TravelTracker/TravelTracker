@@ -42,7 +42,8 @@ public class TravelTrackerApp extends Application implements DataSourceSingleton
     
     @Override
     public void onCreate() {
-    	ds = new InMemoryDataSource();
-    	//ds = new GeneratedDataSource(); // Use to generate data at user creation
+    	//TODO remove
+    	//ds = new InMemoryDataSource();
+    	ds = new GeneratedDataSource(); // Use to generate data at user creation
     }
 }

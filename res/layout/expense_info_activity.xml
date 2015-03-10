@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Expense_info_activity" >
+
+    <CheckedTextView
+        android:id="@+id/expenseItemInfoStatusCheckedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/expense_item_info_staus" 
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        android:checked="false" />
+    
+
+    <TextView
+        android:id="@+id/expenseItemInfoExpenseDateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expenseItemInfoStatusCheckedTextView"
+        android:layout_below="@+id/expenseItemInfoStatusCheckedTextView"
+        android:text="@string/expense_item_info_date"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/expenseItemInfoDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expenseItemInfoExpenseDateTextView"
+        android:layout_below="@+id/expenseItemInfoExpenseDateTextView"
+        android:text="@string/date_format" />
+
+    <ImageView
+        android:id="@+id/expenseItemInfoReceiptImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_alignBottom="@+id/expenseItemInfoDateButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/expenseItemInfoStatusCheckedTextView"
+        android:layout_marginLeft="72dp"
+        android:layout_toRightOf="@+id/expenseItemInfoDateButton"
+        android:src="@android:drawable/picture_frame" />
+
+    <TextView
+        android:id="@+id/expenseItemInfoAmountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expenseItemInfoDateButton"
+        android:layout_below="@+id/expenseItemInfoDateButton"
+        android:layout_marginTop="27dp"
+        android:text="@string/expense_item_info_amount" />
+
+    <Spinner
+        android:id="@+id/expenseItemInfoCurrencySpinner"
+        style="?android:attr/spinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignLeft="@+id/expenseItemInfoReceiptImageView"
+        android:layout_alignTop="@+id/expenseItemInfoAmountTextView" />
+
+    <EditText
+        android:id="@+id/expenseItemInfoAmountEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/expenseItemInfoCurrencySpinner"
+        android:layout_toLeftOf="@+id/expenseItemInfoCurrencySpinner"
+        android:layout_toRightOf="@+id/expenseItemInfoExpenseDateTextView"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Spinner
+        android:id="@+id/expenseItemInfoCategorySpinner"
+        style="?android:attr/spinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignLeft="@+id/expenseItemInfoAmountEditText"
+        android:layout_alignTop="@+id/expenseItemInfoCategoryTextView" />
+
+    <TextView
+        android:id="@+id/expenseItemInfoCategoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expenseItemInfoAmountTextView"
+        android:layout_below="@+id/expenseItemInfoAmountEditText"
+        android:layout_marginTop="18dp"
+        android:text="@string/expense_item_info_category" />
+
+    <EditText
+        android:id="@+id/expenseItemInfoDescriptionEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expenseItemInfoDescriptionTextView"
+        android:layout_alignRight="@+id/expenseItemInfoCategorySpinner"
+        android:layout_below="@+id/expenseItemInfoDescriptionTextView"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
+    <TextView
+        android:id="@+id/expenseItemInfoDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expenseItemInfoCategoryTextView"
+        android:layout_below="@+id/expenseItemInfoCategorySpinner"
+        android:layout_marginTop="39dp"
+        android:text="@string/expense_item_info_description" />
+
+</RelativeLayout>

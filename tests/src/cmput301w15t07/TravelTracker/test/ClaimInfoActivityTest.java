@@ -21,22 +21,54 @@ package cmput301w15t07.TravelTracker.test;
  *  limitations under the License.
  */
 
+import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
+import cmput301w15t07.TravelTracker.activity.LoginActivity;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.testutils.MockTravelTrackerApp;
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ActivityUnitTestCase;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
 
 /**
  * Test for individual claim management activities.
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
- * @author kdbanman
+ * @author kdbanman,
+ * 		   colp
  *
  */
-public class ClaimInfoActivityTest extends
-		ActivityInstrumentationTestCase2<ClaimInfoActivity> {
+public class ClaimInfoActivityTest extends ActivityUnitTestCase<ClaimInfoActivity> {
+	DataSource dataSource;
+	Instrumentation instrumentation;
+	Activity activity;
 
 	public ClaimInfoActivityTest() {
 		super(ClaimInfoActivity.class);
+	}
+	
+	@Override
+	protected void setUp() throws Exception {
+	    super.setUp();
+		
+		MockTravelTrackerApp app = new MockTravelTrackerApp();
+		setApplication(app);
+		app.onCreate();
+		
+		dataSource = app.getDataSource();
+	    
+	    instrumentation = getInstrumentation();
+	    
+	    Intent intent = new Intent(instrumentation.getTargetContext(), ClaimInfoActivity.class);
+	    startActivity(intent, null, null);
+	    
+	    activity = getActivity();
 	}
 	
 	public void testCreateExpenseClaim() {

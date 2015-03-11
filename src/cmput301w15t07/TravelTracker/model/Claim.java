@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * Model object for Claim made by Users acting as Claimants.
  * 
- * @author kdbanman
+ * @author kdbanman, braedy
  *
  */
 public class Claim extends Document {
@@ -38,7 +38,6 @@ public class Claim extends Document {
 	private Date startDate;
 	private Date endDate;
 	private ArrayList<Destination> destinations;
-	private ArrayList<Item> items;
 	private ArrayList<ApproverComment> comments;
 	private ArrayList<UUID> tags;
 	
@@ -97,14 +96,6 @@ public class Claim extends Document {
 	}
 	public void setDestinations(ArrayList<Destination> destinations) {
 		this.destinations = destinations;
-		this.updateObservers(this);
-	}
-	
-	public ArrayList<Item> getItems() {
-		return items;
-	}
-	public void setItems(ArrayList<Item> items) {
-		this.items = items;
 		this.updateObservers(this);
 	}
 	

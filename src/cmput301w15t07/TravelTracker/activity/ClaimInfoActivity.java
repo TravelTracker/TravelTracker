@@ -31,6 +31,7 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
@@ -40,6 +41,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -156,14 +158,36 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         DataSourceSingleton app = (DataSourceSingleton) getApplication();
         final DataSource source = app.getDataSource();
         
+        // Retrieve claim
+        // TODO: is there a better way to do this?
         source.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
 			public void onResult(final Claim claim) {
+				
 				// Claim retrieved; need items too
 				source.getAllItems(new ResultCallback<Collection<Item>>() {
 					@Override
 					public void onResult(final Collection<Item> items) {
-						onGetAllData(claim, items);
+						// Don't need claimant if this user is the claimant
+						if (userData.getRole() == UserRole.CLAIMANT) {
+							onGetAllData(claim, items, null);
+							
+						// Need the claimant name
+						} else if (userData.getRole() == UserRole.APPROVER) {
+							
+							// Retrieve claimant
+							source.getUser(claim.getUser(), new ResultCallback<User>() {
+								@Override
+								public void onResult(User claimant) {
+									onGetAllData(claim, items, claimant);
+								}
+								
+								@Override
+								public void onError(String message) {
+									Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+								}
+							});
+						}
 					}
 					
 					@Override
@@ -180,12 +204,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		});
     }
     
-    public void onGetAllData(final Claim claim, final Collection<Item> items) {
+    public void onGetAllData(final Claim claim, final Collection<Item> items, User claimant) {
     	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
         appendNameToTitle();
-        populateClaimInfo(claim, items);
+        populateClaimInfo(claim, items, claimant);
         
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -307,8 +331,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      * Populate the fields with data.
      * @param claim The claim being viewed.
      * @param items All items (which will be filtered by claim UUID).
+     * @param user The claimant, or null if the current user is the claimant.
      */
-    public void populateClaimInfo(Claim claim, Collection<Item> items) {
+    public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
         setButtonDate(startDateButton, claim.getStartDate());
         
@@ -339,6 +364,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         String totalsString = TextUtils.join("\n", totals);
         TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);
         totalsTextView.setText(totalsString);
+        
+        if (userData.getRole() == UserRole.APPROVER) {
+        	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
+        	String claimantString = getString(R.string.claim_info_claimant_name) + " " + claimant.getUserName();
+        	claimantNameTextView.setText(claimantString);
+        }
     }
 
     public void viewItems() {

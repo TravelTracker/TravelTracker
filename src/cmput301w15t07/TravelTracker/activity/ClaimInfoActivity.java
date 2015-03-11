@@ -170,7 +170,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public void onGetClaim(Claim claim) {
     	setContentView(R.layout.claim_info_activity);
     	
-    	startDate.setTime(claim.getStartDate());
+    	startDate.setTime(claim.getStartDate());  // TODO elliot, these fellas should be removed!
     	endDate.setTime(claim.getEndDate());
     	
         appendNameToTitle();
@@ -265,13 +265,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void signOut() {
-        // TODO Auto-generated method stub
-        
+    	// adapted from 
+    	//    http://stackoverflow.com/questions/6298275/how-to-finish-every-activity-on-the-stack-except-the-first-in-android
+    	// on 10 March 2015
+    	Intent intent = new Intent(this, LoginActivity.class);
+    	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Removes other Activities from stack
+    	startActivity(intent);
     }
 
     public void addDestination() {
         // TODO Auto-generated method stub
-        
+    	
     }
 
     public void addItem() {

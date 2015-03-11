@@ -1,6 +1,7 @@
 package cmput301w15t07.TravelTracker.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -10,21 +11,22 @@ import java.util.Date;
  * This is so that mutations must be made at the Claim for observer notification
  * and cache dirtying.
  * 
- * @author ryant26
+ * @author ryant26,
+ * 		   colp
  *
  */
 public class ApproverComment {
-	private User approver;
+	private UUID approver;
 	private String comment;
 	private Date date;
 	
-	public ApproverComment(User approver, String comment, Date date) {
+	public ApproverComment(UUID approver, String comment, Date date) {
 		this.approver = approver;
 		this.comment = comment;
 		this.date = date;
 	}
 	
-	public User getApprover() {
+	public UUID getApprover() {
 		return approver;
 	}
 

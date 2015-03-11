@@ -169,7 +169,7 @@ public class ClaimInfoActivity extends Activity {
     public void onGetClaim(Claim claim) {
     	setContentView(R.layout.claim_info_activity);
     	
-    	startDate.setTime(claim.getStartDate());
+    	startDate.setTime(claim.getStartDate());  // TODO elliot, these fellas should be removed!
     	endDate.setTime(claim.getEndDate());
     	
         appendNameToTitle();

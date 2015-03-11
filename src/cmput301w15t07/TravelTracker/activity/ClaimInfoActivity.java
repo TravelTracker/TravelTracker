@@ -21,20 +21,24 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -150,11 +154,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         DataSourceSingleton app = (DataSourceSingleton) getApplication();
-        DataSource source = app.getDataSource();
+        final DataSource source = app.getDataSource();
+        
         source.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
-			public void onResult(Claim result) {
-				onGetClaim(result);
+			public void onResult(final Claim claim) {
+				// Claim retrieved; need items too
+				source.getAllItems(new ResultCallback<Collection<Item>>() {
+					@Override
+					public void onResult(final Collection<Item> items) {
+						onGetAllData(claim, items);
+					}
+					
+					@Override
+					public void onError(String message) {
+						Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+					}
+				});
 			}
 			
 			@Override
@@ -164,12 +180,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		});
     }
     
-    public void onGetClaim(final Claim claim) {
+    public void onGetAllData(final Claim claim, final Collection<Item> items) {
     	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
         appendNameToTitle();
-        populateClaimInfo(claim);
+        populateClaimInfo(claim, items);
         
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -287,7 +303,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         setTitle(getTitle() + " - " + userData.getName());
     }
 
-    public void populateClaimInfo(Claim claim) {
+    /**
+     * Populate the fields with data.
+     * @param claim The claim being viewed.
+     * @param items All items (which will be filtered by claim UUID).
+     */
+    public void populateClaimInfo(Claim claim, Collection<Item> items) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
         setButtonDate(startDateButton, claim.getStartDate());
         
@@ -297,6 +318,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         String statusString = getString(R.string.claim_info_claim_status) + " " + claim.getStatus().getString(this);
         TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
         statusTextView.setText(statusString);
+        
+        ArrayList<Item> claimItems = new ArrayList<Item>();
+        for (Item item : items) {
+        	if (item.getClaim() == claim.getUUID()) {
+        		claimItems.add(item);
+        	}
+        }
+        
+        ArrayList<String> totals = ClaimUtilities.getTotals(claimItems);
+        String totalsString = TextUtils.join("\n", totals);
+        TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);
+        totalsTextView.setText(totalsString);
     }
 
     public void viewItems() {

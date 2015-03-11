@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.DataSource;
@@ -168,9 +169,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 				source.getAllItems(new ResultCallback<Collection<Item>>() {
 					@Override
 					public void onResult(final Collection<Item> items) {
+						
 						// Don't need claimant if this user is the claimant
 						if (userData.getRole() == UserRole.CLAIMANT) {
-							onGetAllData(claim, items, null);
+							onGetAllData(claim, items, null, null);
 							
 						// Need the claimant name
 						} else if (userData.getRole() == UserRole.APPROVER) {
@@ -178,8 +180,30 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 							// Retrieve claimant
 							source.getUser(claim.getUser(), new ResultCallback<User>() {
 								@Override
-								public void onResult(User claimant) {
-									onGetAllData(claim, items, claimant);
+								public void onResult(final User claimant) {
+									
+									ArrayList<ApproverComment> comments = claim.getComments();
+
+									// Retrieve last approver
+									if (comments.size() > 0) {
+										ApproverComment comment = comments.get(comments.size() - 1);
+										
+										source.getUser(comment.getApprover(), new ResultCallback<User>() {
+											@Override
+											public void onResult(final User approver) {
+												onGetAllData(claim, items, claimant, approver);
+											}
+											
+											@Override
+											public void onError(String message) {
+												Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+											}
+										});
+										
+									// No approvers yet
+									} else {
+										onGetAllData(claim, items, claimant, null);
+									}
 								}
 								
 								@Override
@@ -204,12 +228,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		});
     }
     
-    public void onGetAllData(final Claim claim, final Collection<Item> items, User claimant) {
+    public void onGetAllData(final Claim claim, final Collection<Item> items, User claimant, User approver) {
     	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
         appendNameToTitle();
-        populateClaimInfo(claim, items, claimant);
+        populateClaimInfo(claim, items, claimant, approver);
         
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -294,6 +318,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             tagsLinearLayout.setVisibility(View.GONE);
             tagsSpace.setVisibility(View.GONE);
             submitClaimButton.setVisibility(View.GONE);
+            
+            // No last approver
+            if (approver == null) {
+            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+            	lastApproverTextView.setVisibility(View.GONE);
+            }
         }
         
         onLoaded();
@@ -332,8 +362,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      * @param claim The claim being viewed.
      * @param items All items (which will be filtered by claim UUID).
      * @param user The claimant, or null if the current user is the claimant.
+     * @param approver The last approver, or null if there isn't one.
      */
-    public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant) {
+    public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant, User approver) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
         setButtonDate(startDateButton, claim.getStartDate());
         
@@ -366,9 +397,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         totalsTextView.setText(totalsString);
         
         if (userData.getRole() == UserRole.APPROVER) {
+        	// Claimant name
         	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
         	String claimantString = getString(R.string.claim_info_claimant_name) + " " + claimant.getUserName();
         	claimantNameTextView.setText(claimantString);
+        	
+        	// Approver name (if there is one)
+        	if (approver != null) {
+            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+            	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
+            	lastApproverTextView.setText(lastApproverString);
+        	}
         }
     }
 

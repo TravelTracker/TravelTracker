@@ -31,7 +31,7 @@ android:
 
 # Emulator Management: Create, Start and Wait
 before_script:
-   - android -s update sdk --filter android-17,platform-tool --no-ui
+   - android -s update sdk --filter android-17,platform-tool --no-ui --accept-license
    - android -s update project --path . --target "android-17"
    - cd tests
    - android -s update test-project --path . -m ../

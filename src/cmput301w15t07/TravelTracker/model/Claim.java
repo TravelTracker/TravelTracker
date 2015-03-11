@@ -50,6 +50,7 @@ public class Claim extends Document {
 	Claim(UUID docID) {
 		super(docID);
 		destinations = new ArrayList<Destination>();
+		comments = new ArrayList<ApproverComment>();
 	}
 	
 	public UUID getUser() {

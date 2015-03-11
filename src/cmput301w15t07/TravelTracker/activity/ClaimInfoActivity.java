@@ -225,11 +225,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Views a claimant doesn't need to see or have access to
-            claimantNameTextView.setVisibility(View.INVISIBLE);
-            approverButtonsLinearLayout.setVisibility(View.INVISIBLE);
-            returnClaimButton.setVisibility(View.INVISIBLE);
-            approveClaimButton.setVisibility(View.INVISIBLE);
-            commentEditText.setVisibility(View.INVISIBLE);
+            claimantNameTextView.setVisibility(View.GONE);
+            approverButtonsLinearLayout.setVisibility(View.GONE);
+            returnClaimButton.setVisibility(View.GONE);
+            approveClaimButton.setVisibility(View.GONE);
+            commentEditText.setVisibility(View.GONE);
         }
         
         else if (userData.getRole().equals(UserRole.APPROVER)) {
@@ -250,10 +250,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Views an approver doesn't need to see or have access to
-            statusTextView.setVisibility(View.INVISIBLE);
-            tagsLinearLayout.setVisibility(View.INVISIBLE);
-            tagsSpace.setVisibility(View.INVISIBLE);
-            submitClaimButton.setVisibility(View.INVISIBLE);
+            statusTextView.setVisibility(View.GONE);
+            tagsLinearLayout.setVisibility(View.GONE);
+            tagsSpace.setVisibility(View.GONE);
+            submitClaimButton.setVisibility(View.GONE);
         }
         
         onLoaded();

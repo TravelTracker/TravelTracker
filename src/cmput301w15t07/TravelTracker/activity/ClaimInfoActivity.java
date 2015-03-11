@@ -68,11 +68,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     /** UUID of the claim. */
     private UUID claimID;
     
-    /** The current start date. */
-    private Calendar startDate = Calendar.getInstance();
-    
-    /** The current end date. */
-    private Calendar endDate = Calendar.getInstance();
+    /** The current claim. */
+    Claim claim;
     
     /** The currently open date picker fragment. */
     private DatePickerFragment datePicker = null;
@@ -167,11 +164,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		});
     }
     
-    public void onGetClaim(Claim claim) {
+    public void onGetClaim(final Claim claim) {
+    	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
-    	
-    	startDate.setTime(claim.getStartDate());  // TODO elliot, these fellas should be removed!
-    	endDate.setTime(claim.getEndDate());
     	
         appendNameToTitle();
         populateClaimInfo(claim);
@@ -208,7 +203,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             startDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(startDateButton, startDate);
+                    datePressed(startDateButton, claim.getStartDate());
                 }
             });
             
@@ -217,7 +212,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             endDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(endDateButton, endDate);
+                    datePressed(endDateButton, claim.getEndDate());
                 }
             });
             
@@ -294,10 +289,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 
     public void populateClaimInfo(Claim claim) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
-        setButtonDate(startDateButton, startDate.getTime());
+        setButtonDate(startDateButton, claim.getStartDate());
         
         Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
-        setButtonDate(endDateButton, endDate.getTime());
+        setButtonDate(endDateButton, claim.getEndDate());
     }
 
     public void viewItems() {
@@ -308,14 +303,14 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         startActivity(intent);
     }
 
-    public void datePressed(final Button dateButton, final Calendar calendar) {
-        datePicker = new DatePickerFragment(calendar.getTime(),
+    public void datePressed(final Button dateButton, final Date date) {
+        datePicker = new DatePickerFragment(date,
     		new DatePickerFragment.ResultCallback() {
 				@Override
-				public void onDatePickerFragmentResult(Date date) {
+				public void onDatePickerFragmentResult(Date result) {
 		        	// Update date button and calendar
-					calendar.setTime(date);
-					setButtonDate(dateButton, date);
+					date.setTime(result.getTime());
+					setButtonDate(dateButton, result);
 					
 					datePicker = null;
 				}
@@ -350,22 +345,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      */
     public DatePickerFragment getDatePickerFragment() {
     	return datePicker;
-    }
-    
-    /**
-     * Get the start date.
-     * @return The start date.
-     */
-    public Calendar getStartDate() {
-    	return (Calendar) startDate.clone();
-    }
-    
-    /**
-     * Get the end date.
-     * @return The end date.
-     */
-    public Calendar getEndDate() {
-    	return (Calendar) endDate.clone();
     }
     
     private void setButtonDate(Button dateButton, Date date) {

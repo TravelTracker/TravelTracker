@@ -47,15 +47,15 @@ public class GeneratedDataSource extends InMemoryDataSource {
 	@Override
 	public void addUser(ResultCallback<User> callback) {
 
+		Random r = new Random();
+
 		User user = new User(UUID.randomUUID());
 		user.addObserver(this);
 		
 		internalAddUser(user);
-
-		Random r = new Random();
 		
-		// Want 100 random claims
-		for (int i = 0; i < 100; ++i) {
+		// Want 10 random claims
+		for (int i = 0; i < 10; ++i) {
 			// Create claim and set data
 			Claim claim = new Claim(UUID.randomUUID());
 			claim.setUser(user.getUUID());

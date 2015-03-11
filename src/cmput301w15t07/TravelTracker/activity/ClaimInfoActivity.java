@@ -319,6 +319,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
         statusTextView.setText(statusString);
         
+        // Get list of claim items
         ArrayList<Item> claimItems = new ArrayList<Item>();
         for (Item item : items) {
         	if (item.getClaim() == claim.getUUID()) {
@@ -326,6 +327,14 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         	}
         }
         
+        // Format string for view items button
+        String formatString = getString(R.string.claim_info_view_items);
+        String viewItemsButtonText = String.format(formatString, claimItems.size()); 
+        
+        Button viewItemsButton = (Button) findViewById(R.id.claimInfoViewItemsButton);
+        viewItemsButton.setText(viewItemsButtonText);
+        
+        // List totals
         ArrayList<String> totals = ClaimUtilities.getTotals(claimItems);
         String totalsString = TextUtils.join("\n", totals);
         TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);

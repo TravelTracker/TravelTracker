@@ -293,6 +293,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         
         Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
         setButtonDate(endDateButton, claim.getEndDate());
+        
+        String statusString = getString(R.string.claim_info_claim_status) + " " + claim.getStatus().getString(this);
+        TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
+        statusTextView.setText(statusString);
     }
 
     public void viewItems() {

@@ -41,7 +41,7 @@
         <string name="claim_info_date_to">to</string>
         <string name="claim_info_claim_status">Claim Status:</string>
         <string name="claim_info_currency_totals">Totals:</string>
-        <string name="claim_info_view_items">View Expense Items (0 Total)</string>
+        <string name="claim_info_view_items">View Expense Items (%1$d Total)</string>
         <string name="claim_info_last_approver">Last Approver:</string>
         <string name="claim_info_claim_submit_button">Submit Claim</string>
         <string name="claim_info_claim_return_button">Return Claim</string>

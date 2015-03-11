@@ -21,20 +21,24 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,11 +72,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     /** UUID of the claim. */
     private UUID claimID;
     
-    /** The current start date. */
-    private Calendar startDate = Calendar.getInstance();
-    
-    /** The current end date. */
-    private Calendar endDate = Calendar.getInstance();
+    /** The current claim. */
+    Claim claim;
     
     /** The currently open date picker fragment. */
     private DatePickerFragment datePicker = null;
@@ -153,11 +154,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         DataSourceSingleton app = (DataSourceSingleton) getApplication();
-        DataSource source = app.getDataSource();
+        final DataSource source = app.getDataSource();
+        
         source.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
-			public void onResult(Claim result) {
-				onGetClaim(result);
+			public void onResult(final Claim claim) {
+				// Claim retrieved; need items too
+				source.getAllItems(new ResultCallback<Collection<Item>>() {
+					@Override
+					public void onResult(final Collection<Item> items) {
+						onGetAllData(claim, items);
+					}
+					
+					@Override
+					public void onError(String message) {
+						Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+					}
+				});
 			}
 			
 			@Override
@@ -167,14 +180,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		});
     }
     
-    public void onGetClaim(Claim claim) {
+    public void onGetAllData(final Claim claim, final Collection<Item> items) {
+    	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
-    	startDate.setTime(claim.getStartDate());  // TODO elliot, these fellas should be removed!
-    	endDate.setTime(claim.getEndDate());
-    	
         appendNameToTitle();
-        populateClaimInfo(claim);
+        populateClaimInfo(claim, items);
         
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -208,7 +219,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             startDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(startDateButton, startDate);
+                    datePressed(startDateButton, claim.getStartDate());
                 }
             });
             
@@ -217,7 +228,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             endDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(endDateButton, endDate);
+                    datePressed(endDateButton, claim.getEndDate());
                 }
             });
             
@@ -230,11 +241,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Views a claimant doesn't need to see or have access to
-            claimantNameTextView.setVisibility(View.INVISIBLE);
-            approverButtonsLinearLayout.setVisibility(View.INVISIBLE);
-            returnClaimButton.setVisibility(View.INVISIBLE);
-            approveClaimButton.setVisibility(View.INVISIBLE);
-            commentEditText.setVisibility(View.INVISIBLE);
+            claimantNameTextView.setVisibility(View.GONE);
+            approverButtonsLinearLayout.setVisibility(View.GONE);
+            returnClaimButton.setVisibility(View.GONE);
+            approveClaimButton.setVisibility(View.GONE);
+            commentEditText.setVisibility(View.GONE);
         }
         
         else if (userData.getRole().equals(UserRole.APPROVER)) {
@@ -255,10 +266,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Views an approver doesn't need to see or have access to
-            statusTextView.setVisibility(View.INVISIBLE);
-            tagsLinearLayout.setVisibility(View.INVISIBLE);
-            tagsSpace.setVisibility(View.INVISIBLE);
-            submitClaimButton.setVisibility(View.INVISIBLE);
+            statusTextView.setVisibility(View.GONE);
+            tagsLinearLayout.setVisibility(View.GONE);
+            tagsSpace.setVisibility(View.GONE);
+            submitClaimButton.setVisibility(View.GONE);
         }
         
         onLoaded();
@@ -292,12 +303,42 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         setTitle(getTitle() + " - " + userData.getName());
     }
 
-    public void populateClaimInfo(Claim claim) {
+    /**
+     * Populate the fields with data.
+     * @param claim The claim being viewed.
+     * @param items All items (which will be filtered by claim UUID).
+     */
+    public void populateClaimInfo(Claim claim, Collection<Item> items) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
-        setButtonDate(startDateButton, startDate.getTime());
+        setButtonDate(startDateButton, claim.getStartDate());
         
         Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
-        setButtonDate(endDateButton, endDate.getTime());
+        setButtonDate(endDateButton, claim.getEndDate());
+        
+        String statusString = getString(R.string.claim_info_claim_status) + " " + claim.getStatus().getString(this);
+        TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
+        statusTextView.setText(statusString);
+        
+        // Get list of claim items
+        ArrayList<Item> claimItems = new ArrayList<Item>();
+        for (Item item : items) {
+        	if (item.getClaim() == claim.getUUID()) {
+        		claimItems.add(item);
+        	}
+        }
+        
+        // Format string for view items button
+        String formatString = getString(R.string.claim_info_view_items);
+        String viewItemsButtonText = String.format(formatString, claimItems.size()); 
+        
+        Button viewItemsButton = (Button) findViewById(R.id.claimInfoViewItemsButton);
+        viewItemsButton.setText(viewItemsButtonText);
+        
+        // List totals
+        ArrayList<String> totals = ClaimUtilities.getTotals(claimItems);
+        String totalsString = TextUtils.join("\n", totals);
+        TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);
+        totalsTextView.setText(totalsString);
     }
 
     public void viewItems() {
@@ -308,14 +349,14 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         startActivity(intent);
     }
 
-    public void datePressed(final Button dateButton, final Calendar calendar) {
-        datePicker = new DatePickerFragment(calendar.getTime(),
+    public void datePressed(final Button dateButton, final Date date) {
+        datePicker = new DatePickerFragment(date,
     		new DatePickerFragment.ResultCallback() {
 				@Override
-				public void onDatePickerFragmentResult(Date date) {
+				public void onDatePickerFragmentResult(Date result) {
 		        	// Update date button and calendar
-					calendar.setTime(date);
-					setButtonDate(dateButton, date);
+					date.setTime(result.getTime());
+					setButtonDate(dateButton, result);
 					
 					datePicker = null;
 				}
@@ -350,22 +391,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      */
     public DatePickerFragment getDatePickerFragment() {
     	return datePicker;
-    }
-    
-    /**
-     * Get the start date.
-     * @return The start date.
-     */
-    public Calendar getStartDate() {
-    	return (Calendar) startDate.clone();
-    }
-    
-    /**
-     * Get the end date.
-     * @return The end date.
-     */
-    public Calendar getEndDate() {
-    	return (Calendar) endDate.clone();
     }
     
     private void setButtonDate(Button dateButton, Date date) {

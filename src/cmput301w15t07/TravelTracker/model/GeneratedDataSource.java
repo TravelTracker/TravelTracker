@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.Calendar;
 import java.util.Currency;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
@@ -115,7 +116,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				calendar = Calendar.getInstance();
 				calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
 				
-				item.setDate(calendar.getTime()); // The current time
+				item.setDate(calendar.getTime());
 				item.setDescription(getRandomString(r, 20, 76)); // Description 20-75
 				
 				// Set receipt, can't generate a receipt right now
@@ -126,6 +127,13 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			//Add some destinations
 			for (int k = 0; k < (new Random()).nextInt(5); k++){
 				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), "A test Reason"));
+			}
+			
+			// Add some comments (from the same user for simplicity's sake, though this is impossible)
+			for (int l = 0; l < 5; l++) {
+				calendar = Calendar.getInstance();
+				calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
+				claim.getComments().add(new ApproverComment(user.getUUID(), getRandomString(r, 50, 200), calendar.getTime()));
 			}
 		}
 		

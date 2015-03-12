@@ -47,6 +47,7 @@
         <string name="claim_info_claim_return_button">Return Claim</string>
         <string name="claim_info_claim_approve_button">Approve Claim</string>
         <string name="claim_info_comment_prompt">Enter Comment</string>
+        <string name="claim_info_delete_message">Are you sure you want to delete this claim?</string>
 
         <!-- Used in menu -->
         <string name="claim_info_add_destination">Add Destination</string>

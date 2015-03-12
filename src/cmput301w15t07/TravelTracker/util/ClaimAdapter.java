@@ -74,12 +74,14 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		// Get all fields 
 		TextView name = (TextView) workingView.findViewById(R.id.claimsListRowItemName);
 		TextView date = (TextView) workingView.findViewById(R.id.claimsListRowItemDate);
+		TextView status = (TextView) workingView.findViewById(R.id.claimsListRowItemStatus);
 		LinearLayout destinationContainer = (LinearLayout) workingView.findViewById(R.id.claimsListDestinationContainer);
 		LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
 		Claim claim = getItem(position);
 		
 		name.setText(claim.getName());
 		date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
+		status.setText(claim.getStatus().toString());
 		
 		destinationContainer.removeAllViews();
 		totalsContainer.removeAllViews();

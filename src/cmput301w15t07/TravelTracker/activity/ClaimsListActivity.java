@@ -36,6 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.User;
@@ -45,6 +46,7 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
+import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
 
 /**
@@ -120,6 +122,9 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         userData = (UserData) bundle.getSerializable(USER_DATA);
 
         appendNameToTitle(userData.getName());
+        
+        //TODO this will break when we change data sources
+        ((Observable<InMemoryDataSource>) datasource).addObserver(this);
 	}
 	
 	@Override

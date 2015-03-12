@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -411,6 +412,16 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
         	lastApproverTextView.setText(lastApproverString);
     	}
+    	
+    	// Scroll to top now in case comment list has extended the layout
+    	// Referenced http://stackoverflow.com/a/4488149 on 12/03/15
+    	final ScrollView scrollView = (ScrollView) findViewById(R.id.claimInfoScrollView);
+    	
+    	scrollView.post(new Runnable() {
+			@Override public void run() {
+			    scrollView.fullScroll(ScrollView.FOCUS_UP);
+			}
+		});
     }
 
     public void viewItems() {

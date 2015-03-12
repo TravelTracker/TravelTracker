@@ -47,6 +47,9 @@
         <string name="claim_info_claim_return_button">Return Claim</string>
         <string name="claim_info_claim_approve_button">Approve Claim</string>
         <string name="claim_info_comment_prompt">Enter Comment</string>
+        <string name="claim_info_delete_message">Are you sure you want to delete this claim?</string>
+        <string name="claim_info_start_date_error">Start date must not come after end date</string>
+        <string name="claim_info_end_date_error">End date must not come before start date</string>
 
         <!-- Used in menu -->
         <string name="claim_info_add_destination">Add Destination</string>

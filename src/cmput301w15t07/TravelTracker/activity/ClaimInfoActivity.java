@@ -24,14 +24,29 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Space;
+import android.widget.TextView;
+import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -41,23 +56,6 @@ import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.NonScrollListView;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Space;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Activity for managing an individual Claim.  Possible as a Claimant or
@@ -129,7 +127,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             break;
             
         case R.id.claim_info_delete_claim:
-            deleteClaim();
+            promptDeleteClaim();
             break;
             
         case R.id.claim_info_sign_out:
@@ -248,7 +246,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             startDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(startDateButton, claim.getStartDate());
+                    startDatePressed();
                 }
             });
             
@@ -257,7 +255,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             endDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(endDateButton, claim.getEndDate());
+                   endDatePressed();
                 }
             });
             
@@ -319,10 +317,43 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         // TODO Auto-generated method stub
         
     }
+    
+    /**
+     * Prompt for deleting the claim.
+     */
+    public void promptDeleteClaim() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.claim_info_delete_message)
+			   .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						deleteClaim();
+					}
+			   })
+			   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Do nothing
+					}
+			   });
+		builder.create().show();
+    }
 
+    /**
+     * Delete the claim and finish the activity.
+     */
     public void deleteClaim() {
-        // TODO Auto-generated method stub
-        
+        datasource.deleteClaim(claimID, new ResultCallback<Void>() {
+			@Override
+			public void onResult(Void result) {
+				finish();
+			}
+			
+			@Override
+			public void onError(String message) {
+				Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+			}
+		});
     }
 
     /**
@@ -373,14 +404,24 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
         	String claimantString = getString(R.string.claim_info_claimant_name) + " " + claimant.getUserName();
         	claimantNameTextView.setText(claimantString);
-        	
-        	// Approver name (if there is one)
-        	if (approver != null) {
-            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
-            	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
-            	lastApproverTextView.setText(lastApproverString);
-        	}
         }
+    	
+    	// Approver name (if there is one)
+    	if (approver != null) {
+        	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+        	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
+        	lastApproverTextView.setText(lastApproverString);
+    	}
+    	
+    	// Scroll to top now in case comment list has extended the layout
+    	// Referenced http://stackoverflow.com/a/4488149 on 12/03/15
+    	final ScrollView scrollView = (ScrollView) findViewById(R.id.claimInfoScrollView);
+    	
+    	scrollView.post(new Runnable() {
+			@Override public void run() {
+			    scrollView.fullScroll(ScrollView.FOCUS_UP);
+			}
+		});
     }
 
     public void viewItems() {
@@ -391,14 +432,55 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         startActivity(intent);
     }
 
-    public void datePressed(final Button dateButton, final Date date) {
+    public void startDatePressed() {
+    	final Button dateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
+    	final Date date = claim.getStartDate();
+    	
         datePicker = new DatePickerFragment(date,
     		new DatePickerFragment.ResultCallback() {
 				@Override
 				public void onDatePickerFragmentResult(Date result) {
+					// Error if invalid date
+					if (result.after(claim.getEndDate())) {
+						String error = getString(R.string.claim_info_start_date_error);
+						Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+
 		        	// Update date button and calendar
-					date.setTime(result.getTime());
-					setButtonDate(dateButton, result);
+					} else {
+						date.setTime(result.getTime());
+						setButtonDate(dateButton, result);
+					}
+					
+					datePicker = null;
+				}
+				
+				@Override
+				public void onDatePickerFragmentCancelled() {
+					datePicker = null;
+				}
+			});
+        
+        datePicker.show(getFragmentManager(), "datePicker");
+    }
+
+    public void endDatePressed() {
+    	final Button dateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
+    	final Date date = claim.getEndDate();
+    	
+        datePicker = new DatePickerFragment(date,
+    		new DatePickerFragment.ResultCallback() {
+				@Override
+				public void onDatePickerFragmentResult(Date result) {
+					// Error if invalid date
+					if (result.before(claim.getStartDate())) {
+						String error = getString(R.string.claim_info_end_date_error);
+						Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+
+		        	// Update date button and calendar
+					} else {
+						date.setTime(result.getTime());
+						setButtonDate(dateButton, result);
+					}
 					
 					datePicker = null;
 				}

@@ -103,5 +103,6 @@
     <string name= "expense_item_info_amount">Amount</string>
     <string name= "expense_item_info_category">Category</string>
     <string name= "expense_item_info_description">Description</string>
+    <string name="claim_info_comments">Comments:</string>
 
 </resources>

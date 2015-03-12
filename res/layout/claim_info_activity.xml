@@ -103,6 +103,12 @@
             android:layout_height="wrap_content"
             android:text="@string/claim_info_last_approver" />
 
+        <TextView
+            android:id="@+id/TextView01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_comments" />
+
         <cmput301w15t07.TravelTracker.util.NonScrollListView
             android:id="@+id/claimInfoCommentsListView"
             android:layout_width="match_parent"

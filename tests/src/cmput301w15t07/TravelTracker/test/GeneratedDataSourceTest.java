@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 public class GeneratedDataSourceTest extends TestCase {
     /** The data source under test. */
     GeneratedDataSource source;
-    private final int NUM_CLAIMS = 100;
+    private final int NUM_CLAIMS = 10;
     private final int NUM_ITEMS = 10;
     
     public GeneratedDataSourceTest(String name) {
@@ -32,7 +32,7 @@ public class GeneratedDataSourceTest extends TestCase {
         
         Collection<Claim> claims = getClaims();
         
-        // Should have 100 claims
+        // Should have 10 claims
         assertEquals("Got incorrect number of claims: " + claims.size(), NUM_CLAIMS, claims.size());
         
         // All Claims should have the one User as parent

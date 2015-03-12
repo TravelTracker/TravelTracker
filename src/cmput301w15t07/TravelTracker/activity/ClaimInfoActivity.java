@@ -24,13 +24,18 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
@@ -38,6 +43,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +64,21 @@ import android.widget.Toast;
  *
  */
 public class ClaimInfoActivity extends TravelTrackerActivity {
+    /** String used to retrieve user data from intent */
+    public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
+    
+    /** String used to retrieve claim UUID from intent */
+    public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
+    
+    /** ID used to retrieve items from MutliCallback. */
+    public static final int MULTI_ITEMS_ID = 0;
+    
+    /** ID used to retrieve claimant from MutliCallback. */
+    public static final int MULTI_CLAIMANT_ID = 1;
+    
+    /** ID used to retrieve last approver from MutliCallback. */
+    public static final int MULTI_LAST_APPROVER_ID = 2;
+    
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -141,11 +162,22 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         datasource.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
 			public void onResult(final Claim claim) {
-				// Claim retrieved; need items too
-				datasource.getAllItems(new ResultCallback<Collection<Item>>() {
+				// Determine the number of approver comments
+				ArrayList<ApproverComment> comments = claim.getComments();
+				
+		        // Retrieve data
+		        MultiCallback multi = new MultiCallback(new ResultCallback<SparseArray<Object>>() {
 					@Override
-					public void onResult(final Collection<Item> items) {
-						onGetAllData(claim, items);
+					public void onResult(SparseArray<Object> result) {
+						User claimant = (User) result.get(MULTI_CLAIMANT_ID);
+						User approver = (User) result.get(MULTI_LAST_APPROVER_ID);
+						
+						// We know the return result is the right type, so an unchecked
+						// cast shouldn't be problematic 
+						@SuppressWarnings("unchecked")
+		                Collection<Item> items = (Collection<Item>) result.get(MULTI_ITEMS_ID);
+						
+						onGetAllData(claim, items, claimant, approver);
 					}
 					
 					@Override
@@ -153,6 +185,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 						Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
 					}
 				});
+		        
+		        // Create callbacks for MultiCallback
+		        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
+		        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
+		        
+		        if (comments.size() > 0) {
+		        	ApproverComment comment = comments.get(0);
+		        	datasource.getUser(comment.getApprover(), multi.<User>createCallback(MULTI_LAST_APPROVER_ID));
+		        }
+		        
+		        multi.ready();
 			}
 			
 			@Override
@@ -162,11 +205,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		});
     }
     
-    public void onGetAllData(final Claim claim, final Collection<Item> items) {
+    public void onGetAllData(final Claim claim, final Collection<Item> items, User claimant, User approver) {
     	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
-        populateClaimInfo(claim, items);
+        populateClaimInfo(claim, items, claimant, approver);
         
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -251,6 +294,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             tagsLinearLayout.setVisibility(View.GONE);
             tagsSpace.setVisibility(View.GONE);
             submitClaimButton.setVisibility(View.GONE);
+            
+            // No last approver
+            if (approver == null) {
+            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+            	lastApproverTextView.setVisibility(View.GONE);
+            }
         }
         
         onLoaded();
@@ -275,8 +324,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      * Populate the fields with data.
      * @param claim The claim being viewed.
      * @param items All items (which will be filtered by claim UUID).
+     * @param user The claimant, or null if the current user is the claimant.
+     * @param approver The last approver, or null if there isn't one.
      */
-    public void populateClaimInfo(Claim claim, Collection<Item> items) {
+    public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant, User approver) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
         setButtonDate(startDateButton, claim.getStartDate());
         
@@ -307,6 +358,20 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         String totalsString = TextUtils.join("\n", totals);
         TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);
         totalsTextView.setText(totalsString);
+        
+        if (userData.getRole() == UserRole.APPROVER) {
+        	// Claimant name
+        	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
+        	String claimantString = getString(R.string.claim_info_claimant_name) + " " + claimant.getUserName();
+        	claimantNameTextView.setText(claimantString);
+        	
+        	// Approver name (if there is one)
+        	if (approver != null) {
+            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+            	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
+            	lastApproverTextView.setText(lastApproverString);
+        	}
+        }
     }
 
     public void viewItems() {

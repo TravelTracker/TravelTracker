@@ -26,11 +26,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
-import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
@@ -60,12 +58,6 @@ import android.widget.Toast;
  *
  */
 public class ClaimInfoActivity extends TravelTrackerActivity {
-    /** String used to retrieve user data from intent */
-    public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
-    
-    /** String used to retrieve claim UUID from intent */
-    public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
-    
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -87,43 +79,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
         MenuItem deleteClaimMenuItem = menu.findItem(R.id.claim_info_delete_claim);
         
-        // Attach sign out listener to sign out menu item
-        MenuItem signOutMenuItem = menu.findItem(R.id.claim_info_sign_out);
-        signOutMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                signOut();
-                return false;
-            }
-        });
-        
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            // Attach add destination listener to add destination menu item
-            addDestinationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    addDestination();
-                    return false;
-                }
-            });
-
-            // Attach add item listener to add item menu item
-            addItemMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    addItem();
-                    return false;
-                }
-            });
-
-            // Attach delete claim listener to delete claim menu item
-            deleteClaimMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    deleteClaim();
-                    return false;
-                }
-            });
             
         } else if (userData.getRole().equals(UserRole.APPROVER)) {
             // Menu items an approver doesn't need to see or have access to
@@ -133,6 +89,32 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         }
         
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.claim_info_add_destination:
+            addDestination();
+            break;
+            
+        case R.id.claim_info_add_item:
+            addItem();
+            break;
+            
+        case R.id.claim_info_delete_claim:
+            deleteClaim();
+            break;
+            
+        case R.id.claim_info_sign_out:
+            signOut();
+            break;
+            
+        default:
+            break;
+        }
+        
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -153,14 +135,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
-        DataSourceSingleton app = (DataSourceSingleton) getApplication();
-        final DataSource source = app.getDataSource();
         
-        source.getClaim(claimID, new ResultCallback<Claim>() {
+        datasource.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
 			public void onResult(final Claim claim) {
 				// Claim retrieved; need items too
-				source.getAllItems(new ResultCallback<Collection<Item>>() {
+				datasource.getAllItems(new ResultCallback<Collection<Item>>() {
 					@Override
 					public void onResult(final Collection<Item> items) {
 						onGetAllData(claim, items);
@@ -184,7 +164,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
-        appendNameToTitle();
+        appendNameToTitle(userData.getName());
         populateClaimInfo(claim, items);
         
         // Claim attributes
@@ -275,15 +255,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         onLoaded();
     }
 
-    public void signOut() {
-    	// adapted from 
-    	//    http://stackoverflow.com/questions/6298275/how-to-finish-every-activity-on-the-stack-except-the-first-in-android
-    	// on 10 March 2015
-    	Intent intent = new Intent(this, LoginActivity.class);
-    	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Removes other Activities from stack
-    	startActivity(intent);
-    }
-
     public void addDestination() {
         // TODO Auto-generated method stub
     	
@@ -297,10 +268,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public void deleteClaim() {
         // TODO Auto-generated method stub
         
-    }
-
-    public void appendNameToTitle() {
-        setTitle(getTitle() + " - " + userData.getName());
     }
 
     /**

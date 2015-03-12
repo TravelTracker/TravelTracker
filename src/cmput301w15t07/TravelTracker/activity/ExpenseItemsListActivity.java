@@ -28,7 +28,6 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.util.ItemsListAdapter;
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 
@@ -41,13 +40,7 @@ import android.widget.ListView;
  *         braedy
  *
  */
-public class ExpenseItemsListActivity extends Activity {
-    /** String used to retrieve user data from intent */
-    public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
-    
-    /** String used to retrieve claim UUID from intent */
-    public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
-    
+public class ExpenseItemsListActivity extends TravelTrackerActivity {
     /** Data about the logged-in user. */
     private UserData userData;
     

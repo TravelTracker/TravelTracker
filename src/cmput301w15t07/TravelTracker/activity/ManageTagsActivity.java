@@ -22,17 +22,16 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import cmput301w15t07.TravelTracker.R;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 
 /**
  * Activity for a Claimant to manage his/her Tags.
  * 
- * @author kdbanman, colp
+ * @author kdbanman, colp, therabidsquirel
  *
  */
-public class ManageTagsActivity extends Activity {
+public class ManageTagsActivity extends TravelTrackerActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.manage_tags_menu, menu);

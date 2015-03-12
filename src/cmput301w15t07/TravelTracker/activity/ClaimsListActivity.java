@@ -21,10 +21,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-
 import java.util.Collection;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,30 +33,24 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.model.Claim;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.Observer;
 
-
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
  * 
- * @author kdbanman, colp, thornhil
+ * @author kdbanman, colp, thornhil, therabidsquirel
  *
  */
-public class ClaimsListActivity extends Activity implements Observer<InMemoryDataSource> {
-	/** String used to retrieve user data from intent */
-	public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
-	
+public class ClaimsListActivity extends TravelTrackerActivity implements Observer<InMemoryDataSource> {
 	//Class Fields
 	private ClaimAdapter adapter;
-	private DataSource ds;
 	private Collection<Claim> claims;
 	private Collection<Item> items;
 	private Context context;
@@ -70,42 +62,75 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claims_list_menu, menu);
         
+        // Menu items
+        MenuItem tagFilterMenuItem = menu.findItem(R.id.claims_list_filter_by_tag);
+        MenuItem tagManageMenuItem = menu.findItem(R.id.claims_list_manage_tags);
+        MenuItem addClaimMenuItem = menu.findItem(R.id.claims_list_add_claim);
+        
+        if (userData.getRole().equals(UserRole.CLAIMANT)) {
+            
+        } else if (userData.getRole().equals(UserRole.APPROVER)) {
+            // Menu items an approver doesn't need to see or have access to
+            tagFilterMenuItem.setEnabled(false).setVisible(false);
+            tagManageMenuItem.setEnabled(false).setVisible(false);
+            addClaimMenuItem.setEnabled(false).setVisible(false);
+        }
+        
         return true;
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
+    	case R.id.claims_list_filter_by_tag:
+    	    
+    	    return true;
+    	    
+    	case R.id.claims_list_manage_tags:
+    	    
+    	    return true;
+    	    
 		case R.id.claims_list_add_claim:
 			
 			return true;
-
+			
+        case R.id.claims_list_sign_out:
+            signOut();
+            break;
+            
 		default:
 			break;
 		}
+    	
     	return super.onOptionsItemSelected(item);
     }
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-        setContentView(R.layout.claims_list_activity);
+	    
         context = this;
+	}
+	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    
+        setContentView(R.layout.claims_list_activity);
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
-        ds = ((TravelTrackerApp) getApplication()).getDataSource();
+
+        appendNameToTitle(userData.getName());
         
-        adapter = new ClaimAdapter(this);
+        adapter = new ClaimAdapter(context);
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
         listView.setAdapter(adapter);
         updateUI();
         
-        
         listView.setOnItemClickListener(new itemSelectListener());
         //TODO get the data based on user
-        
         
 	}
 	
@@ -116,7 +141,7 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 	
 	public void updateUI(){
 		//TODO start a spinner here
-		ds.getAllClaims(new claimsRetrievedListener(adapter));
+		datasource.getAllClaims(new claimsRetrievedListener(adapter));
 	}
 	
 	private class claimsRetrievedListener implements ResultCallback<Collection<Claim>> {
@@ -130,7 +155,7 @@ public class ClaimsListActivity extends Activity implements Observer<InMemoryDat
 		@Override
 		public void onResult(Collection<Claim> result) {
 			claims = result;
-			ds.getAllItems(new itemsRetrievedListener(adapter));
+			datasource.getAllItems(new itemsRetrievedListener(adapter));
 		}
 
 		@Override

@@ -23,7 +23,6 @@ package cmput301w15t07.TravelTracker.activity;
 
 import java.util.Collection;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,10 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.TravelTrackerApp;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -43,10 +39,10 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 /**
  * Launch activity.  Log in as a User with a Name and Role.
  * 
- * @author kdbanman, colp
+ * @author kdbanman, colp, therabidsquirel
  *
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends TravelTrackerActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,9 +90,7 @@ public class LoginActivity extends Activity {
 		}
 		
 		// Try to get the user's ID to login
-		DataSourceSingleton app = (DataSourceSingleton) getApplication();
-		DataSource source = app.getDataSource();
-		source.getAllUsers(new LoginResultCallback(userName, role));
+		datasource.getAllUsers(new LoginResultCallback(userName, role));
 	}
 	
 	/**
@@ -136,9 +130,7 @@ public class LoginActivity extends Activity {
 			}
 			
 			// No user found; create a new one
-			DataSourceSingleton app = (DataSourceSingleton) getApplication();
-			DataSource source = app.getDataSource();
-			source.addUser(new ResultCallback<User>() {
+			datasource.addUser(new ResultCallback<User>() {
 				@Override
 				public void onResult(User result) {
 					result.setUserName(userName);

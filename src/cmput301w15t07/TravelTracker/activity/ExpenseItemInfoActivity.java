@@ -21,9 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.app.Activity;
 
 import android.content.Intent;
 
@@ -42,13 +40,12 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 /**
  * Activity for viewing and managing data related to an individual Expense Item.
  * 
- * @author kdbanman
- * 			skwidz
+ * @author kdbanman,
+ *         skwidz,
+ *         therabidsquirel
  *
  */
-public class ExpenseItemInfoActivity extends Activity {
-	public static final String USER_DATA = "cmput3031w15t07.TravelTracker.userData";
-	
+public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	private UserData userData;
 		
 
@@ -155,11 +152,6 @@ public class ExpenseItemInfoActivity extends Activity {
 
 	public void setItemStatus(Boolean status){
 		//TODO: implement status changes
-	}
-	
-	public void signOut() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public void deleteExpenseItem() {

@@ -27,6 +27,7 @@ import java.util.Collection;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,8 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
+import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
+import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.Observer;
 
 /**
@@ -53,8 +56,7 @@ import cmput301w15t07.TravelTracker.util.Observer;
 public class ClaimsListActivity extends TravelTrackerActivity implements Observer<InMemoryDataSource> {
 	//Class Fields
 	private ClaimAdapter adapter;
-	private Collection<Claim> claims;
-	private Collection<Item> items;
+	private InitialData data; 
 	private Context context;
 	
 	/** Data about the logged-in user. */
@@ -93,7 +95,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	    return true;
     	    
 		case R.id.claims_list_add_claim:
-			datasource.getUser(userData.getUUID(), new UserRetrievedCallback());
+			launchClaimInfoNewClaim(data.getUser());
 			return true;
 			
         case R.id.claims_list_sign_out:
@@ -151,7 +153,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	
 	private void updateUI(){
 		//TODO start a spinner here
-		datasource.getAllClaims(new claimsRetrievedListener(adapter));
+		new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
 	}
 	
 	private void launchClaimInfo(Claim claim){
@@ -162,98 +164,45 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	startActivity(intent);
 	}
 	
-	private class claimsRetrievedListener implements ResultCallback<Collection<Claim>> {
-		
-		private ClaimAdapter adapter;
-		
-		public claimsRetrievedListener(ClaimAdapter adapter) {
-			this.adapter = adapter;
+	private void launchClaimInfoNewClaim(User user){
+		try{
+			datasource.addClaim(user, new createNewClaimCallback());
+		} catch (NullPointerException e) {
+			// This probably means we are working offline
+			//TODO figure out what to do here
+			Log.d("ERROR", "The user in Initial Data is null");
 		}
-		
-		@Override
-		public void onResult(Collection<Claim> result) {
-			claims = result;
-			datasource.getAllItems(new itemsRetrievedListener(adapter));
-		}
-
-		@Override
-		public void onError(String message) {
-			// TODO raise a toast
-			
-		}
-		
 	}
 	
-	private class itemsRetrievedListener implements ResultCallback<Collection<Item>>{
-		
-		private ClaimAdapter adapter;
-		
-		public itemsRetrievedListener(ClaimAdapter adapter) {
-			this.adapter = adapter;
-		}
-		
+	class initalDataCallback implements ResultCallback<InitialData>{
+
 		@Override
-		public void onResult(Collection<Item> result) {
-			items = result;
-			adapter.rebuildList(claims, items);
-			
+		public void onResult(InitialData result) {
+			adapter.rebuildList(result.getClaims(), result.getItems());
+			data = result;
+			//TODO stop spinner
 		}
 
 		@Override
 		public void onError(String message) {
 			// TODO Auto-generated method stub
-			
+			// TODO stop spinner
 		}
 		
 	}
-	
-	private class tagsRetrievedListener implements ResultCallback<Collection<Item>>{
 
-		@Override
-		public void onResult(Collection<Item> result) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onError(String message) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	private class UserRetrievedCallback implements ResultCallback<User>{
-
-		@Override
-		public void onResult(User result) {
-			datasource.addClaim(result, new NewClaimCallback());
-			
-		}
-
-		@Override
-		public void onError(String message) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	private class NewClaimCallback implements ResultCallback<Claim>{
+	class createNewClaimCallback implements ResultCallback<Claim>{
 
 		@Override
 		public void onResult(Claim result) {
 			launchClaimInfo(result);
-			
 		}
 
 		@Override
 		public void onError(String message) {
 			// TODO Auto-generated method stub
-			
 		}
 		
 	}
-	
 	
 }

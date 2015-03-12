@@ -3,10 +3,14 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import android.content.Context;
 import android.util.SparseArray;
+import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.User;
+import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
@@ -14,17 +18,26 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 public class ClaimsListDataHelper {
 	
 	private static final int CLAIMS_ID = 0;
-	private static final int ITEMS_ID = 0;
-	private static final int USER_ID = 0;
+	private static final int ITEMS_ID = 1;
+	private static final int USER_ID = 2;
 	
 	private UserRole userRole;
 	private ResultCallback<InitialData> callback;
 	
-	
-	public void getInitialData(ResultCallback<InitialData> callback, UserRole userRole){
-		this.userRole = userRole;
+	/**
+	 * This method is used to retrieve Claims, Items, and the current User object
+	 * for use in the claimsList activity
+	 * @param callback
+	 * @param userRole
+	 */
+	public void getInitialData(ResultCallback<InitialData> callback, UserData userData, DataSource ds){
+		this.userRole = userData.getRole();
 		this.callback = callback;
-		new MultiCallback(new initalDataCallback());
+		MultiCallback mc = new MultiCallback(new initalDataCallback());
+		ds.getAllClaims(mc.<Collection<Claim>>createCallback(CLAIMS_ID));
+		ds.getAllItems(mc.<Collection<Item>>createCallback(ITEMS_ID));
+		ds.getUser(userData.getUUID(), mc.<User>createCallback(USER_ID));
+		mc.ready();
 	}
 	
 	private InitialData buildInitialData(SparseArray<Object> array, UserRole role){
@@ -68,7 +81,7 @@ public class ClaimsListDataHelper {
 		return outItems;
 	}
 	
-	class InitialData {
+	public class InitialData {
 		private User user;
 		private Collection<Claim> claims;
 		private Collection<Item> items;

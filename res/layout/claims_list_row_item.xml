@@ -5,34 +5,45 @@
     android:orientation="horizontal" 
     android:padding="5dp">
     
-	    <LinearLayout
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        android:layout_weight="0.7">
-
-	        <TextView 
-		        android:id="@+id/claimsListRowItemName"
+    	<RelativeLayout 
+    	    android:layout_width="0dp"
+    	    android:layout_height="match_parent"
+    	    android:layout_weight="0.7">
+    	    
+		    <LinearLayout
 		        android:layout_width="wrap_content"
-		       	android:layout_height="wrap_content"
-		       	android:textSize="20sp"
-		       	android:textStyle="bold"/>
-	        
-	        <TextView 
-	            android:id="@+id/claimsListRowItemDate"
-	            android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"/>
-	        
-	        <LinearLayout
-	        android:id="@+id/claimsListDestinationContainer" 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        android:paddingTop="10dp"
-	        android:paddingBottom="10dp"/>
-	        
-	        
-	    </LinearLayout>
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical">
+	
+		        <TextView 
+			        android:id="@+id/claimsListRowItemName"
+			        android:layout_width="wrap_content"
+			       	android:layout_height="wrap_content"
+			       	android:textSize="20sp"
+			       	android:textStyle="bold"/>
+		        
+		        <TextView 
+		            android:id="@+id/claimsListRowItemDate"
+		            android:layout_width="wrap_content"
+		        	android:layout_height="wrap_content"/>
+		        
+		        <LinearLayout
+		        android:id="@+id/claimsListDestinationContainer" 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:paddingTop="10dp"
+		        android:paddingBottom="10dp"/>
+		       		        
+		    </LinearLayout>
+		    
+		    <TextView 
+		            android:id="@+id/claimsListRowItemStatus"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentBottom="true"/>
+		    
+	    </RelativeLayout>
 	    
 	    <LinearLayout 
 	        android:layout_width="0dp"

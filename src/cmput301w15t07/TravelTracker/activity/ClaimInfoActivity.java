@@ -373,14 +373,14 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
         	String claimantString = getString(R.string.claim_info_claimant_name) + " " + claimant.getUserName();
         	claimantNameTextView.setText(claimantString);
-        	
-        	// Approver name (if there is one)
-        	if (approver != null) {
-            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
-            	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
-            	lastApproverTextView.setText(lastApproverString);
-        	}
         }
+    	
+    	// Approver name (if there is one)
+    	if (approver != null) {
+        	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+        	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
+        	lastApproverTextView.setText(lastApproverString);
+    	}
     }
 
     public void viewItems() {

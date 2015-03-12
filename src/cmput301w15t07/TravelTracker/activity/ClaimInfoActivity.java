@@ -359,6 +359,20 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);
         totalsTextView.setText(totalsString);
         
+        // Show approver comments
+        LinearLayout commentsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoCommentsLinearLayout);
+        for (ApproverComment comment : claim.getComments() ) {
+        	TextView commentTextView = new TextView(this);
+        	commentTextView.setText(comment.getComment());
+        	commentsLinearLayout.addView(commentTextView);
+        	// TODO inflate custom layout
+        	
+        	View horizontalRule = new View(this);
+        	horizontalRule.setBackgroundColor(0xFFCCCCCC);
+        	LinearLayout.LayoutParams ruleParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2);
+        	commentsLinearLayout.addView(horizontalRule, ruleParams);
+        }
+        
         if (userData.getRole() == UserRole.APPROVER) {
         	// Claimant name
         	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);

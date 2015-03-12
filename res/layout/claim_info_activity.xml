@@ -123,21 +123,24 @@
         <LinearLayout
             android:id="@+id/claimInfoApproverButtonsLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            style="?android:attr/buttonBarStyle" >
 
             <Button
                 android:id="@+id/claimInfoClaimReturnButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.50"
-                android:text="@string/claim_info_claim_return_button" />
+                android:text="@string/claim_info_claim_return_button"
+                style="?android:attr/buttonBarButtonStyle" />
 
             <Button
                 android:id="@+id/claimInfoClaimApproveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.50"
-                android:text="@string/claim_info_claim_approve_button" />
+                android:text="@string/claim_info_claim_approve_button"
+                style="?android:attr/buttonBarButtonStyle" />
 
         </LinearLayout>
 

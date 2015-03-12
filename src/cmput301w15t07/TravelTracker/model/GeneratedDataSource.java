@@ -2,7 +2,6 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.Calendar;
 import java.util.Currency;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;

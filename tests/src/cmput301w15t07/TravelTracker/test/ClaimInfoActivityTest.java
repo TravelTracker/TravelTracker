@@ -55,7 +55,7 @@ public class ClaimInfoActivityTest extends ActivityUnitTestCase<ClaimInfoActivit
 	
 	@Override
 	protected void setUp() throws Exception {
-	    super.setUp();
+	    /*super.setUp();
 		
 		MockTravelTrackerApp app = new MockTravelTrackerApp();
 		setApplication(app);
@@ -68,7 +68,7 @@ public class ClaimInfoActivityTest extends ActivityUnitTestCase<ClaimInfoActivit
 	    Intent intent = new Intent(instrumentation.getTargetContext(), ClaimInfoActivity.class);
 	    startActivity(intent, null, null);
 	    
-	    activity = getActivity();
+	    activity = getActivity();*/
 	}
 	
 	public void testCreateExpenseClaim() {

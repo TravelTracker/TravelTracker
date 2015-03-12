@@ -23,6 +23,7 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;

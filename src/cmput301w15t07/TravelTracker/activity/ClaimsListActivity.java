@@ -93,7 +93,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	    return true;
     	    
 		case R.id.claims_list_add_claim:
-
+			datasource.getUser(userData.getUUID(), new UserRetrievedCallback());
 			return true;
 			
         case R.id.claims_list_sign_out:
@@ -223,10 +223,27 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		
 	}
 	
-	private class CreateNewClaim implements ResultCallback<User>{
+	private class UserRetrievedCallback implements ResultCallback<User>{
 
 		@Override
 		public void onResult(User result) {
+			datasource.addClaim(result, new NewClaimCallback());
+			
+		}
+
+		@Override
+		public void onError(String message) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class NewClaimCallback implements ResultCallback<Claim>{
+
+		@Override
+		public void onResult(Claim result) {
+			launchClaimInfo(result);
 			
 		}
 

@@ -50,6 +50,11 @@ public class Claim extends Document {
 		super(docID);
 		destinations = new ArrayList<Destination>();
 		comments = new ArrayList<ApproverComment>();
+		tags = new ArrayList<UUID>();
+		startDate = new Date();
+		endDate = new Date();
+		status = Status.IN_PROGRESS;
+		name = "";
 	}
 	
 	public UUID getUser() {

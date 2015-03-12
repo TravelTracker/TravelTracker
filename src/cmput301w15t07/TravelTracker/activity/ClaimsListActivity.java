@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.security.interfaces.DSAKey;
 import java.util.Collection;
 
 import android.content.Context;
@@ -36,6 +37,7 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
@@ -91,7 +93,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	    return true;
     	    
 		case R.id.claims_list_add_claim:
-			
+
 			return true;
 			
         case R.id.claims_list_sign_out:
@@ -129,7 +131,15 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         listView.setAdapter(adapter);
         updateUI();
         
-        listView.setOnItemClickListener(new itemSelectListener());
+        listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				launchClaimInfo(adapter.getItem(position));
+				
+			}
+		});
         //TODO get the data based on user
         
 	}
@@ -139,9 +149,17 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		updateUI();
 	}
 	
-	public void updateUI(){
+	private void updateUI(){
 		//TODO start a spinner here
 		datasource.getAllClaims(new claimsRetrievedListener(adapter));
+	}
+	
+	private void launchClaimInfo(Claim claim){
+		Intent intent = new Intent(context, ClaimInfoActivity.class);
+    	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
+    	
+    	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
+    	startActivity(intent);
 	}
 	
 	private class claimsRetrievedListener implements ResultCallback<Collection<Claim>> {
@@ -177,7 +195,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		@Override
 		public void onResult(Collection<Item> result) {
 			items = result;
-			
 			adapter.rebuildList(claims, items);
 			
 		}
@@ -190,20 +207,36 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		
 	}
 	
-	private class itemSelectListener implements OnItemClickListener {
+	private class tagsRetrievedListener implements ResultCallback<Collection<Item>>{
 
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			Claim claim = adapter.getItem(position);
+		public void onResult(Collection<Item> result) {
+			// TODO Auto-generated method stub
 			
-		 	Intent intent = new Intent(context, ClaimInfoActivity.class);
-	    	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
-	    	
-	    	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
-	    	startActivity(intent);
+		}
+
+		@Override
+		public void onError(String message) {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}
+	
+	private class CreateNewClaim implements ResultCallback<User>{
+
+		@Override
+		public void onResult(User result) {
+			
+		}
+
+		@Override
+		public void onError(String message) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 	
 }

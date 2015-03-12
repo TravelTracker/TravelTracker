@@ -27,6 +27,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	/**
 	 * This function rebuilds the list with the passed claims
 	 * @param claims
+	 * @param items
 	 */
 	public void rebuildList(Collection<Claim> claims, Collection<Item> items){
 		this.claims = claims;
@@ -43,6 +44,21 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 
 		});
 		notifyDataSetChanged();
+	}
+	
+	/**
+	 * this method filters the list by tag
+	 * @param items
+	 */
+	public void filterListByTags(Collection<Item> items){
+		//TODO filter list by tags
+	}
+	
+	/**
+	 * This method removes all applied filters
+	 */
+	public void removeAllFilters(){
+		//TODO implement this
 	}
 	
 	@Override

@@ -85,11 +85,11 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     	case R.id.claims_list_filter_by_tag:
-    	    
+    	    //TODO milestone 5
     	    return true;
     	    
     	case R.id.claims_list_manage_tags:
-    	    
+    	    //TODO milestone 5
     	    return true;
     	    
 		case R.id.claims_list_add_claim:
@@ -98,7 +98,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			
         case R.id.claims_list_sign_out:
             signOut();
-            break;
+           return true;
             
 		default:
 			break;

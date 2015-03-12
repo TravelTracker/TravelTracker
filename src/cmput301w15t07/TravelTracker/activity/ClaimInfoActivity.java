@@ -24,6 +24,7 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
@@ -35,6 +36,7 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
@@ -42,7 +44,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,6 +70,15 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     
     /** String used to retrieve claim UUID from intent */
     public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
+    
+    /** ID used to retrieve items from MutliCallback. */
+    public static final int MULTI_ITEMS_ID = 0;
+    
+    /** ID used to retrieve claimant from MutliCallback. */
+    public static final int MULTI_CLAIMANT_ID = 1;
+    
+    /** ID used to retrieve last approver from MutliCallback. */
+    public static final int MULTI_LAST_APPROVER_ID = 2;
     
     /** Data about the logged-in user. */
     private UserData userData;
@@ -159,59 +170,25 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         DataSourceSingleton app = (DataSourceSingleton) getApplication();
         final DataSource source = app.getDataSource();
         
-        // Retrieve claim
-        // TODO: is there a better way to do this?
         source.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
 			public void onResult(final Claim claim) {
+				// Determine the number of approver comments
+				ArrayList<ApproverComment> comments = claim.getComments();
 				
-				// Claim retrieved; need items too
-				source.getAllItems(new ResultCallback<Collection<Item>>() {
+		        // Retrieve data
+		        MultiCallback multi = new MultiCallback(new ResultCallback<SparseArray<Object>>() {
 					@Override
-					public void onResult(final Collection<Item> items) {
+					public void onResult(SparseArray<Object> result) {
+						User claimant = (User) result.get(MULTI_CLAIMANT_ID);
+						User approver = (User) result.get(MULTI_LAST_APPROVER_ID);
 						
-						// Don't need claimant if this user is the claimant
-						if (userData.getRole() == UserRole.CLAIMANT) {
-							onGetAllData(claim, items, null, null);
-							
-						// Need the claimant name
-						} else if (userData.getRole() == UserRole.APPROVER) {
-							
-							// Retrieve claimant
-							source.getUser(claim.getUser(), new ResultCallback<User>() {
-								@Override
-								public void onResult(final User claimant) {
-									
-									ArrayList<ApproverComment> comments = claim.getComments();
-
-									// Retrieve last approver
-									if (comments.size() > 0) {
-										ApproverComment comment = comments.get(comments.size() - 1);
-										
-										source.getUser(comment.getApprover(), new ResultCallback<User>() {
-											@Override
-											public void onResult(final User approver) {
-												onGetAllData(claim, items, claimant, approver);
-											}
-											
-											@Override
-											public void onError(String message) {
-												Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-											}
-										});
-										
-									// No approvers yet
-									} else {
-										onGetAllData(claim, items, claimant, null);
-									}
-								}
-								
-								@Override
-								public void onError(String message) {
-									Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-								}
-							});
-						}
+						// We know the return result is the right type, so an unchecked
+						// cast shouldn't be problematic 
+						@SuppressWarnings("unchecked")
+		                Collection<Item> items = (Collection<Item>) result.get(MULTI_ITEMS_ID);
+						
+						onGetAllData(claim, items, claimant, approver);
 					}
 					
 					@Override
@@ -219,6 +196,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 						Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
 					}
 				});
+		        
+		        // Create callbacks for MultiCallback
+		        source.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
+		        source.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
+		        
+		        if (comments.size() > 0) {
+		        	ApproverComment comment = comments.get(0);
+		        	source.getUser(comment.getApprover(), multi.<User>createCallback(MULTI_LAST_APPROVER_ID));
+		        }
+		        
+		        multi.ready();
 			}
 			
 			@Override

@@ -37,16 +37,21 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
+import cmput301w15t07.TravelTracker.util.NonScrollListView;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -360,18 +365,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         totalsTextView.setText(totalsString);
         
         // Show approver comments
-        LinearLayout commentsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoCommentsLinearLayout);
-        for (ApproverComment comment : claim.getComments() ) {
-        	TextView commentTextView = new TextView(this);
-        	commentTextView.setText(comment.getComment());
-        	commentsLinearLayout.addView(commentTextView);
-        	// TODO inflate custom layout
-        	
-        	View horizontalRule = new View(this);
-        	horizontalRule.setBackgroundColor(0xFFCCCCCC);
-        	LinearLayout.LayoutParams ruleParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2);
-        	commentsLinearLayout.addView(horizontalRule, ruleParams);
-        }
+        NonScrollListView commentsLinearLayout = (NonScrollListView) findViewById(R.id.claimInfoCommentsListView);
+        commentsLinearLayout.setAdapter(new ApproverCommentAdapter(this, datasource, claim.getComments()));
         
         if (userData.getRole() == UserRole.APPROVER) {
         	// Claimant name

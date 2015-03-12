@@ -103,12 +103,12 @@
             android:layout_height="wrap_content"
             android:text="@string/claim_info_last_approver" />
 
-        <LinearLayout
-            android:id="@+id/claimInfoCommentsLinearLayout"
+        <cmput301w15t07.TravelTracker.util.NonScrollListView
+            android:id="@+id/claimInfoCommentsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-        </LinearLayout>
+        </cmput301w15t07.TravelTracker.util.NonScrollListView>
 
         <Space
             android:layout_width="match_parent"

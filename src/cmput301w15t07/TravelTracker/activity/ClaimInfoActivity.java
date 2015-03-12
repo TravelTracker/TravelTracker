@@ -246,7 +246,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             startDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(startDateButton, claim.getStartDate());
+                    startDatePressed();
                 }
             });
             
@@ -255,7 +255,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             endDateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    datePressed(endDateButton, claim.getEndDate());
+                   endDatePressed();
                 }
             });
             
@@ -432,14 +432,55 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         startActivity(intent);
     }
 
-    public void datePressed(final Button dateButton, final Date date) {
+    public void startDatePressed() {
+    	final Button dateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
+    	final Date date = claim.getStartDate();
+    	
         datePicker = new DatePickerFragment(date,
     		new DatePickerFragment.ResultCallback() {
 				@Override
 				public void onDatePickerFragmentResult(Date result) {
+					// Error if invalid date
+					if (result.after(claim.getEndDate())) {
+						String error = getString(R.string.claim_info_start_date_error);
+						Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+
 		        	// Update date button and calendar
-					date.setTime(result.getTime());
-					setButtonDate(dateButton, result);
+					} else {
+						date.setTime(result.getTime());
+						setButtonDate(dateButton, result);
+					}
+					
+					datePicker = null;
+				}
+				
+				@Override
+				public void onDatePickerFragmentCancelled() {
+					datePicker = null;
+				}
+			});
+        
+        datePicker.show(getFragmentManager(), "datePicker");
+    }
+
+    public void endDatePressed() {
+    	final Button dateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
+    	final Date date = claim.getEndDate();
+    	
+        datePicker = new DatePickerFragment(date,
+    		new DatePickerFragment.ResultCallback() {
+				@Override
+				public void onDatePickerFragmentResult(Date result) {
+					// Error if invalid date
+					if (result.before(claim.getStartDate())) {
+						String error = getString(R.string.claim_info_end_date_error);
+						Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+
+		        	// Update date button and calendar
+					} else {
+						date.setTime(result.getTime());
+						setButtonDate(dateButton, result);
+					}
 					
 					datePicker = null;
 				}

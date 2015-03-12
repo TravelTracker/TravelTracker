@@ -21,18 +21,15 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.UUID;
+
 import android.os.Bundle;
-
-import android.content.Intent;
-
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
-import android.widget.EditText;
-
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -46,14 +43,45 @@ import cmput301w15t07.TravelTracker.model.UserRole;
  *
  */
 public class ExpenseItemInfoActivity extends TravelTrackerActivity {
+    /** Data about the logged-in user. */
 	private UserData userData;
-		
 
+    /** UUID of the claim. */
+    private UUID claimID;
+    
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.expense_item_info_menu, menu);
+		
+		// Menu items
+		MenuItem deleteItemMenuItem = menu.findItem(R.id.expense_item_info_delete_item);
+		
+        if (userData.getRole().equals(UserRole.CLAIMANT)) {
+            
+        } else if (userData.getRole().equals(UserRole.APPROVER)) {
+            // Menu items an approver doesn't need to see or have access to
+            deleteItemMenuItem.setEnabled(false).setVisible(false);
+        }
+        
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	    case R.id.expense_item_info_delete_item:
+	        deleteExpenseItem();
+	        break;
+	        
+	    case R.id.expense_item_info_sign_out:
+	        signOut();
+	        break;
+	        
+	    default:
+	        break;
+	    }
+	    
+	    return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -65,43 +93,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		Bundle bundle = getIntent().getExtras();
 		userData = (UserData) bundle.getSerializable(USER_DATA);
 		
-		appendNameToTitle();
+        // Get claim info
+        claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
+
+		appendNameToTitle(userData.getName());
 		populateExpenseInfo();
 			
-		//Menu items
-		MenuItem deleteExpenseItemMenu = (MenuItem) findViewById(R.id.expense_item_info_delete_item);
-		MenuItem signOutMenu = (MenuItem) findViewById(R.id.expense_item_info_sign_out);
-		
-		//Attach menu listener to delete item menu button
-		if(userData.getRole().equals(UserRole.CLAIMANT)){
-			deleteExpenseItemMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-				
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					deleteExpenseItem();
-					return false;
-				}
-		
-			});
-		}
-		else if (userData.getRole().equals(UserRole.APPROVER)){
-			deleteExpenseItemMenu.setEnabled(false).setVisible(false);
-		}
-		
-		//Attach listener to sign out menu button
-		signOutMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-			
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				signOut();
-				return false;
-			}
-			
-		});
-		
-		
-		
-		
 		//attach view Listener for ItemStatus CheckedTextView
 		final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
 		itemStatus.setOnClickListener(new View.OnClickListener() {
@@ -157,10 +154,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	public void deleteExpenseItem() {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	public void appendNameToTitle(){
-		setTitle(getTitle() + " - " + userData.getName());
 	}
 	
 	public void datePressed(View date){

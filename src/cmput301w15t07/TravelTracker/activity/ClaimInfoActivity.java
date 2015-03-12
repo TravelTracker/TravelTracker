@@ -120,6 +120,15 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
+        
+        // Get claim info
+        claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
+        
+        appendNameToTitle(userData.getName());
     }
     
     @Override
@@ -128,13 +137,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	
     	// Show loading circle
         setContentView(R.layout.loading_indeterminate);
-        
-        // Retrieve user info from bundle
-        Bundle bundle = getIntent().getExtras();
-        userData = (UserData) bundle.getSerializable(USER_DATA);
-        
-        // Get claim info
-        claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
         datasource.getClaim(claimID, new ResultCallback<Claim>() {
 			@Override
@@ -164,7 +166,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	this.claim = claim;
     	setContentView(R.layout.claim_info_activity);
     	
-        appendNameToTitle(userData.getName());
         populateClaimInfo(claim, items);
         
         // Claim attributes

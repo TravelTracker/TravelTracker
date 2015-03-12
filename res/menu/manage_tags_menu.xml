@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" >
     
 	<item
-        android:id="@+id/edit_tags_sign_out"
+        android:id="@+id/manage_tags_sign_out"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/sign_out" />

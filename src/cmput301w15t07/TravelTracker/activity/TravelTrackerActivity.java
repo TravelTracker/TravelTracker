@@ -27,6 +27,7 @@ import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 /**
  * The base activity for TravelTracker activities.
@@ -68,8 +69,8 @@ public class TravelTrackerActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-	    super.onResume();
+	protected void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
 	    
 	    app = (DataSourceSingleton) getApplication();
         datasource = app.getDataSource();

@@ -110,6 +110,12 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	    super.onCreate(savedInstanceState);
 	    
         context = this;
+        
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
+
+        appendNameToTitle(userData.getName());
 	}
 	
 	@Override
@@ -117,12 +123,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	    super.onResume();
 	    
         setContentView(R.layout.claims_list_activity);
-        
-        // Retrieve user info from bundle
-        Bundle bundle = getIntent().getExtras();
-        userData = (UserData) bundle.getSerializable(USER_DATA);
-
-        appendNameToTitle(userData.getName());
         
         adapter = new ClaimAdapter(context);
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);

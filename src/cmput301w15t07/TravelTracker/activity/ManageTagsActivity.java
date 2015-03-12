@@ -22,8 +22,10 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.UserData;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  * Activity for a Claimant to manage his/her Tags.
@@ -32,6 +34,9 @@ import android.view.Menu;
  *
  */
 public class ManageTagsActivity extends TravelTrackerActivity {
+    /** Data about the logged-in user. */
+    private UserData userData;
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.manage_tags_menu, menu);
@@ -39,9 +44,29 @@ public class ManageTagsActivity extends TravelTrackerActivity {
         return true;
     }
     
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.manage_tags_sign_out:
+            signOut();
+            break;
+            
+        default:
+            break;
+        }
+        
+        return super.onOptionsItemSelected(item);
+    }
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_tags_activity);
+        
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
+        
+        appendNameToTitle(userData.getName());
 	}
 }

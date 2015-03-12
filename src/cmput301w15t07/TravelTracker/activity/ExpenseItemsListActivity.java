@@ -27,8 +27,11 @@ import java.util.UUID;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.util.ItemsListAdapter;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 /**
@@ -54,8 +57,58 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity {
     private ItemsListAdapter adapter;
     
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.expense_items_list_menu, menu);
+        
+        // Menu items
+        MenuItem addItemMenuItem = menu.findItem(R.id.expense_items_list_add_item);
+        
+        if (userData.getRole().equals(UserRole.CLAIMANT)) {
+            
+        } else if (userData.getRole().equals(UserRole.APPROVER)) {
+            // Menu items an approver doesn't need to see or have access to
+            addItemMenuItem.setEnabled(false).setVisible(false);
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.expense_items_list_add_item:
+            
+            return true;
+            
+        case R.id.expense_items_list_sign_out:
+            signOut();
+            break;
+            
+        default:
+            break;
+        }
+        
+        return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
+        
+        // Get claim info
+        claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
+
+        appendNameToTitle(userData.getName());
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
         setContentView(R.layout.expense_items_list_activity);
         
         itemsList = (ListView) findViewById(R.id.itemsListListView);
@@ -63,5 +116,4 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity {
         adapter = new ItemsListAdapter(this, new ArrayList<Item>());
         itemsList.setAdapter(adapter);
     }
-    
 }

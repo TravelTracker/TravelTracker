@@ -1,6 +1,6 @@
 package cmput301w15t07.TravelTracker.serverinterface;
 
-import java.util.Map;
+import android.util.SparseArray;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -30,8 +30,8 @@ import java.util.Map;
  * @author colp
  */
 public class MultiCallback {
-	/** Map from IDs to results. */
-	private Map<Integer, Object> results;
+	/** SparseArray of results. */
+	private SparseArray<Object> results;
 	
 	/** The number of remaining callbacks this is waiting for. */
 	private int remainingCallbacks;
@@ -40,24 +40,25 @@ public class MultiCallback {
 	private boolean ready = false;
 	
 	/** The callback to call when everything else has returned. */
-	private ResultCallback<Map<Integer, Object>> finalCallback;
+	private ResultCallback<SparseArray<Object>> finalCallback;
 	
 	/**
 	 * Construct a MultiCallback.
 	 * 
 	 * If all data is succesfully received, onResult will be called on the passed
-	 * ResultCallback with a map from IDs to data. If any callback fails, onError
+	 * ResultCallback with a SparseArray of data. If any callback fails, onError
 	 * will be called on the passed ResultCallback.
 	 * 
-	 * @param finalCallback The ResultCallback to return the map of data to.
+	 * @param finalCallback The ResultCallback to return the SparseArray of data to.
 	 */
-	public MultiCallback(ResultCallback<Map<Integer, Object>> finalCallback) {
+	public MultiCallback(ResultCallback<SparseArray<Object>> finalCallback) {
 	    this.finalCallback = finalCallback;
 	    remainingCallbacks = 0;
+	    results = new SparseArray<Object>();
     }
 	
 	/**
-	 * Creates a ResultCallback. When the data map is returned to the final
+	 * Creates a ResultCallback. When the data is returned to the final
 	 * callback, the key for the callback's result will be the ID passed to
 	 * this function.  
 	 * 
@@ -67,7 +68,7 @@ public class MultiCallback {
 	public <T> ResultCallback<T> createCallback(final int id) {
 		++remainingCallbacks;
 		
-		if (results.containsKey(id)) {
+		if (results.indexOfKey(id) >= 0) {
 			throw new RuntimeException("Already added a callback with this ID");
 		}
 		

@@ -89,6 +89,7 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+    <!-- Referenced http://stackoverflow.com/a/5732358 on 11/03/15 -->
     <macrodef name="run-tests-helper">
         <attribute name="emma.enabled" default="false" />
         <element name="extra-instrument-args" optional="yes" />

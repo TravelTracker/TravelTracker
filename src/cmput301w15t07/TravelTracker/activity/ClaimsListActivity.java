@@ -21,8 +21,6 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import java.security.interfaces.DSAKey;
-import java.util.Collection;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,9 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
-import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;

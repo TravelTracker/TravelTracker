@@ -3,9 +3,7 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import android.content.Context;
 import android.util.SparseArray;
-import cmput301w15t07.TravelTracker.TravelTrackerApp;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;

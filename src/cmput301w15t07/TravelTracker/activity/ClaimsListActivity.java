@@ -131,6 +131,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         adapter = new ClaimAdapter(context);
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
         listView.setAdapter(adapter);
+        
         if (userData.getRole().equals(UserRole.CLAIMANT)){
 	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 	        listView.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));

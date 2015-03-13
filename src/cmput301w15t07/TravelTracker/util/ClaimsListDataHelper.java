@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -53,11 +54,15 @@ public class ClaimsListDataHelper {
 		for (Claim c : claims){
 			if (role.equals(UserRole.APPROVER)) {
 				if (!c.getUser().equals(user.getUUID())){
-					outClaims.add(c);
+					if (c.getStatus().equals(Status.SUBMITTED)){
+						outClaims.add(c);
+					}
 				}
 			} else if (role.equals(UserRole.CLAIMANT)){
 				if (c.getUser().equals(user.getUUID())){
-					outClaims.add(c);
+					if (!c.getStatus().equals(Status.SUBMITTED)){
+						outClaims.add(c);
+					}
 				}
 			}
 		}

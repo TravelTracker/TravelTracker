@@ -3,6 +3,8 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.*;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.R;
 
 public class ClaimAdapter extends ArrayAdapter<Claim>{
@@ -81,7 +84,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		
 		name.setText(claim.getName());
 		date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
-		status.setText(claim.getStatus().toString());
+		setStatus(status, claim.getStatus());
 		
 		destinationContainer.removeAllViews();
 		totalsContainer.removeAllViews();
@@ -93,6 +96,17 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		return workingView;
 	}
 	
+	
+	private void setStatus(TextView display, Status status){
+		display.setText(status.toString());
+		if (status.equals(Status.APPROVED)){
+			display.setTextColor(Color.GREEN);
+		} else if (status.equals(Status.RETURNED)){
+			display.setTextColor(Color.RED);
+		} else {
+			display.setTextColor(Color.BLACK);
+		}
+	}
 	
 	private void addTotals(Claim claim, ViewGroup parent){
 		ArrayList<Item> relevantItems = new ArrayList<Item>();

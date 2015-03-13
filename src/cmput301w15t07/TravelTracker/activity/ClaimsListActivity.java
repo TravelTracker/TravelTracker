@@ -204,7 +204,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
 		@Override
 		public void onResult(InitialData result) {
-			adapter.rebuildList(result.getClaims(), result.getItems());
+			adapter.rebuildList(result.getClaims(), result.getItems(), userData.getRole());
 			data = result;
 			//TODO stop spinner
 		}

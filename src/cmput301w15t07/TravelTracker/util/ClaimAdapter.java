@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.util.*;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.R;
 
 public class ClaimAdapter extends ArrayAdapter<Claim>{
@@ -32,9 +34,10 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	 * @param claims
 	 * @param items
 	 */
-	public void rebuildList(Collection<Claim> claims, Collection<Item> items){
+	public void rebuildList(Collection<Claim> claims, Collection<Item> items, UserRole role){
 		this.claims = claims;
 		this.items = items;
+		final UserRole r = role;
 		//possible performance bottleneck
 		clear();
 		addAll(claims);
@@ -42,7 +45,11 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 
 			@Override
 			public int compare(Claim lhs, Claim rhs) {
-				return lhs.getStartDate().compareTo(rhs.getStartDate());
+				int compare = lhs.getStartDate().compareTo(rhs.getStartDate());
+				if (r.equals(UserRole.CLAIMANT)){
+					compare *= -1;
+				}
+				return compare;
 			}
 
 		});

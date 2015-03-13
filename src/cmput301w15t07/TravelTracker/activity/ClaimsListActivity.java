@@ -115,6 +115,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    setContentView(R.layout.claims_list_activity);
 	    
         context = this;
         
@@ -126,20 +127,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         
         //TODO this will break when we change data sources
         ((Observable<InMemoryDataSource>) datasource).addObserver(this);
-	}
-	
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	    
-        setContentView(R.layout.claims_list_activity);
         
         adapter = new ClaimAdapter(context);
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
         listView.setAdapter(adapter);
-        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        listView.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
-        updateUI();
+        if (userData.getRole().equals(UserRole.CLAIMANT)){
+	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+	        listView.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
+        }
         
         listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -150,8 +145,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 				
 			}
 		});
-        //TODO get the data based on user
+	}
+	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+        updateUI();
         
+        //TODO get the data based on user
 	}
 	
 	@Override

@@ -22,6 +22,8 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +44,8 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
+import cmput301w15t07.TravelTracker.util.MultiSelectListener;
+import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
 
@@ -80,6 +84,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         
         return true;
     }
+    
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -132,6 +137,8 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         adapter = new ClaimAdapter(context);
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
         listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
         updateUI();
         
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -150,6 +157,22 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	@Override
 	public void update(InMemoryDataSource observable) {
 		updateUI();
+	}
+	
+	private void deleteClaims(ArrayList<Integer> adapterPositions){
+		
+		//DONT delete directly with the positions
+		//They will change as you delete items
+		ArrayList<Claim> claimsToDelete = new ArrayList<Claim>();
+		deleteClaimCallback dcb = new deleteClaimCallback();
+		for (Integer i : adapterPositions){
+			claimsToDelete.add(adapter.getItem(i));
+		}
+		
+		for (Claim c : claimsToDelete){
+			adapter.remove(c);
+			datasource.deleteClaim(c.getUUID(), dcb);
+		}
 	}
 	
 	private void updateUI(){
@@ -202,6 +225,38 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		@Override
 		public void onError(String message) {
 			// TODO Auto-generated method stub
+		}
+		
+	}
+	
+	class deleteClaimCallback implements ResultCallback<Void>{
+
+		@Override
+		public void onResult(Void result) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void onError(String message) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+	
+	class contextMenuListener implements multiSelectMenuListener{
+
+		@Override
+		public void menuButtonClicked(ArrayList<Integer> selectedItems,
+				MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.claims_list_context_delete:
+				deleteClaims(selectedItems);
+				break;
+			default:
+				break;
+			}
+			
 		}
 		
 	}

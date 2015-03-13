@@ -21,18 +21,39 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.Date;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.app.Activity;
+
+import android.content.Intent;
+
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.Toast;
+
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.ItemCategory;
+import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+
 
 /**
  * Activity for viewing and managing data related to an individual Expense Item.
@@ -42,12 +63,29 @@ import cmput301w15t07.TravelTracker.model.UserRole;
  *         therabidsquirel
  *
  */
+
+/** TODO: cellinge
+ * 	Get all fields loading
+ * 		get spinners to load enums values correctly 
+ * 	Field saving on user input 
+ * 		
+ * 
+ * 
+ *
+ */
+
+
+
 public class ExpenseItemInfoActivity extends TravelTrackerActivity {
     /** Data about the logged-in user. */
 	private UserData userData;
 
     /** UUID of the claim. */
     private UUID claimID;
+    
+    /** the current Item */
+    private UUID itemID;
+    Item item; 
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,13 +127,19 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.expense_info_activity);
 		
+		//show loading circles
+		setContentView(R.layout.loading_indeterminate);
+		
 		//user info from bundles
 		Bundle bundle = getIntent().getExtras();
 		userData = (UserData) bundle.getSerializable(USER_DATA);
 		
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
-
+        
+        //get item into
+        itemID = (UUID) bundle.getSerializable(ITEM_UUID);        		
+        
 		appendNameToTitle(userData.getName());
 		populateExpenseInfo();
 			
@@ -142,13 +186,74 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 	}
 	
+	
+	protected void onResume() {
+		super.onResume();
+		
+		//show loading circle
+		setContentView(R.layout.loading_indeterminate);
+		
+		//Retrieve user data from bundle
+		Bundle bundle = getIntent().getExtras();
+		userData = (UserData) bundle.getSerializable(USER_DATA);
+		
+		//get item info
+		itemID = (UUID) bundle.getSerializable(ITEM_UUID);
+		DataSourceSingleton app = (DataSourceSingleton) getApplication();
+		final DataSource source = app.getDataSource();
+		
+		source.getItem(itemID, new ResultCallback<Item>() {
+			
+			@Override
+			public void onResult(Item item) {
+				populateExpenseInfo();
+			}
+			
+			@Override
+			public void onError(String message) {
+				Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+			}
+		});
+				
+	}
+	
 	private void populateExpenseInfo() {
-		// TODO Auto-generated method stub
+		
+		//TODO: fix loading of data into buttons 
+		//TODO: possibly catch null pointer exceptions?
+		Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
+		//setButtonDate(itemDateButton, item.getDate());
+		
+		//TODO: populate receipt image
+		
+		//TODO: Note, amount string will have to be changed back to float before being inserted into model
+		String amount = Float.toString(item.getAmount());
+		EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+		//itemAmount.setText(amount);
+		
+		//TODO: import data for currency spinner
+		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
+		currencySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
+		//currencySpinner.setPrompt(item.getCurrency());
+		
+		//TODO: import the category for the spinner
+		Spinner categorySpinner = (Spinner)	findViewById(R.id.expenseItemInfoCategorySpinner);
+		categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
+		
+		//categorySpinner.setPrompt();
+		
+		EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+		//itemDescription.setText(item.getDescription());
 		
 	}
 
+	private void setButtonDate(Button dateButton, Date date) {
+		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
+    	String dateString = dateFormat.format(date);
+		dateButton.setText(dateString);
+	}
 	public void setItemStatus(Boolean status){
-		//TODO: implement status changes
+		item.setStatus(status);
 	}
 	
 	public void deleteExpenseItem() {

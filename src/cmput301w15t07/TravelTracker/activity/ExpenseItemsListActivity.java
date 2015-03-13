@@ -25,14 +25,19 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ItemsListAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Activity for listing all expense Items belonging to a particular Claim.
@@ -41,6 +46,7 @@ import android.widget.ListView;
  * @author kdbanman,
  *         therabidsquirel,
  *         braedy
+ *         cellinge
  *
  */
 public class ExpenseItemsListActivity extends TravelTrackerActivity {
@@ -55,6 +61,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity {
     
     /** ListView adapter */
     private ItemsListAdapter adapter;
+    
+    /** The current claim */ 
+    Claim claim;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,7 +86,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.expense_items_list_add_item:
-            
+        	//TODO get claim instance for this. 
+        	launchExpenseInfoNewExpense(claim);
             return true;
             
         case R.id.expense_items_list_sign_out:
@@ -90,6 +100,21 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity {
         
         return super.onOptionsItemSelected(item);
     }
+    
+    private void launchExpenseInfoNewExpense(Claim claim){
+    	try{
+    		datasource.addItem(claim, new createNewItemCallback());
+    	} catch (NullPointerException e){
+    		//figure out something to do here
+    	}
+    }
+    
+    private void launchExpenseItemInfo(Item item){
+    	Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
+    	intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
+    	intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
+    	startActivity(intent);
+    	}
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,5 +140,33 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity {
         
         adapter = new ItemsListAdapter(this, new ArrayList<Item>());
         itemsList.setAdapter(adapter);
+        //Get the current claim to be passed down to items
+        datasource.getClaim(claimID, new ResultCallback<Claim>() {
+
+			@Override
+			public void onResult(Claim result) {
+				claim = result;  
+			}
+
+			@Override
+			public void onError(String message) {
+				Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
+				
+			}
+        	
+		});
+    }
+    
+    
+    
+    class createNewItemCallback implements ResultCallback<Item>{
+    	@Override
+    	public void onResult(Item result){
+    		launchExpenseItemInfo(result);
+    	}
+    	@Override
+    	public void onError(String message){
+    		
+    	}
     }
 }

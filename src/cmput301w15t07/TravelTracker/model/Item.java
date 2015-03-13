@@ -40,7 +40,10 @@ public class Item extends Document {
 	private Float amount;
 	private Currency currency;
 	private Receipt receipt;
+	private Boolean status;
 	
+	
+
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
 	 * 
@@ -105,5 +108,12 @@ public class Item extends Document {
 		this.receipt = receipt;
 		this.updateObservers(this);
 	}
-	
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+		this.updateObservers(this);
+	}
 }

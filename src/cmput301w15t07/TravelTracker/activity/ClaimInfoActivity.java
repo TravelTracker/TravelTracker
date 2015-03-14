@@ -323,7 +323,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         // Get list of claim items
         ArrayList<Item> claimItems = new ArrayList<Item>();
         for (Item item : items) {
-        	if (item.getClaim() == claim.getUUID()) {
+        	if (item.getClaim().equals(claim.getUUID())) {
         		claimItems.add(item);
         	}
         }

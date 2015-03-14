@@ -40,9 +40,7 @@ public class Item extends Document {
 	private Float amount;
 	private Currency currency;
 	private Receipt receipt;
-	private Boolean status;
-	
-	
+	private boolean status;
 
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -51,6 +49,24 @@ public class Item extends Document {
 	 */
 	Item(UUID docID) {
 		super(docID);
+		
+		claim = null;
+		
+		// Empty description
+		description = "";
+		
+		category = null;
+		
+		date = null;
+		
+		// Start at 0 of unknown currency
+		amount = 0.f;
+		currency = null;
+		
+		receipt = null;
+		
+		status = true;
+		
 	}
 	
 	public UUID getClaim() {
@@ -108,11 +124,11 @@ public class Item extends Document {
 		this.receipt = receipt;
 		this.updateObservers(this);
 	}
-	public Boolean getStatus() {
+	public boolean getStatus() {
 		return status;
 	}
 
-	public void setStatus(Boolean status) {
+	public void setStatus(boolean status) {
 		this.status = status;
 		this.updateObservers(this);
 	}

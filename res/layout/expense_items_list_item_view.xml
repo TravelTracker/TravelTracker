@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:columnCount="4"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:visibility="visible" >
 
     <Space
         android:layout_column="3"
@@ -49,6 +50,8 @@
         android:layout_gravity="left|top"
         android:layout_row="0"
         android:gravity="center"
-        android:text="@string/expense_items_list_info_error" />
+        android:text="@string/expense_items_list_incomplete"
+        android:textColor="#FF0000"
+        android:visibility="invisible" />
 
 </GridLayout>

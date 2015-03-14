@@ -120,7 +120,7 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 		Intent newIntent = loginWithDetails("Foobar", UserRole.APPROVER);
 		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		assertEquals("Role should be claimant", UserRole.APPROVER, userData.getRole());
+		assertEquals("Role should be approver", UserRole.APPROVER, userData.getRole());
 	}
 	
 	public void testLoginNewUser() throws InterruptedException {

@@ -29,7 +29,7 @@
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal|top"
         android:layout_row="1"
-        android:text="@string/expense_item_info_error" />
+        android:text="@string/expense_items_list_info_error" />
 
     <TextView
         android:id="@+id/itemsListItemViewDateTextView"
@@ -39,7 +39,7 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_row="0"
         android:gravity="center"
-        android:text="@string/expense_item_info_error" />
+        android:text="@string/expense_items_list_info_error" />
 
     <TextView
         android:id="@+id/itemsListItemViewStatusTextView"
@@ -49,6 +49,6 @@
         android:layout_gravity="left|top"
         android:layout_row="0"
         android:gravity="center"
-        android:text="@string/expense_item_info_error" />
+        android:text="@string/expense_items_list_info_error" />
 
 </GridLayout>

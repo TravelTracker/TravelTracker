@@ -64,6 +64,7 @@
     	
     <!-- Strings used in ExpenseItemInfoActivity -->
         <string name="expense_item_info_label">Expense Item Info</string>
+        <string name="expense_items_list_incomplete">Incomplete</string>
     
         <!-- Used in menu -->
         <string name="expense_item_info_delete_item">Delete Expense Item</string>

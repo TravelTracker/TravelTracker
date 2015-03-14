@@ -252,7 +252,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
     	String dateString = dateFormat.format(date);
 		dateButton.setText(dateString);
 	}
-	public void setItemStatus(Boolean status){
+	
+	public void setItemStatus(boolean status){
 		item.setStatus(status);
 	}
 	

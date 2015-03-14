@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="@string/expense_item_info_staus" 
+        android:text="@string/expense_item_info_status" 
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:checked="false" />
     

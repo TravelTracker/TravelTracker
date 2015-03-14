@@ -162,54 +162,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	// Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
-        datasource.getClaim(claimID, new ResultCallback<Claim>() {
-			@Override
-			public void onResult(final Claim claim) {
-				// Determine the number of approver comments
-				ArrayList<ApproverComment> comments = claim.getComments();
-				
-		        // Retrieve data
-		        MultiCallback multi = new MultiCallback(new ResultCallback<SparseArray<Object>>() {
-					@Override
-					public void onResult(SparseArray<Object> result) {
-						User claimant = (User) result.get(MULTI_CLAIMANT_ID);
-						User approver = (User) result.get(MULTI_LAST_APPROVER_ID);
-						
-						// We know the return result is the right type, so an unchecked
-						// cast shouldn't be problematic 
-						@SuppressWarnings("unchecked")
-		                Collection<Item> items = (Collection<Item>) result.get(MULTI_ITEMS_ID);
-						
-						onGetAllData(claim, items, claimant, approver);
-					}
-					
-					@Override
-					public void onError(String message) {
-						Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-					}
-				});
-		        
-		        // Create callbacks for MultiCallback
-		        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
-		        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
-		        
-		        if (comments.size() > 0) {
-		        	ApproverComment comment = comments.get(0);
-		        	datasource.getUser(comment.getApprover(), multi.<User>createCallback(MULTI_LAST_APPROVER_ID));
-		        }
-		        
-		        multi.ready();
-			}
-			
-			@Override
-			public void onError(String message) {
-				Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-			}
-		});
+        datasource.getClaim(claimID, new ClaimCallback());
     }
     
-    public void onGetAllData(final Claim claim, final Collection<Item> items, User claimant, User approver) {
-    	this.claim = claim;
+    public void onGetAllData(final Collection<Item> items, User claimant, User approver) {
     	setContentView(R.layout.claim_info_activity);
     	
         populateClaimInfo(claim, items, claimant, approver);
@@ -343,17 +299,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      * Delete the claim and finish the activity.
      */
     public void deleteClaim() {
-        datasource.deleteClaim(claimID, new ResultCallback<Void>() {
-			@Override
-			public void onResult(Void result) {
-				finish();
-			}
-			
-			@Override
-			public void onError(String message) {
-				Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-			}
-		});
+        datasource.deleteClaim(claimID, new DeleteCallback());
     }
 
     /**
@@ -433,63 +379,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void startDatePressed() {
-    	final Button dateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
-    	final Date date = claim.getStartDate();
+    	Date date = claim.getStartDate();
     	
-        datePicker = new DatePickerFragment(date,
-    		new DatePickerFragment.ResultCallback() {
-				@Override
-				public void onDatePickerFragmentResult(Date result) {
-					// Error if invalid date
-					if (result.after(claim.getEndDate())) {
-						String error = getString(R.string.claim_info_start_date_error);
-						Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
-
-		        	// Update date button and calendar
-					} else {
-						date.setTime(result.getTime());
-						setButtonDate(dateButton, result);
-					}
-					
-					datePicker = null;
-				}
-				
-				@Override
-				public void onDatePickerFragmentCancelled() {
-					datePicker = null;
-				}
-			});
+        datePicker = new DatePickerFragment(date, new StartDateCallback());
         
         datePicker.show(getFragmentManager(), "datePicker");
     }
 
     public void endDatePressed() {
-    	final Button dateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
-    	final Date date = claim.getEndDate();
+    	Date date = claim.getEndDate();
     	
-        datePicker = new DatePickerFragment(date,
-    		new DatePickerFragment.ResultCallback() {
-				@Override
-				public void onDatePickerFragmentResult(Date result) {
-					// Error if invalid date
-					if (result.before(claim.getStartDate())) {
-						String error = getString(R.string.claim_info_end_date_error);
-						Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
-
-		        	// Update date button and calendar
-					} else {
-						date.setTime(result.getTime());
-						setButtonDate(dateButton, result);
-					}
-					
-					datePicker = null;
-				}
-				
-				@Override
-				public void onDatePickerFragmentCancelled() {
-					datePicker = null;
-				}
-			});
+        datePicker = new DatePickerFragment(date, new EndDateCallback());
         
         datePicker.show(getFragmentManager(), "datePicker");
     }
@@ -522,4 +422,130 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	String dateString = dateFormat.format(date);
 		dateButton.setText(dateString);
     }
+    
+    /**
+     * Callback for claim data.
+     */
+    class ClaimCallback implements ResultCallback<Claim> {
+		@Override
+		public void onResult(Claim claim) {
+			ClaimInfoActivity.this.claim = claim;
+			
+			// Determine the number of approver comments
+			ArrayList<ApproverComment> comments = claim.getComments();
+			
+	        // Retrieve data
+	        MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());
+	        
+	        // Create callbacks for MultiCallback
+	        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
+	        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
+	        
+	        if (comments.size() > 0) {
+	        	ApproverComment comment = comments.get(0);
+	        	datasource.getUser(comment.getApprover(), multi.<User>createCallback(MULTI_LAST_APPROVER_ID));
+	        }
+	        
+	        multi.ready();
+		}
+		
+		@Override
+		public void onError(String message) {
+			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+		}
+	}
+    
+    /**
+     * Callback for multiple types of claim data.
+     */
+    class ClaimDataMultiCallback implements ResultCallback<SparseArray<Object>> {
+		@Override
+		public void onResult(SparseArray<Object> result) {
+			User claimant = (User) result.get(MULTI_CLAIMANT_ID);
+			User approver = (User) result.get(MULTI_LAST_APPROVER_ID);
+			
+			// We know the return result is the right type, so an unchecked
+			// cast shouldn't be problematic 
+			@SuppressWarnings("unchecked")
+            Collection<Item> items = (Collection<Item>) result.get(MULTI_ITEMS_ID);
+			
+			onGetAllData(items, claimant, approver);
+		}
+		
+		@Override
+		public void onError(String message) {
+			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+		}
+	}
+    
+    /**
+     * Callback for claim deletion.
+     */
+    class DeleteCallback implements ResultCallback<Void> {
+		@Override
+		public void onResult(Void result) {
+			finish();
+		}
+		
+		@Override
+		public void onError(String message) {
+			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+		}
+	}
+    
+    /**
+     * Callback for when a new start date is selected.
+     */
+    class StartDateCallback implements DatePickerFragment.ResultCallback {
+		@Override
+		public void onDatePickerFragmentResult(Date result) {
+			// Error if invalid date
+			if (result.after(claim.getEndDate())) {
+				String error = getString(R.string.claim_info_start_date_error);
+				Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+
+        	// Update date button and date
+			} else {
+				claim.setStartDate(result);
+				
+				Button button = (Button) findViewById(R.id.claimInfoStartDateButton);
+				setButtonDate(button, result);
+			}
+			
+			datePicker = null;
+		}
+		
+		@Override
+		public void onDatePickerFragmentCancelled() {
+			datePicker = null;
+		}
+	}
+    
+    /**
+     * Callback for when a new end date is selected.
+     */
+    class EndDateCallback implements DatePickerFragment.ResultCallback {
+		@Override
+		public void onDatePickerFragmentResult(Date result) {
+			// Error if invalid date
+			if (result.before(claim.getStartDate())) {
+				String error = getString(R.string.claim_info_end_date_error);
+				Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+
+        	// Update date button and calendar
+			} else {
+				claim.setEndDate(result);
+				
+				Button button = (Button) findViewById(R.id.claimInfoEndDateButton);
+				setButtonDate(button, result);
+			}
+			
+			datePicker = null;
+		}
+		
+		@Override
+		public void onDatePickerFragmentCancelled() {
+			datePicker = null;
+		}
+	}
 }

@@ -117,6 +117,17 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				
 				item.setDate(calendar.getTime());
 				item.setDescription(getRandomString(r, 20, 76)); // Description 20-75
+	            
+	            switch(r.nextInt(2)) {
+	            case 0:
+	                item.setStatus(true);
+	                break;
+	            case 1:
+	                item.setStatus(false);
+	                break;
+	            default:
+	                item.setStatus(true);
+	            }
 				
 				// Set receipt, can't generate a receipt right now
 				//item.setReceipt(receipt);

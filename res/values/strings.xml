@@ -60,7 +60,7 @@
      
     <!-- Strings used in ExpenseItemsListItemView -->
         <!-- Used in layout -->
-        <string name="expense_item_info_error">FIELD NOT FILLED</string>
+        <string name="expense_items_list_info_error">FIELD NOT FILLED</string>
     	
     <!-- Strings used in ExpenseItemInfoActivity -->
         <string name="expense_item_info_label">Expense Item Info</string>

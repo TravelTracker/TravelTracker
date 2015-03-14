@@ -32,7 +32,7 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.MockTravelTrackerApp;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
-import cmput301w15t07.TravelTracker.util.ItemsListAdapter;
+import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -60,7 +60,7 @@ public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseIt
     Claim claim = null; // The specific claim we'll use items from
     
     ListView itemsList;
-    ItemsListAdapter adapter;
+    ExpenseItemsListAdapter adapter;
     
     private static final String LOG_TAG = "ExpenseItemsListTest";
     
@@ -127,7 +127,7 @@ public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseIt
 
         activity = getActivity();
         itemsList = (ListView) activity.findViewById(cmput301w15t07.TravelTracker.R.id.itemsListListView);
-        adapter = (ItemsListAdapter) itemsList.getAdapter();
+        adapter = (ExpenseItemsListAdapter) itemsList.getAdapter();
 	}
 	
 	public void testPreconditions() {

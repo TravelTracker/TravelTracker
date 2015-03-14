@@ -36,6 +36,11 @@ import android.app.Application;
 public class TravelTrackerApp extends Application implements DataSourceSingleton {
     private DataSource ds;
     
+    @Override
+    public void setDataSource(DataSource source) {
+        ds = source;
+    }
+    
     public DataSource getDataSource() {
     	return ds;
     }

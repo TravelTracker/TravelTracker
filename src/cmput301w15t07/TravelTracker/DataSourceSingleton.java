@@ -31,9 +31,17 @@ import cmput301w15t07.TravelTracker.model.DataSource;
  *
  */
 public interface DataSourceSingleton {
-
 	/**
+	 * Set the application's data source.
 	 * 
+	 * This should only be used for dependency injection testing.
+	 * 
+	 * @param source The new source to use.
+	 */
+	public void setDataSource(DataSource source);
+	
+	/**
+	 * Get the application's data source.
 	 * @return The single instance of DataSource for the application.
 	 */
 	public DataSource getDataSource();

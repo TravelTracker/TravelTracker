@@ -42,6 +42,11 @@ public class MockTravelTrackerApp extends MockApplication implements
     	return ds;
     }
     
+    @Override
+    public void setDataSource(DataSource source) {
+        ds = source;
+    }
+    
     /**
      * Create the app using the default InMemoryDataSource.
      */

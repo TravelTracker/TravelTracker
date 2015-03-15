@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -32,14 +33,14 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
+import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.Observer;
+import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -150,17 +151,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         datasource.getAllItems(new GetAllItemsCallback(this, adapter));
         
         //Get the current claim to be passed down to items
-        datasource.getClaim(claimID, new ResultCallback<Claim>() {
-			@Override
-			public void onResult(Claim result) {
-				claim = result;  
-			}
-
-			@Override
-			public void onError(String message) {
-				Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
-			}
-		});
+        datasource.getClaim(claimID, new GetClaimCallback());
     }
     
     /**
@@ -178,8 +169,11 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             // Get itemsList and set its adapter
             itemsList = (ListView) findViewById(R.id.itemsListListView);
             itemsList.setAdapter(adapter);
-            itemsList.setOnItemClickListener(new OnItemClickListener() {
 
+            itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            itemsList.setMultiChoiceModeListener(new MultiSelectListener(new ContextMenuListener(), R.menu.items_list_context_menu));
+            
+            itemsList.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view,
                         int position, long id) {
@@ -198,6 +192,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
         intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
+        intent.putExtra(ExpenseItemInfoActivity.CLAIM_UUID, claim.getUUID());
         intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
         startActivity(intent);
     }
@@ -205,6 +200,20 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     @Override
     public void update(InMemoryDataSource observable) {
         observable.getAllItems(new GetAllItemsCallback(this, adapter));
+    }
+
+    public void deleteItems(ArrayList<Integer> selectedItems) {
+        // Deleting in place is bad
+        ArrayList<Item> delete = new ArrayList<Item>();
+        for (int i: selectedItems) {
+            delete.add(adapter.getItem(i));
+        }
+        
+        DeleteItemCallback cb = new DeleteItemCallback();
+        for (Item i: delete) {
+            adapter.remove(i);
+            datasource.deleteItem(i.getUUID(), cb);
+        }
     }
     
     class CreateNewItemCallback implements ResultCallback<Item> {
@@ -214,7 +223,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     	}
     	@Override
     	public void onError(String message){
-    		
+    		Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_SHORT).show();
     	}
     }
     
@@ -242,6 +251,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         public void onResult(Collection<Item> result) {
             adapter.rebuildList(result, claimID);
             
+            // Request to change to list view
             if (activity != null) {
                 activity.changeUI();
             }
@@ -249,7 +259,53 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         
         @Override
         public void onError(String message){
-            
+            Toast.makeText(ExpenseItemsListActivity.this,
+                    message,
+                    Toast.LENGTH_SHORT)
+                    .show();
         }
     }
+    
+    class GetClaimCallback implements ResultCallback<Claim> {
+        @Override
+        public void onResult(Claim result) {
+            claim = result;  
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
+    
+    class DeleteItemCallback implements ResultCallback<Void> {
+        // Do nothing
+        @Override
+        public void onResult(Void result) {}
+        
+        // Make toast
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemsListActivity.this,
+                    message,
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+    
+    class ContextMenuListener implements multiSelectMenuListener {
+
+        @Override
+        public void menuButtonClicked(ArrayList<Integer> selectedItems,
+                MenuItem item) {
+            switch (item.getItemId()) {
+            case R.id.items_list_context_delete:
+                deleteItems(selectedItems);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    
 }

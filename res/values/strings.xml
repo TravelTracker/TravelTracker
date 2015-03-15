@@ -54,7 +54,7 @@
         <string name="claim_info_delete_message">Are you sure you want to delete this claim?</string>
         <string name="claim_info_start_date_error">Start date must not come after end date</string>
         <string name="claim_info_end_date_error">End date must not come before start date</string>
-        <string name="claim_info_destination_edit_title">Edit destination?</string>
+        <string name="claim_info_destination_edit_title">Destination Editor</string>
         <string name="claim_info_destination_edit_location">Location:</string>
         <string name="claim_info_destination_edit_reason">Reason:</string>
         <string name="claim_info_destination_error">Destinations must have a location</string>

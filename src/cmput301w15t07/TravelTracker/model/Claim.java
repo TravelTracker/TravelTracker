@@ -180,21 +180,27 @@ public class Claim extends Document {
 		this.comments = comments;
 		this.updateObservers(this);
 	}
-<<<<<<< HEAD
+	
+	/**
+	 * Add a premade comment to the claim.
+	 * @param comment The comment to add.
+	 */
 	public void addComment(ApproverComment comment) {
 		this.comments.add(comment);
 	}
+	
+	/**
+	 * Add a comment to the claim with today's date.
+	 * @param commentText The comment's text.
+	 */
 	public void addComment(String commentText) {
 		this.comments.add(new ApproverComment(commentText, new Date()));
 	}
-	
-=======
 
 	/**
 	 * Get the list of tags.
 	 * @return The list of tags.
 	 */
->>>>>>> updateDocumentation
 	public ArrayList<UUID> getTags() {
 		return this.tags;
 	}

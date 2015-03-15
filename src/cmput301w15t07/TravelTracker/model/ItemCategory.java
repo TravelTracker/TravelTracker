@@ -54,6 +54,10 @@ public enum ItemCategory implements ContextStringable {
 	    return context.getString(id);
 	}
 	
+	public int getId(){
+		return this.id;
+	}
+	
 	/**
 	 * This method returns the ItemCategory instance corresponding to the passed string.
 	 * @param text, context

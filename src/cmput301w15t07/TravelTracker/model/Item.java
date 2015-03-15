@@ -38,7 +38,7 @@ public class Item extends Document {
 	private ItemCategory category;
 	private Date date;
 	private Float amount;
-	private ItemCurrency currency;
+	private Currency currency;
 	private Receipt receipt;
 	private boolean status;
 
@@ -109,10 +109,10 @@ public class Item extends Document {
 		this.updateObservers(this);
 	}
 	
-	public ItemCurrency getCurrency() {
+	public Currency getCurrency() {
 		return currency;
 	}
-	public void setCurrency(ItemCurrency currency) {
+	public void setCurrency(Currency currency) {
 		this.currency = currency;
 		this.updateObservers(this);
 	}

@@ -267,7 +267,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             
             // No last approver
             if (approver == null) {
-            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
             	lastApproverTextView.setVisibility(View.GONE);
             }
         }
@@ -370,10 +370,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         }
     	
     	// Approver name (if there is one)
+        TextView approverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
     	if (approver != null) {
-        	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
-        	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
-        	lastApproverTextView.setText(lastApproverString);
+        	String lastApproverString = getString(R.string.claim_info_approver) + " " + approver.getUserName();
+        	approverTextView.setText(lastApproverString);
+    	} else {
+    		approverTextView.setVisibility(View.GONE);
     	}
     	
     	// Scroll to top now in case comment list has extended the layout
@@ -410,8 +412,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void submitClaim() {
-        // TODO Auto-generated method stub
-        
+        claim.setStatus(Status.SUBMITTED);
     }
 
     public void returnClaim() {

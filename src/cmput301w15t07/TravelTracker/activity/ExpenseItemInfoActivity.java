@@ -199,10 +199,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		//get item info
 		itemID = (UUID) bundle.getSerializable(ITEM_UUID);
-		DataSourceSingleton app = (DataSourceSingleton) getApplication();
-		final DataSource source = app.getDataSource();
 		
-		source.getItem(itemID, new ResultCallback<Item>() {
+		datasource.getItem(itemID, new ResultCallback<Item>() {
 			
 			@Override
 			public void onResult(Item item) {

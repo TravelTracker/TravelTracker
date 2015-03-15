@@ -22,19 +22,42 @@ package cmput301w15t07.TravelTracker;
  */
 
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
+import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 
 /**
- * A common interface for MockApplication and the actual Application to supply
- * a singleton DataSource to activities.
+ * A singleton containing the applications's data source.
  * 
  * @author kdbanman
  *
  */
-public interface DataSourceSingleton {
-
+public class DataSourceSingleton {
+    static private DataSource ds;
+	
 	/**
+	 * Get the application's data source.
+	 * 
+	 * If no source has been set, a new data source is created.
 	 * 
 	 * @return The single instance of DataSource for the application.
 	 */
-	public DataSource getDataSource();
+    static public DataSource getDataSource() {
+    	if (ds == null) {
+    		//ds = new InMemoryDataSource();
+    		ds = new GeneratedDataSource();
+    	}
+    	
+		return ds;
+	}
+    
+	/**
+	 * Set the application's data source.
+	 * 
+	 * This should only be used for dependency injection testing.
+	 * 
+	 * @param source The new source to use.
+	 */
+    static public void setDataSource(DataSource source) {
+		ds = source;
+	}
 }

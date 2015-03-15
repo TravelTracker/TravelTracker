@@ -91,9 +91,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     /** The current claim. */
     Claim claim;
     
-    /** The currently open date picker fragment. */
-    private DatePickerFragment datePicker = null;
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claim_info_menu, menu);
@@ -381,16 +378,14 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public void startDatePressed() {
     	Date date = claim.getStartDate();
     	
-        datePicker = new DatePickerFragment(date, new StartDateCallback());
-        
+    	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
 
     public void endDatePressed() {
     	Date date = claim.getEndDate();
     	
-        datePicker = new DatePickerFragment(date, new EndDateCallback());
-        
+        DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
 
@@ -407,14 +402,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public void approveClaim() {
         // TODO Auto-generated method stub
         
-    }
-    
-    /**
-     * Get the currently displayed date picker fragment.
-     * @return The DatePickerFragment, or null if there isn't one.
-     */
-    public DatePickerFragment getDatePickerFragment() {
-    	return datePicker;
     }
     
     private void setButtonDate(Button dateButton, Date date) {
@@ -511,13 +498,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 				Button button = (Button) findViewById(R.id.claimInfoStartDateButton);
 				setButtonDate(button, result);
 			}
-			
-			datePicker = null;
 		}
 		
 		@Override
 		public void onDatePickerFragmentCancelled() {
-			datePicker = null;
+			// Do nothing
 		}
 	}
     
@@ -539,13 +524,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 				Button button = (Button) findViewById(R.id.claimInfoEndDateButton);
 				setButtonDate(button, result);
 			}
-			
-			datePicker = null;
 		}
 		
 		@Override
 		public void onDatePickerFragmentCancelled() {
-			datePicker = null;
+			// Do nothing
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package cmput301w15t07.TravelTracker.test;
+package cmput301w15t07.TravelTracker.test.activity;
 
 import cmput301w15t07.TravelTracker.activity.ExpenseItemInfoActivity;
 import android.test.ActivityInstrumentationTestCase2;

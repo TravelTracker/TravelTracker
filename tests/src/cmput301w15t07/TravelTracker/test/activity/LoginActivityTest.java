@@ -1,4 +1,4 @@
-package cmput301w15t07.TravelTracker.test;
+package cmput301w15t07.TravelTracker.test.activity;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -26,19 +26,21 @@ import java.util.UUID;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
-import android.test.ActivityUnitTestCase;
+import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
 import cmput301w15t07.TravelTracker.activity.LoginActivity;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
-import cmput301w15t07.TravelTracker.testutils.MockTravelTrackerApp;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 
 /**
@@ -49,10 +51,10 @@ import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
  * @author kdbanman, colp
  *
  */
-public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
+public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 	DataSource dataSource;
 	Instrumentation instrumentation;
-	Activity activity;
+	LoginActivity activity;
 	EditText nameEditText;
 	Button loginButton;
 	RadioButton claimantButton;
@@ -64,34 +66,28 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 	
 	@Override
 	protected void setUp() throws Exception {
+		dataSource = new InMemoryDataSource();
+		DataSourceSingleton.setDataSource(dataSource);
+		
 	    super.setUp();
-		
-		MockTravelTrackerApp app = new MockTravelTrackerApp();
-		setApplication(app);
-		app.onCreate();
-		
-		dataSource = app.getDataSource();
-	    
-	    instrumentation = getInstrumentation();
-	    
-	    Intent intent = new Intent(instrumentation.getTargetContext(), LoginActivity.class);
-	    startActivity(intent, null, null);
 	    
 	    activity = getActivity();
+	    instrumentation = getInstrumentation();
+	    
 	    nameEditText = (EditText) activity.findViewById(R.id.loginNameEditText);
 	    loginButton = (Button) activity.findViewById(R.id.loginLoginButton);
 	    claimantButton = (RadioButton) activity.findViewById(R.id.loginClaimantRadioButton);
 	    approverButton = (RadioButton) activity.findViewById(R.id.loginApproverRadioButton);
 	}
 	
-	public void testLoginEmptyName() {
+	public void testLoginEmptyName() throws InterruptedException {
 	    Intent newIntent = loginWithDetails("", UserRole.CLAIMANT);
 		
 		assertNotNull("Error should be displayed", nameEditText.getError());
 		assertEquals("No activity should start", null, newIntent);
 	}
 	
-	public void testLoginStartsActivity() {
+	public void testLoginStartsActivity() throws InterruptedException {
 		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
 
 		assertNotNull("Activity should start", newIntent);
@@ -102,25 +98,25 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 					 activityClass);
 	}
 	
-	public void testLoginName() {
-		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
+	public void testLoginName() throws InterruptedException {
+		Intent newIntent = loginWithDetails("Barfoo", UserRole.CLAIMANT);
 		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		assertEquals("Name should match", "Foobar", userData.getName());
+		assertEquals("Name should match", "Barfoo", userData.getName());
 	}
 	
-	public void testLoginClaimant() {
-		Intent newIntent = loginWithDetails("Foobar", UserRole.CLAIMANT);
+	public void testLoginClaimant() throws InterruptedException {
+		Intent newIntent = loginWithDetails("Claimant", UserRole.CLAIMANT);
 		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
 		assertEquals("Role should be claimant", UserRole.CLAIMANT, userData.getRole());
 	}
 	
-	public void testLoginApprover() {
-		Intent newIntent = loginWithDetails("Foobar", UserRole.APPROVER);
+	public void testLoginApprover() throws InterruptedException {
+		Intent newIntent = loginWithDetails("Approver", UserRole.APPROVER);
 		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		
-		assertEquals("Role should be claimant", UserRole.APPROVER, userData.getRole());
+		assertEquals("Role should be approver", UserRole.APPROVER, userData.getRole());
 	}
 	
 	public void testLoginNewUser() throws InterruptedException {
@@ -133,7 +129,7 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 		assertTrue("User should exist", callback.waitForResult());
 	}
 	
-	public void testLoginExistingUser() {
+	public void testLoginExistingUser() throws InterruptedException {
 		Intent newIntent = loginWithDetails("Existing user", UserRole.CLAIMANT);
 		UserData userData = (UserData) newIntent.getSerializableExtra(ClaimsListActivity.USER_DATA);
 		UUID originalID = userData.getUUID();
@@ -150,22 +146,46 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
 	 * Log in with the given details.
 	 * @param name The name to use.
 	 * @param role The role to use.
-	 * @return The intent which was created (or null if no intent).
+	 * @return The intent passed to the activity (or null if no activity).
+	 * @throws InterruptedException 
 	 */
-	public Intent loginWithDetails(final String name, final UserRole role) {
-		nameEditText.setText(name);
+	public Intent loginWithDetails(final String name, final UserRole role) throws InterruptedException {
+		ActivityMonitor monitor = instrumentation.addMonitor(ClaimsListActivity.class.getName(), null, false);
 		
-		switch (role) {
-		case APPROVER:
-			approverButton.performClick();
-			break;
-			
-		case CLAIMANT:
-			claimantButton.performClick();
-			break;
+		Runnable action = new Runnable() {
+			@Override
+			public void run() {
+				nameEditText.setText(name);
+				
+				switch (role) {
+				case APPROVER:
+					approverButton.performClick();
+					break;
+					
+				case CLAIMANT:
+					claimantButton.performClick();
+					break;
+				}
+				loginButton.performClick();
+			}
+		};
+		
+		activity.runOnUiThread(action);
+		final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+		
+		if (newActivity == null) {
+			return null;
 		}
-		loginButton.performClick();
 		
-		return getStartedActivityIntent();
+		Intent intent = newActivity.getIntent();
+		
+		// Wait to finish
+		newActivity.finish();
+		instrumentation.waitForIdleSync();
+		
+		// This is a stupid hack, but Android sometimes fails to back out in time
+		Thread.sleep(100);
+		
+		return intent;
 	}
 }

@@ -37,18 +37,12 @@ import java.util.UUID;
  *
  */
 public class ApproverComment {
-	private UUID approver;
 	private String comment;
 	private Date date;
 	
-	public ApproverComment(UUID approver, String comment, Date date) {
-		this.approver = approver;
+	public ApproverComment(String comment, Date date) {
 		this.comment = comment;
 		this.date = date;
-	}
-	
-	public UUID getApprover() {
-		return approver;
 	}
 
 	public String getComment() {

@@ -67,38 +67,12 @@ public class ApproverCommentAdapter extends ArrayAdapter<ApproverComment> {
 			
 			// set list item text components
 			setText(listItemView, R.id.claimInfoCommentsListItemCommentTextView, comment.getComment());
-			setText(listItemView, R.id.claimInfoCommentsListItemApproverNameTextView, "Retrieving approver name...");
 			setText(listItemView, R.id.claimInfoCommentsListItemDateTextView, ClaimUtilities.formatDate(comment.getDate()));
-			
-			ds.getUser(comment.getApprover(), new ApproverNameSetter(listItemView));
 			
 		} else {
 			Log.e("adapter", "comment " + position + " not found!");
 		}
 		return listItemView;
-	}
-	
-	/**
-	 * ResultCallback designed to set an approver name for the comment list item view.
-	 */
-	public class ApproverNameSetter implements ResultCallback<User> {
-
-		View commentView;
-		
-		public ApproverNameSetter(View listItemView) {
-			commentView = listItemView;
-		}
-
-		@Override
-		public void onResult(User result) {
-			setText(commentView, R.id.claimInfoCommentsListItemApproverNameTextView, result.getUserName());
-		}
-
-		@Override
-		public void onError(String message) {
-			setText(commentView, R.id.claimInfoCommentsListItemApproverNameTextView, message);
-		}
-
 	}
 	
 	/* 

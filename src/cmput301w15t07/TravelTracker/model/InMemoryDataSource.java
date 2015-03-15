@@ -41,10 +41,10 @@ import cmput301w15t07.TravelTracker.util.Observer;
  */
 public class InMemoryDataSource extends Observable<DataSource> implements DataSource, Observer<Document> {
 
-	private HashMap<UUID, Claim> claims;
-	private HashMap<UUID, User> users;
-	private HashMap<UUID, Item> items;
-	private HashMap<UUID, Tag> tags;
+	protected HashMap<UUID, Claim> claims;
+	protected HashMap<UUID, User> users;
+	protected HashMap<UUID, Item> items;
+	protected HashMap<UUID, Tag> tags;
 
 	public InMemoryDataSource() {
 		claims = new HashMap<UUID, Claim>();

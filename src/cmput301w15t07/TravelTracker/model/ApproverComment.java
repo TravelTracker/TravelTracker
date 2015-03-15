@@ -45,10 +45,18 @@ public class ApproverComment {
 		this.date = date;
 	}
 
+	/**
+	 * Get the comment string.
+	 * @return The comment string.
+	 */
 	public String getComment() {
 		return comment;
 	}
 
+	/**
+	 * Get the date on which the comment was made.
+	 * @return The comment date.
+	 */
 	public Date getDate() {
 		return date;
 	}

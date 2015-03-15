@@ -32,7 +32,8 @@ public abstract class Observable <E> {
     }
 
     public void addObserver(Observer<E> obs) {
-        observers.add(obs);
+    	// make sure observer is only added once.
+        if (!observers.contains(obs)) observers.add(obs);
     }
 
     public void removeObserver(Observer<E> obs) {

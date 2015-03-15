@@ -66,6 +66,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	@Override
 	public void addClaim(User user, ResultCallback<Claim> callback) {
 		Claim claim = new Claim(UUID.randomUUID());
+		claim.addObserver(this);
 		
 		if (!users.containsValue(user)) {
 			callback.onError("User not found.");
@@ -81,6 +82,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	@Override
 	public void addItem(Claim claim, ResultCallback<Item> callback) {
 		Item item = new Item(UUID.randomUUID());
+		item.addObserver(this);
 		
 		item.setClaim(claim.getUUID());
 		internalAddItem(item);
@@ -96,6 +98,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	@Override
 	public void addTag(User user, ResultCallback<Tag> callback) {
 		Tag tag = new Tag(UUID.randomUUID());
+		tag.addObserver(this);
 		
 		tag.setUser(user.getUUID());
 		internalAddTag(tag);
@@ -159,6 +162,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		if (user == null) {
 			callback.onError("User not found.");
 		} else {
+			user.addObserver(this);
 			callback.onResult(user);
 		}
 	}
@@ -170,6 +174,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		if (claim == null) {
 			callback.onError("Claim not found.");
 		} else {
+			claim.addObserver(this);
 			callback.onResult(claim);
 		}
 	}
@@ -181,6 +186,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		if (item == null) {
 			callback.onError("Item not found.");
 		} else {
+			item.addObserver(this);
 			callback.onResult(item);
 		}
 	}
@@ -192,6 +198,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		if (tag == null) {
 			callback.onError("Tag not found.");
 		} else {
+			tag.addObserver(this);
 			callback.onResult(tag);
 		}
 	}
@@ -236,6 +243,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
      */
     protected void internalAddUser(User u) {
         users.put(u.getUUID(), u);
+        u.addObserver(this);
     }
 	
 	/**
@@ -282,6 +290,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
      */
     protected void internalAddClaim(Claim c) {
         claims.put(c.getUUID(), c);
+        c.addObserver(this);
     }
 	
 	/**
@@ -314,6 +323,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
      */
     protected void internalAddItem(Item i) {
         items.put(i.getUUID(), i);
+        i.addObserver(this);
     }
 	
 	/**
@@ -330,6 +340,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
      */
     protected void internalAddTag(Tag t) {
         tags.put(t.getUUID(), t);
+        t.addObserver(this);
     }
 	
 	/**

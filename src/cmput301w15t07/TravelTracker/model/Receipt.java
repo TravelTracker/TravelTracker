@@ -40,6 +40,10 @@ public class Receipt {
 		this.photo = photo;
 	}
 
+	/**
+	 * Get the photo of the receipt.
+	 * @return The photo.
+	 */
 	public Bitmap getPhoto() {
 		return photo;
 	}

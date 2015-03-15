@@ -42,17 +42,35 @@ public class Tag extends Document {
 		super(docID);
 	}
 	
+	/**
+	 * Get the user to which this belongs.
+	 * @return The user's UUID.
+	 */
 	public UUID getUser() {
 		return this.user;
 	}
+	
+	/**
+	 * Set the user to which this belongs.
+	 * @param user The user's UUID.
+	 */
 	public void setUser(UUID user) {
 		this.user = user;
 		this.updateObservers(this);
 	}
-
+	
+	/**
+	 * Get the tag's title.
+	 * @return The title.
+	 */
 	public String getTitle() {
 		return title;
 	}
+	
+	/**
+	 * Set the tag's title.
+	 * @param title The title.
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 		this.updateObservers(this);

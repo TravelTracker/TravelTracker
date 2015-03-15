@@ -27,6 +27,7 @@ import android.R.integer;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.R;
 
@@ -45,9 +47,12 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
 	private Collection<Claim> claims;
 	private Collection<Item> items;
+	private Collection<User> users;
+	private UserRole role;
 	
-	public ClaimAdapter(Context context) {
+	public ClaimAdapter(Context context, UserRole role) {
 		super(context, R.layout.claims_list_row_item);
+		this.role = role;
 	}
 	
 	/**
@@ -55,10 +60,11 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	 * @param claims
 	 * @param items
 	 */
-	public void rebuildList(Collection<Claim> claims, Collection<Item> items, UserRole role){
+	public void rebuildList(Collection<Claim> claims, Collection<Item> items, Collection<User> users){
 		this.claims = claims;
 		this.items = items;
-		final UserRole r = role;
+		this.users = users;
+
 		//possible performance bottleneck
 		clear();
 		addAll(claims);
@@ -67,7 +73,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 			@Override
 			public int compare(Claim lhs, Claim rhs) {
 				int compare = lhs.getStartDate().compareTo(rhs.getStartDate());
-				if (r.equals(UserRole.CLAIMANT)){
+				if (role.equals(UserRole.CLAIMANT)){
 					compare *= -1;
 				}
 				return compare;
@@ -110,9 +116,11 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
 		Claim claim = getItem(position);
 		
-		name.setText(claim.getName());
-		date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
-		setStatus(status, claim.getStatus());
+		setName(name, claim);
+		if (role.equals(UserRole.APPROVER)){
+			date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
+		}
+		setStatus(status, claim);
 		
 		destinationContainer.removeAllViews();
 		totalsContainer.removeAllViews();
@@ -126,15 +134,48 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	}
 	
 	
-	private void setStatus(TextView display, Status status){
-		display.setText(status.toString());
-		if (status.equals(Status.APPROVED)){
+	private void setName(TextView display, Claim claim){
+		String nameStr = "";
+		if (role.equals(UserRole.APPROVER)){
+			nameStr += ":" + findUser(claim.getUser());
+		} else {
+			String sDate = ClaimUtilities.formatDate(claim.getStartDate());
+			String eDate = ClaimUtilities.formatDate(claim.getEndDate());
+			nameStr = sDate + " / " + eDate;
+			display.setTextSize(18);
+		}
+		display.setText(nameStr);
+	}
+	
+	private void setStatus(TextView display, Claim claim){
+		String statusStr = claim.getStatus().toString();
+		if (role.equals(UserRole.APPROVER)){
+			try{
+				statusStr += " :" + findUser(claim.getApprover());
+			} catch (NullPointerException e){
+				// No approver exists
+				Log.d("DEBUG", "No approver exists for this claim");
+			}
+		}
+		
+		display.setText(statusStr);
+		if (claim.getStatus().equals(Status.APPROVED)){
 			display.setTextColor(Color.GREEN);
-		} else if (status.equals(Status.RETURNED)){
+		} else if (claim.getStatus().equals(Status.RETURNED)){
 			display.setTextColor(Color.RED);
 		} else {
 			display.setTextColor(Color.BLACK);
 		}
+	}
+	
+	private String findUser(UUID user){
+		String out = "";
+		for (User u : users){
+			if (u.getUUID().equals(user)){
+				out =  u.getUserName();
+			}
+		}
+		return out;
 	}
 	
 	private void addTotals(Claim claim, ViewGroup parent){

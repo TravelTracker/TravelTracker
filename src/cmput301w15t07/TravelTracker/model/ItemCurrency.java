@@ -62,13 +62,13 @@ public enum ItemCurrency implements ContextStringable {
      */
     public static ItemCurrency fromString(String text, Context context) {
         if (text != null) {
-          for (ItemCurrency i : ItemCurrency.values()) {
-            if (text.equalsIgnoreCase(i.getString(context))) {
-              return i;
-            }
-          }
+        	for (ItemCurrency i : ItemCurrency.values()) {
+        		if (text.equalsIgnoreCase(i.getString(context))) {
+        			return i;
+        		}
+        	}
         }
         return null;
-      }
+    }
 
 }

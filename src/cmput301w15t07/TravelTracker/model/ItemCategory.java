@@ -65,13 +65,13 @@ public enum ItemCategory implements ContextStringable {
 	 */
 	public static ItemCategory fromString(String text, Context context) {
 	    if (text != null) {
-	      for (ItemCategory i : ItemCategory.values()) {
-	        if (text.equalsIgnoreCase(i.getString(context))) {
-	          return i;
-	        }
-	      }
+	    	for (ItemCategory i : ItemCategory.values()) {
+	    		if (text.equalsIgnoreCase(i.getString(context))) {
+    				return i;
+	    		}
+	    	}
 	    }
 	    return null;
-	  }
+	}
 	
 }

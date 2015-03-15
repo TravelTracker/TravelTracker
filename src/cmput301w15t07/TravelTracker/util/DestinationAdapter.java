@@ -121,6 +121,8 @@ public class DestinationAdapter {
             
         }
         
+        updateReasonVisibilty(view, destination.getReason());
+        
         return view;
     }
     
@@ -153,6 +155,8 @@ public class DestinationAdapter {
         destination = new Destination(location, reason);
         destinations.add(destination);
         setDestination(view, destination);
+        
+        updateReasonVisibilty(view, destination.getReason());
         
         claim.setDestinations(destinations);
     }
@@ -197,6 +201,16 @@ public class DestinationAdapter {
         t.setText(text);
     }
     
+    private void updateReasonVisibilty(View view, String reason) {
+        TextView reasonTextView = (TextView) view.findViewById(LIST_REASON_ID);
+        
+        if (reason.isEmpty()) {
+            reasonTextView.setVisibility(View.GONE);
+        } else {
+            reasonTextView.setVisibility(View.VISIBLE);
+        }
+    }
+    
     private void setEditorDefaults() {
         destinationEditor = null;
         editingView = null;
@@ -212,19 +226,9 @@ public class DestinationAdapter {
             String location = result.get(DestinationEditorFragment.LOCATION_INDEX);
             String reason = result.get(DestinationEditorFragment.REASON_INDEX);
             
-            // Invalid location and reason
-            if (location.isEmpty() && reason.isEmpty()) {
-                String error = context.getString(R.string.claim_info_destination_location_reason_error);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-                
             // Invalid location
-            } else if (location.isEmpty()) {
-                String error = context.getString(R.string.claim_info_destination_location_error);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-                
-            // Invalid reason
-            } else if (reason.isEmpty()) {
-                String error = context.getString(R.string.claim_info_destination_reason_error);
+            if (location.isEmpty()) {
+                String error = context.getString(R.string.claim_info_destination_error);
                 Toast.makeText(context, error, Toast.LENGTH_LONG).show();
                 
             // Valid location and reason, so update the destination

@@ -9,6 +9,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -88,64 +89,45 @@ public class DestinationEditorFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Context context = getActivity();
         
-        DestinationEditorDialog dialog = new DestinationEditorDialog(context);
-        dialog.setTitle(context.getString(R.string.claim_info_destination_edit_title));
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View promptView = inflater.inflate(VIEW_ID, null, false);
         
-        dialog.setButton(Dialog.BUTTON_POSITIVE, context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+        final EditText locationEditText = (EditText) promptView.findViewById(LOCATION_EDIT_ID);
+        locationEditText.setText(location);
+        
+        final EditText reasonEditText = (EditText) promptView.findViewById(REASON_EDIT_ID);
+        reasonEditText.setText(reason);
+        
+        // Taken on February 1, 2015 from:
+        // http://stackoverflow.com/questions/6070805/prevent-enter-key-on-edittext-but-still-show-the-text-as-multi-line
+        // Disables the enter key for this EditText.
+        reasonEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                cancelled = false;
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return (keyCode == KeyEvent.KEYCODE_ENTER);
             }
         });
         
-        dialog.setButton(Dialog.BUTTON_NEGATIVE, context.getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                cancelled = true;
-            }
-        });
-        
-        return dialog;
-    }
-    
-    /**
-     * 
-     */
-    class DestinationEditorDialog extends AlertDialog {
-        private View promptView;
-        private EditText locationEditText;
-        private EditText reasonEditText;
-        
-        protected DestinationEditorDialog(Context context) {
-            super(context);
-        }
-        
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            promptView = inflater.inflate(VIEW_ID, null, false);
-            
-            locationEditText = (EditText) promptView.findViewById(LOCATION_EDIT_ID);
-            locationEditText.setText(location);
-            
-            reasonEditText = (EditText) promptView.findViewById(REASON_EDIT_ID);
-            reasonEditText.setText(reason);
-            
-            setView(promptView);
-        }
-
-        @Override
-        public void dismiss() {
-            if (cancelled) {
-                callback.onDestinationEditorFragmentCancelled();
-            } else {
-                ArrayList<String> result = new ArrayList<String>();
-                result.set(LOCATION_INDEX, locationEditText.getText().toString());
-                result.set(REASON_INDEX, reasonEditText.getText().toString());
-                callback.onDestinationEditorFragmentResult(result);
-            }
-        }
+        return new AlertDialog.Builder(context)
+            .setView(promptView)
+            .setTitle(context.getString(R.string.claim_info_destination_edit_title))
+            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ArrayList<String> result = new ArrayList<String>();
+                    result.add(locationEditText.getText().toString());
+                    result.add(reasonEditText.getText().toString());
+                    callback.onDestinationEditorFragmentResult(result);
+                    dialog.dismiss();
+                }
+            })
+            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    callback.onDestinationEditorFragmentCancelled();
+                    dialog.dismiss();
+                }
+            })
+            .create();
     }
 }

@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:hint="@string/input_text"
         android:inputType="text" >
         
         <requestFocus />
@@ -41,7 +42,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:maxLines="5"
+        android:hint="@string/input_text"
+        android:gravity="top"
+        android:lines="3"
+        android:maxLines="3"
         android:inputType="textMultiLine" />
     
 </LinearLayout>

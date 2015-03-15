@@ -66,14 +66,13 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 	
 	@Override
 	protected void setUp() throws Exception {
+		dataSource = new InMemoryDataSource();
+		DataSourceSingleton.setDataSource(dataSource);
+		
 	    super.setUp();
 	    
 	    activity = getActivity();
 	    instrumentation = getInstrumentation();
-		
-		DataSourceSingleton app = (DataSourceSingleton) activity.getApplication();
-		dataSource = new InMemoryDataSource();
-		app.setDataSource(dataSource);
 	    
 	    nameEditText = (EditText) activity.findViewById(R.id.loginNameEditText);
 	    loginButton = (Button) activity.findViewById(R.id.loginLoginButton);

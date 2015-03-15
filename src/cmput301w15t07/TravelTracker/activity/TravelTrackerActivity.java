@@ -50,7 +50,6 @@ public class TravelTrackerActivity extends Activity {
     
 	private CountDownLatch loadedLatch = new CountDownLatch(1);
 	
-	protected DataSourceSingleton app;
 	protected DataSource datasource;
 	
 	/**
@@ -72,8 +71,7 @@ public class TravelTrackerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
-	    app = (DataSourceSingleton) getApplication();
-        datasource = app.getDataSource();
+        datasource = DataSourceSingleton.getDataSource();
 	}
 	
     public void signOut() {

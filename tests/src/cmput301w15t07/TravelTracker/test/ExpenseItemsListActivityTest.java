@@ -23,6 +23,7 @@ package cmput301w15t07.TravelTracker.test;
 
 import java.util.Collection;
 
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
@@ -30,13 +31,13 @@ import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
-import cmput301w15t07.TravelTracker.testutils.MockTravelTrackerApp;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import cmput301w15t07.TravelTracker.util.ItemsListAdapter;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
+import android.test.mock.MockApplication;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -71,16 +72,16 @@ public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseIt
 	
 	@Override
 	protected void setUp() throws Exception {
+	    // Use generated data.
+        dataSource = new GeneratedDataSource();
+        DataSourceSingleton.setDataSource(dataSource);
+        
 	    super.setUp();
 
 		if (true) return;
-	    
-	    // Use generated data.
-        dataSource = new GeneratedDataSource();
         
-        MockTravelTrackerApp app = new MockTravelTrackerApp();
+        MockApplication app = new MockApplication();
         setApplication(app);
-        app.onCreate(dataSource);
         
         
         instrumentation = getInstrumentation();

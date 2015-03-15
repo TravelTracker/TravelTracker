@@ -25,7 +25,6 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
 import cmput301w15t07.TravelTracker.activity.LoginActivity;
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.testutils.MockTravelTrackerApp;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;

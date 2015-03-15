@@ -29,6 +29,11 @@ import java.util.Hashtable;
 
 import cmput301w15t07.TravelTracker.model.Item;
 
+/**
+ * Contains helper functions for working with Claims.
+ * 
+ * @author ryant26
+ */
 public class ClaimUtilities {
 	
 	/**

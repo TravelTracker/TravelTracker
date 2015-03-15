@@ -31,6 +31,11 @@ import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import io.searchbox.client.*;
 
+/**
+ * Contains helper functions for server operations.
+ * 
+ * @author ryant26
+ */
 public class ServerHelper {
 	private JestClient conn;
 	private Cache cache;

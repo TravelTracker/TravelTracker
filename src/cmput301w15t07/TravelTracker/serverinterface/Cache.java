@@ -21,6 +21,11 @@ package cmput301w15t07.TravelTracker.serverinterface;
  *  limitations under the License.
  */
 
+/**
+ * Represents local cache of data.
+ * 
+ * @author ryant26
+ */
 public class Cache {
 	
 	/**

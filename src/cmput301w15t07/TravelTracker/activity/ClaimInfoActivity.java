@@ -40,7 +40,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
@@ -185,8 +184,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
         
         // Tags list
+        TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
-        Space tagsSpace = (Space) findViewById(R.id.claimInfoTagsSpace);
+        View tagsThickHorizontalDivider = (View) findViewById(R.id.claimInfoTagsThickHorizontalDivider);
 
         // Claimant claim modifiers
         Button submitClaimButton = (Button) findViewById(R.id.claimInfoClaimSubmitButton);
@@ -260,8 +260,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             
             // Views an approver doesn't need to see or have access to
             statusTextView.setVisibility(View.GONE);
+            tagsTextView.setVisibility(View.GONE);
             tagsLinearLayout.setVisibility(View.GONE);
-            tagsSpace.setVisibility(View.GONE);
+            tagsThickHorizontalDivider.setVisibility(View.GONE);
             submitClaimButton.setVisibility(View.GONE);
             
             // No last approver

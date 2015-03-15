@@ -32,5 +32,14 @@
         <item name="android:layout_marginBottom">2dp</item>
         <item name="android:background">?android:attr/listDivider</item>
     </style>
-
+    
+    <style name="ThickHorizontalDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">1dp</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+    
 </resources>

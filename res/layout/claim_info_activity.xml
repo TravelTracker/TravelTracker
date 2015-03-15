@@ -16,6 +16,12 @@
             android:layout_height="wrap_content"
             android:text="@string/claim_info_claimant_name" />
 
+        <TextView
+            android:id="@+id/claimInfoStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_claim_status" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,11 +47,13 @@
 
         </LinearLayout>
 
+        <View style="@style/ThickHorizontalDivider" />
+        
         <TextView
-            android:id="@+id/claimInfoStatusTextView"
+            android:id="@+id/claimInfoDestinationsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/claim_info_claim_status" />
+            android:text="@string/claim_info_destinations" />
 
         <LinearLayout
             android:id="@+id/claimInfoDestinationsLinearLayout"
@@ -54,9 +62,13 @@
             android:orientation="vertical" >
         </LinearLayout>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
+        <View style="@style/ThickHorizontalDivider" />
+        
+        <TextView
+            android:id="@+id/claimInfoTagsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_tags" />
 
         <LinearLayout
             android:id="@+id/claimInfoTagsLinearLayout"
@@ -65,10 +77,9 @@
             android:orientation="vertical" >
         </LinearLayout>
 
-        <Space
-            android:id="@+id/claimInfoTagsSpace"
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
+        <View
+            android:id="@+id/claimInfoTagsThickHorizontalDivider"
+            style="@style/ThickHorizontalDivider" />
 
         <RelativeLayout
             android:id="@+id/claimInfoTotalsRelativeLayout"

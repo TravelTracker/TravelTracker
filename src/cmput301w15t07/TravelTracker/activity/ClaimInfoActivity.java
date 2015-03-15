@@ -44,7 +44,6 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
@@ -442,9 +441,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	        // Prep the adapter for claim destinations
 	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations());
 			
-			// Determine the number of approver comments
-			ArrayList<ApproverComment> comments = claim.getComments();
-			
 	        // Retrieve data
 	        MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());
 	        
@@ -452,8 +448,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
 	        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
 	        
-	        if (claim.getStatus() != Status.IN_PROGRESS) {
-	        	datasource.getUser(claim.getApprover(), multi.<User>createCallback(MULTI_APPROVER_ID));
+	        UUID approverID = claim.getApprover();
+	        if (approverID != null) {
+	        	datasource.getUser(approverID, multi.<User>createCallback(MULTI_APPROVER_ID));
 	        }
 	        
 	        multi.ready();
@@ -472,7 +469,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		@Override
 		public void onResult(SparseArray<Object> result) {
 			User claimant = (User) result.get(MULTI_CLAIMANT_ID);
-			User approver = (User) result.get(MULTI_APPROVER_ID);
+			
+			User approver = null;
+			if (claim.getApprover() != null) {
+				approver = (User) result.get(MULTI_APPROVER_ID);
+			}
 			
 			// We know the return result is the right type, so an unchecked
 			// cast shouldn't be problematic 

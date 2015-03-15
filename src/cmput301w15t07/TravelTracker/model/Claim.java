@@ -111,6 +111,12 @@ public class Claim extends Document {
 		this.comments = comments;
 		this.updateObservers(this);
 	}
+	public void addComment(ApproverComment comment) {
+		this.comments.add(comment);
+	}
+	public void addComment(String commentText) {
+		this.comments.add(new ApproverComment(commentText, new Date()));
+	}
 	
 	public ArrayList<UUID> getTags() {
 		return this.tags;

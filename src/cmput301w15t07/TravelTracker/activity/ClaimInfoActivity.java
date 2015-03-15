@@ -415,13 +415,27 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void returnClaim() {
-        // TODO Auto-generated method stub
-        
+    	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
+    	
+    	// add approver comment if comment field is not empty
+    	if (!commentText.trim().equals("")) {
+    		claim.addComment(commentText);
+    	}
+    	
+    	claim.setApprover(userData.getUUID());
+    	claim.setStatus(Status.RETURNED);
     }
 
     public void approveClaim() {
-        // TODO Auto-generated method stub
-        
+    	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
+    	
+    	// add approver comment if comment field is not empty
+    	if (!commentText.trim().equals("")) {
+    		claim.addComment(commentText);
+    	}
+    	
+    	claim.setApprover(userData.getUUID());
+    	claim.setStatus(Status.APPROVED);
     }
     
     private void setButtonDate(Button dateButton, Date date) {

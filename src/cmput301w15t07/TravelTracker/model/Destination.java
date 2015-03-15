@@ -40,10 +40,18 @@ public class Destination {
 		this.reason = reason;
 	}
 	
+	/**
+	 * Get the name of the destination's location.
+	 * @return The location.
+	 */
 	public String getLocation() {
 		return location;
 	}
 
+	/**
+	 * Get the reason for travel to the destination.
+	 * @return The reason.
+	 */
 	public String getReason() {
 		return reason;
 	}

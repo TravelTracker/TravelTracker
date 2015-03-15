@@ -43,21 +43,28 @@ public class User extends Document {
 		super(docID);
 	}
 
+	/**
+	 * Get the user's name.
+	 * @return The user's name.
+	 */
 	public String getUserName() {
 		return userName;
 	}
 
+	/**
+	 * Set the user's name.
+	 * @param userName The user's name.
+	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 		
 		updateObservers(this);
 	}
 	
-
+	// TODO: Remove these!
 	public ArrayList<Tag> getTags() {
 		return tags;
 	}
-
 	public void setTags(ArrayList<Tag> tags) {
 		this.tags = tags;
 		this.updateObservers(this);

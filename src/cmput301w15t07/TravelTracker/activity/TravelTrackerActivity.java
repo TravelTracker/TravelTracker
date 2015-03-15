@@ -48,8 +48,10 @@ public class TravelTrackerActivity extends Activity {
     /** String used to retrieve item UUID from intent */
     public static final String ITEM_UUID = "cmput301w15t07.TravelTracker.itemUUID";
     
+    /** Latch which is counted down when the activity loads its data */
 	private CountDownLatch loadedLatch = new CountDownLatch(1);
 	
+	/** The data source (from DataSourceSingleton) */
 	protected DataSource datasource;
 	
 	/**

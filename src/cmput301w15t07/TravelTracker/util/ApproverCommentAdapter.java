@@ -75,7 +75,7 @@ public class ApproverCommentAdapter extends ArrayAdapter<ApproverComment> {
 		return listItemView;
 	}
 	
-	/* 
+	/**
 	 * Fault-tolerant TextView text set wrapper.
 	 */
 	private boolean setText(View v, int id, String text) {

@@ -34,7 +34,6 @@ import java.util.UUID;
 public class Claim extends Document {
 	private UUID user;
 	private UUID approver;
-	private String name;
 	private Status status;
 	private Date startDate;
 	private Date endDate;
@@ -55,7 +54,6 @@ public class Claim extends Document {
 		startDate = new Date();
 		endDate = new Date();
 		status = Status.IN_PROGRESS;
-		name = "";
 	}
 	
 	public UUID getUser() {
@@ -71,14 +69,6 @@ public class Claim extends Document {
 	}
 	public void setApprover(UUID approver) {
 		this.approver = approver;
-		this.updateObservers(this);
-	}
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 		this.updateObservers(this);
 	}
 	

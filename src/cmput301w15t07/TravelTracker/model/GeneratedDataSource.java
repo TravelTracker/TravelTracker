@@ -59,8 +59,6 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			Claim claim = new Claim(UUID.randomUUID());
 			claim.setUser(user.getUUID());
 			
-			claim.setName(getRandomString(r, 8, 16)); // Random name
-			
 			// Random start time (up to 10 days ago)
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_MONTH, -r.nextInt(10));

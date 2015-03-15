@@ -117,7 +117,9 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		Claim claim = getItem(position);
 		
 		setName(name, claim);
-		date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
+		if (role.equals(UserRole.APPROVER)){
+			date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
+		}
 		setStatus(status, claim);
 		
 		destinationContainer.removeAllViews();
@@ -133,9 +135,14 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
 	
 	private void setName(TextView display, Claim claim){
-		String nameStr = claim.getName();
+		String nameStr = "";
 		if (role.equals(UserRole.APPROVER)){
-			nameStr += " :" + findUser(claim.getUser());
+			nameStr += ":" + findUser(claim.getUser());
+		} else {
+			String sDate = ClaimUtilities.formatDate(claim.getStartDate());
+			String eDate = ClaimUtilities.formatDate(claim.getEndDate());
+			nameStr = sDate + " / " + eDate;
+			display.setTextSize(18);
 		}
 		display.setText(nameStr);
 	}

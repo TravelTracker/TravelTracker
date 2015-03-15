@@ -81,9 +81,7 @@ public class ClaimsListDataHelper {
 				}
 			} else if (role.equals(UserRole.CLAIMANT)){
 				if (c.getUser().equals(user.getUUID())){
-					if (!c.getStatus().equals(Status.SUBMITTED)){
-						outClaims.add(c);
-					}
+					outClaims.add(c);
 				}
 			}
 		}

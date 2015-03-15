@@ -409,6 +409,29 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void submitClaim() {
+    	// submit only if all items of claim are flagged as complete
+    	datasource.getAllItems(new ResultCallback<Collection<Item>>() {
+
+			@Override
+			public void onResult(Collection<Item> items) {
+				boolean allComplete = true;
+				for(Item item : items) {
+					// only inspect items belonging to this claim
+					if (item.getClaim().equals(claim.getUUID()))
+						allComplete = allComplete && item.getStatus();
+				}
+				
+				if (allComplete) claim.setStatus(Status.SUBMITTED);
+				else Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_all_items_complete, Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onError(String message) {
+				Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_SHORT).show();
+			}
+    		
+    	});
+    	
         claim.setStatus(Status.SUBMITTED);
     }
 

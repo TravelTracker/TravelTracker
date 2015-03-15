@@ -91,6 +91,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     /** The current claim. */
     Claim claim;
     
+    /** The last alert dialog. */
+    AlertDialog lastAlertDialog = null;
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claim_info_menu, menu);
@@ -160,6 +163,14 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         setContentView(R.layout.loading_indeterminate);
         
         datasource.getClaim(claimID, new ClaimCallback());
+    }
+    
+    /**
+     * Get the last created AlertDialog.
+     * @return The last dialog, or null if there isn't one.
+     */
+    public AlertDialog getLastAlertDialog() {
+    	return lastAlertDialog;
     }
     
     public void onGetAllData(final Collection<Item> items, User claimant, User approver) {
@@ -289,7 +300,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 						// Do nothing
 					}
 			   });
-		builder.create().show();
+		lastAlertDialog = builder.create();
+		
+		lastAlertDialog.show();
     }
 
     /**

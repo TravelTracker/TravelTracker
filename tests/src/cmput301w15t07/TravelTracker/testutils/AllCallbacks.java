@@ -83,7 +83,7 @@ public class AllCallbacks extends AndroidTestCase{
 	private <T> T getData(SynchronizedResultCallback<T> callback) {
 		try{
 			boolean success = callback.waitForResult();
-			assertTrue("Failure adding new user to gen ds", success);
+			assertTrue("callback waiting failed", success);
 			return callback.getResult();
 		} catch (InterruptedException e){
 			fail("failed to get data from data source for class: " + callback.toString());

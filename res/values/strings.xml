@@ -34,8 +34,12 @@
 	    <string name="claims_list_manage_tags">Manage Tags</string>
         <string name="claims_list_add_claim">Add Claim</string>
 	
+    <!-- Strings used in ClaimsListRowItem -->
+        <!-- Used in layout -->
+        <string name="claims_list_row_item_total">Total:</string>
+
     <!-- Strings used in ClaimInfoActivity -->
-        <string name="claims_list_row_item_total">Total:</string><string name="claim_info_label">Claim Info</string>
+        <string name="claim_info_label">Claim Info</string>
     
         <!-- Used in layout -->
         <string name="claim_info_claimant_name">Claimant Name:</string>
@@ -45,12 +49,8 @@
         <string name="claim_info_tags">Tags:</string>
         <string name="claim_info_currency_totals">Totals:</string>
         <string name="claim_info_view_items">View Expense Items (%1$d Total)</string>
-<<<<<<< HEAD
-        <string name="claim_info_last_approver">Last Approver:</string>
-        <string name="claim_info_comments">Comments:</string>
-=======
         <string name="claim_info_approver">Approver:</string>
->>>>>>> 88c1941cbe9e43ad48e92cd01fc75257ae8d0779
+        <string name="claim_info_comments">Comments:</string>
         <string name="claim_info_claim_submit_button">Submit Claim</string>
         <string name="claim_info_claim_return_button">Return Claim</string>
         <string name="claim_info_claim_approve_button">Approve Claim</string>

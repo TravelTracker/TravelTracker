@@ -24,30 +24,21 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.Date;
 import java.util.UUID;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.app.Activity;
 
-import android.content.Intent;
-
-import android.text.InputFilter.LengthFilter;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
-import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;

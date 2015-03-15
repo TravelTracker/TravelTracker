@@ -23,6 +23,7 @@ package cmput301w15t07.TravelTracker.test.activity;
 
 import java.util.Calendar;
 import java.util.Currency;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -387,14 +388,17 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		Item item = addItemToClaim();
 		item.setCurrency(Currency.getInstance("CAD"));
 		item.setAmount(30.5f);
+		item.setDate(new Date());
 		
 		item = addItemToClaim();
 		item.setCurrency(Currency.getInstance("CAD"));
 		item.setAmount(20.f);
+		item.setDate(new Date());
 		
 		item = addItemToClaim();
 		item.setCurrency(Currency.getInstance("JPY"));
 		item.setAmount(300.f);
+		item.setDate(new Date());
 		
 		// Create the intent
 		Intent intent = new Intent();

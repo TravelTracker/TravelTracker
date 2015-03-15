@@ -28,6 +28,6 @@ package cmput301w15t07.TravelTracker.util;
  *
  * @param <T>
  */
-public interface Observer<T extends Observable<T>> {
+public interface Observer<T> {
     public void update(T observable);
 }

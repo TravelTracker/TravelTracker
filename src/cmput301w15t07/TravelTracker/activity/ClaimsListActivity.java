@@ -36,6 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
@@ -55,7 +56,7 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * @author kdbanman, colp, thornhil, therabidsquirel
  *
  */
-public class ClaimsListActivity extends TravelTrackerActivity implements Observer<InMemoryDataSource> {
+public class ClaimsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
 	//Class Fields
 	private ClaimAdapter adapter;
 	private InitialData data; 
@@ -126,7 +127,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         appendNameToTitle(userData.getName());
         
         //TODO this will break when we change data sources
-        ((Observable<InMemoryDataSource>) datasource).addObserver(this);
+        ((Observable<DataSource>) datasource).addObserver(this);
         
         adapter = new ClaimAdapter(context);
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
@@ -157,7 +158,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	}
 	
 	@Override
-	public void update(InMemoryDataSource observable) {
+	public void update(DataSource observable) {
 		updateUI();
 	}
 	

@@ -24,7 +24,7 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Observable<E extends Observable<E>> {
+public abstract class Observable <E> {
     private List<Observer<E>> observers = new ArrayList<Observer<E>>();
 
     public Observable() {

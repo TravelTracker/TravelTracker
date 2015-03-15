@@ -39,7 +39,7 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * @author colp
  *
  */
-public class InMemoryDataSource extends Observable<InMemoryDataSource> implements DataSource, Observer<Document> {
+public class InMemoryDataSource extends Observable<DataSource> implements DataSource, Observer<Document> {
 
 	private HashMap<UUID, Claim> claims;
 	private HashMap<UUID, User> users;

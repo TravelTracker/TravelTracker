@@ -22,6 +22,7 @@ package cmput301w15t07.TravelTracker;
  */
 
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 
 /**
@@ -42,7 +43,8 @@ public class DataSourceSingleton {
 	 */
     static public DataSource getDataSource() {
     	if (ds == null) {
-    		ds = new InMemoryDataSource();
+    		//ds = new InMemoryDataSource();
+    		ds = new GeneratedDataSource();
     	}
     	
 		return ds;

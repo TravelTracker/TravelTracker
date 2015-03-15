@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/claimInfoDestinationsListEditPromptLocationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/claim_info_destination_edit_location"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:attr/textColorTertiary" />
+
+    <EditText
+        android:id="@+id/claimInfoDestinationsListEditPromptLocationEditText"
+        android:labelFor="@+id/claimInfoDestinationsListEditPromptLocationEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:inputType="text" >
+        
+        <requestFocus />
+    </EditText>
+    
+    <TextView
+        android:id="@+id/claimInfoDestinationsListEditPromptReasonTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/claim_info_destination_edit_reason"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:attr/textColorTertiary" />
+
+    <EditText
+        android:id="@+id/claimInfoDestinationsListEditPromptReasonEditText"
+        android:labelFor="@+id/claimInfoDestinationsListEditPromptReasonEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:maxLines="5"
+        android:inputType="textMultiLine" />
+    
+</LinearLayout>

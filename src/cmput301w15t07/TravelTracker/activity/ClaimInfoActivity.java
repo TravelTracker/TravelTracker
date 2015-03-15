@@ -55,7 +55,9 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
+import cmput301w15t07.TravelTracker.util.DestinationAdapter;
 import cmput301w15t07.TravelTracker.util.NonScrollListView;
+import cmput301w15t07.TravelTracker.util.TagAdapter;
 
 /**
  * Activity for managing an individual Claim.  Possible as a Claimant or
@@ -67,12 +69,6 @@ import cmput301w15t07.TravelTracker.util.NonScrollListView;
  *
  */
 public class ClaimInfoActivity extends TravelTrackerActivity {
-    /** String used to retrieve user data from intent */
-    public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
-    
-    /** String used to retrieve claim UUID from intent */
-    public static final String CLAIM_UUID = "cmput301w15t07.TravelTracker.claimUUID";
-    
     /** ID used to retrieve items from MutliCallback. */
     public static final int MULTI_ITEMS_ID = 0;
     
@@ -93,6 +89,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     
     /** The currently open date picker fragment. */
     private DatePickerFragment datePicker = null;
+
+    /** The custom adapter for claim destinations. */
+    DestinationAdapter destinationAdapter;
+    
+    /** The custom adapter for claim tags. */
+    TagAdapter tagAdapter;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -173,7 +175,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         // Claim attributes
         TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
         TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
-
+        
         // Tags list
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
         Space tagsSpace = (Space) findViewById(R.id.claimInfoTagsSpace);
@@ -265,8 +267,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void addDestination() {
-        // TODO Auto-generated method stub
-    	
+        LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        destinationAdapter.addDestination(this, userData, destinationsList, getFragmentManager());
     }
 
     public void addItem() {
@@ -341,6 +343,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         TextView totalsTextView = (TextView) findViewById(R.id.claimInfoCurrencyTotalsListTextView);
         totalsTextView.setText(totalsString);
         
+        // Show destinations
+        LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        destinationAdapter.displayView(this, userData, destinationsList, getFragmentManager());
+        
         // Show approver comments
         NonScrollListView commentsLinearLayout = (NonScrollListView) findViewById(R.id.claimInfoCommentsListView);
         commentsLinearLayout.setAdapter(new ApproverCommentAdapter(this, datasource, claim.getComments()));
@@ -373,8 +379,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public void viewItems() {
         // Start next activity
         Intent intent = new Intent(this, ExpenseItemsListActivity.class);
-        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
-        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
+        intent.putExtra(USER_DATA, userData);
+        intent.putExtra(CLAIM_UUID, claimID);
         startActivity(intent);
     }
 
@@ -430,6 +436,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		@Override
 		public void onResult(Claim claim) {
 			ClaimInfoActivity.this.claim = claim;
+
+	        // Prep the adapter for claim destinations
+	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations());
 			
 			// Determine the number of approver comments
 			ArrayList<ApproverComment> comments = claim.getComments();

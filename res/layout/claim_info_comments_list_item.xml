@@ -7,20 +7,18 @@
         android:id="@+id/claimInfoCommentsListItemCommentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:text="Small Text"
+        android:layout_marginStart="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/claimInfoCommentsListItemDateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/claimInfoCommentsListItemCommentTextView"
+        android:layout_alignStart="@+id/claimInfoCommentsListItemCommentTextView"
         android:layout_below="@+id/claimInfoCommentsListItemCommentTextView"
-        android:layout_marginLeft="20dp"
-        android:text="Small Text"
+        android:layout_marginStart="20dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?android:attr/textColorTertiary" />
 

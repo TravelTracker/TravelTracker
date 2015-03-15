@@ -40,7 +40,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
@@ -181,20 +180,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         populateClaimInfo(claim, items, claimant, approver);
         
         // Claim attributes
-        TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
-        TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
+        LinearLayout statusLinearLayout = (LinearLayout) findViewById(R.id.claimInfoStatusLinearLayout);
         
         // Tags list
+        TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
-        Space tagsSpace = (Space) findViewById(R.id.claimInfoTagsSpace);
+        View tagsThickHorizontalDivider = (View) findViewById(R.id.claimInfoTagsThickHorizontalDivider);
 
         // Claimant claim modifiers
         Button submitClaimButton = (Button) findViewById(R.id.claimInfoClaimSubmitButton);
         
         // Approver claim modifiers
         LinearLayout approverButtonsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverButtonsLinearLayout);
-        Button returnClaimButton = (Button) findViewById(R.id.claimInfoClaimReturnButton);
-        Button approveClaimButton = (Button) findViewById(R.id.claimInfoClaimApproveButton);
         EditText commentEditText = (EditText) findViewById(R.id.claimInfoCommentEditText);
         
         // Attach view items listener to view items button
@@ -234,15 +231,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Views a claimant doesn't need to see or have access to
-            claimantNameTextView.setVisibility(View.GONE);
             approverButtonsLinearLayout.setVisibility(View.GONE);
-            returnClaimButton.setVisibility(View.GONE);
-            approveClaimButton.setVisibility(View.GONE);
             commentEditText.setVisibility(View.GONE);
         }
         
         else if (userData.getRole().equals(UserRole.APPROVER)) {
             // Attach return claim listener to return claim button
+            Button returnClaimButton = (Button) findViewById(R.id.claimInfoClaimReturnButton);
             returnClaimButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -251,6 +246,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Attach approve claim listener to approve claim button
+            Button approveClaimButton = (Button) findViewById(R.id.claimInfoClaimApproveButton);
             approveClaimButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -259,9 +255,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             });
             
             // Views an approver doesn't need to see or have access to
-            statusTextView.setVisibility(View.GONE);
+            statusLinearLayout.setVisibility(View.GONE);
+            tagsTextView.setVisibility(View.GONE);
             tagsLinearLayout.setVisibility(View.GONE);
-            tagsSpace.setVisibility(View.GONE);
+            tagsThickHorizontalDivider.setVisibility(View.GONE);
             submitClaimButton.setVisibility(View.GONE);
             
             // No last approver
@@ -328,9 +325,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
         setButtonDate(endDateButton, claim.getEndDate());
         
-        String statusString = getString(R.string.claim_info_claim_status) + " " + claim.getStatus().getString(this);
         TextView statusTextView = (TextView) findViewById(R.id.claimInfoStatusTextView);
-        statusTextView.setText(statusString);
+        statusTextView.setText(claim.getStatus().getString(this));
         
         // Get list of claim items
         ArrayList<Item> claimItems = new ArrayList<Item>();
@@ -361,20 +357,22 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         NonScrollListView commentsLinearLayout = (NonScrollListView) findViewById(R.id.claimInfoCommentsListView);
         commentsLinearLayout.setAdapter(new ApproverCommentAdapter(this, datasource, claim.getComments()));
         
-        if (userData.getRole() == UserRole.APPROVER) {
+        if (userData.getRole().equals(UserRole.APPROVER)) {
         	// Claimant name
         	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
-        	String claimantString = getString(R.string.claim_info_claimant_name) + " " + claimant.getUserName();
-        	claimantNameTextView.setText(claimantString);
+        	claimantNameTextView.setText(claimant.getUserName());
+        } else if (userData.getRole().equals(UserRole.CLAIMANT)) {
+            LinearLayout claimantNameLinearLayout = (LinearLayout) findViewById(R.id.claimInfoClaimantNameLinearLayout);
+            claimantNameLinearLayout.setVisibility(View.GONE);
         }
     	
     	// Approver name (if there is one)
-        TextView approverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
     	if (approver != null) {
-        	String lastApproverString = getString(R.string.claim_info_approver) + " " + approver.getUserName();
-        	approverTextView.setText(lastApproverString);
+            TextView approverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
+        	approverTextView.setText(approver.getUserName());
     	} else {
-    		approverTextView.setVisibility(View.GONE);
+    	    LinearLayout approverLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverLinearLayout);
+    	    approverLinearLayout.setVisibility(View.GONE);
     	}
     	
     	// Scroll to top now in case comment list has extended the layout

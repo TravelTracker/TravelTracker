@@ -108,7 +108,8 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		assertTrue("Alert should be shown", dialog.isShowing());
 		
 		final Button confirm = dialog.getButton(Dialog.BUTTON_POSITIVE);
-		activity.runOnUiThread(new Runnable() {
+		
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				confirm.performClick();
@@ -181,7 +182,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 		final Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				startDateButton.performClick();
@@ -195,7 +196,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		final DatePicker picker = dialog.getDatePicker();
 		final Button accept = dialog.getButton(Dialog.BUTTON_POSITIVE);
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				picker.updateDate(2013, 00, 24);
@@ -215,7 +216,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 		final Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				endDateButton.performClick();
@@ -229,7 +230,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		final DatePicker picker = dialog.getDatePicker();
 		final Button accept = dialog.getButton(Dialog.BUTTON_POSITIVE);
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				picker.updateDate(2017, 05, 13);
@@ -250,7 +251,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		final Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
 		String oldText = startDateButton.getText().toString();
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				startDateButton.performClick();
@@ -264,7 +265,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		final DatePicker picker = dialog.getDatePicker();
 		final Button accept = dialog.getButton(Dialog.BUTTON_POSITIVE);
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				picker.updateDate(2016, 07, 12);
@@ -285,7 +286,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		final Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
 		String oldText = endDateButton.getText().toString();
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				endDateButton.performClick();
@@ -299,7 +300,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		final DatePicker picker = dialog.getDatePicker();
 		final Button accept = dialog.getButton(Dialog.BUTTON_POSITIVE);
 		
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				picker.updateDate(2010, 8, 3);
@@ -348,7 +349,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		ActivityMonitor monitor = instrumentation.addMonitor(ExpenseItemsListActivity.class.getName(), null, false);
 		
 		final Button viewItemsButton = (Button) activity.findViewById(R.id.claimInfoViewItemsButton);
-		activity.runOnUiThread(new Runnable() {
+		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
 				viewItemsButton.performClick();

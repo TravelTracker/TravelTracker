@@ -67,9 +67,6 @@ public class DestinationEditorFragment extends DialogFragment {
     /** The reason of the destination. */
     String reason;
     
-    /** Whether the dialog was cancelled. */
-    boolean cancelled;
-    
     // Indices of destination fields in the ArrayList<String>.
     final static int LOCATION_INDEX = 0;
     final static int REASON_INDEX = 1;
@@ -82,7 +79,6 @@ public class DestinationEditorFragment extends DialogFragment {
         this.callback = callback;
         this.location = location;
         this.reason = reason;
-        cancelled = false;
     }
 
     @Override

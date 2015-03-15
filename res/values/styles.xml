@@ -18,5 +18,19 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:actionModeCloseDrawable">@drawable/ic_action_back</item>
     </style>
+    
+    <!--
+        Taken on March 15, 2015 from:
+        http://stackoverflow.com/questions/5049852/android-drawing-separator-divider-line-in-layout
+        A horizontal divider to be used anywhere in a layout.
+    -->
+    <style name="HorizontalDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">1dp</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
 
 </resources>

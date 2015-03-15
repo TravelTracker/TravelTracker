@@ -148,9 +148,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 		TextView statusTextView = (TextView) activity.findViewById(R.id.claimInfoStatusTextView);
 		String text = statusTextView.getText().toString();
-		String expected = activity.getString(R.string.claim_info_claim_status)
-						  + " "
-						  + activity.getString(R.string.enum_status_submitted);
+		String expected = activity.getString(R.string.enum_status_submitted);
 		
 		assertEquals("Status should be shown", expected, text);
 	}
@@ -320,9 +318,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 		TextView claimantTextView = (TextView) activity.findViewById(R.id.claimInfoClaimantNameTextView);
 		String text = claimantTextView.getText().toString();
-		String expected = activity.getString(R.string.claim_info_claimant_name)
-						+ " "
-						+ user.getUserName();
+		String expected = user.getUserName();
 		
 		assertEquals("Claimant name should be shown", expected, text);
 	}

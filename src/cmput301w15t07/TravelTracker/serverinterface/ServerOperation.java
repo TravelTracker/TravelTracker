@@ -24,6 +24,12 @@ package cmput301w15t07.TravelTracker.serverinterface;
 import java.util.Collection;
 import android.os.AsyncTask;
 
+/**
+ * Represents an operation executed on the server.
+ * @author Elliot
+ *
+ * @param <T>
+ */
 public class ServerOperation <T> extends AsyncTask<Collection<T>, Integer, Collection<T>> {
 	
 	@Override

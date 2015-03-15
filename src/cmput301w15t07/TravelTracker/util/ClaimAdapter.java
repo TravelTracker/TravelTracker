@@ -43,6 +43,11 @@ import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.R;
 
+/**
+ * An adapter that displays Claims.
+ * @author ryant26
+ *
+ */
 public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
 	private Collection<Claim> claims;

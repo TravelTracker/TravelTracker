@@ -24,6 +24,13 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class which can be observed by Observer.
+ * 
+ * @author kdbanman
+ *
+ * @param <E>
+ */
 public abstract class Observable <E> {
     private List<Observer<E>> observers = new ArrayList<Observer<E>>();
 

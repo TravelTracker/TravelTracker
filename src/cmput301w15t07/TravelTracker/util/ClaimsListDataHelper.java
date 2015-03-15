@@ -36,6 +36,11 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 
+/**
+ * Contains helper functions for Claim lists.
+ * 
+ * @author ryant26
+ */
 public class ClaimsListDataHelper {
 	
 	private static final int CLAIMS_ID = 0;

@@ -110,10 +110,10 @@
             android:text="@string/claim_info_view_items" />
 
         <TextView
-            android:id="@+id/claimInfoLastApproverTextView"
+            android:id="@+id/claimInfoApproverTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/claim_info_last_approver" />
+            android:text="@string/claim_info_approver" />
 
         <TextView
             android:id="@+id/TextView01"

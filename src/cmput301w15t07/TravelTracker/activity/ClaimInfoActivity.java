@@ -43,9 +43,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -75,7 +75,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public static final int MULTI_CLAIMANT_ID = 1;
     
     /** ID used to retrieve last approver from MutliCallback. */
-    public static final int MULTI_LAST_APPROVER_ID = 2;
+    public static final int MULTI_APPROVER_ID = 2;
     
     /** Data about the logged-in user. */
     private UserData userData;
@@ -267,7 +267,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             
             // No last approver
             if (approver == null) {
-            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
+            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
             	lastApproverTextView.setVisibility(View.GONE);
             }
         }
@@ -370,10 +370,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         }
     	
     	// Approver name (if there is one)
+        TextView approverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
     	if (approver != null) {
-        	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoLastApproverTextView);
-        	String lastApproverString = getString(R.string.claim_info_last_approver) + " " + approver.getUserName();
-        	lastApproverTextView.setText(lastApproverString);
+        	String lastApproverString = getString(R.string.claim_info_approver) + " " + approver.getUserName();
+        	approverTextView.setText(lastApproverString);
+    	} else {
+    		approverTextView.setVisibility(View.GONE);
     	}
     	
     	// Scroll to top now in case comment list has extended the layout
@@ -410,8 +412,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void submitClaim() {
-        // TODO Auto-generated method stub
-        
+        claim.setStatus(Status.SUBMITTED);
     }
 
     public void returnClaim() {
@@ -441,9 +442,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	        // Prep the adapter for claim destinations
 	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations());
 			
-			// Determine the number of approver comments
-			ArrayList<ApproverComment> comments = claim.getComments();
-			
 	        // Retrieve data
 	        MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());
 	        
@@ -451,9 +449,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
 	        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
 	        
-	        if (comments.size() > 0) {
-	        	ApproverComment comment = comments.get(0);
-	        	datasource.getUser(comment.getApprover(), multi.<User>createCallback(MULTI_LAST_APPROVER_ID));
+	        UUID approverID = claim.getApprover();
+	        if (approverID != null) {
+	        	datasource.getUser(approverID, multi.<User>createCallback(MULTI_APPROVER_ID));
 	        }
 	        
 	        multi.ready();
@@ -472,7 +470,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		@Override
 		public void onResult(SparseArray<Object> result) {
 			User claimant = (User) result.get(MULTI_CLAIMANT_ID);
-			User approver = (User) result.get(MULTI_LAST_APPROVER_ID);
+			
+			User approver = null;
+			if (claim.getApprover() != null) {
+				approver = (User) result.get(MULTI_APPROVER_ID);
+			}
 			
 			// We know the return result is the right type, so an unchecked
 			// cast shouldn't be problematic 

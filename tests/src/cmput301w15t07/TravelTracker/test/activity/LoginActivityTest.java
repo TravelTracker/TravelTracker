@@ -170,7 +170,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 			}
 		};
 		
-		activity.runOnUiThread(action);
+		instrumentation.runOnMainSync(action);
 		final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
 		
 		if (newActivity == null) {

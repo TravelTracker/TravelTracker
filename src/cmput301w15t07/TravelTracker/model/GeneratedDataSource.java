@@ -75,6 +75,11 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			claim.setStatus(
 					Status.values()[r.nextInt(Status.values().length)]);
 			
+			// Set approver if status is not in progress
+			if (claim.getStatus() != Status.IN_PROGRESS) {
+				claim.setApprover(user.getUUID());
+			}
+			
 			// Could set tags here
 			
 			internalAddClaim(claim);
@@ -143,7 +148,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			for (int l = 0; l < 5; l++) {
 				calendar = Calendar.getInstance();
 				calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
-				claim.getComments().add(new ApproverComment(user.getUUID(), getRandomString(r, 50, 200), calendar.getTime()));
+				claim.getComments().add(new ApproverComment(getRandomString(r, 50, 200), calendar.getTime()));
 			}
 		}
 		

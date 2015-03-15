@@ -52,12 +52,12 @@ public enum UserRole implements ContextStringable {
 	 */
 	public static UserRole fromString(String text, Context context) {
 	    if (text != null) {
-	      for (UserRole i : UserRole.values()) {
-	        if (text.equalsIgnoreCase(i.getString(context))) {
-	          return i;
-	        }
-	      }
+	    	for (UserRole i : UserRole.values()) {
+	    		if (text.equalsIgnoreCase(i.getString(context))) {
+	    			return i;
+	    		}
+	    	}
 	    }
 	    return null;
-	 }
+	}
 }

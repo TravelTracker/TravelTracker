@@ -47,6 +47,7 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -76,7 +77,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public static final int MULTI_CLAIMANT_ID = 1;
     
     /** ID used to retrieve last approver from MutliCallback. */
-    public static final int MULTI_LAST_APPROVER_ID = 2;
+    public static final int MULTI_APPROVER_ID = 2;
     
     /** Data about the logged-in user. */
     private UserData userData;
@@ -450,9 +451,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
 	        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
 	        
-	        if (comments.size() > 0) {
-	        	ApproverComment comment = comments.get(0);
-	        	datasource.getUser(comment.getApprover(), multi.<User>createCallback(MULTI_LAST_APPROVER_ID));
+	        if (claim.getStatus() != Status.IN_PROGRESS) {
+	        	datasource.getUser(claim.getApprover(), multi.<User>createCallback(MULTI_APPROVER_ID));
 	        }
 	        
 	        multi.ready();
@@ -471,7 +471,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		@Override
 		public void onResult(SparseArray<Object> result) {
 			User claimant = (User) result.get(MULTI_CLAIMANT_ID);
-			User approver = (User) result.get(MULTI_LAST_APPROVER_ID);
+			User approver = (User) result.get(MULTI_APPROVER_ID);
 			
 			// We know the return result is the right type, so an unchecked
 			// cast shouldn't be problematic 

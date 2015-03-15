@@ -33,6 +33,7 @@ import java.util.UUID;
  */
 public class Claim extends Document {
 	private UUID user;
+	private UUID approver;
 	private String name;
 	private Status status;
 	private Date startDate;
@@ -62,6 +63,14 @@ public class Claim extends Document {
 	}
 	public void setUser(UUID user) {
 		this.user = user;
+		this.updateObservers(this);
+	}
+	
+	public UUID getApprover() {
+		return this.approver;
+	}
+	public void setApprover(UUID approver) {
+		this.approver = approver;
 		this.updateObservers(this);
 	}
 	

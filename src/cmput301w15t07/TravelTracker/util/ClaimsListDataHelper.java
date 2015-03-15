@@ -24,6 +24,7 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import android.R.integer;
 import android.util.SparseArray;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
@@ -40,6 +41,7 @@ public class ClaimsListDataHelper {
 	private static final int CLAIMS_ID = 0;
 	private static final int ITEMS_ID = 1;
 	private static final int USER_ID = 2;
+	private static final int USERS_ID = 3;
 	
 	private UserRole userRole;
 	private ResultCallback<InitialData> callback;
@@ -57,6 +59,7 @@ public class ClaimsListDataHelper {
 		ds.getAllClaims(mc.<Collection<Claim>>createCallback(CLAIMS_ID));
 		ds.getAllItems(mc.<Collection<Item>>createCallback(ITEMS_ID));
 		ds.getUser(userData.getUUID(), mc.<User>createCallback(USER_ID));
+		ds.getAllUsers(mc.<Collection<User>>createCallback(USERS_ID));
 		mc.ready();
 	}
 	
@@ -65,6 +68,7 @@ public class ClaimsListDataHelper {
 		data.setUser((User)array.get(USER_ID));
 		data.setClaims(getClaimsForUser((Collection<Claim>)array.get(CLAIMS_ID), data.getUser(), role));
 		data.setItems(getItemsForClaims(data.getClaims(), (Collection<Item>) array.get(ITEMS_ID)));
+		data.setUsers((Collection<User>)array.get(USERS_ID));
 		return data;
 	}
 	
@@ -107,6 +111,7 @@ public class ClaimsListDataHelper {
 		private User user;
 		private Collection<Claim> claims;
 		private Collection<Item> items;
+		private Collection<User> users;
 		
 		public User getUser() {
 			return user;
@@ -117,6 +122,9 @@ public class ClaimsListDataHelper {
 		public Collection<Item> getItems() {
 			return items;
 		}
+		public Collection<User> getUsers() {
+			return users;
+		}
 		
 		private void setUser(User user) {
 			this.user = user;
@@ -126,6 +134,9 @@ public class ClaimsListDataHelper {
 		}
 		private void setItems(Collection<Item> items) {
 			this.items = items;
+		}
+		private void setUsers(Collection<User> users){
+			this.users = users;
 		}
 	}
 	

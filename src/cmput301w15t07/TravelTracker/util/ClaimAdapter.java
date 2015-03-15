@@ -60,9 +60,10 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	 * @param claims
 	 * @param items
 	 */
-	public void rebuildList(Collection<Claim> claims, Collection<Item> items){
+	public void rebuildList(Collection<Claim> claims, Collection<Item> items, Collection<User> users){
 		this.claims = claims;
 		this.items = items;
+		this.users = users;
 
 		//possible performance bottleneck
 		clear();
@@ -115,7 +116,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
 		Claim claim = getItem(position);
 		
-		name.setText(claim.getName());
+		setName(name, claim);
 		date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
 		setStatus(status, claim);
 		
@@ -130,6 +131,14 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		return workingView;
 	}
 	
+	
+	private void setName(TextView display, Claim claim){
+		String nameStr = claim.getName();
+		if (role.equals(UserRole.APPROVER)){
+			nameStr += " :" + findUser(claim.getUser());
+		}
+		display.setText(nameStr);
+	}
 	
 	private void setStatus(TextView display, Claim claim){
 		String statusStr = claim.getStatus().toString();
@@ -155,7 +164,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	private String findUser(UUID user){
 		String out = "";
 		for (User u : users){
-			if (u.equals(user)){
+			if (u.getUUID().equals(user)){
 				out =  u.getUserName();
 			}
 		}

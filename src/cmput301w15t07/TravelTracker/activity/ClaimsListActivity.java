@@ -129,7 +129,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         //TODO this will break when we change data sources
         ((Observable<DataSource>) datasource).addObserver(this);
         
-        adapter = new ClaimAdapter(context);
+        adapter = new ClaimAdapter(context, userData.getRole());
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
         listView.setAdapter(adapter);
         
@@ -205,7 +205,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
 		@Override
 		public void onResult(InitialData result) {
-			adapter.rebuildList(result.getClaims(), result.getItems(), userData.getRole());
+			adapter.rebuildList(result.getClaims(), result.getItems());
 			data = result;
 			//TODO stop spinner
 		}

@@ -16,26 +16,28 @@ public class ClaimAdapterTest extends AndroidTestCase{
 	protected void setUp() throws Exception {
 		super.setUp();
 		ds = new GeneratedDataSource();
-		adapter = new ClaimAdapter(getContext());
 		acb = new AllCallbacks(ds);
 	}
 	
 	public void testCLaimsSortedClaimant(){
-		adapter.rebuildList(acb.getClaims(), acb.getItems(), UserRole.CLAIMANT);
+		adapter = new ClaimAdapter(getContext(), UserRole.CLAIMANT);
+		adapter.rebuildList(acb.getClaims(), acb.getItems());
 		 for (int i = 1; i < adapter.getCount(); i++){
 			 assertTrue(adapter.getItem(i).getStartDate().compareTo(adapter.getItem(i-1).getStartDate()) < 1);
 		 }
 	}
 	
 	public void testCLaimsSortedApprover(){
-		adapter.rebuildList(acb.getClaims(), acb.getItems(), UserRole.APPROVER);
+		adapter = new ClaimAdapter(getContext(), UserRole.APPROVER);
+		adapter.rebuildList(acb.getClaims(), acb.getItems());
 		 for (int i = 1; i < adapter.getCount(); i++){
 			 assertTrue(adapter.getItem(i).getStartDate().compareTo(adapter.getItem(i-1).getStartDate()) > -1);
 		 }
 	}
 	
 	public void testAdapterMappingDS(){
-		adapter.rebuildList(acb.getClaims(), acb.getItems(), UserRole.APPROVER);
+		adapter = new ClaimAdapter(getContext(), UserRole.APPROVER);
+		adapter.rebuildList(acb.getClaims(), acb.getItems());
 		assertEquals(acb.getClaims().size(), adapter.getCount());
 	}
 	

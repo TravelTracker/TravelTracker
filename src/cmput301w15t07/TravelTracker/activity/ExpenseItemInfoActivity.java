@@ -30,6 +30,7 @@ import android.app.Activity;
 
 import android.content.Intent;
 
+import android.text.InputFilter.LengthFilter;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
@@ -68,7 +69,7 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  * 	Get all fields loading
  * 		get spinners to load enums values correctly 
  * 	Field saving on user input 
- * 		
+ * 
  * 
  * 
  *
@@ -85,7 +86,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
     
     /** the current Item */
     private UUID itemID;
-    Item item; 
+    Item item = null;
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,8 +126,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.expense_info_activity);
-		
+			
 		//show loading circles
 		setContentView(R.layout.loading_indeterminate);
 		
@@ -141,8 +141,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         itemID = (UUID) bundle.getSerializable(ITEM_UUID);        		
         
 		appendNameToTitle(userData.getName());
-		populateExpenseInfo();
-			
+		//populateExpenseInfo();
+		setContentView(R.layout.expense_info_activity);	
 		//attach view Listener for ItemStatus CheckedTextView
 		final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
 		itemStatus.setOnClickListener(new View.OnClickListener() {
@@ -191,7 +191,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		super.onResume();
 		
 		//show loading circle
-		setContentView(R.layout.loading_indeterminate);
+		//setContentView(R.layout.loading_indeterminate);
 		
 		//Retrieve user data from bundle
 		Bundle bundle = getIntent().getExtras();
@@ -206,7 +206,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 			
 			@Override
 			public void onResult(Item item) {
-				populateExpenseInfo();
+				ExpenseItemInfoActivity.this.item = item;
+				if (ExpenseItemInfoActivity.this.item != null){
+					populateExpenseInfo(item);
+				}
+				else{
+					Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();
+				}
 			}
 			
 			@Override
@@ -217,34 +223,59 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 				
 	}
 	
-	private void populateExpenseInfo() {
+	private void populateExpenseInfo(Item item) {
 		
-		//TODO: fix loading of data into buttons 
-		//TODO: possibly catch null pointer exceptions?
+		
+		//TODO:catch null pointer exceptions for empty claims/fields
 		Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
-		//setButtonDate(itemDateButton, item.getDate());
-		
+		try{
+			setButtonDate(itemDateButton, item.getDate());
+		} catch (NullPointerException e){
+			//the field is empty, so dont load anything
+		}
+			
 		//TODO: populate receipt image
 		
 		//TODO: Note, amount string will have to be changed back to float before being inserted into model
 		String amount = Float.toString(item.getAmount());
 		EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
-		//itemAmount.setText(amount);
+		try{
+			itemAmount.setText(amount);
+		} catch (NullPointerException e) {
+			// the Field is empty, so dont load anything
+		}
 		
 		//TODO: import data for currency spinner
 		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
-		currencySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
-		//currencySpinner.setPrompt(item.getCurrency());
-		
+		currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
+		try{
+			currencySpinner.setPrompt(item.getCurrency().toString());
+		} catch (NullPointerException e) {
+			// the field is null or empty, dont load anything
+		}
 		//TODO: import the category for the spinner
+		//Look into setPosition function for spinners
 		Spinner categorySpinner = (Spinner)	findViewById(R.id.expenseItemInfoCategorySpinner);
 		categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
-		
-		//categorySpinner.setPrompt();
-		
+		try {
+			categorySpinner.setSelection(item.getCategory().getId());
+		} catch (Exception e) {
+			// Item is empty or null, dont load anything
+		}
 		EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-		//itemDescription.setText(item.getDescription());
+		try {
+			itemDescription.setText(item.getDescription());
+		} catch (NullPointerException e) {
+			// the field is empty, so dont load anything
+		}
 		
+		
+		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
+		if(item.getStatus() == true){
+			itemStatus.setChecked(true); //anything other than true means incomplete
+		}else{
+			itemStatus.setChecked(false);
+		}
 	}
 
 	private void setButtonDate(Button dateButton, Date date) {

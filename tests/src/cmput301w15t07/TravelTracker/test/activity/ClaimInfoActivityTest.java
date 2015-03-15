@@ -1,4 +1,4 @@
-package cmput301w15t07.TravelTracker.test;
+package cmput301w15t07.TravelTracker.test.activity;
 
 /*
  *   Copyright 2015 Kirby Banman,

@@ -1,4 +1,4 @@
-package cmput301w15t07.TravelTracker.test;
+package cmput301w15t07.TravelTracker.test.util;
 
 import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 import cmput301w15t07.TravelTracker.model.UserRole;

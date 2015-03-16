@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.test.util;
 
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.User;
@@ -20,6 +21,10 @@ public class ClaimListDataHelperTest extends AndroidTestCase {
 	InitialData data;
 	SynchronizedResultCallback<InitialData> idcb;
 	
+	String name1 = "Joe";
+	String name2 = "Bob";
+	String name3 = "Alice";
+	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -30,10 +35,6 @@ public class ClaimListDataHelperTest extends AndroidTestCase {
 	}
 	
 	public void testRightUsers(){
-		String name1 = "Joe";
-		String name2 = "Bob";
-		String name3 = "Alice";
-		
 		User user1 = DataSourceUtils.addUser(name1, ds);
 		User user2 = DataSourceUtils.addUser(name2, ds);
 		User user3 = DataSourceUtils.addUser(name3, ds);
@@ -42,6 +43,20 @@ public class ClaimListDataHelperTest extends AndroidTestCase {
 		helper.getInitialData(idcb, new UserData(user1.getUUID(), name1, UserRole.CLAIMANT), ds);
 		data = DataSourceUtils.getData(idcb);
 		assertTrue(data.getUsers().size() == 3);
+	}
+	
+	public void testClaimsForClaimant(){
+		User user1 = DataSourceUtils.addUser(name1, ds);
+		User user2 = DataSourceUtils.addUser(name2, ds);
+		
+		Claim claim1 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim2 = DataSourceUtils.addEmptyClaim(user2, ds);
+		
+		helper.getInitialData(idcb, new UserData(user1.getUUID(), name1, UserRole.CLAIMANT), ds);
+		data = DataSourceUtils.getData(idcb);
+		
+		assertTrue("Claimant is getting claims that doesn't belong to them", data.getClaims().size() == 1);
+		
 	}
 	
 }

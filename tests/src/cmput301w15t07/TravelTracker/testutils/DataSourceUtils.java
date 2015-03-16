@@ -3,10 +3,12 @@ package cmput301w15t07.TravelTracker.testutils;
 import java.util.UUID;
 
 import android.test.AndroidTestCase;
+import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 
 
 public class DataSourceUtils extends AndroidTestCase{
@@ -39,6 +41,12 @@ public class DataSourceUtils extends AndroidTestCase{
 	 */
 	public static UserData getUserDataApprover(String name){
 		return getUserData(name, UserRole.APPROVER);
+	}
+	
+	public static Claim addEmptyClaim(User user, DataSource ds){
+		SynchronizedResultCallback<Claim> claimCB = new SynchronizedResultCallback<Claim>();
+		ds.addClaim(user, claimCB);
+		return getData(claimCB);
 	}
 	
 	

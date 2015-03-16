@@ -99,8 +99,7 @@ public class DestinationAdapter {
         View view = inflater.inflate(LIST_VIEW_ID, linearLayout, false);
         setDestination(view, destination);
         
-        if (userData.getRole().equals(UserRole.CLAIMANT) && (claim.getStatus().equals(Status.IN_PROGRESS) ||
-                                                             claim.getStatus().equals(Status.RETURNED))) {
+        if (isEditable(userData)) {
             view.setOnClickListener(new View.OnClickListener() {
                 
                 @Override
@@ -215,6 +214,15 @@ public class DestinationAdapter {
         destinationEditor = null;
         editingView = null;
         newDestination = false;
+    }
+    
+    private boolean isEditable(UserData userData) {
+        Status status = claim.getStatus();
+        UserRole role = userData.getRole();
+        
+        return  role.equals(UserRole.CLAIMANT) &&
+                (status.equals(Status.IN_PROGRESS) ||
+                 status.equals(Status.RETURNED));
     }
     
     /**

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="javadoc">
     <target name="javadoc">
-        <javadoc access="public" additionalparam="-bootclasspath &quot;/usr/local/share/android-sdk-linux/platforms/android-17/android.jar&quot; " author="true" classpath="libs/jest-droid-0.1.5.jar" destdir="doc/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="cmput301w15t07.TravelTracker.activity,cmput301w15t07.TravelTracker.serverinterface,cmput301w15t07.TravelTracker.model,cmput301w15t07.TravelTracker.util,cmput301w15t07.TravelTracker" source="1.6" sourcepath="src:gen" splitindex="true" use="true" version="true">
-            <link href="file:/usr/local/share/android-sdk-linux/docs/reference"/>
-        </javadoc>
+        <javadoc access="public" additionalparam="-bootclasspath &quot;/usr/local/share/android-sdk-linux/platforms/android-17/android.jar&quot; " author="true" classpath="libs/jest-droid-0.1.5.jar" destdir="doc/javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.6" sourcefiles="src/cmput301w15t07/TravelTracker/util/DestinationEditorFragment.java" sourcepath="src:gen" splitindex="true" use="true" version="true"/>
     </target>
 </project>

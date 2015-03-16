@@ -280,9 +280,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         
 	    super.onBackPressed();
 	}
+	
 	/**
 	 * Fill buttons/spinners/editText with data from item
-	 * @param item - The current expense item
+	 * @param item The current expense item
 	 */
 	private void populateExpenseInfo(Item item) {
 		
@@ -334,11 +335,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
 		itemStatus.setChecked(item.isComplete());
 	}
+	
 	/**
-	 * get the index in a spinner array
-	 * @param spinner
-	 * @param string
-	 * @return
+	 * Get the index in a spinner array.
+	 * @param spinner The spinner.
+	 * @param string The string to find.
+	 * @return The index of the item containing the string
 	 */
 	public int getIndex(Spinner spinner, String string){
 		int index = 0;

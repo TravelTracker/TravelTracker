@@ -47,10 +47,10 @@ public class ClaimUtilities {
 	}
 	
 	/**
-	 * gets all the totals from a claim and returns a list of strings in 
+	 * Gets all the totals from a claim and returns a list of strings in 
 	 * the format: (total) (currency) 
-	 * @param claim
-	 * @return total strings
+	 * @param items The collection of Items.
+	 * @return The string of totals.
 	 */
 	public static ArrayList<String> getTotals(Collection<Item> items){
 		Hashtable<String, Float> totals = new Hashtable<String, Float>();

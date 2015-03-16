@@ -48,7 +48,8 @@ public class DestinationEditorFragment extends DialogFragment {
     public interface ResultCallback {
         /**
          * Called when the destination's changes are confirmed.
-         * @param 
+         * 
+         * @param result The result (a location and a reason).
          */
         void onDestinationEditorFragmentResult(ArrayList<String> result);
         

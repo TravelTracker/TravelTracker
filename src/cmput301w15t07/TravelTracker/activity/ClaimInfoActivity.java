@@ -449,14 +449,29 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 					if (item.getClaim().equals(claim.getUUID()))
 						allComplete = allComplete && item.isComplete();
 				}
+				int dialogMessage = allComplete ? 
+						R.string.claim_info_submit_confim :
+						R.string.claim_info_not_all_items_complete;
 				
-				if (allComplete) {
-					// TODO confirmation dialogue.  "Submit claim for approval?"
-					claim.setStatus(Status.SUBMITTED);
-				} else {
-					// TODO confirmation dialogue.  "Some expense items are incomplete.  Submit anyways?"
-					Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_all_items_complete, Toast.LENGTH_SHORT).show();
-				}
+				DialogInterface.OnClickListener submitDialogClickListener = new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        switch (which){
+				        case DialogInterface.BUTTON_POSITIVE:
+				            claim.setStatus(Status.SUBMITTED);
+				            ClaimInfoActivity.this.finish();
+				            break;
+
+				        case DialogInterface.BUTTON_NEGATIVE:
+				        	Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_submitted, Toast.LENGTH_SHORT).show();
+				            break;
+				        }
+				    }
+				};
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
+				builder.setMessage(dialogMessage).setPositiveButton("Yes", submitDialogClickListener)
+				    .setNegativeButton("No", submitDialogClickListener).show();
 			}
 
 			@Override

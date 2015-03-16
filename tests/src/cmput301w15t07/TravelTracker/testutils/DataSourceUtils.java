@@ -8,7 +8,6 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
-import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 
 
 public class DataSourceUtils extends AndroidTestCase{

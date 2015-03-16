@@ -44,7 +44,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
@@ -56,7 +55,6 @@ import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.DestinationAdapter;
-import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.TagAdapter;
 
 /**

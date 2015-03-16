@@ -34,7 +34,6 @@ import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;

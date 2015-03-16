@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
@@ -233,7 +234,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
 			
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-				//item.setCurrency((ItemCurrency) parent.getItemAtPosition(position));
+				item.setCurrency(((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this));
+				
+				Toast.makeText(ExpenseItemInfoActivity.this, "Position: " + Integer.toString(position), Toast.LENGTH_SHORT).show();
+				
+				Toast.makeText(ExpenseItemInfoActivity.this, "Currency: " + ((ItemCurrency) parent.getItemAtPosition(position)).toString(), Toast.LENGTH_SHORT).show();
 			}
 			
 			
@@ -337,11 +342,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		if(item.isComplete() == true){
-			itemStatus.setChecked(true); //anything other than true means incomplete
-		}else{
-			itemStatus.setChecked(true);
-		}
+		itemStatus.setChecked(item.isComplete());
 	}
 	public int getIndex(Spinner spinner, String string){
 		int index = 0;

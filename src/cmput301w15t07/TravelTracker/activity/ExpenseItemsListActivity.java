@@ -29,9 +29,7 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
-import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -171,10 +169,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
 
             // Add delete listener only if we're a claimant and the claim
             // is in an editable state
-            Status status = claim.getStatus();
-            if (userData.getRole() == UserRole.CLAIMANT &&
-            		status != Status.APPROVED &&
-            		status != Status.SUBMITTED) {
+            if (isEditable(claim.getStatus(), userData.getRole())) {
             	itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
             	itemsList.setMultiChoiceModeListener(
             			new MultiSelectListener(new ContextMenuListener(),

@@ -148,7 +148,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 		TextView statusTextView = (TextView) activity.findViewById(R.id.claimInfoStatusTextView);
 		String text = statusTextView.getText().toString();
-		String expected = activity.getString(R.string.enum_status_submitted);
+		String expected = activity.getString(R.string.enum_status_in_progress);
 		
 		assertEquals("Status should be shown", expected, text);
 	}
@@ -372,7 +372,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	private void startWithClaim(UserRole role) throws InterruptedException {
 		// Fill in claim data
 		user.setUserName("Test user");
-		claim.setStatus(Status.SUBMITTED);
+		claim.setStatus(Status.IN_PROGRESS);
 		
 		Calendar start = Calendar.getInstance();
 		start.set(2015, 04, 01);

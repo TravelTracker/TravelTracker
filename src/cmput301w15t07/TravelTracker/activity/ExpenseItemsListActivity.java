@@ -29,7 +29,9 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -167,17 +169,28 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             itemsList = (ListView) findViewById(R.id.expenseItemsListListView);
             itemsList.setAdapter(adapter);
 
-            itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-            itemsList.setMultiChoiceModeListener(new MultiSelectListener(new ContextMenuListener(), R.menu.items_list_context_menu));
+            // Add delete listener only if we're a claimant and the claim
+            // is in an editable state
+            Status status = claim.getStatus();
+            if (userData.getRole() == UserRole.CLAIMANT &&
+            		status != Status.APPROVED &&
+            		status != Status.SUBMITTED) {
+            	itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            	itemsList.setMultiChoiceModeListener(
+            			new MultiSelectListener(new ContextMenuListener(),
+            					R.menu.items_list_context_menu));
+            }
+
+            // Set onClick listener, send the Item to the Item Info Activity
+        	itemsList.setOnItemClickListener(new OnItemClickListener() {
+        		@Override
+        		public void onItemClick(AdapterView<?> parent, View view,
+        				int position, long id) {
+        			// Launch edit expense item info with this item
+        			launchExpenseItemInfo(adapter.getItem(position));
+        		}
+        	});
             
-            itemsList.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                        int position, long id) {
-                    // Launch edit expense item info with this item
-                    launchExpenseItemInfo(adapter.getItem(position));
-                }
-            });
         }
                 
     }

@@ -42,11 +42,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 
@@ -77,9 +77,14 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 
     /** UUID of the claim. */
     private UUID claimID;
+
+    /** The current claim. */
+    Claim claim;
     
-    /** the current Item */
+    /** UUID of the item. */
     private UUID itemID;
+    
+    /** The current item. */
     Item item = null;
     
     /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
@@ -92,10 +97,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		// Menu items
 		MenuItem deleteItemMenuItem = menu.findItem(R.id.expense_item_info_delete_item);
 		
-        if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            
-        } else if (userData.getRole().equals(UserRole.APPROVER)) {
-            // Menu items an approver doesn't need to see or have access to
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
+            // Menu items that disappear when not editable
             deleteItemMenuItem.setEnabled(false).setVisible(false);
         }
         
@@ -265,6 +268,19 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		//show loading circleDate date = claim.getEndDate();
 		//setContentView(R.layout.loading_indeterminate);
+		
+		datasource.getClaim(claimID, new ResultCallback<Claim>() {
+
+            @Override
+            public void onResult(Claim claim) {
+                ExpenseItemInfoActivity.this.claim = claim;
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+		});
 		
 		datasource.getItem(itemID, new ResultCallback<Item>() {
 			

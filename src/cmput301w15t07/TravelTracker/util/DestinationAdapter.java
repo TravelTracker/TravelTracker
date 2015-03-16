@@ -12,11 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
-import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -103,7 +102,7 @@ public class DestinationAdapter {
         View view = inflater.inflate(LIST_VIEW_ID, linearLayout, false);
         setDestination(view, destination);
         
-        if (isEditable(userData)) {
+        if (TravelTrackerActivity.isEditable(claim.getStatus(), userData.getRole())) {
             view.setOnClickListener(new View.OnClickListener() {
                 
                 @Override
@@ -228,15 +227,6 @@ public class DestinationAdapter {
         destinationEditor = null;
         editingView = null;
         newDestination = false;
-    }
-    
-    private boolean isEditable(UserData userData) {
-        Status status = claim.getStatus();
-        UserRole role = userData.getRole();
-        
-        return  role.equals(UserRole.CLAIMANT) &&
-                (status.equals(Status.IN_PROGRESS) ||
-                 status.equals(Status.RETURNED));
     }
     
     /**

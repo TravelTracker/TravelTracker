@@ -30,7 +30,6 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -82,10 +81,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Menu items
         MenuItem addItemMenuItem = menu.findItem(R.id.expense_items_list_add_item);
         
-        if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            
-        } else if (userData.getRole().equals(UserRole.APPROVER)) {
-            // Menu items an approver doesn't need to see or have access to
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
+            // Menu items that disappear when not editable
             addItemMenuItem.setEnabled(false).setVisible(false);
         }
         

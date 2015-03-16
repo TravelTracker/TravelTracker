@@ -25,6 +25,8 @@ import java.util.concurrent.CountDownLatch;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -93,6 +95,12 @@ public class TravelTrackerActivity extends Activity {
 
     public void appendNameToTitle(String name) {
         setTitle(getTitle() + " - " + name);
+    }
+    
+    public static boolean isEditable(Status status, UserRole role) {
+        return  role.equals(UserRole.CLAIMANT) &&
+                (status.equals(Status.IN_PROGRESS) ||
+                 status.equals(Status.RETURNED));
     }
     
     public void disableButton(Button button) {

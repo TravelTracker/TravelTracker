@@ -106,7 +106,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
         MenuItem deleteClaimMenuItem = menu.findItem(R.id.claim_info_delete_claim);
         
-        if (!isEditable()) {
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
             // Menu items that disappear when not editable
             addDestinationMenuItem.setEnabled(false).setVisible(false);
             addItemMenuItem.setEnabled(false).setVisible(false);
@@ -212,7 +212,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         });
     	
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
-        	if (isEditable()) {
+        	if (isEditable(claim.getStatus(), userData.getRole())) {
 	            // Attach edit date listener to start date button
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
 	                @Override
@@ -555,15 +555,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
 		dateButton.setText(dateString);
-    }
-    
-    private boolean isEditable() {
-    	Status status = claim.getStatus();
-    	UserRole role = userData.getRole();
-    	
-    	return 	role.equals(UserRole.CLAIMANT) &&
-		    	(status.equals(Status.IN_PROGRESS) ||
-    	     	 status.equals(Status.RETURNED));
     }
     
     /**

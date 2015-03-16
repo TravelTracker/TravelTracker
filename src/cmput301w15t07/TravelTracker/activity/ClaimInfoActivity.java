@@ -104,10 +104,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
         MenuItem deleteClaimMenuItem = menu.findItem(R.id.claim_info_delete_claim);
         
-        if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            
-        } else if (userData.getRole().equals(UserRole.APPROVER)) {
-            // Menu items an approver doesn't need to see or have access to
+        if (!isEditable()) {
+            // Menu items that disappear when not editable
             addDestinationMenuItem.setEnabled(false).setVisible(false);
             addItemMenuItem.setEnabled(false).setVisible(false);
             deleteClaimMenuItem.setEnabled(false).setVisible(false);
@@ -204,31 +202,33 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         });
     	
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            // Attach edit date listener to start date button
-            final Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
-            startDateButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startDatePressed();
-                }
-            });
-            
-            // Attach edit date listener to end date button
-            final Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
-            endDateButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                   endDatePressed();
-                }
-            });
-            
-            // Attach submit claim listener to submit claim button
-            submitClaimButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    submitClaim();
-                }
-            });
+        	if (isEditable()) {
+	            // Attach edit date listener to start date button
+	            final Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
+	            startDateButton.setOnClickListener(new View.OnClickListener() {
+	                @Override
+	                public void onClick(View v) {
+	                    startDatePressed();
+	                }
+	            });
+	            
+	            // Attach edit date listener to end date button
+	            final Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
+	            endDateButton.setOnClickListener(new View.OnClickListener() {
+	                @Override
+	                public void onClick(View v) {
+	                   endDatePressed();
+	                }
+	            });
+	            
+	            // Attach submit claim listener to submit claim button
+	            submitClaimButton.setOnClickListener(new View.OnClickListener() {
+	                @Override
+	                public void onClick(View v) {
+	                    submitClaim();
+	                }
+	            });
+        	}
             
             // Views a claimant doesn't need to see or have access to
             approverButtonsLinearLayout.setVisibility(View.GONE);
@@ -463,6 +463,15 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
 		dateButton.setText(dateString);
+    }
+    
+    private boolean isEditable() {
+    	Status status = claim.getStatus();
+    	UserRole role = userData.getRole();
+    	
+    	return 	role.equals(UserRole.CLAIMANT) &&
+		    	(status.equals(Status.IN_PROGRESS) ||
+    	     	 status.equals(Status.RETURNED));
     }
     
     /**

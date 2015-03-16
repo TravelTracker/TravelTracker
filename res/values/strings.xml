@@ -124,5 +124,9 @@
         <string name="enum_user_role_approver">Approver</string>
         <string name="claim_info_not_submitted">Claim not submitted!</string>
         <string name="claim_info_submit_confim">Submit claim for approval?</string>
+        <string name="claim_info_return_confirm">Return claim to claimant for revision?</string>
+        <string name="claim_info_approve_confirm">Approve claim?</string>
+        <string name="claim_info_not_returned">Claim not returned to claimant!</string>
+        <string name="claim_info_not_approved">Claim not approved!</string>
    
 </resources>

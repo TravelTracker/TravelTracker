@@ -483,27 +483,63 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     }
 
     public void returnClaim() {
-    	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
-    	
-    	// add approver comment if comment field is not empty
-    	if (!commentText.trim().equals("")) {
-    		claim.addComment(commentText);
-    	}
-    	
-    	claim.setApprover(userData.getUUID());
-    	claim.setStatus(Status.RETURNED);
+    	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        switch (which){
+		        case DialogInterface.BUTTON_POSITIVE:
+		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
+		        	
+		        	// add approver comment if comment field is not empty
+		        	if (!commentText.trim().equals("")) {
+		        		claim.addComment(commentText);
+		        	}
+		        	
+		        	claim.setApprover(userData.getUUID());
+		        	claim.setStatus(Status.RETURNED);
+		        	ClaimInfoActivity.this.finish();
+		            break;
+
+		        case DialogInterface.BUTTON_NEGATIVE:
+		        	Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_returned, Toast.LENGTH_SHORT).show();
+		            break;
+		        }
+		    }
+		};
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
+		builder.setMessage(R.string.claim_info_return_confirm).setPositiveButton("Yes", returnDialogClickListener)
+		    .setNegativeButton("No", returnDialogClickListener).show();
     }
 
     public void approveClaim() {
-    	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
-    	
-    	// add approver comment if comment field is not empty
-    	if (!commentText.trim().equals("")) {
-    		claim.addComment(commentText);
-    	}
-    	
-    	claim.setApprover(userData.getUUID());
-    	claim.setStatus(Status.APPROVED);
+    	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        switch (which){
+		        case DialogInterface.BUTTON_POSITIVE:
+		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
+		        	
+		        	// add approver comment if comment field is not empty
+		        	if (!commentText.trim().equals("")) {
+		        		claim.addComment(commentText);
+		        	}
+		        	
+		        	claim.setApprover(userData.getUUID());
+		        	claim.setStatus(Status.APPROVED);
+		        	ClaimInfoActivity.this.finish();
+		            break;
+
+		        case DialogInterface.BUTTON_NEGATIVE:
+		        	Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_approved, Toast.LENGTH_SHORT).show();
+		            break;
+		        }
+		    }
+		};
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
+		builder.setMessage(R.string.claim_info_approve_confirm).setPositiveButton("Yes", returnDialogClickListener)
+		    .setNegativeButton("No", returnDialogClickListener).show();
     }
     
     private void setButtonDate(Button dateButton, Date date) {

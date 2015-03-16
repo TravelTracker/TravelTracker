@@ -167,7 +167,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             setContentView(R.layout.expense_items_list_activity);
             
             // Get itemsList and set its adapter
-            itemsList = (ListView) findViewById(R.id.itemsListListView);
+            itemsList = (ListView) findViewById(R.id.expenseItemsListListView);
             itemsList.setAdapter(adapter);
 
             itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);

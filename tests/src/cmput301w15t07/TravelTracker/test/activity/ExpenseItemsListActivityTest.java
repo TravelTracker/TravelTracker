@@ -127,7 +127,7 @@ public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseIt
         startActivity(intent, null, null);
 
         activity = getActivity();
-        itemsList = (ListView) activity.findViewById(cmput301w15t07.TravelTracker.R.id.itemsListListView);
+        itemsList = (ListView) activity.findViewById(cmput301w15t07.TravelTracker.R.id.expenseItemsListListView);
         adapter = (ExpenseItemsListAdapter) itemsList.getAdapter();
 	}
 	

@@ -99,7 +99,7 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         
         // Incomplete view
         TextView incompleteView =
-                (TextView) rowView.findViewById(R.id.itemsListItemViewStatusTextView);
+                (TextView) rowView.findViewById(R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete()) {
             incompleteView.setVisibility(View.INVISIBLE);
         }
@@ -109,19 +109,19 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         
         // Description view
         TextView descView =
-                (TextView) rowView.findViewById(R.id.itemsListItemViewDescriptionTextView);
+                (TextView) rowView.findViewById(R.id.expenseItemsListItemViewDescriptionTextView);
         descView.setText(itemData.getDescription());
         
         // Date view
         TextView dateView =
-                (TextView) rowView.findViewById(R.id.itemsListItemViewDateTextView);
+                (TextView) rowView.findViewById(R.id.expenseItemsListItemViewDateTextView);
         java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getContext());
         String dateString = dateFormat.format(itemData.getDate());
         dateView.setText(dateString);
         
         // Receipt view
         ImageView receiptView =
-                (ImageView) rowView.findViewById(R.id.itemsListItemViewReceiptImageView);
+                (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
         if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
             receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
         }

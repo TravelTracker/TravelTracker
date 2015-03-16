@@ -14,7 +14,7 @@
         android:layout_row="4" />
 
     <ImageView
-        android:id="@+id/itemsListItemViewReceiptImageView"
+        android:id="@+id/expenseItemsListItemViewReceiptImageView"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:layout_column="2"
@@ -25,7 +25,7 @@
         android:src="@android:drawable/picture_frame" />
 
     <TextView
-        android:id="@+id/itemsListItemViewDescriptionTextView"
+        android:id="@+id/expenseItemsListItemViewDescriptionTextView"
         android:layout_width="235dp"
         android:layout_height="36dp"
         android:layout_column="0"
@@ -35,7 +35,7 @@
         android:text="@string/expense_items_list_info_error" />
 
     <TextView
-        android:id="@+id/itemsListItemViewDateTextView"
+        android:id="@+id/expenseItemsListItemViewDateTextView"
         android:layout_width="90dp"
         android:layout_height="37dp"
         android:layout_column="1"
@@ -45,7 +45,7 @@
         android:text="@string/expense_items_list_info_error" />
 
     <TextView
-        android:id="@+id/itemsListItemViewStatusTextView"
+        android:id="@+id/expenseItemsListItemViewStatusTextView"
         android:layout_width="wrap_content"
         android:layout_height="31dp"
         android:layout_column="0"

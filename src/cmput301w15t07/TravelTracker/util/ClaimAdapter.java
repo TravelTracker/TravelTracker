@@ -127,7 +127,6 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 		
 		addTotals(claim, totalsContainer);
 		addDestinations(claim, destinationContainer);
-		//TODO add approver for userRole = Approver
 		//TODO add tags
 		
 		return workingView;

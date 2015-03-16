@@ -286,10 +286,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             }
         }
         
-        if (claim.getStatus().equals(Status.SUBMITTED) || claim.getStatus().equals(Status.APPROVED)) {
-            submitClaimButton.setVisibility(View.GONE);
-        }
-        
         onLoaded();
     }
 

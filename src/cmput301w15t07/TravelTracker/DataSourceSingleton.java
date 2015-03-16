@@ -23,7 +23,6 @@ package cmput301w15t07.TravelTracker;
 
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
-import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 
 /**
  * A singleton containing the applications's data source.

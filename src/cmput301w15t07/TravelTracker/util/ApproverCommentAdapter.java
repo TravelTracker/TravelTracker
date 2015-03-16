@@ -26,8 +26,6 @@ import java.util.List;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.model.User;
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;

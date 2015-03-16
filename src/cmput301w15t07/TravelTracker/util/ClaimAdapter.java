@@ -23,9 +23,7 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.util.*;
 
-import android.R.integer;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;

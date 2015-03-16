@@ -40,6 +40,7 @@
         android:layout_alignTop="@+id/expenseItemInfoStatusCheckedTextView"
         android:layout_marginStart="72dp"
         android:layout_toEndOf="@+id/expenseItemInfoDateButton"
+        android:contentDescription="@string/content_description_receipt_image"
         android:src="@android:drawable/picture_frame" />
 
     <TextView

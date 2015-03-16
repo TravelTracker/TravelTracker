@@ -24,7 +24,6 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import android.R.integer;
 import android.util.SparseArray;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;

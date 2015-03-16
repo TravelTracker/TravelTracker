@@ -21,6 +21,7 @@
         android:layout_gravity="fill_horizontal|fill_vertical"
         android:layout_row="0"
         android:layout_rowSpan="2"
+        android:contentDescription="@string/content_description_receipt_image"
         android:src="@android:drawable/picture_frame" />
 
     <TextView

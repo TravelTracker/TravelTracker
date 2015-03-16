@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
@@ -17,9 +18,12 @@
             android:orientation="horizontal" >
 
             <TextView
+                tools:ignore="RtlSymmetry"
+                android:paddingEnd="5dp"
                 android:id="@+id/claimInfoClaimantNameHeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/claim_info_claimant_name" />
 
             <TextView
@@ -36,9 +40,12 @@
             android:orientation="horizontal" >
 
             <TextView
+                tools:ignore="RtlSymmetry"
+                android:paddingEnd="5dp"
                 android:id="@+id/claimInfoStatusHeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/claim_info_claim_status" />
 
             <TextView
@@ -79,6 +86,7 @@
             android:id="@+id/claimInfoDestinationsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/claim_info_destinations" />
 
         <LinearLayout
@@ -94,6 +102,7 @@
             android:id="@+id/claimInfoTagsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/claim_info_tags" />
 
         <LinearLayout
@@ -118,6 +127,7 @@
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentStart="true"
 	            android:gravity="start"
+                android:textStyle="bold"
 	            android:text="@string/claim_info_currency_totals" />
 	
 	        <TextView
@@ -142,9 +152,12 @@
             android:orientation="horizontal" >
 
             <TextView
+                tools:ignore="RtlSymmetry"
+                android:paddingEnd="5dp"
                 android:id="@+id/claimInfoApproverHeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/claim_info_approver" />
 
             <TextView
@@ -158,6 +171,7 @@
             android:id="@+id/TextView01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/claim_info_comments" />
 
         <cmput301w15t07.TravelTracker.util.NonScrollListView
@@ -184,6 +198,7 @@
             android:orientation="horizontal" >
 
             <Button
+                tools:ignore="ButtonStyle"
                 android:id="@+id/claimInfoClaimReturnButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -191,6 +206,7 @@
                 android:text="@string/claim_info_claim_return_button" />
 
             <Button
+                tools:ignore="ButtonStyle"
                 android:id="@+id/claimInfoClaimApproveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

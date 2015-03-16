@@ -16,7 +16,6 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.util.ArrayList;
 
-import cmput301w15t07.TravelTracker.model.Document;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;

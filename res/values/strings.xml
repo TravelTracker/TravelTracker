@@ -6,6 +6,7 @@
         <!-- Used in layouts -->
         <string name="date_format">mm/dd/yyyy</string>
         <string name="input_text">Input text</string>
+        <string name="content_description_receipt_image">Receipt Image</string>
     
         <!-- Used in menus -->
         <string name="sign_out">Sign Out</string>

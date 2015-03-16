@@ -22,9 +22,9 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import java.util.concurrent.CountDownLatch;
-
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +38,7 @@ import android.os.Bundle;
  *         therabidsquirel
  *
  */
+@SuppressLint("Registered") // This is not an activity itself, it doesn't need to be registered
 public class TravelTrackerActivity extends Activity {
     /** String used to retrieve user data from intent */
     public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";

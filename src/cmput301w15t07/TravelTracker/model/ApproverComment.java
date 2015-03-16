@@ -22,8 +22,6 @@ package cmput301w15t07.TravelTracker.model;
  */
 
 import java.util.Date;
-import java.util.UUID;
-
 
 /**
  * Model class for the Approver Comment.

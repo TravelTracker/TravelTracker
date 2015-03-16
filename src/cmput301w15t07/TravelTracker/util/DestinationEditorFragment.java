@@ -81,6 +81,10 @@ public class DestinationEditorFragment extends DialogFragment {
         this.reason = reason;
     }
 
+    /**
+     * Returns a dialog with the custom view for editing a destination, populated with
+     * the fields from the destination.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Context context = getActivity();

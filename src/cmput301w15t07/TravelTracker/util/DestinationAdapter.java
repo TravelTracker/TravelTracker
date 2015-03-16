@@ -78,6 +78,10 @@ public class DestinationAdapter {
         return destinationEditor;
     }
 
+    /**
+     * Set the destinations list on the adapter
+     * @param destinations The new ArrayList.
+     */
     public void setDestinations(ArrayList<Destination> destinations) {
         this.destinations = destinations;
     }
@@ -125,6 +129,15 @@ public class DestinationAdapter {
         return view;
     }
     
+    /**
+     * Starts a dialog with a new destination. If cancelled the destination is removed, otherwise
+     * it is added to the claim.
+     * 
+     * @param context The Context the dialog will run in.
+     * @param userData The UserData of the user invoking this.
+     * @param linearLayout The LinearLayout the new Destination's view will be added to.
+     * @param manager The FragmentManager of the activity calling this.
+     */
     public void addDestination(Context context, UserData userData, LinearLayout linearLayout, FragmentManager manager) {
         this.context = context;
         this.linearLayout = linearLayout;

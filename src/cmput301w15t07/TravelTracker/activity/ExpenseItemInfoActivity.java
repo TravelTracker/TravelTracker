@@ -160,6 +160,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         
 	    super.onBackPressed();
 	}
+	
 	/**
 	 * Fill buttons/spinners/editText with data from item, set listeners, hide or
 	 * disable things according to user's role and claim's status
@@ -355,10 +356,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	}
 	
 	/**
-	 * get the index in a spinner array
-	 * @param spinner
-	 * @param string
-	 * @return
+	 * Get the index in a spinner array.
+	 * @param spinner The spinner.
+	 * @param string The string to find.
+	 * @return The index of the item containing the string
 	 */
 	public int getIndex(Spinner spinner, String string){
 		int index = 0;

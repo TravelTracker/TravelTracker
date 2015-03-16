@@ -76,8 +76,10 @@ public class DatePickerFragment extends DialogFragment {
 	boolean cancelled;
 	
 	/**
-	 * Construct the DatePickerFragment
-	 * @param listener The callback listener.
+	 * Construct the DatePickerFragment.
+	 * 
+	 * @param date The date to start with.
+	 * @param callback The callback for when the date is set.
 	 */
 	public DatePickerFragment(Date date, ResultCallback callback) {
 	    this.callback = callback;

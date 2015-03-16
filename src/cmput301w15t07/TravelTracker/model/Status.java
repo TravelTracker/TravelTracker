@@ -49,8 +49,9 @@ public enum Status implements ContextStringable {
 	
 	/**
 	 * This method returns the Status instance corresponding to the passed string.
-	 * @param text, context
-	 * @return Status
+	 * @param text The text to search for.
+	 * @param context The Android context in which this is operating.
+	 * @return The matching Status.
 	 */
 	public static Status fromString(String text, Context context) {
 	    if (text != null) {

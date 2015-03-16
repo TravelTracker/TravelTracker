@@ -47,8 +47,9 @@ public enum UserRole implements ContextStringable {
 	
 	/**
 	 * This method returns the UserRole instance corresponding to the passed string.
-	 * @param text, context
-	 * @return UserRole
+	 * @param text The text to search for.
+	 * @param context The Android context in which this is operating.
+	 * @return The matching UserRole.
 	 */
 	public static UserRole fromString(String text, Context context) {
 	    if (text != null) {

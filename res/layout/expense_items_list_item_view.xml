@@ -65,7 +65,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/expenseItemsListItemViewCategoryTextView"
         android:layout_below="@+id/expenseItemsListItemViewCategoryTextView"
         android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
         android:text="@string/expense_items_list_info_error" />

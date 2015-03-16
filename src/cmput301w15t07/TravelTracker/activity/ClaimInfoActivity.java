@@ -355,7 +355,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
      * Populate the fields with data.
      * @param claim The claim being viewed.
      * @param items All items (which will be filtered by claim UUID).
-     * @param user The claimant, or null if the current user is the claimant.
+     * @param claimant The claimant, or null if the current user is the claimant.
      * @param approver The last approver, or null if there isn't one.
      */
     public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant, User approver) {

@@ -53,8 +53,10 @@ public class ClaimsListDataHelper {
 	/**
 	 * This method is used to retrieve Claims, Items, and the current User object
 	 * for use in the claimsList activity
-	 * @param callback
-	 * @param userRole
+	 * 
+	 * @param callback The callback for when data is retrieved.
+	 * @param userData The current user's data.
+	 * @param ds The data source.
 	 */
 	public void getInitialData(ResultCallback<InitialData> callback, UserData userData, DataSource ds){
 		this.userRole = userData.getRole();

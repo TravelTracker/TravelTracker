@@ -153,13 +153,13 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
                 (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
         if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
             receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
-            //receiptView.setVisibility(View.VISIBLE);
+            receiptView.setVisibility(View.VISIBLE);
         }
         else {
             /* Clear image for image view.
              * http://stackoverflow.com/questions/2859212/how-to-clear-an-imageview-in-android */
             receiptView.setImageResource(android.R.color.black);
-            //receiptView.setVisibility(View.GONE);
+            receiptView.setVisibility(View.GONE);
         }
         
         return rowView;

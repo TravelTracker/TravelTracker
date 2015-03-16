@@ -156,11 +156,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 			public void onClick(View v) {
 				if(itemStatus.isChecked()){
 					itemStatus.setChecked(false);
-					item.setStatus(false);
+					item.setComplete(false);
 				}
 				else{
 					itemStatus.setChecked(true);
-					item.setStatus(true);
+					item.setComplete(true);
 				}
 			}
 		});
@@ -216,7 +216,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 			
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				item.setAmount(Float.parseFloat(s.toString()));
+				try {
+					item.setAmount(Float.parseFloat(s.toString()));
+				} catch (NumberFormatException e) {
+					//Dont do anything, the string is empty
+				}
 			}
 			
 			@Override
@@ -342,8 +346,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		if(item.getStatus() == true){
-			itemStatus.setChecked(false); //anything other than true means incomplete
+		if(item.isComplete() == true){
+			itemStatus.setChecked(true); //anything other than true means incomplete
 		}else{
 			itemStatus.setChecked(true);
 		}
@@ -357,6 +361,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		}
 		return index;
 	}
+
 	
 	private void setButtonDate(Button dateButton, Date date) {
 		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);

@@ -79,6 +79,10 @@ public class TravelTrackerActivity extends Activity {
         datasource = DataSourceSingleton.getDataSource();
 	}
 	
+	/**
+	 * sign out of the app
+	 * clears activity stack and exits to login activity
+	 */
     public void signOut() {
         // adapted from 
         //    http://stackoverflow.com/questions/6298275/how-to-finish-every-activity-on-the-stack-except-the-first-in-android
@@ -87,7 +91,7 @@ public class TravelTrackerActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Removes other Activities from stack
         startActivity(intent);
     }
-
+    /** appends the users name to the title */
     public void appendNameToTitle(String name) {
         setTitle(getTitle() + " - " + name);
     }

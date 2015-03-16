@@ -104,10 +104,10 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
                 (TextView) rowView.findViewById(
                 		R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete()) {
-            incompleteView.setVisibility(View.VISIBLE);
+            incompleteView.setVisibility(View.GONE);
         }
         else {
-            incompleteView.setVisibility(View.GONE);
+            incompleteView.setVisibility(View.VISIBLE);
         }
         
         // Description view

@@ -97,6 +97,10 @@ public class TravelTrackerActivity extends Activity {
         setTitle(getTitle() + " - " + name);
     }
     
+    /**
+     * Check if the user is a claimant and the claim status is either in_progress or returned 
+     * @return True if the check passes, else False
+     */
     public static boolean isEditable(Status status, UserRole role) {
         return  role.equals(UserRole.CLAIMANT) &&
                 (status.equals(Status.IN_PROGRESS) ||

@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
@@ -60,14 +61,6 @@ import cmput301w15t07.TravelTracker.util.DatePickerFragment;
  *
  */
 
-/** TODO: cellinge
- * 	
- * BUGFIX: when text in amount is 
- * 	
- * 
- *	
- *
- */
 
 
 
@@ -241,7 +234,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
 			
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-				//item.setCurrency((ItemCurrency) parent.getItemAtPosition(position));
+				Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
+				
+				item.setCurrency(currency);
 			}
 			
 			
@@ -285,7 +280,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         
 	    super.onBackPressed();
 	}
-	
+	/**
+	 * Fill buttons/spinners/editText with data from item
+	 * @param item - The current expense item
+	 */
 	private void populateExpenseInfo(Item item) {
 		
 		
@@ -312,7 +310,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
 		currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
 		try{
-			currencySpinner.setSelection(item.getCategory().ordinal(),true);
+			currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency().toString(), this).ordinal(),true);
 		} catch (NullPointerException e) {
 			// the field is null or empty, dont load anything
 		}
@@ -334,12 +332,14 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		if(item.isComplete() == true){
-			itemStatus.setChecked(true); //anything other than true means incomplete
-		}else{
-			itemStatus.setChecked(true);
-		}
+		itemStatus.setChecked(item.isComplete());
 	}
+	/**
+	 * get the index in a spinner array
+	 * @param spinner
+	 * @param string
+	 * @return
+	 */
 	public int getIndex(Spinner spinner, String string){
 		int index = 0;
 		for(int i=0;i<spinner.getCount();i++){
@@ -350,7 +350,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		return index;
 	}
 
-	
+	/**
+	 * Set the date in the date button after 
+	 * datePicker fragment is spawned and 
+	 * interacted with by the user
+	 * @param dateButton The button to be set
+	 * @param date Date to set the button to
+	 */
 	private void setButtonDate(Button dateButton, Date date) {
 		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
@@ -362,13 +368,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	/**
+	 * spawn a datepicker fragment when dateButton is pressed
+	 * @param date
+	 */
 	public void datePressed(View date){
 		Date itemDate = item.getDate();
 		DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
 		datePicker.show(getFragmentManager(), "datePicker");
 	}
-	
+	/**
+	 * callback for the datepicker fragment
+	 */
 	class DateCallback implements DatePickerFragment.ResultCallback{
 		@Override
 		public void onDatePickerFragmentResult(Date result) {

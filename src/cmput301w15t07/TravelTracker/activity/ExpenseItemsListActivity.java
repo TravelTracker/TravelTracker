@@ -191,9 +191,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
-        intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
-        intent.putExtra(ExpenseItemInfoActivity.CLAIM_UUID, claim.getUUID());
-        intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
+        intent.putExtra(FROM_CLAIM_INFO, false);
+        intent.putExtra(ITEM_UUID, item.getUUID());
+        intent.putExtra(CLAIM_UUID, claim.getUUID());
+        intent.putExtra(USER_DATA, userData);
         startActivity(intent);
     }
     
@@ -216,6 +217,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         }
     }
     
+    /**
+     * Callback for when a new item is added.
+     */
     class CreateNewItemCallback implements ResultCallback<Item> {
     	@Override
     	public void onResult(Item result){

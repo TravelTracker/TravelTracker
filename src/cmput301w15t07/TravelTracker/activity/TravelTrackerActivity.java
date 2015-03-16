@@ -51,6 +51,9 @@ public class TravelTrackerActivity extends Activity {
     /** String used to retrieve item UUID from intent */
     public static final String ITEM_UUID = "cmput301w15t07.TravelTracker.itemUUID";
     
+    /** String used to retrieve Boolean from intent for whether item is created from ClaimInfo or not */
+    public static final String FROM_CLAIM_INFO = "cmput301w15t07.TravelTracker.fromClaimInfo";
+    
     /** Latch which is counted down when the activity loads its data */
 	private CountDownLatch loadedLatch = new CountDownLatch(1);
 	

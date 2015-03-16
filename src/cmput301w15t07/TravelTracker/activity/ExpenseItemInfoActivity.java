@@ -24,8 +24,8 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.Date;
 import java.util.UUID;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -41,7 +41,6 @@ import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
@@ -82,6 +81,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
     /** the current Item */
     private UUID itemID;
     Item item = null;
+    
+    /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
+    private Boolean fromClaimInfo;
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -133,7 +135,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
         //get item into
-        itemID = (UUID) bundle.getSerializable(ITEM_UUID);        		
+        itemID = (UUID) bundle.getSerializable(ITEM_UUID);
+        
+        // Get whether we came from ClaimInfoActivity or not
+        fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
 		appendNameToTitle(userData.getName());
 		//populateExpenseInfo();
@@ -261,13 +266,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		//show loading circleDate date = claim.getEndDate();
 		//setContentView(R.layout.loading_indeterminate);
 		
-		//Retrieve user data from bundle
-		Bundle bundle = getIntent().getExtras();
-		userData = (UserData) bundle.getSerializable(USER_DATA);
-		
-		//get item info
-		itemID = (UUID) bundle.getSerializable(ITEM_UUID);
-		
 		datasource.getItem(itemID, new ResultCallback<Item>() {
 			
 			@Override
@@ -287,6 +285,19 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 			}
 		});
 				
+	}
+	
+	@Override
+	public void onBackPressed() {
+	    // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
+	    if (fromClaimInfo) {
+	        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
+	        intent.putExtra(USER_DATA, userData);
+	        intent.putExtra(CLAIM_UUID, claimID);
+	        startActivity(intent);
+	    }
+        
+	    super.onBackPressed();
 	}
 	
 	private void populateExpenseInfo(Item item) {

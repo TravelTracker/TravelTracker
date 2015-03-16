@@ -127,7 +127,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             break;
             
         case R.id.claim_info_add_item:
-            addItem();
+            //TODO get claim instance for this. <-- Copied from ExpenseItemsListActivity
+            addItem(claim);
             break;
             
         case R.id.claim_info_delete_claim:
@@ -292,9 +293,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         destinationAdapter.addDestination(this, userData, destinationsList, getFragmentManager());
     }
 
-    public void addItem() {
-        // TODO Auto-generated method stub
-        
+    public void addItem(Claim claim) {
+        datasource.addItem(claim, new CreateNewItemCallback());
+    }
+    
+    private void launchExpenseItemInfo(Item item){
+        Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
+        intent.putExtra(FROM_CLAIM_INFO, true);
+        intent.putExtra(ITEM_UUID, item.getUUID());
+        intent.putExtra(CLAIM_UUID, claim.getUUID());
+        intent.putExtra(USER_DATA, userData);
+        startActivity(intent);
     }
     
     /**
@@ -682,4 +691,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 			// Do nothing
 		}
 	}
+    
+    /**
+     * Callback for when a new item is added.
+     */
+    class CreateNewItemCallback implements ResultCallback<Item> {
+        @Override
+        public void onResult(Item result){
+            launchExpenseItemInfo(result);
+        }
+        @Override
+        public void onError(String message){
+            Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

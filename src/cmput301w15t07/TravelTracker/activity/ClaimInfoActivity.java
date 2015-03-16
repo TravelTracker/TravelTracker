@@ -108,6 +108,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             // Menu items that disappear when not editable
             addDestinationMenuItem.setEnabled(false).setVisible(false);
             addItemMenuItem.setEnabled(false).setVisible(false);
+        }
+        
+        if (userData.getRole().equals(UserRole.APPROVER)) {
             deleteClaimMenuItem.setEnabled(false).setVisible(false);
         }
         

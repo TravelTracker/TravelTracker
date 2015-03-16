@@ -286,6 +286,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             }
         }
         
+        if (claim.getStatus().equals(Status.SUBMITTED) || claim.getStatus().equals(Status.APPROVED)) {
+            submitClaimButton.setVisibility(View.GONE);
+        }
+        
         onLoaded();
     }
 
@@ -446,8 +450,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 						allComplete = allComplete && item.isComplete();
 				}
 				
-				if (allComplete) claim.setStatus(Status.SUBMITTED);
-				else Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_all_items_complete, Toast.LENGTH_SHORT).show();
+				if (allComplete) {
+					// TODO confirmation dialogue.  "Submit claim for approval?"
+					claim.setStatus(Status.SUBMITTED);
+				} else {
+					// TODO confirmation dialogue.  "Some expense items are incomplete.  Submit anyways?"
+					Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_all_items_complete, Toast.LENGTH_SHORT).show();
+				}
 			}
 
 			@Override
@@ -456,8 +465,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 			}
     		
     	});
-    	
-        claim.setStatus(Status.SUBMITTED);
     }
 
     public void returnClaim() {

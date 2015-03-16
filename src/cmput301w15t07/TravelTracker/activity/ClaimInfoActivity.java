@@ -212,10 +212,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
         	if (isEditable()) {
-        	    // Modify text to notify user destinations can be edited
-        	    TextView destinationsTextView = (TextView) findViewById(R.id.claimInfoDestinationsTextView);
-        	    destinationsTextView.setText(getString(R.string.claim_info_destinations_editable));
-        	    
 	            // Attach edit date listener to start date button
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
 	                @Override

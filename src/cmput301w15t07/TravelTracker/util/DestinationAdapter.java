@@ -172,7 +172,7 @@ public class DestinationAdapter {
                         deleteDestination(view);
                     }
                })
-               .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+               .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing

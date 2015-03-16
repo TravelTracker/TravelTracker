@@ -313,7 +313,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 						deleteClaim();
 					}
 			   })
-			   .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			   .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// Do nothing
@@ -468,8 +468,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 				};
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-				builder.setMessage(dialogMessage).setPositiveButton("Yes", submitDialogClickListener)
-				    .setNegativeButton("No", submitDialogClickListener).show();
+				builder.setMessage(dialogMessage)
+				       .setPositiveButton(android.R.string.yes, submitDialogClickListener)
+				       .setNegativeButton(android.R.string.no, submitDialogClickListener)
+				       .show();
 			}
 
 			@Override
@@ -506,8 +508,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		};
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-		builder.setMessage(R.string.claim_info_return_confirm).setPositiveButton("Yes", returnDialogClickListener)
-		    .setNegativeButton("No", returnDialogClickListener).show();
+		builder.setMessage(R.string.claim_info_return_confirm)
+		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
+		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
+		       .show();
     }
 
     public void approveClaim() {
@@ -536,8 +540,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		};
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-		builder.setMessage(R.string.claim_info_approve_confirm).setPositiveButton("Yes", returnDialogClickListener)
-		    .setNegativeButton("No", returnDialogClickListener).show();
+		builder.setMessage(R.string.claim_info_approve_confirm)
+		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
+		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
+		       .show();
     }
     
     private void setButtonDate(Button dateButton, Date date) {

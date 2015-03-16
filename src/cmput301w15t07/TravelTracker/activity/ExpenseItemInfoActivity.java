@@ -237,8 +237,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 				Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
 				
 				item.setCurrency(currency);
-				
-				//Toast.makeText(ExpenseItemInfoActivity.this, "Currency: " + currency.toString(), Toast.LENGTH_SHORT).show();
 			}
 			
 			
@@ -320,7 +318,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
 		currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
 		try{
-			currencySpinner.setSelection(item.getCategory().ordinal(),true);
+			currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency().toString(), this).ordinal(),true);
 		} catch (NullPointerException e) {
 			// the field is null or empty, dont load anything
 		}

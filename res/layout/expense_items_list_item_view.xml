@@ -1,59 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/GridLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
     android:background="@layout/background_activated"
-    android:columnCount="4"
     android:orientation="horizontal"
     android:visibility="visible" >
 
-    <Space
-        android:layout_column="3"
-        android:layout_gravity="fill_vertical"
-        android:layout_row="4" />
-
-    <ImageView
-        android:id="@+id/expenseItemsListItemViewReceiptImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:layout_column="2"
-        android:layout_gravity="fill_horizontal|fill_vertical"
-        android:layout_row="0"
-        android:layout_rowSpan="2"
-        android:contentDescription="@string/content_description_receipt_image"
-        android:src="@android:drawable/picture_frame" />
-
-    <TextView
-        android:id="@+id/expenseItemsListItemViewDescriptionTextView"
-        android:layout_width="235dp"
-        android:layout_height="36dp"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal|top"
-        android:layout_row="1"
-        android:text="@string/expense_items_list_info_error" />
-
     <TextView
         android:id="@+id/expenseItemsListItemViewDateTextView"
-        android:layout_width="90dp"
-        android:layout_height="37dp"
-        android:layout_column="1"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_row="0"
+        android:layout_width="fill_parent"
+        android:layout_toEndOf="@+id/expenseItemsListItemViewStatusTextView"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
+        android:layout_alignParentTop="true"
         android:gravity="center"
         android:text="@string/expense_items_list_info_error" />
 
     <TextView
         android:id="@+id/expenseItemsListItemViewStatusTextView"
         android:layout_width="wrap_content"
-        android:layout_height="31dp"
-        android:layout_column="0"
-        android:layout_gravity="start|top"
-        android:layout_row="0"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/expense_items_list_incomplete"
         android:textColor="#FF0000"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
-</GridLayout>
+    <ImageView
+        android:id="@+id/expenseItemsListItemViewReceiptImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/content_description_receipt_image"
+        android:src="@android:drawable/picture_frame" />
+
+    <TextView
+        android:id="@+id/expenseItemsListItemViewCategoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:layout_below="@+id/expenseItemsListItemViewDateTextView"
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
+        android:text="@string/expense_items_list_info_error" />
+
+    <TextView
+        android:id="@+id/expenseItemsListItemViewDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemsListItemViewCostTextView"
+        android:layout_gravity="center"
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
+        android:text="@string/expense_items_list_info_error" />
+
+    <TextView
+        android:id="@+id/expenseItemsListItemViewCostTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/expenseItemsListItemViewCategoryTextView"
+        android:layout_below="@+id/expenseItemsListItemViewCategoryTextView"
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
+        android:text="@string/expense_items_list_info_error" />
+   
+</RelativeLayout>

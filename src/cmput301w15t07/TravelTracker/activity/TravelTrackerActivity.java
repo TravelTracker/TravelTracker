@@ -22,12 +22,14 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import java.util.concurrent.CountDownLatch;
+
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 /**
  * The base activity for TravelTracker activities.
@@ -88,5 +90,10 @@ public class TravelTrackerActivity extends Activity {
 
     public void appendNameToTitle(String name) {
         setTitle(getTitle() + " - " + name);
+    }
+    
+    public void disableButton(Button button) {
+        button.setClickable(false);
+        button.setAlpha(0.4f);
     }
 }

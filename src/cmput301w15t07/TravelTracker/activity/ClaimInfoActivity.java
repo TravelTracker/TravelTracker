@@ -183,6 +183,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         // Claim attributes
         LinearLayout statusLinearLayout = (LinearLayout) findViewById(R.id.claimInfoStatusLinearLayout);
         
+        // Dates
+        Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
+        Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
+        
         // Tags list
         TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
@@ -207,7 +211,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
         	if (isEditable()) {
 	            // Attach edit date listener to start date button
-	            final Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
 	                @Override
 	                public void onClick(View v) {
@@ -216,7 +219,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	            });
 	            
 	            // Attach edit date listener to end date button
-	            final Button endDateButton = (Button) findViewById(R.id.claimInfoEndDateButton);
 	            endDateButton.setOnClickListener(new View.OnClickListener() {
 	                @Override
 	                public void onClick(View v) {
@@ -231,6 +233,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	                    submitClaim();
 	                }
 	            });
+        	} else {
+        	    // These buttons should do nothing if the claim isn't editable
+        	    disableButton(startDateButton);
+                disableButton(endDateButton);
+                disableButton(submitClaimButton);
         	}
             
             // Views a claimant doesn't need to see or have access to
@@ -256,6 +263,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
                     approveClaim();
                 }
             });
+            
+            // The approver should see these buttons, but cannot use them.
+            disableButton(startDateButton);
+            disableButton(endDateButton);
             
             // Views an approver doesn't need to see or have access to
             statusLinearLayout.setVisibility(View.GONE);

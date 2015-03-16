@@ -57,7 +57,7 @@ public class Item extends Document {
 		
 		category = null;
 		
-		date = null;
+		date = new Date();
 		
 		// Start at 0 of unknown currency
 		amount = 0.f;

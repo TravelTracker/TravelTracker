@@ -160,7 +160,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	public void update(DataSource observable) {
 		updateUI();
 	}
-	
+	/**
+	 * delete the claims at set adapter positions 
+	 * @param adapterPositions
+	 */
 	private void deleteClaims(ArrayList<Integer> adapterPositions){
 		
 		//DONT delete directly with the positions
@@ -176,12 +179,15 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			datasource.deleteClaim(c.getUUID(), dcb);
 		}
 	}
-	
+	/** Update the UI when the dataset changes */
 	private void updateUI(){
 		//TODO start a spinner here
 		new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
 	}
-	
+	/**
+	 * Launch the claimInfo activity for the selected claim 
+	 * @param claim
+	 */
 	private void launchClaimInfo(Claim claim){
 		Intent intent = new Intent(context, ClaimInfoActivity.class);
     	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
@@ -189,7 +195,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
     	startActivity(intent);
 	}
-	
+	/**
+	 * launch the claimInfo activity for a new claim
+	 * @param user The current user that will be assigned to the claim 
+	 */
 	private void launchClaimInfoNewClaim(User user){
 		try{
 			datasource.addClaim(user, new createNewClaimCallback());
@@ -199,7 +208,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			Log.d("ERROR", "The user in Initial Data is null");
 		}
 	}
-	
+	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{
 
 		@Override
@@ -216,7 +225,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		}
 		
 	}
-
+	/** Callback for creating a new claim */ 
 	class createNewClaimCallback implements ResultCallback<Claim>{
 
 		@Override
@@ -230,7 +239,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		}
 		
 	}
-	
+	/** Callback for deleting a claim */
 	class deleteClaimCallback implements ResultCallback<Void>{
 
 		@Override

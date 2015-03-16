@@ -64,6 +64,7 @@ import cmput301w15t07.TravelTracker.util.TagAdapter;
  * @author kdbanman,
  *         therabidsquirel,
  *         colp
+ *         skwidz
  *
  */
 public class ClaimInfoActivity extends TravelTrackerActivity {
@@ -106,7 +107,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
         MenuItem deleteClaimMenuItem = menu.findItem(R.id.claim_info_delete_claim);
         
-        if (!isEditable()) {
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
             // Menu items that disappear when not editable
             addDestinationMenuItem.setEnabled(false).setVisible(false);
             addItemMenuItem.setEnabled(false).setVisible(false);
@@ -127,7 +128,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             break;
             
         case R.id.claim_info_add_item:
-            addItem();
+            //TODO get claim instance for this. <-- Copied from ExpenseItemsListActivity
+            addItem(claim);
             break;
             
         case R.id.claim_info_delete_claim:
@@ -176,7 +178,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public AlertDialog getLastAlertDialog() {
     	return lastAlertDialog;
     }
-    
+    /**
+     * attach listeners to buttons/textviews/etc.
+     * hide buttons/views according to user role
+     * @param items Collection of a claims expense items
+     * @param claimant User that created the claim
+     * @param approver	user that approved the claim (if exsists)
+     */
     public void onGetAllData(final Collection<Item> items, User claimant, User approver) {
     	setContentView(R.layout.claim_info_activity);
     	
@@ -211,11 +219,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         });
     	
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
-        	if (isEditable()) {
-        	    // Modify text to notify user destinations can be edited
-        	    TextView destinationsTextView = (TextView) findViewById(R.id.claimInfoDestinationsTextView);
-        	    destinationsTextView.setText(getString(R.string.claim_info_destinations_editable));
-        	    
+        	if (isEditable(claim.getStatus(), userData.getRole())) {
 	            // Attach edit date listener to start date button
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
 	                @Override
@@ -290,15 +294,31 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         
         onLoaded();
     }
-
+    
     public void addDestination() {
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
         destinationAdapter.addDestination(this, userData, destinationsList, getFragmentManager());
     }
 
-    public void addItem() {
-        // TODO Auto-generated method stub
-        
+    /**
+     * Launches the ExpenseItemInfo activity for a new item
+     * @param claim the current expense claim
+     */
+    public void addItem(Claim claim) {
+        datasource.addItem(claim, new CreateNewItemCallback());
+    }
+    
+    /**
+     * Launches the ExpenseItemInfo activity for a selected item
+     * @param item The selected expense item 
+     */
+    private void launchExpenseItemInfo(Item item){
+        Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
+        intent.putExtra(FROM_CLAIM_INFO, true);
+        intent.putExtra(ITEM_UUID, item.getUUID());
+        intent.putExtra(CLAIM_UUID, claim.getUUID());
+        intent.putExtra(USER_DATA, userData);
+        startActivity(intent);
     }
     
     /**
@@ -412,7 +432,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 			}
 		});
     }
-
+    /**
+     * starts the expenseItemList activity
+     */
     public void viewItems() {
         // Start next activity
         Intent intent = new Intent(this, ExpenseItemsListActivity.class);
@@ -420,21 +442,27 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         intent.putExtra(CLAIM_UUID, claimID);
         startActivity(intent);
     }
-
+    /**
+     * spawns the datepicker fragment for startdate button
+     */
     public void startDatePressed() {
     	Date date = claim.getStartDate();
     	
     	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
-
+    /**
+     * spawns the datpicker fragment for the end date button
+     */
     public void endDatePressed() {
     	Date date = claim.getEndDate();
     	
         DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
-
+    /**
+     * submits the selected claim and adds a comment if there exists one in the field
+     */
     public void submitClaim() {
     	// submit only if all items of claim are flagged as complete
     	datasource.getAllItems(new ResultCallback<Collection<Item>>() {
@@ -481,7 +509,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     		
     	});
     }
-
+    /**
+     * returns the selected claim and adds a comment if there exists one in the field
+     */
     public void returnClaim() {
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -513,7 +543,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
     }
-
+    /**
+     * approves the selected claim and adds a comment if there exists one in the field
+     */
     public void approveClaim() {
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -545,20 +577,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
     }
-    
+    /**
+     * Set the date in the date button after 
+	 * datePicker fragment is spawned and 
+	 * interacted with by the user
+     * @param dateButton The button to be set
+     * @param date Date to set the button to
+     */
     private void setButtonDate(Button dateButton, Date date) {
     	java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
 		dateButton.setText(dateString);
-    }
-    
-    private boolean isEditable() {
-    	Status status = claim.getStatus();
-    	UserRole role = userData.getRole();
-    	
-    	return 	role.equals(UserRole.CLAIMANT) &&
-		    	(status.equals(Status.IN_PROGRESS) ||
-    	     	 status.equals(Status.RETURNED));
     }
     
     /**
@@ -686,4 +715,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 			// Do nothing
 		}
 	}
+    
+    /**
+     * Callback for when a new item is added.
+     */
+    class CreateNewItemCallback implements ResultCallback<Item> {
+        @Override
+        public void onResult(Item result){
+            launchExpenseItemInfo(result);
+        }
+        @Override
+        public void onError(String message){
+            Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

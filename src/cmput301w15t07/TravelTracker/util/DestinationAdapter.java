@@ -12,11 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
-import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -78,6 +77,10 @@ public class DestinationAdapter {
         return destinationEditor;
     }
 
+    /**
+     * Set the destinations list on the adapter
+     * @param destinations The new ArrayList.
+     */
     public void setDestinations(ArrayList<Destination> destinations) {
         this.destinations = destinations;
     }
@@ -99,7 +102,7 @@ public class DestinationAdapter {
         View view = inflater.inflate(LIST_VIEW_ID, linearLayout, false);
         setDestination(view, destination);
         
-        if (isEditable(userData)) {
+        if (TravelTrackerActivity.isEditable(claim.getStatus(), userData.getRole())) {
             view.setOnClickListener(new View.OnClickListener() {
                 
                 @Override
@@ -125,6 +128,15 @@ public class DestinationAdapter {
         return view;
     }
     
+    /**
+     * Starts a dialog with a new destination. If cancelled the destination is removed, otherwise
+     * it is added to the claim.
+     * 
+     * @param context The Context the dialog will run in.
+     * @param userData The UserData of the user invoking this.
+     * @param linearLayout The LinearLayout the new Destination's view will be added to.
+     * @param manager The FragmentManager of the activity calling this.
+     */
     public void addDestination(Context context, UserData userData, LinearLayout linearLayout, FragmentManager manager) {
         this.context = context;
         this.linearLayout = linearLayout;
@@ -215,15 +227,6 @@ public class DestinationAdapter {
         destinationEditor = null;
         editingView = null;
         newDestination = false;
-    }
-    
-    private boolean isEditable(UserData userData) {
-        Status status = claim.getStatus();
-        UserRole role = userData.getRole();
-        
-        return  role.equals(UserRole.CLAIMANT) &&
-                (status.equals(Status.IN_PROGRESS) ||
-                 status.equals(Status.RETURNED));
     }
     
     /**

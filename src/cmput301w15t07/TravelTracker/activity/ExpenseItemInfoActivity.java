@@ -21,11 +21,12 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -41,13 +42,12 @@ import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 
@@ -61,14 +61,6 @@ import cmput301w15t07.TravelTracker.util.DatePickerFragment;
  *
  */
 
-/** TODO: cellinge
- * 	
- * BUGFIX: when text in amount is 
- * 	
- * 
- *	
- *
- */
 
 
 
@@ -78,10 +70,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 
     /** UUID of the claim. */
     private UUID claimID;
+
+    /** The current claim. */
+    Claim claim;
     
-    /** the current Item */
+    /** UUID of the item. */
     private UUID itemID;
+    
+    /** The current item. */
     Item item = null;
+    
+    /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
+    private Boolean fromClaimInfo;
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,10 +90,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		// Menu items
 		MenuItem deleteItemMenuItem = menu.findItem(R.id.expense_item_info_delete_item);
 		
-        if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            
-        } else if (userData.getRole().equals(UserRole.APPROVER)) {
-            // Menu items an approver doesn't need to see or have access to
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
+            // Menu items that disappear when not editable
             deleteItemMenuItem.setEnabled(false).setVisible(false);
         }
         
@@ -133,7 +131,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
         //get item into
-        itemID = (UUID) bundle.getSerializable(ITEM_UUID);        		
+        itemID = (UUID) bundle.getSerializable(ITEM_UUID);
+        
+        // Get whether we came from ClaimInfoActivity or not
+        fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
 		appendNameToTitle(userData.getName());
 		//populateExpenseInfo();
@@ -233,7 +234,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
 			
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-				//item.setCurrency((ItemCurrency) parent.getItemAtPosition(position));
+				Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
+				
+				item.setCurrency(currency);
 			}
 			
 			
@@ -261,34 +264,26 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		//show loading circleDate date = claim.getEndDate();
 		//setContentView(R.layout.loading_indeterminate);
 		
-		//Retrieve user data from bundle
-		Bundle bundle = getIntent().getExtras();
-		userData = (UserData) bundle.getSerializable(USER_DATA);
-		
-		//get item info
-		itemID = (UUID) bundle.getSerializable(ITEM_UUID);
-		
-		datasource.getItem(itemID, new ResultCallback<Item>() {
-			
-			@Override
-			public void onResult(Item item) {
-				ExpenseItemInfoActivity.this.item = item;
-				if (ExpenseItemInfoActivity.this.item != null){
-					populateExpenseInfo(item);
-				}
-				else{
-					Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();
-				}
-			}
-			
-			@Override
-			public void onError(String message) {
-				Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-			}
-		});
-				
+		datasource.getClaim(claimID, new getClaimCallback());
+		datasource.getItem(itemID, new getItemCallback());
 	}
 	
+	@Override
+	public void onBackPressed() {
+	    // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
+	    if (fromClaimInfo) {
+	        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
+	        intent.putExtra(USER_DATA, userData);
+	        intent.putExtra(CLAIM_UUID, claimID);
+	        startActivity(intent);
+	    }
+        
+	    super.onBackPressed();
+	}
+	/**
+	 * Fill buttons/spinners/editText with data from item
+	 * @param item - The current expense item
+	 */
 	private void populateExpenseInfo(Item item) {
 		
 		
@@ -315,7 +310,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
 		currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
 		try{
-			currencySpinner.setSelection(item.getCategory().ordinal(),true);
+			currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency().toString(), this).ordinal(),true);
 		} catch (NullPointerException e) {
 			// the field is null or empty, dont load anything
 		}
@@ -337,12 +332,14 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		if(item.isComplete() == true){
-			itemStatus.setChecked(true); //anything other than true means incomplete
-		}else{
-			itemStatus.setChecked(true);
-		}
+		itemStatus.setChecked(item.isComplete());
 	}
+	/**
+	 * get the index in a spinner array
+	 * @param spinner
+	 * @param string
+	 * @return
+	 */
 	public int getIndex(Spinner spinner, String string){
 		int index = 0;
 		for(int i=0;i<spinner.getCount();i++){
@@ -353,7 +350,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		return index;
 	}
 
-	
+	/**
+	 * Set the date in the date button after 
+	 * datePicker fragment is spawned and 
+	 * interacted with by the user
+	 * @param dateButton The button to be set
+	 * @param date Date to set the button to
+	 */
 	private void setButtonDate(Button dateButton, Date date) {
 		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
@@ -365,13 +368,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	/**
+	 * spawn a datepicker fragment when dateButton is pressed
+	 * @param date
+	 */
 	public void datePressed(View date){
 		Date itemDate = item.getDate();
 		DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
 		datePicker.show(getFragmentManager(), "datePicker");
 	}
-	
+	/**
+	 * callback for the datepicker fragment
+	 */
 	class DateCallback implements DatePickerFragment.ResultCallback{
 		@Override
 		public void onDatePickerFragmentResult(Date result) {
@@ -390,4 +398,39 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		}
 	}
 	
+	/**
+	 * Callback for claim data.
+	 */
+	class getClaimCallback implements ResultCallback<Claim> {
+        @Override
+        public void onResult(Claim claim) {
+            ExpenseItemInfoActivity.this.claim = claim;
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+	}
+	
+	/**
+	 * Callback for item data.
+	 */
+	class getItemCallback implements ResultCallback<Item> {
+        @Override
+        public void onResult(Item item) {
+            ExpenseItemInfoActivity.this.item = item;
+            if (ExpenseItemInfoActivity.this.item != null){
+                populateExpenseInfo(item);
+            }
+            else{
+                Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();
+            }
+        }
+        
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+	}
 }

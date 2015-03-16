@@ -25,6 +25,8 @@ import java.util.concurrent.CountDownLatch;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -50,6 +52,9 @@ public class TravelTrackerActivity extends Activity {
     
     /** String used to retrieve item UUID from intent */
     public static final String ITEM_UUID = "cmput301w15t07.TravelTracker.itemUUID";
+    
+    /** String used to retrieve Boolean from intent for whether item is created from ClaimInfo or not */
+    public static final String FROM_CLAIM_INFO = "cmput301w15t07.TravelTracker.fromClaimInfo";
     
     /** Latch which is counted down when the activity loads its data */
 	private CountDownLatch loadedLatch = new CountDownLatch(1);
@@ -79,6 +84,10 @@ public class TravelTrackerActivity extends Activity {
         datasource = DataSourceSingleton.getDataSource();
 	}
 	
+	/**
+	 * sign out of the app
+	 * clears activity stack and exits to login activity
+	 */
     public void signOut() {
         // adapted from 
         //    http://stackoverflow.com/questions/6298275/how-to-finish-every-activity-on-the-stack-except-the-first-in-android
@@ -87,9 +96,19 @@ public class TravelTrackerActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Removes other Activities from stack
         startActivity(intent);
     }
-
+    /** appends the users name to the title */
     public void appendNameToTitle(String name) {
         setTitle(getTitle() + " - " + name);
+    }
+    
+    /**
+     * Check if the user is a claimant and the claim status is either in_progress or returned 
+     * @return True if the check passes, else False
+     */
+    public static boolean isEditable(Status status, UserRole role) {
+        return  role.equals(UserRole.CLAIMANT) &&
+                (status.equals(Status.IN_PROGRESS) ||
+                 status.equals(Status.RETURNED));
     }
     
     public void disableButton(Button button) {

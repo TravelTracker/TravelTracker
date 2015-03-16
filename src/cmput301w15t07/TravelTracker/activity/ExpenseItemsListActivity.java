@@ -30,7 +30,6 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -72,7 +71,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     /** ListView adapter */
     private ExpenseItemsListAdapter adapter;
     
-    
+    /**  Whether the item is currently loading  */
     private boolean loading;
     
     @Override
@@ -82,10 +81,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Menu items
         MenuItem addItemMenuItem = menu.findItem(R.id.expense_items_list_add_item);
         
-        if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            
-        } else if (userData.getRole().equals(UserRole.APPROVER)) {
-            // Menu items an approver doesn't need to see or have access to
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
+            // Menu items that disappear when not editable
             addItemMenuItem.setEnabled(false).setVisible(false);
         }
         
@@ -184,16 +181,23 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         }
                 
     }
-    
+    /**
+     * Launch the ExpenseItemInfo activity for a new Item
+     * @param claim The current claim 
+     */
     private void launchExpenseInfoNewExpense(Claim claim){
         datasource.addItem(claim, new CreateNewItemCallback());
     }
-    
+    /** 
+     * Launches the ExpenseItemInfo activity for the selected item
+     * @param item Selected item to open
+     */
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
-        intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
-        intent.putExtra(ExpenseItemInfoActivity.CLAIM_UUID, claim.getUUID());
-        intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
+        intent.putExtra(FROM_CLAIM_INFO, false);
+        intent.putExtra(ITEM_UUID, item.getUUID());
+        intent.putExtra(CLAIM_UUID, claim.getUUID());
+        intent.putExtra(USER_DATA, userData);
         startActivity(intent);
     }
     
@@ -201,7 +205,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     public void update(InMemoryDataSource observable) {
         observable.getAllItems(new GetAllItemsCallback(this, adapter));
     }
-
+    /**
+     * delete selected items from the list
+     * @param selectedItems
+     */
     public void deleteItems(ArrayList<Integer> selectedItems) {
         // Deleting in place is bad
         ArrayList<Item> delete = new ArrayList<Item>();
@@ -216,6 +223,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         }
     }
     
+    /**
+     * Callback for when a new item is added.
+     */
     class CreateNewItemCallback implements ResultCallback<Item> {
     	@Override
     	public void onResult(Item result){
@@ -265,7 +275,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
                     .show();
         }
     }
-    
+    /** Callback for getting claim */
     class GetClaimCallback implements ResultCallback<Claim> {
         @Override
         public void onResult(Claim result) {
@@ -277,7 +287,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
         }
     }
-    
+    /**
+     * Callback for deleting items
+     */
     class DeleteItemCallback implements ResultCallback<Void> {
         // Do nothing
         @Override
@@ -292,7 +304,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
                     .show();
         }
     }
-    
+    /**
+     *  Listener for Context menu 
+     */
     class ContextMenuListener implements multiSelectMenuListener {
 
         @Override

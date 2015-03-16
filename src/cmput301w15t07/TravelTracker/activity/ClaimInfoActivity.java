@@ -244,10 +244,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 	                }
 	            });
         	} else {
-        	    // These buttons should do nothing if the claim isn't editable
-        	    disableButton(startDateButton);
-                disableButton(endDateButton);
-                disableButton(submitClaimButton);
+        	    // These views should do nothing if the claim isn't editable
+        	    disableView(startDateButton);
+        	    disableView(endDateButton);
+        	    disableView(submitClaimButton);
         	}
             
             // Views a claimant doesn't need to see or have access to
@@ -274,9 +274,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
                 }
             });
             
-            // The approver should see these buttons, but cannot use them.
-            disableButton(startDateButton);
-            disableButton(endDateButton);
+            // The approver should see these views, but cannot use them.
+            disableView(startDateButton);
+            disableView(endDateButton);
             
             // Views an approver doesn't need to see or have access to
             statusLinearLayout.setVisibility(View.GONE);

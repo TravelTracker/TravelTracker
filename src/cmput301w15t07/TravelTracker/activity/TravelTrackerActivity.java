@@ -31,8 +31,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
 
 /**
  * The base activity for TravelTracker activities.
@@ -112,14 +111,7 @@ public class TravelTrackerActivity extends Activity {
                  status.equals(Status.RETURNED));
     }
     
-    public void disableButton(Button button) {
-        button.setClickable(false);
-        button.setAlpha(0.4f);
-    }
-    
-    public void disableEditText(EditText editText) {
-        editText.setFocusable(false);
-        editText.setClickable(false);
-        editText.setEnabled(false);
+    public void disableView(View view) {
+        view.setEnabled(false);
     }
 }

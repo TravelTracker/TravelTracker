@@ -174,8 +174,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
         Button dateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
         
-        EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
         EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+        EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+        
+        Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
+        Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
         
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
             if (isEditable(claim.getStatus(), userData.getRole())) {
@@ -257,7 +260,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
                 });
                 
                 // Add listener for currency spinner
-                Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
                 currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
@@ -270,7 +272,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
                 });
                 
                 // Add listener for category spinner
-                Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
                 categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
                     public void onItemSelected(AdapterView<?> adapter, View view, int position, long id){
@@ -281,18 +282,24 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
                 });
             } else {
                 // These views should do nothing if the claim isn't editable
-                disableButton(dateButton);
-                disableEditText(itemAmount);
-                disableEditText(itemDescription);
+                disableView(itemStatus);
+                disableView(dateButton);
+                disableView(itemDescription);
+                disableView(itemAmount);
+                disableView(currencySpinner);
+                disableView(categorySpinner);
             }
             
         }
         
         else if (userData.getRole().equals(UserRole.APPROVER)) {
             // The approver should see these views, but cannot use them.
-            disableButton(dateButton);
-            disableEditText(itemAmount);
-            disableEditText(itemDescription);
+            disableView(itemStatus);
+            disableView(dateButton);
+            disableView(itemDescription);
+            disableView(itemAmount);
+            disableView(currencySpinner);
+            disableView(categorySpinner);
             
             // Views an approver doesn't need to see or have access to
             itemStatus.setVisibility(View.GONE);

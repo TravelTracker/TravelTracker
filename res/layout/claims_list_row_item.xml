@@ -1,59 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:baselineAligned="false"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" 
     android:padding="5dp"
     android:background="@layout/background_activated">
     
-    	<RelativeLayout 
-    	    android:layout_width="0dp"
-    	    android:layout_height="match_parent"
-    	    android:layout_weight="0.7">
-    	    
-		    <LinearLayout
+    
+	    <LinearLayout
+	        android:id="@+id/claimsListRowItemInfo"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical">
+
+	        <TextView 
+		        android:id="@+id/claimsListRowItemName"
 		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical">
-	
-		        <TextView 
-			        android:id="@+id/claimsListRowItemName"
-			        android:layout_width="wrap_content"
-			       	android:layout_height="wrap_content"
-			       	android:textSize="20sp"
-			       	android:textStyle="bold"/>
-		        
-		        <TextView 
-		            android:id="@+id/claimsListRowItemDate"
-		            android:layout_width="wrap_content"
-		        	android:layout_height="wrap_content"/>
-		        
-		        <LinearLayout
-		        android:id="@+id/claimsListDestinationContainer" 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical"
-		        android:paddingTop="10dp"
-		        android:paddingBottom="10dp"/>
-		       		        
-		    </LinearLayout>
-		    
-		    <TextView 
-		            android:id="@+id/claimsListRowItemStatus"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_alignParentBottom="true"/>
-		    
-	    </RelativeLayout>
-	    
-	    <LinearLayout 
-	        android:layout_width="0dp"
+		       	android:layout_height="wrap_content"
+		       	android:textSize="20sp"
+		       	android:textStyle="bold"/>
+	        
+	        <TextView 
+	            android:id="@+id/claimsListRowItemDate"
+	            android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"/>
+	        
+	        <LinearLayout
+	        android:id="@+id/claimsListDestinationContainer" 
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical"
-	        android:gravity="start"
-	        android:layout_weight="0.3">
+	        android:paddingTop="10dp"
+	        android:paddingBottom="10dp"/>
 	        
+	    </LinearLayout>
+	    
+	    <TextView 
+            android:id="@+id/claimsListRowItemStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_below="@+id/claimsListRowItemInfo"
+            android:layout_alignParentBottom="true"/>
+		    
+	    
+	    <LinearLayout 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:layout_alignParentEnd="true"
+	        android:paddingEnd="3dp"
+	        android:paddingStart="3dp">
+		   	
 	        <TextView 
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -70,4 +68,4 @@
 	        
 	    </LinearLayout>
 	    
-</LinearLayout>
+</RelativeLayout>

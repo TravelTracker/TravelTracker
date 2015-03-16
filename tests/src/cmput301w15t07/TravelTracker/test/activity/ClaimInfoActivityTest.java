@@ -100,7 +100,6 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		startWithClaim(UserRole.CLAIMANT);
 		
 		// Referenced http://stackoverflow.com/a/4125024 on 14/03/15
-		instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
 		instrumentation.invokeMenuActionSync(activity, R.id.claim_info_delete_claim, 0);
 		
 		AlertDialog dialog = activity.getLastAlertDialog();

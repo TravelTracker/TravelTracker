@@ -64,6 +64,7 @@ import cmput301w15t07.TravelTracker.util.TagAdapter;
  * @author kdbanman,
  *         therabidsquirel,
  *         colp
+ *         skwidz
  *
  */
 public class ClaimInfoActivity extends TravelTrackerActivity {
@@ -177,7 +178,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     public AlertDialog getLastAlertDialog() {
     	return lastAlertDialog;
     }
-    
+    /**
+     * attach listeners to buttons/textviews/etc.
+     * hide buttons/views according to user role
+     * @param items Collection of a claims expense items
+     * @param claimant User that created the claim
+     * @param approver	user that approved the claim (if exsists)
+     */
     public void onGetAllData(final Collection<Item> items, User claimant, User approver) {
     	setContentView(R.layout.claim_info_activity);
     	
@@ -287,16 +294,24 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         
         onLoaded();
     }
-
+    
     public void addDestination() {
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
         destinationAdapter.addDestination(this, userData, destinationsList, getFragmentManager());
     }
 
+    /**
+     * Launches the ExpenseItemInfo activity for a new item
+     * @param claim the current expense claim
+     */
     public void addItem(Claim claim) {
         datasource.addItem(claim, new CreateNewItemCallback());
     }
     
+    /**
+     * Launches the ExpenseItemInfo activity for a selected item
+     * @param item The selected expense item 
+     */
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
         intent.putExtra(FROM_CLAIM_INFO, true);
@@ -417,7 +432,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 			}
 		});
     }
-
+    /**
+     * starts the expenseItemList activity
+     */
     public void viewItems() {
         // Start next activity
         Intent intent = new Intent(this, ExpenseItemsListActivity.class);
@@ -425,21 +442,27 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         intent.putExtra(CLAIM_UUID, claimID);
         startActivity(intent);
     }
-
+    /**
+     * spawns the datepicker fragment for startdate button
+     */
     public void startDatePressed() {
     	Date date = claim.getStartDate();
     	
     	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
-
+    /**
+     * spawns the datpicker fragment for the end date button
+     */
     public void endDatePressed() {
     	Date date = claim.getEndDate();
     	
         DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
-
+    /**
+     * submits the selected claim and adds a comment if there exists one in the field
+     */
     public void submitClaim() {
     	// submit only if all items of claim are flagged as complete
     	datasource.getAllItems(new ResultCallback<Collection<Item>>() {
@@ -486,7 +509,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     		
     	});
     }
-
+    /**
+     * returns the selected claim and adds a comment if there exists one in the field
+     */
     public void returnClaim() {
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -518,7 +543,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
     }
-
+    /**
+     * approves the selected claim and adds a comment if there exists one in the field
+     */
     public void approveClaim() {
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -550,7 +577,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
     }
-    
+    /**
+     * Set the date in the date button after 
+	 * datePicker fragment is spawned and 
+	 * interacted with by the user
+     * @param dateButton The button to be set
+     * @param date Date to set the button to
+     */
     private void setButtonDate(Button dateButton, Date date) {
     	java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);

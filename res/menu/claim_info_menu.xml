@@ -5,11 +5,11 @@
         android:id="@+id/claim_info_add_destination"
         android:orderInCategory="100"
         android:title="@string/claim_info_add_destination" />
-    
+    <!--  
     <item
         android:id="@+id/claim_info_add_item"
         android:orderInCategory="200"
-        android:title="@string/add_expense_item" />
+        android:title="@string/add_expense_item" /> -->
     
     <item
         android:id="@+id/claim_info_delete_claim"

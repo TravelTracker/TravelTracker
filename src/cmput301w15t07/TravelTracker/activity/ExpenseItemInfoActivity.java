@@ -48,6 +48,7 @@ import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 
@@ -119,9 +120,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-			
-		//show loading circles
-		setContentView(R.layout.loading_indeterminate);
 		
 		//user info from bundles
 		Bundle bundle = getIntent().getExtras();
@@ -137,133 +135,15 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
 		appendNameToTitle(userData.getName());
-		//populateExpenseInfo();
-		setContentView(R.layout.expense_info_activity);	
-		//attach view Listener for ItemStatus CheckedTextView
-		final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		itemStatus.setOnClickListener(new View.OnClickListener() {
-			
-			
-			@Override
-			public void onClick(View v) {
-				if(itemStatus.isChecked()){
-					itemStatus.setChecked(false);
-					item.setComplete(false);
-				}
-				else{
-					itemStatus.setChecked(true);
-					item.setComplete(true);
-				}
-			}
-		});
-		
-		//Attach view Listener for receipt Image View
-		ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
-		receiptImage.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO: add code for image picker
-				
-			}
-		});
-		
-		//Attach listener for expense date button
-		Button dateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
-		dateButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				datePressed(v);
-				
-			}
-		});
-		
-		//add listener for description editText
-		EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-		itemDescription.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				item.setDescription(s.toString());
-				 
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub				
-			}
-		});
-		
-		//add listener for amount edit text
-		
-		EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
-		itemAmount.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				try {
-					item.setAmount(Float.parseFloat(s.toString()));
-				} catch (NumberFormatException e) {
-					//Dont do anything, the string is empty
-				}
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-
-		//add listener for currency spinner
-		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
-		currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
-			
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-				Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
-				
-				item.setCurrency(currency);
-			}
-			
-			
-			public void onNothingSelected(AdapterView<?> arg0){}
-		
-		});
-		//add listener for category spinner
-		Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
-		categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
-			
-			public void onItemSelected(AdapterView<?> adapter, View view, int position, long id){
-				
-				item.setCategory( (ItemCategory) adapter.getItemAtPosition(position));
-			}
-
-			
-			public void onNothingSelected(AdapterView<?> arg0){}
-		});
 	}
-	
 	
 	protected void onResume() {
 		super.onResume();
 		
-		//show loading circleDate date = claim.getEndDate();
-		//setContentView(R.layout.loading_indeterminate);
-		
+        // Show loading circle
+        setContentView(R.layout.loading_indeterminate);
+        
+        // TODO This should probably be a MultiCallback
 		datasource.getClaim(claimID, new getClaimCallback());
 		datasource.getItem(itemID, new getItemCallback());
 	}
@@ -281,59 +161,199 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	    super.onBackPressed();
 	}
 	/**
-	 * Fill buttons/spinners/editText with data from item
-	 * @param item - The current expense item
+	 * Fill buttons/spinners/editText with data from item, set listeners, hide or
+	 * disable things according to user's role and claim's status
+	 * @param item The current expense item
 	 */
-	private void populateExpenseInfo(Item item) {
+	private void onGetAllData(final Item item) {
+        setContentView(R.layout.expense_info_activity); 
 		
-		
-		//TODO:catch null pointer exceptions for empty claims/fields
-		Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
-		try{
-			setButtonDate(itemDateButton, item.getDate());
-		} catch (NullPointerException e){
-			//the field is empty, so dont load anything
-		}
-			
-		//TODO: populate receipt image
-		
-		//TODO: Note, amount string will have to be changed back to float before being inserted into model
-		String amount = Float.toString(item.getAmount());
-		EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
-		try{
-			itemAmount.setText(amount);
-		} catch (NullPointerException e) {
-			// the Field is empty, so dont load anything
-		}
-		
-		//TODO: import data for currency spinner
-		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
-		currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
-		try{
-			currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency().toString(), this).ordinal(),true);
-		} catch (NullPointerException e) {
-			// the field is null or empty, dont load anything
-		}
-		//TODO: import the category for the spinner
-		//change generated data source file to get proper data for enums 
-		Spinner categorySpinner = (Spinner)	findViewById(R.id.expenseItemInfoCategorySpinner);
-		categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
-		try {
-			categorySpinner.setSelection(item.getCategory().ordinal(),true);
-		} catch (NullPointerException e) {
-			// Item is empty or null, dont load anything
-		}
-		EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-		try {
-			itemDescription.setText(item.getDescription());
-		} catch (NullPointerException e) {
-			// the field is empty, so dont load anything
-		}
-		
-		
-		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		itemStatus.setChecked(item.isComplete());
+        populateItemInfo(item);
+        
+        final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
+        Button dateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
+        
+        EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+        EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+        
+        if (userData.getRole().equals(UserRole.CLAIMANT)) {
+            if (isEditable(claim.getStatus(), userData.getRole())) {
+                // Attach view Listener for ItemStatus CheckedTextView
+                itemStatus.setOnClickListener(new View.OnClickListener() {
+                    
+                    @Override
+                    public void onClick(View v) {
+                        if (itemStatus.isChecked()) {
+                            itemStatus.setChecked(false);
+                            item.setComplete(false);
+                        } else {
+                            itemStatus.setChecked(true);
+                            item.setComplete(true);
+                        }
+                    }
+                });
+                
+                //Attach view Listener for receipt Image View
+                ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+                receiptImage.setOnClickListener(new View.OnClickListener() {
+                    
+                    @Override
+                    public void onClick(View v) {
+                        // TODO: add code for image picker
+                        
+                    }
+                });
+                
+                // Attach listener for expense date button
+                dateButton.setOnClickListener(new View.OnClickListener() {
+                    
+                    @Override
+                    public void onClick(View v) {
+                        datePressed(v);
+                    }
+                });
+                
+                // Add listener for description editText
+                itemDescription.addTextChangedListener(new TextWatcher() {
+                    
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        item.setDescription(s.toString());
+                    }
+                    
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        // TODO Auto-generated method stub
+                    }
+                    
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // TODO Auto-generated method stub              
+                    }
+                });
+                
+                // Add listener for amount edit text
+                itemAmount.addTextChangedListener(new TextWatcher() {
+                    
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        try {
+                            item.setAmount(Float.parseFloat(s.toString()));
+                        } catch (NumberFormatException e) {
+                            //Dont do anything, the string is empty
+                        }
+                    }
+                    
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        // TODO Auto-generated method stub
+                    }
+                    
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+                
+                // Add listener for currency spinner
+                Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
+                currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+                    
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                        Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
+                        item.setCurrency(currency);
+                    }
+                    
+                    public void onNothingSelected(AdapterView<?> arg0){}
+                
+                });
+                
+                // Add listener for category spinner
+                Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
+                categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+                    
+                    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id){
+                        item.setCategory( (ItemCategory) adapter.getItemAtPosition(position));
+                    }
+                    
+                    public void onNothingSelected(AdapterView<?> arg0){}
+                });
+            } else {
+                // These views should do nothing if the claim isn't editable
+                disableButton(dateButton);
+                disableEditText(itemAmount);
+                disableEditText(itemDescription);
+            }
+            
+        }
+        
+        else if (userData.getRole().equals(UserRole.APPROVER)) {
+            // The approver should see these views, but cannot use them.
+            disableButton(dateButton);
+            disableEditText(itemAmount);
+            disableEditText(itemDescription);
+            
+            // Views an approver doesn't need to see or have access to
+            itemStatus.setVisibility(View.GONE);
+        }
+        
+        onLoaded();
 	}
+	
+	/**
+	 * Populate the fields with data.
+	 * @param item The item being viewed.
+	 */
+	public void populateItemInfo(Item item) {
+        //TODO:catch null pointer exceptions for empty claims/fields
+        Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
+        try {
+            setButtonDate(itemDateButton, item.getDate());
+        } catch (NullPointerException e){
+            //the field is empty, so dont load anything
+        }
+            
+        //TODO: populate receipt image
+        
+        //TODO: Note, amount string will have to be changed back to float before being inserted into model
+        String amount = Float.toString(item.getAmount());
+        EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+        try {
+            itemAmount.setText(amount);
+        } catch (NullPointerException e) {
+            // the Field is empty, so dont load anything
+        }
+        
+        //TODO: import data for currency spinner
+        Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
+        currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
+        try {
+            currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency().toString(), this).ordinal(),true);
+        } catch (NullPointerException e) {
+            // the field is null or empty, dont load anything
+        }
+        
+        //TODO: import the category for the spinner
+        //change generated data source file to get proper data for enums 
+        Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
+        categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
+        try {
+            categorySpinner.setSelection(item.getCategory().ordinal(),true);
+        } catch (NullPointerException e) {
+            // Item is empty or null, dont load anything
+        }
+        
+        EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+        try {
+            itemDescription.setText(item.getDescription());
+        } catch (NullPointerException e) {
+            // the field is empty, so dont load anything
+        }
+        
+        CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
+        itemStatus.setChecked(item.isComplete());
+	}
+	
 	/**
 	 * get the index in a spinner array
 	 * @param spinner
@@ -421,7 +441,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         public void onResult(Item item) {
             ExpenseItemInfoActivity.this.item = item;
             if (ExpenseItemInfoActivity.this.item != null){
-                populateExpenseInfo(item);
+                onGetAllData(item);
             }
             else{
                 Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();

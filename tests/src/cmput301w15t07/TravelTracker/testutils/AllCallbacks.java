@@ -60,35 +60,24 @@ public class AllCallbacks extends AndroidTestCase{
 	
 	
 	public User getUser(){
-		return getData(userCallback);
+		return DataSourceUtils.getData(userCallback);
 	}
 	
 	public Collection<User> getUsers(){
-		return getData(usersCallback);
+		return DataSourceUtils.getData(usersCallback);
 	}
 	
 	public Collection<Claim> getClaims(){
-		return getData(claimCallback);
+		return DataSourceUtils.getData(claimCallback);
 	}
 	
 	public Collection<Item> getItems(){
-		return getData(itemCallback);
+		return DataSourceUtils.getData(itemCallback);
 	}
 	
 	public Collection<Tag> getTags(){
-		return getData(tagCallback);
+		return DataSourceUtils.getData(tagCallback);
 	}
 	
-	
-	private <T> T getData(SynchronizedResultCallback<T> callback) {
-		try{
-			boolean success = callback.waitForResult();
-			assertTrue("callback waiting failed", success);
-			return callback.getResult();
-		} catch (InterruptedException e){
-			fail("failed to get data from data source for class: " + callback.toString());
-		}
-		return null;
-	}
 }
 

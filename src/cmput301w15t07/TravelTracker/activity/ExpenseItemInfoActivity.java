@@ -62,14 +62,6 @@ import cmput301w15t07.TravelTracker.util.DatePickerFragment;
  *
  */
 
-/** TODO: cellinge
- * 	
- * BUGFIX: when text in amount is 
- * 	
- * 
- *	
- *
- */
 
 
 
@@ -291,7 +283,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		});
 				
 	}
-	
+	/**
+	 * Fill buttons/spinners/editText with data from item
+	 * @param item - The current expense item
+	 */
 	private void populateExpenseInfo(Item item) {
 		
 		
@@ -342,6 +337,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
 		itemStatus.setChecked(item.isComplete());
 	}
+	/**
+	 * get the index in a spinner array
+	 * @param spinner
+	 * @param string
+	 * @return
+	 */
 	public int getIndex(Spinner spinner, String string){
 		int index = 0;
 		for(int i=0;i<spinner.getCount();i++){
@@ -352,7 +353,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		return index;
 	}
 
-	
+	/**
+	 * Set the date in the date button after 
+	 * datePicker fragment is spawned and 
+	 * interacted with by the user
+	 * @param dateButton The button to be set
+	 * @param date Date to set the button to
+	 */
 	private void setButtonDate(Button dateButton, Date date) {
 		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
@@ -364,13 +371,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	/**
+	 * spawn a datepicker fragment when dateButton is pressed
+	 * @param date
+	 */
 	public void datePressed(View date){
 		Date itemDate = item.getDate();
 		DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
 		datePicker.show(getFragmentManager(), "datePicker");
 	}
-	
+	/**
+	 * callback for the datepicker fragment
+	 */
 	class DateCallback implements DatePickerFragment.ResultCallback{
 		@Override
 		public void onDatePickerFragmentResult(Date result) {

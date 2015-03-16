@@ -24,27 +24,41 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.Date;
 import java.util.UUID;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.app.Activity;
 
+import android.content.Intent;
+
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.InputFilter.LengthFilter;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 
 
 /**
@@ -57,12 +71,11 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  */
 
 /** TODO: cellinge
- * 	Get all fields loading
- * 		get spinners to load enums values correctly 
- * 	Field saving on user input 
+ * 	
+ * BUGFIX: when text in amount is 
+ * 	
  * 
- * 
- * 
+ *	
  *
  */
 
@@ -143,11 +156,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 			public void onClick(View v) {
 				if(itemStatus.isChecked()){
 					itemStatus.setChecked(false);
-					setItemStatus(false);
+					item.setStatus(false);
 				}
 				else{
 					itemStatus.setChecked(true);
-					setItemStatus(true);
+					item.setStatus(true);
 				}
 			}
 		});
@@ -174,14 +187,83 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 			}
 		});
 		
+		//add listener for description editText
+		EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+		itemDescription.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				item.setDescription(s.toString());
+				 
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub				
+			}
+		});
 		
+		//add listener for amount edit text
+		
+		EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+		itemAmount.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				item.setAmount(Float.parseFloat(s.toString()));
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+
+		//add listener for currency spinner
+		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
+		currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+			
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+				//item.setCurrency((ItemCurrency) parent.getItemAtPosition(position));
+			}
+			
+			
+			public void onNothingSelected(AdapterView<?> arg0){}
+		
+		});
+		//add listener for category spinner
+		Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
+		categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+			
+			public void onItemSelected(AdapterView<?> adapter, View view, int position, long id){
+				
+				item.setCategory( (ItemCategory) adapter.getItemAtPosition(position));
+			}
+
+			
+			public void onNothingSelected(AdapterView<?> arg0){}
+		});
 	}
 	
 	
 	protected void onResume() {
 		super.onResume();
 		
-		//show loading circle
+		//show loading circleDate date = claim.getEndDate();
 		//setContentView(R.layout.loading_indeterminate);
 		
 		//Retrieve user data from bundle
@@ -238,17 +320,17 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
 		currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
 		try{
-			currencySpinner.setPrompt(item.getCurrency().toString());
+			currencySpinner.setSelection(item.getCategory().ordinal(),true);
 		} catch (NullPointerException e) {
 			// the field is null or empty, dont load anything
 		}
 		//TODO: import the category for the spinner
-		//Look into setPosition function for spinners
+		//change generated data source file to get proper data for enums 
 		Spinner categorySpinner = (Spinner)	findViewById(R.id.expenseItemInfoCategorySpinner);
 		categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
 		try {
-			categorySpinner.setSelection(item.getCategory().getId());
-		} catch (Exception e) {
+			categorySpinner.setSelection(item.getCategory().ordinal(),true);
+		} catch (NullPointerException e) {
 			// Item is empty or null, dont load anything
 		}
 		EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
@@ -260,29 +342,56 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		if(item.isComplete() == true){
-			itemStatus.setChecked(true); //anything other than true means incomplete
+		if(item.getStatus() == true){
+			itemStatus.setChecked(false); //anything other than true means incomplete
 		}else{
-			itemStatus.setChecked(false);
+			itemStatus.setChecked(true);
 		}
 	}
-
+	public int getIndex(Spinner spinner, String string){
+		int index = 0;
+		for(int i=0;i<spinner.getCount();i++){
+			if (spinner.getItemAtPosition(i).equals(string)){
+				index = i; 
+			}
+		}
+		return index;
+	}
+	
 	private void setButtonDate(Button dateButton, Date date) {
 		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
     	String dateString = dateFormat.format(date);
 		dateButton.setText(dateString);
 	}
 	
-	public void setItemStatus(boolean status){
-		item.setComplete(status);
-	}
-	
+		
 	public void deleteExpenseItem() {
 		// TODO Auto-generated method stub
 		
 	}
 	
 	public void datePressed(View date){
-		//TODO: spawn fragment for selecting date
+		Date itemDate = item.getDate();
+		DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
+		datePicker.show(getFragmentManager(), "datePicker");
 	}
+	
+	class DateCallback implements DatePickerFragment.ResultCallback{
+		@Override
+		public void onDatePickerFragmentResult(Date result) {
+			
+			
+				item.setDate(result);
+				
+				Button button = (Button) findViewById(R.id.expenseItemInfoDateButton);
+				setButtonDate(button, result);
+			
+		}
+		
+		@Override
+		public void onDatePickerFragmentCancelled() {
+			// Do nothing
+		}
+	}
+	
 }

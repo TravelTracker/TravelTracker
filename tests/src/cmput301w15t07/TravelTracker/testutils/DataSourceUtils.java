@@ -5,6 +5,7 @@ import java.util.UUID;
 import android.test.AndroidTestCase;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -42,12 +43,23 @@ public class DataSourceUtils extends AndroidTestCase{
 		return getUserData(name, UserRole.APPROVER);
 	}
 	
+	/**
+	 * Convenience mthod to add an empty claim to the data source
+	 * @param user
+	 * @param ds
+	 * @return
+	 */
 	public static Claim addEmptyClaim(User user, DataSource ds){
 		SynchronizedResultCallback<Claim> claimCB = new SynchronizedResultCallback<Claim>();
 		ds.addClaim(user, claimCB);
 		return getData(claimCB);
 	}
 	
+	public static Item addEmptyItem(Claim claim, DataSource ds){
+		SynchronizedResultCallback<Item> itemCB = new SynchronizedResultCallback<Item>();
+		ds.addItem(claim, itemCB);
+		return getData(itemCB);
+	}
 	
 	/**
 	 * Convenience method to get the data out of a synchronized Result callback. Asserts

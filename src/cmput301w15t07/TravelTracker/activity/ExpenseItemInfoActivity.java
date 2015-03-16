@@ -234,11 +234,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
 			
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-				item.setCurrency(((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this));
+				Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
 				
-				Toast.makeText(ExpenseItemInfoActivity.this, "Position: " + Integer.toString(position), Toast.LENGTH_SHORT).show();
+				item.setCurrency(currency);
 				
-				Toast.makeText(ExpenseItemInfoActivity.this, "Currency: " + ((ItemCurrency) parent.getItemAtPosition(position)).toString(), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(ExpenseItemInfoActivity.this, "Currency: " + currency.toString(), Toast.LENGTH_SHORT).show();
 			}
 			
 			

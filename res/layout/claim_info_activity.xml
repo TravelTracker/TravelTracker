@@ -18,9 +18,12 @@
             android:orientation="horizontal" >
 
             <TextView
+                tools:ignore="RtlSymmetry"
+                android:paddingEnd="5dp"
                 android:id="@+id/claimInfoClaimantNameHeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/claim_info_claimant_name" />
 
             <TextView
@@ -37,9 +40,12 @@
             android:orientation="horizontal" >
 
             <TextView
+                tools:ignore="RtlSymmetry"
+                android:paddingEnd="5dp"
                 android:id="@+id/claimInfoStatusHeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/claim_info_claim_status" />
 
             <TextView
@@ -80,6 +86,7 @@
             android:id="@+id/claimInfoDestinationsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/claim_info_destinations" />
 
         <LinearLayout
@@ -95,6 +102,7 @@
             android:id="@+id/claimInfoTagsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/claim_info_tags" />
 
         <LinearLayout
@@ -119,6 +127,7 @@
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentStart="true"
 	            android:gravity="start"
+                android:textStyle="bold"
 	            android:text="@string/claim_info_currency_totals" />
 	
 	        <TextView
@@ -143,9 +152,12 @@
             android:orientation="horizontal" >
 
             <TextView
+                tools:ignore="RtlSymmetry"
+                android:paddingEnd="5dp"
                 android:id="@+id/claimInfoApproverHeaderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/claim_info_approver" />
 
             <TextView
@@ -159,6 +171,7 @@
             android:id="@+id/TextView01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="@string/claim_info_comments" />
 
         <cmput301w15t07.TravelTracker.util.NonScrollListView

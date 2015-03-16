@@ -205,7 +205,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     public void update(InMemoryDataSource observable) {
         observable.getAllItems(new GetAllItemsCallback(this, adapter));
     }
-
+    /**
+     * delete selected items from the list
+     * @param selectedItems
+     */
     public void deleteItems(ArrayList<Integer> selectedItems) {
         // Deleting in place is bad
         ArrayList<Item> delete = new ArrayList<Item>();

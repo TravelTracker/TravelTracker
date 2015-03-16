@@ -269,38 +269,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		//show loading circleDate date = claim.getEndDate();
 		//setContentView(R.layout.loading_indeterminate);
 		
-		datasource.getClaim(claimID, new ResultCallback<Claim>() {
-
-            @Override
-            public void onResult(Claim claim) {
-                ExpenseItemInfoActivity.this.claim = claim;
-            }
-
-            @Override
-            public void onError(String message) {
-                Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-            }
-		});
-		
-		datasource.getItem(itemID, new ResultCallback<Item>() {
-			
-			@Override
-			public void onResult(Item item) {
-				ExpenseItemInfoActivity.this.item = item;
-				if (ExpenseItemInfoActivity.this.item != null){
-					populateExpenseInfo(item);
-				}
-				else{
-					Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();
-				}
-			}
-			
-			@Override
-			public void onError(String message) {
-				Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-			}
-		});
-				
+		datasource.getClaim(claimID, new getClaimCallback());
+		datasource.getItem(itemID, new getItemCallback());
 	}
 	
 	@Override
@@ -417,4 +387,39 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		}
 	}
 	
+	/**
+	 * Callback for claim data.
+	 */
+	class getClaimCallback implements ResultCallback<Claim> {
+        @Override
+        public void onResult(Claim claim) {
+            ExpenseItemInfoActivity.this.claim = claim;
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+	}
+	
+	/**
+	 * Callback for item data.
+	 */
+	class getItemCallback implements ResultCallback<Item> {
+        @Override
+        public void onResult(Item item) {
+            ExpenseItemInfoActivity.this.item = item;
+            if (ExpenseItemInfoActivity.this.item != null){
+                populateExpenseInfo(item);
+            }
+            else{
+                Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();
+            }
+        }
+        
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+	}
 }

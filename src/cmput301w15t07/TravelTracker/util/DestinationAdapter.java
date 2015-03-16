@@ -177,8 +177,9 @@ public class DestinationAdapter {
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing
                     }
-               });
-        builder.create().show();
+               })
+               .create()
+               .show();
     }
     
     private void deleteDestination(View view) {

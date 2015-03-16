@@ -418,7 +418,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 				for(Item item : items) {
 					// only inspect items belonging to this claim
 					if (item.getClaim().equals(claim.getUUID()))
-						allComplete = allComplete && item.getStatus();
+						allComplete = allComplete && item.isComplete();
 				}
 				
 				if (allComplete) claim.setStatus(Status.SUBMITTED);

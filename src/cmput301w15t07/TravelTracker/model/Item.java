@@ -40,7 +40,7 @@ public class Item extends Document {
 	private Float amount;
 	private Currency currency;
 	private Receipt receipt;
-	private boolean status;
+	private boolean isComplete;
 
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -65,7 +65,7 @@ public class Item extends Document {
 		
 		receipt = null;
 		
-		status = true;
+		isComplete = true;
 		
 	}
 	
@@ -192,16 +192,16 @@ public class Item extends Document {
 	 * Get the status of the expense item.
 	 * @return The status.
 	 */
-	public boolean getStatus() {
-		return status;
+	public boolean isComplete() {
+		return isComplete;
 	}
 	
 	/**
 	 * Set the status of the expense item.
-	 * @param status The status.
+	 * @param isComplete The status.
 	 */
-	public void setStatus(boolean status) {
-		this.status = status;
+	public void setComplete(boolean isComplete) {
+		this.isComplete = isComplete;
 		this.updateObservers(this);
 	}
 }

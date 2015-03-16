@@ -10,10 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="@string/expense_item_info_status" 
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-        android:checked="false" />
-    
+        android:checked="false"
+        android:text="@string/expense_item_info_is_complete" />
 
     <TextView
         android:id="@+id/expenseItemInfoExpenseDateTextView"

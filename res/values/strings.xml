@@ -81,7 +81,7 @@
         <string name="expense_item_info_label">Expense Item Info</string>
         
         <!-- Used in layout -->
-        <string name= "expense_item_info_status">ItemStatus</string>
+        <string name= "expense_item_info_is_complete">Complete</string>
         <string name= "expense_item_info_date">Expense Date</string>
         <string name= "expense_item_info_amount">Amount</string>
         <string name= "expense_item_info_category">Category</string>

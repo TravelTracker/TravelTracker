@@ -123,13 +123,13 @@ public class GeneratedDataSource extends InMemoryDataSource {
 	            
 	            switch(r.nextInt(2)) {
 	            case 0:
-	                item.setStatus(true);
+	                item.setComplete(true);
 	                break;
 	            case 1:
-	                item.setStatus(false);
+	                item.setComplete(false);
 	                break;
 	            default:
-	                item.setStatus(true);
+	                item.setComplete(true);
 	            }
 				
 				// Set receipt, can't generate a receipt right now

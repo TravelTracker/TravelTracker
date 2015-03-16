@@ -260,7 +260,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		
 		
 		CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		if(item.getStatus() == true){
+		if(item.isComplete() == true){
 			itemStatus.setChecked(true); //anything other than true means incomplete
 		}else{
 			itemStatus.setChecked(false);
@@ -274,7 +274,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	}
 	
 	public void setItemStatus(boolean status){
-		item.setStatus(status);
+		item.setComplete(status);
 	}
 	
 	public void deleteExpenseItem() {

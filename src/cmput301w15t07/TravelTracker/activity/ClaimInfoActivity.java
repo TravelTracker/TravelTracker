@@ -104,13 +104,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         
         // Menu items
         MenuItem addDestinationMenuItem = menu.findItem(R.id.claim_info_add_destination);
-        MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
+        //MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
         MenuItem deleteClaimMenuItem = menu.findItem(R.id.claim_info_delete_claim);
         
         if (!isEditable()) {
             // Menu items that disappear when not editable
             addDestinationMenuItem.setEnabled(false).setVisible(false);
-            addItemMenuItem.setEnabled(false).setVisible(false);
+            //addItemMenuItem.setEnabled(false).setVisible(false);
         }
         
         if (userData.getRole().equals(UserRole.APPROVER)) {
@@ -127,9 +127,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
             addDestination();
             break;
             
-        case R.id.claim_info_add_item:
-            addItem();
-            break;
+//        case R.id.claim_info_add_item:
+//            addItem();
+//            break;
             
         case R.id.claim_info_delete_claim:
             promptDeleteClaim();

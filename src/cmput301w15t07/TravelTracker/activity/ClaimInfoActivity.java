@@ -68,7 +68,7 @@ import cmput301w15t07.TravelTracker.util.TagAdapter;
  *         colp
  *
  */
-public class ClaimInfoActivity extends TravelTrackerActivity {
+public class ClaimInfoActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** ID used to retrieve items from MutliCallback. */
     public static final int MULTI_ITEMS_ID = 0;
     
@@ -159,6 +159,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
         appendNameToTitle(userData.getName());
+        
+        datasource.addObserver(this);
     }
     
     @Override
@@ -170,6 +172,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         
         datasource.getClaim(claimID, new ClaimCallback());
     }
+    
+
+	@Override
+	public void update(DataSource observable) {
+        datasource.getClaim(claimID, new ClaimCallback());
+	}
     
     /**
      * Get the last created AlertDialog.

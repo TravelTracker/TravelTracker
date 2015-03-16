@@ -168,14 +168,14 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/TextView01"
+            android:id="@+id/claimInfoCommentsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="@string/claim_info_comments" />
 
         <LinearLayout
-            android:id="@+id/claimInfoCommentsListView"
+            android:id="@+id/claimInfoCommentsLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -183,7 +183,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="10dp" />
 
         <Button
             android:id="@+id/claimInfoClaimSubmitButton"

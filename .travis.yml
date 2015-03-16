@@ -34,11 +34,10 @@ before_script:
    - cd tests
    - android -s update test-project --path . -m ../
     
-   - cd ../
    - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
    - emulator -avd test -no-skin -no-audio -no-window &
-   - chmod 777 ./wait-for-boot-anim
-   - ./wait-for-boot-anim
+   - chmod 777 ../wait-for-boot-anim
+   - ../wait-for-boot-anim
    - adb shell input keyevent 82
    
 script:

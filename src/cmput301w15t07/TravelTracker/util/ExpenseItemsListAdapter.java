@@ -23,10 +23,12 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.ItemCategory;
 import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -99,36 +101,65 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         
         // Incomplete view
         TextView incompleteView =
-                (TextView) rowView.findViewById(R.id.expenseItemsListItemViewStatusTextView);
+                (TextView) rowView.findViewById(
+                		R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete()) {
-            incompleteView.setVisibility(View.INVISIBLE);
+            incompleteView.setVisibility(View.VISIBLE);
         }
         else {
-            incompleteView.setVisibility(View.VISIBLE);
+            incompleteView.setVisibility(View.GONE);
         }
         
         // Description view
         TextView descView =
-                (TextView) rowView.findViewById(R.id.expenseItemsListItemViewDescriptionTextView);
+                (TextView) rowView.findViewById(
+                		R.id.expenseItemsListItemViewDescriptionTextView);
         descView.setText(itemData.getDescription());
         
         // Date view
         TextView dateView =
-                (TextView) rowView.findViewById(R.id.expenseItemsListItemViewDateTextView);
+                (TextView) rowView.findViewById(
+                		R.id.expenseItemsListItemViewDateTextView);
         java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getContext());
         String dateString = dateFormat.format(itemData.getDate());
         dateView.setText(dateString);
+        
+        // Category view
+        TextView categoryView = 
+        		(TextView) rowView.findViewById(
+        				R.id.expenseItemsListItemViewCategoryTextView);
+        String categoryString;
+        ItemCategory category = itemData.getCategory();
+        if (category != null) {
+        	categoryString = "Category: " +
+        			itemData.getCategory().getString(getContext());
+        }
+        else {
+        	categoryString = "No category";
+        }
+        categoryView.setText(categoryString);
+        
+        // Cost View
+        TextView costView =
+        		(TextView) rowView.findViewById(
+        				R.id.expenseItemsListItemViewCostTextView);
+        Currency curr = itemData.getCurrency();
+        String costString = String.valueOf(itemData.getAmount()) + " " +
+        		curr.getCurrencyCode();
+        costView.setText(costString);
         
         // Receipt view
         ImageView receiptView =
                 (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
         if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
             receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
+            //receiptView.setVisibility(View.VISIBLE);
         }
         else {
             /* Clear image for image view.
              * http://stackoverflow.com/questions/2859212/how-to-clear-an-imageview-in-android */
-            receiptView.setImageResource(android.R.color.transparent);
+            receiptView.setImageResource(android.R.color.black);
+            //receiptView.setVisibility(View.GONE);
         }
         
         return rowView;

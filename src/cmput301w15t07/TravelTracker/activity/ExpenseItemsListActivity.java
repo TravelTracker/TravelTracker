@@ -72,7 +72,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     /** ListView adapter */
     private ExpenseItemsListAdapter adapter;
     
-    
+    /**  Whether the item is currently loading  */
     private boolean loading;
     
     @Override
@@ -184,11 +184,17 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         }
                 
     }
-    
+    /**
+     * Launch the ExpenseItemInfo activity for a new Item
+     * @param claim The current claim 
+     */
     private void launchExpenseInfoNewExpense(Claim claim){
         datasource.addItem(claim, new CreateNewItemCallback());
     }
-    
+    /** 
+     * Launches the ExpenseItemInfo activity for the selected item
+     * @param item Selected item to open
+     */
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
         intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
@@ -215,7 +221,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             datasource.deleteItem(i.getUUID(), cb);
         }
     }
-    
+    /** Callback for new item */
     class CreateNewItemCallback implements ResultCallback<Item> {
     	@Override
     	public void onResult(Item result){
@@ -265,7 +271,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
                     .show();
         }
     }
-    
+    /** Callback for getting claim */
     class GetClaimCallback implements ResultCallback<Claim> {
         @Override
         public void onResult(Claim result) {
@@ -277,7 +283,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
         }
     }
-    
+    /**
+     * Callback for deleting items
+     */
     class DeleteItemCallback implements ResultCallback<Void> {
         // Do nothing
         @Override
@@ -292,7 +300,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
                     .show();
         }
     }
-    
+    /**
+     *  Listener for Context menu 
+     */
     class ContextMenuListener implements multiSelectMenuListener {
 
         @Override

@@ -457,7 +457,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         startActivity(intent);
     }
     /**
-     * 
+     * spawns the datepicker fragment for startdate button
      */
     public void startDatePressed() {
     	Date date = claim.getStartDate();
@@ -465,14 +465,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
-
+    /**
+     * spawns the datpicker fragment for the end date button
+     */
     public void endDatePressed() {
     	Date date = claim.getEndDate();
     	
         DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
-
+    /**
+     * submits the selected claim and adds a comment if there exists one in the field
+     */
     public void submitClaim() {
     	// submit only if all items of claim are flagged as complete
     	datasource.getAllItems(new ResultCallback<Collection<Item>>() {

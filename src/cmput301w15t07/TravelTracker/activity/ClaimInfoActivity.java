@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
@@ -55,7 +56,7 @@ import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.DestinationAdapter;
-import cmput301w15t07.TravelTracker.util.NonScrollListView;
+import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.TagAdapter;
 
 /**
@@ -88,6 +89,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
 
     /** The custom adapter for claim destinations. */
     DestinationAdapter destinationAdapter;
+
+    /** The custom adapter for claim comments. */    
+    ApproverCommentAdapter commentsListAdapter;
     
     /** The custom adapter for claim tags. */
     TagAdapter tagAdapter;
@@ -367,10 +371,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
         destinationAdapter.displayView(this, userData, destinationsList, getFragmentManager());
         
-        // Show approver comments
-        NonScrollListView commentsLinearLayout = (NonScrollListView) findViewById(R.id.claimInfoCommentsListView);
-        commentsLinearLayout.setAdapter(new ApproverCommentAdapter(this, datasource, claim.getComments()));
-        
         if (userData.getRole().equals(UserRole.APPROVER)) {
         	// Claimant name
         	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
@@ -388,6 +388,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	    LinearLayout approverLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverLinearLayout);
     	    approverLinearLayout.setVisibility(View.GONE);
     	}
+    	
+
+        
+        // Show approver comments
+        LinearLayout commentsList = (LinearLayout) findViewById(R.id.claimInfoCommentsListView);
+        commentsListAdapter = new ApproverCommentAdapter(this, datasource, claim.getComments());
+        
+        for (int i = 0; i < commentsListAdapter.getCount(); i++) {
+        	View commentView = commentsListAdapter.getView(i, null, null);
+        	commentsList.addView(commentView);
+        }
     	
     	// Scroll to top now in case comment list has extended the layout
     	// Referenced http://stackoverflow.com/a/4488149 on 12/03/15

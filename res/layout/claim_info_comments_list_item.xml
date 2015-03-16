@@ -21,5 +21,7 @@
         android:layout_marginStart="20dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?android:attr/textColorTertiary" />
+    
+    <View style="@style/HorizontalDivider" />
 
 </RelativeLayout>

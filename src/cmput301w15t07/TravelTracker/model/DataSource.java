@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.Observer;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -34,6 +35,13 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *
  */
 public interface DataSource {
+	
+	/*
+	 * Duplicate observable method signatures for cast-free dependency injection.
+	 */
+    public void addObserver(Observer<DataSource> obs);
+    public void removeObserver(Observer<DataSource> obs);
+    public void updateObservers(DataSource self);
 
 	/**
 	 * Add a user.

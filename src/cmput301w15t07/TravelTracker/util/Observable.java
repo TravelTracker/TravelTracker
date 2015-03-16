@@ -47,7 +47,7 @@ public abstract class Observable <E> {
         observers.remove(obs);
     }
 
-    protected void updateObservers(E self) {
+    public void updateObservers(E self) {
         for (Observer<E> obs : observers) {
             obs.update(self);
         }

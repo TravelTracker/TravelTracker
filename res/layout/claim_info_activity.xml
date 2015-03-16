@@ -174,12 +174,12 @@
             android:textStyle="bold"
             android:text="@string/claim_info_comments" />
 
-        <cmput301w15t07.TravelTracker.util.NonScrollListView
+        <LinearLayout
             android:id="@+id/claimInfoCommentsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-        </cmput301w15t07.TravelTracker.util.NonScrollListView>
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"

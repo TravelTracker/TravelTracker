@@ -92,6 +92,7 @@
         <string name="expense_item_info_delete_item">Delete Expense Item</string>
 
     <!-- Strings used in enum ItemCategory -->
+        <string name="enum_item_category_no_category">No Category</string>
         <string name="enum_item_category_accommodation">Accommodation</string>
         <string name="enum_item_category_air_fare">Air Fare</string>
         <string name="enum_item_category_fuel">Fuel</string>

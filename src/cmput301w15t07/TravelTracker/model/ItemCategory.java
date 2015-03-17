@@ -32,6 +32,7 @@ import cmput301w15t07.TravelTracker.R;
  *
  */
 public enum ItemCategory implements ContextStringable {
+    NO_CATEGORY(R.string.enum_item_category_no_category),
 	ACCOMMODATION(R.string.enum_item_category_accommodation),
 	AIR_FARE(R.string.enum_item_category_air_fare),
 	FUEL(R.string.enum_item_category_fuel),

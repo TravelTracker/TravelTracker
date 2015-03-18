@@ -85,8 +85,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			// With 10 items each
 			for (int j = 0; j < 10; ++j) {
 				
-				Item item = new Item(UUID.randomUUID());
-				item.setClaim(claim.getUUID());
+				Item item = new Item(UUID.randomUUID(), claim.getUUID());
 				
 				item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
 				

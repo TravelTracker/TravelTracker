@@ -21,15 +21,22 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
@@ -321,7 +328,17 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
             //the field is empty, so dont load anything
         }
             
-        //TODO: populate receipt image
+        // populate receipt image
+        ImageView receiptImageView = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+        try {
+        	if (item.getReceipt().getPhoto() == null) {
+        		receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets().open("receipt.png")));
+        	} else {
+        		//TODO image populate
+        	}
+		} catch (IOException e1) {
+			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
+		}
         
         //TODO: Note, amount string will have to be changed back to float before being inserted into model
         String amount = Float.toString(item.getAmount());

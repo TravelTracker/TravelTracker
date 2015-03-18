@@ -80,10 +80,9 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 
 	@Override
 	public void addItem(Claim claim, ResultCallback<Item> callback) {
-		Item item = new Item(UUID.randomUUID());
+		Item item = new Item(UUID.randomUUID(), claim.getUUID());
 		item.addObserver(this);
 		
-		item.setClaim(claim.getUUID());
 		internalAddItem(item);
 		
 		if (!claims.containsValue(claim)) {

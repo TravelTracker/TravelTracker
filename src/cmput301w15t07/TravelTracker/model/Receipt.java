@@ -39,6 +39,10 @@ public class Receipt {
 	public Receipt(Bitmap photo) {
 		this.photo = photo;
 	}
+	
+	public Receipt() {
+		this(null);  //TODO add a default Bitmap somehow
+	}
 
 	/**
 	 * Get the photo of the receipt.

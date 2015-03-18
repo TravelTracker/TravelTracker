@@ -4,6 +4,8 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+import android.graphics.BitmapFactory;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -46,24 +48,25 @@ public class Item extends Document {
 	 * Package protected constructor, intended for use only by DataSource.
 	 * 
 	 * @param docID UUID document identifier
+	 * @param claimID UUID parent claim identifier
 	 */
-	Item(UUID docID) {
+	Item(UUID docID, UUID claimID) {
 		super(docID);
 		
-		claim = null;
+		claim = claimID;
 		
 		// Empty description
 		description = "";
 		
-		category = null;
+		category = ItemCategory.NO_CATEGORY;
 		
 		date = new Date();
 		
 		// Start at 0 of unknown currency
 		amount = 0.f;
-		currency = null;
+		currency = Currency.getInstance("CAD");
 		
-		receipt = null;
+		receipt = new Receipt();
 		
 		isComplete = true;
 		

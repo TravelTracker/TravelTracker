@@ -63,7 +63,8 @@ public class TravelTrackerActivity extends Activity {
 	protected DataSource datasource;
 	
 	/**
-	 * Called when the activity finishes loading.
+	 * Call this when the activity has populated all the fields.
+	 * This will notify threads waiting for waitUntilLoaded().
 	 */
 	public void onLoaded() {
 		loadedLatch.countDown();

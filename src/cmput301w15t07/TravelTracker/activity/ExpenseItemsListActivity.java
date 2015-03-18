@@ -268,11 +268,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         @Override
         public void onResult(Collection<Item> result) {
             adapter.rebuildList(result, claimID);
-            
-            // Request to change to list view
-            if (activity != null) {
-                activity.changeUI();
-            }
+            activity.changeUI();
         }
         
         @Override

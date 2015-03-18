@@ -1,7 +1,5 @@
 package cmput301w15t07.TravelTracker.util;
 
-import java.util.ArrayList;
-
 import cmput301w15t07.TravelTracker.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -51,7 +49,7 @@ public class DestinationEditorFragment extends DialogFragment {
          * 
          * @param result The result (a location and a reason).
          */
-        void onDestinationEditorFragmentResult(ArrayList<String> result);
+        void onDestinationEditorFragmentResult(String location, String reason);
         
         /**
          * Called when the dialog is cancelled.
@@ -68,10 +66,6 @@ public class DestinationEditorFragment extends DialogFragment {
     /** The reason of the destination. */
     String reason;
     
-    // Indices of destination fields in the ArrayList<String>.
-    final static int LOCATION_INDEX = 0;
-    final static int REASON_INDEX = 1;
-
     private final static int VIEW_ID = R.layout.claim_info_destinations_list_edit_prompt;
     private final static int LOCATION_EDIT_ID = R.id.claimInfoDestinationsListEditPromptLocationEditText;
     private final static int REASON_EDIT_ID = R.id.claimInfoDestinationsListEditPromptReasonEditText;
@@ -85,6 +79,9 @@ public class DestinationEditorFragment extends DialogFragment {
     /**
      * Returns a dialog with the custom view for editing a destination, populated with
      * the fields from the destination.
+     * 
+     * @param savedInstanceState
+     * @return The custom dialog the user can interact with to edit a destination.
      */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -115,10 +112,9 @@ public class DestinationEditorFragment extends DialogFragment {
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ArrayList<String> result = new ArrayList<String>();
-                    result.add(locationEditText.getText().toString());
-                    result.add(reasonEditText.getText().toString());
-                    callback.onDestinationEditorFragmentResult(result);
+                    location = locationEditText.getText().toString();
+                    reason = reasonEditText.getText().toString();
+                    callback.onDestinationEditorFragmentResult(location, reason);
                     dialog.dismiss();
                 }
             })

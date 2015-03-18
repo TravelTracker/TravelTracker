@@ -234,10 +234,7 @@ public class DestinationAdapter {
      */
     class DestinationCallback implements DestinationEditorFragment.ResultCallback {
         @Override
-        public void onDestinationEditorFragmentResult(ArrayList<String> result) {
-            String location = result.get(DestinationEditorFragment.LOCATION_INDEX);
-            String reason = result.get(DestinationEditorFragment.REASON_INDEX);
-            
+        public void onDestinationEditorFragmentResult(String location, String reason) {
             // Invalid location
             if (location.isEmpty()) {
                 String error = context.getString(R.string.claim_info_destination_error);

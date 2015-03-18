@@ -100,7 +100,77 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         Item itemData = getItem(position);
         
         // Incomplete view
-        TextView incompleteView =
+        setIncompleteView(itemData, rowView);
+        
+        // Description view
+        setDescriptionField(itemData, rowView);
+        
+        // Date view
+        setDateView(itemData, rowView);
+        
+        // Category view
+        setCategoryField(itemData, rowView);
+        
+        // Cost View
+        setCostView(itemData, rowView);
+        
+        // Receipt view
+        setReceiptView(itemData, rowView);
+        
+        return rowView;
+    }
+
+	private void setReceiptView(Item itemData, View rowView) {
+		ImageView receiptView =
+                (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
+        if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
+            receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
+            receiptView.setVisibility(View.VISIBLE);
+        }
+        else {
+            /* Clear image for image view.
+             * http://stackoverflow.com/questions/2859212/how-to-clear-an-imageview-in-android */
+            receiptView.setImageResource(android.R.color.black);
+            receiptView.setVisibility(View.GONE);
+        }
+	}
+
+	/**
+	 * Sets up the cost view with given item data.
+	 * @param itemData The data to use.
+	 * @param rowView The parent view containing the cost view.
+	 */
+	private void setCostView(Item itemData, View rowView) {
+		TextView costView =
+        		(TextView) rowView.findViewById(
+        				R.id.expenseItemsListItemViewCostTextView);
+        Currency curr = itemData.getCurrency();
+        String costString = String.valueOf(itemData.getAmount()) + " " +
+        		curr.getCurrencyCode();
+        costView.setText(costString);
+	}
+	
+	/**
+	 * Sets up the date view with given item data.
+	 * @param itemData The data to use.
+	 * @param rowView The parent view containing the date view.
+	 */
+	private void setDateView(Item itemData, View rowView) {
+		TextView dateView =
+                (TextView) rowView.findViewById(
+                		R.id.expenseItemsListItemViewDateTextView);
+        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getContext());
+        String dateString = dateFormat.format(itemData.getDate());
+        dateView.setText(dateString);
+	}
+	
+	/**
+	 * Sets the incomplete view to show r not given item data.
+	 * @param itemData The data to use.
+	 * @param rowView The parent view containing the incomplete view.
+	 */
+	private void setIncompleteView(Item itemData, View rowView) {
+		TextView incompleteView =
                 (TextView) rowView.findViewById(
                 		R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete()) {
@@ -109,22 +179,26 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         else {
             incompleteView.setVisibility(View.VISIBLE);
         }
-        
-        // Description view
-        TextView descView =
+	}
+	
+	/**
+	 * Sets up the description view with given item data.
+	 * @param itemData The data to use.
+	 * @param rowView The parent view containing the description view.
+	 */
+	private void setDescriptionField(Item itemData, View rowView) {
+		TextView descView =
                 (TextView) rowView.findViewById(
                 		R.id.expenseItemsListItemViewDescriptionTextView);
         descView.setText(itemData.getDescription());
-        
-        // Date view
-        TextView dateView =
-                (TextView) rowView.findViewById(
-                		R.id.expenseItemsListItemViewDateTextView);
-        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getContext());
-        String dateString = dateFormat.format(itemData.getDate());
-        dateView.setText(dateString);
-        
-        // Category view
+	}
+	
+	/**
+	 * Sets up the category view with given item data.
+	 * @param itemData The data to use.
+	 * @param rowView The parent view containing the category view.
+	 */
+    private void setCategoryField(Item itemData, View rowView) {
         TextView categoryView = 
         		(TextView) rowView.findViewById(
         				R.id.expenseItemsListItemViewCategoryTextView);
@@ -138,32 +212,5 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         	categoryString = "No category";
         }
         categoryView.setText(categoryString);
-        
-        // Cost View
-        TextView costView =
-        		(TextView) rowView.findViewById(
-        				R.id.expenseItemsListItemViewCostTextView);
-        Currency curr = itemData.getCurrency();
-        String costString = String.valueOf(itemData.getAmount()) + " " +
-        		curr.getCurrencyCode();
-        costView.setText(costString);
-        
-        // Receipt view
-        ImageView receiptView =
-                (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
-        if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
-            receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
-            receiptView.setVisibility(View.VISIBLE);
-        }
-        else {
-            /* Clear image for image view.
-             * http://stackoverflow.com/questions/2859212/how-to-clear-an-imageview-in-android */
-            receiptView.setImageResource(android.R.color.black);
-            receiptView.setVisibility(View.GONE);
-        }
-        
-        return rowView;
     }
-    
-
 }

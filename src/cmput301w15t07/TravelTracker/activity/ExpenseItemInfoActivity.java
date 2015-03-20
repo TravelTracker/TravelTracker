@@ -28,7 +28,9 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -88,6 +90,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
     /** The current item. */
     Item item = null;
     
+    /** The last alert dialog. */
+    AlertDialog lastAlertDialog = null;
+    
     /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
     private Boolean fromClaimInfo;
     
@@ -110,7 +115,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case R.id.expense_item_info_delete_item:
-	        deleteExpenseItem();
+	        promptDeleteExpenseItem();
 	        break;
 	        
 	    case R.id.expense_item_info_sign_out:
@@ -327,7 +332,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         } catch (NullPointerException e){
             //the field is empty, so dont load anything
         }
-            
+        
         // populate receipt image
         ImageView receiptImageView = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
         try {
@@ -339,7 +344,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		} catch (IOException e1) {
 			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
 		}
-        
+      
         //TODO: Note, amount string will have to be changed back to float before being inserted into model
         String amount = Float.toString(item.getAmount());
         EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
@@ -408,9 +413,39 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		dateButton.setText(dateString);
 	}
 	
+	/**
+     * Prompt for deleting the claim.
+     */
+    public void promptDeleteExpenseItem() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.claim_info_delete_message)
+			   .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						deleteExpenseItem();
+					}
+			   })
+			   .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Do nothing
+					}
+			   });
+		lastAlertDialog = builder.create();
 		
+		lastAlertDialog.show();
+    }
+	
+    /**
+     * Get the last created AlertDialog.
+     * @return The last dialog, or null if there isn't one.
+     */
+    public AlertDialog getLastAlertDialog() {
+    	return lastAlertDialog;
+    }
+    
 	public void deleteExpenseItem() {
-		// TODO Auto-generated method stub
+		datasource.deleteItem(itemID, new DeleteCallback());
 		
 	}
 	/**
@@ -422,6 +457,22 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
 		DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
 		datePicker.show(getFragmentManager(), "datePicker");
 	}
+	
+	/**
+     * Callback for Item deletion.
+     */
+    class DeleteCallback implements ResultCallback<Void> {
+		@Override
+		public void onResult(Void result) {
+			finish();
+		}
+		
+		@Override
+		public void onError(String message) {
+			Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+		}
+	}
+    
 	/**
 	 * callback for the datepicker fragment
 	 */

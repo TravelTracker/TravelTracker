@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
@@ -55,6 +56,7 @@ import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.DestinationAdapter;
+import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.TagAdapter;
 
 /**
@@ -67,7 +69,7 @@ import cmput301w15t07.TravelTracker.util.TagAdapter;
  *         skwidz
  *
  */
-public class ClaimInfoActivity extends TravelTrackerActivity {
+public class ClaimInfoActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** ID used to retrieve items from MutliCallback. */
     public static final int MULTI_ITEMS_ID = 0;
     
@@ -159,6 +161,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
         appendNameToTitle(userData.getName());
+        
+        datasource.addObserver(this);
     }
     
     @Override
@@ -168,6 +172,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity {
     	// Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
+        datasource.getClaim(claimID, new ClaimCallback());
+    }
+    
+    @Override
+    public void update(DataSource observable) {
         datasource.getClaim(claimID, new ClaimCallback());
     }
     

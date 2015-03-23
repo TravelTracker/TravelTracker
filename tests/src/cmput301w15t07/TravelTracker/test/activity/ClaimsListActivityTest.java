@@ -29,6 +29,7 @@ import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -89,8 +90,36 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		assertEquals(4, listView.getCount());
 	}
 	
-	public void testListExpenseClaimsApprover() {
+	public void testListExpenseClaimsApproverCanOnlySeeSubmitted() {
+		Claim claim1 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim2 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim3 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim4 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim5 = DataSourceUtils.addEmptyClaim(user2, ds);
 		
+		claim1.setStatus(Status.SUBMITTED);
+		claim2.setStatus(Status.SUBMITTED);
+
+		ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.APPROVER));
+		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		
+		assertEquals(2, listView.getCount());
+	}
+	
+	public void testListExpenseClaimsApproverCannotSeeOwnClaims() {
+		Claim claim1 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim2 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim3 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim4 = DataSourceUtils.addEmptyClaim(user1, ds);
+		Claim claim5 = DataSourceUtils.addEmptyClaim(user2, ds);
+		
+		claim5.setStatus(Status.SUBMITTED);
+		
+		ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.APPROVER));
+		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		
+		
+		assertEquals(0, listView.getCount());
 	}
 	
 	public void testCreateExpenseClaim() {

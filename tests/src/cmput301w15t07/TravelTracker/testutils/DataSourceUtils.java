@@ -44,10 +44,11 @@ public class DataSourceUtils extends AndroidTestCase{
 	}
 	
 	/**
-	 * Convenience mthod to add an empty claim to the data source
-	 * @param user
-	 * @param ds
-	 * @return
+	 * Convenience method to add an empty claim to the data source
+	 * 
+	 * @param user the user that the claim belongs to
+	 * @param ds the data source to add the claim to
+	 * @return the newly added claim
 	 */
 	public static Claim addEmptyClaim(User user, DataSource ds){
 		SynchronizedResultCallback<Claim> claimCB = new SynchronizedResultCallback<Claim>();

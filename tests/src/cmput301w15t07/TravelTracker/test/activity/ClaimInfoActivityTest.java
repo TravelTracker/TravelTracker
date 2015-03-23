@@ -176,11 +176,10 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	public void testSetExpenseClaimStartDate() throws InterruptedException {
 		startWithClaim(UserRole.CLAIMANT);
 		
-		final Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
-		
 		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
+				Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
 				startDateButton.performClick();
 			}
 		});
@@ -202,6 +201,7 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 		instrumentation.waitForIdleSync();
 		
+		Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
 		String buttonText = startDateButton.getText().toString();
 		
 		assertEquals("Start date should update", "Jan 24, 2013", buttonText);
@@ -210,11 +210,10 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	public void testSetExpenseClaimEndDate() throws InterruptedException {
 		startWithClaim(UserRole.CLAIMANT);
 		
-		final Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
-		
 		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
+				Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
 				endDateButton.performClick();
 			}
 		});
@@ -233,9 +232,9 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 				accept.performClick();
 			}
 		});
-		
 		instrumentation.waitForIdleSync();
 		
+		Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
 		String buttonText = endDateButton.getText().toString();
 		
 		assertEquals("End date should update", "Jun 13, 2017", buttonText);
@@ -244,12 +243,13 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	public void testSetExpenseClaimStartDateInvalid() throws InterruptedException {
 		startWithClaim(UserRole.CLAIMANT);
 		
-		final Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
+		Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
 		String oldText = startDateButton.getText().toString();
 		
 		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
+				Button startDateButton = (Button) activity.findViewById(R.id.claimInfoStartDateButton);
 				startDateButton.performClick();
 			}
 		});
@@ -279,12 +279,13 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	public void testSetExpenseClaimEndDateInvalid() throws InterruptedException {
 		startWithClaim(UserRole.CLAIMANT);
 		
-		final Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
+		Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
 		String oldText = endDateButton.getText().toString();
 		
 		instrumentation.runOnMainSync(new Runnable() {
 			@Override
 			public void run() {
+				Button endDateButton = (Button) activity.findViewById(R.id.claimInfoEndDateButton);
 				endDateButton.performClick();
 			}
 		});

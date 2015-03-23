@@ -158,6 +158,16 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	}
 	
 	public void testEditExpenseClaim() {
+		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
+		ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
+		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		ArrayAdapter<Claim> adapter =  (ArrayAdapter<Claim>) listView.getAdapter();
+		
+		int position = 0;
+		boolean success = listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
+		assertTrue(success);
+		Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+		assertNotNull(object)
 		
 	}
 	

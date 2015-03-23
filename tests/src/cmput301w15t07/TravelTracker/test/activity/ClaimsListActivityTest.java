@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
 import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
@@ -35,8 +36,12 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.UiThreadTest;
+import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -59,6 +64,12 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	User user1;
 	User user2;
 	
+	Claim claim1;
+	Claim claim2;
+	Claim claim3;
+	Claim claim4;
+	Claim claim5;
+	
 	public ClaimsListActivityTest() {
 		super(ClaimsListActivity.class);
 	}
@@ -74,14 +85,15 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		
 		user1 = DataSourceUtils.addUser(name1, ds);
 		user2 = DataSourceUtils.addUser(name2, ds);
+		
+		claim1 = DataSourceUtils.addEmptyClaim(user1, ds);
+		claim2 = DataSourceUtils.addEmptyClaim(user1, ds);
+		claim3 = DataSourceUtils.addEmptyClaim(user1, ds);
+		claim4 = DataSourceUtils.addEmptyClaim(user1, ds);
+		claim5 = DataSourceUtils.addEmptyClaim(user2, ds);
 	}
 	
 	public void testListExpenseClaimsClaimantCanSeeOnlyTheirClaims() {
-		DataSourceUtils.addEmptyClaim(user1, ds);
-		DataSourceUtils.addEmptyClaim(user1, ds);
-		DataSourceUtils.addEmptyClaim(user1, ds);
-		DataSourceUtils.addEmptyClaim(user1, ds);
-		DataSourceUtils.addEmptyClaim(user2, ds);
 		
 		ClaimsListActivity activity = startActivity(new UserData(user1.getUUID(), user1.getUserName(), UserRole.CLAIMANT));
 		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
@@ -91,11 +103,6 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	}
 	
 	public void testListExpenseClaimsApproverCanOnlySeeSubmitted() {
-		Claim claim1 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim2 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim3 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim4 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim5 = DataSourceUtils.addEmptyClaim(user2, ds);
 		
 		claim1.setStatus(Status.SUBMITTED);
 		claim2.setStatus(Status.SUBMITTED);
@@ -107,11 +114,6 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	}
 	
 	public void testListExpenseClaimsApproverCannotSeeOwnClaims() {
-		Claim claim1 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim2 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim3 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim4 = DataSourceUtils.addEmptyClaim(user1, ds);
-		Claim claim5 = DataSourceUtils.addEmptyClaim(user2, ds);
 		
 		claim5.setStatus(Status.SUBMITTED);
 		
@@ -122,8 +124,37 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		assertEquals(0, listView.getCount());
 	}
 	
-	public void testCreateExpenseClaim() {
+	public void testListViewUpdates() throws Throwable{
 		
+		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.APPROVER));
+		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+
+		assertEquals(0, listView.getCount());
+		runTestOnUiThread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+				claim4.setStatus(Status.SUBMITTED);
+				assertEquals(1, listView.getCount());
+			}
+		});
+		
+	}
+	
+	public void testCreateExpenseClaim() throws Throwable {
+		
+		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
+		final ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
+		
+		getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
+		boolean success = getInstrumentation().invokeMenuActionSync(activity, R.id.claims_list_add_claim, 0);
+		assertTrue(success);
+		Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+		assertNotNull(newActivity);
+		newActivity.finish();
 	}
 	
 	public void testEditExpenseClaim() {

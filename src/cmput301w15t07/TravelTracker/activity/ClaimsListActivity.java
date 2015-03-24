@@ -94,7 +94,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	    return true;
     	    
     	case R.id.claims_list_manage_tags:
-    	    //TODO milestone 5
+    	    launchManageTags();
     	    return true;
     	    
 		case R.id.claims_list_add_claim:
@@ -111,8 +111,8 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	
     	return super.onOptionsItemSelected(item);
     }
-	
-	@Override
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.claims_list_activity);
@@ -195,6 +195,15 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
     	startActivity(intent);
 	}
+    /**
+     * Launch the Tag managing activity.
+     */
+    private void launchManageTags() {
+        Intent intent = new Intent(context, ManageTagsActivity.class);
+        
+        intent.putExtra(ManageTagsActivity.USER_DATA, userData);
+        startActivity(intent);
+    }
 	/**
 	 * launch the claimInfo activity for a new claim
 	 * @param user The current user that will be assigned to the claim 

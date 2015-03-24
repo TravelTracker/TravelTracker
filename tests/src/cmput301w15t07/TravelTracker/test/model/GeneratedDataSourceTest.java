@@ -39,14 +39,14 @@ public class GeneratedDataSourceTest extends TestCase {
         
         // All Claims should have the one User as parent
         for (Claim c : claims) {
-            assertEquals("Claim didn't have User as parent.", c.getUser(), user.getUUID());
+            assertEquals("Claim didn't have User as parent.", user.getUUID(), c.getUser());
         }
         
         Collection<Item> items = getItems();
         
         // All claims should have 10 items
-        for (int i = 0; i < claims.size(); ++i) {
-            int count = countItemsPerClaim(((Claim) claims.toArray()[i]).getUUID(), items);
+        for(Claim c : claims) {
+            int count = countItemsPerClaim(c.getUUID(), items);
             assertEquals("Got incorrect amount of items: " + count, NUM_ITEMS, count);
         }
         

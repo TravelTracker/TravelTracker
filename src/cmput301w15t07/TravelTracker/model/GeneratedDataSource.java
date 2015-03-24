@@ -51,7 +51,16 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		User user = new User(UUID.randomUUID());
 		user.addObserver(this);
 		
-		internalAddUser(user);
+		// Add ten random tags
+		for (int i = 0; i < 10; ++i) {
+		    Tag t = new Tag(UUID.randomUUID());
+		    
+		    // Set data
+		    t.setUser(user.getUUID());
+		    t.setTitle(getRandomString(r, 5, 10));
+		    
+		    internalAddTag(t);
+		}
 		
 		// Want 10 random claims
 		for (int i = 0; i < 10; ++i) {

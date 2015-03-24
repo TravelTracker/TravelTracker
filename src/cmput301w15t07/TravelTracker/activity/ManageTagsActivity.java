@@ -21,8 +21,13 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.Collection;
+
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.ManageTagsListAdapter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,12 +35,15 @@ import android.view.MenuItem;
 /**
  * Activity for a Claimant to manage his/her Tags.
  * 
- * @author kdbanman, colp, therabidsquirel
+ * @author kdbanman, colp, therabidsquirel, braedy
  *
  */
 public class ManageTagsActivity extends TravelTrackerActivity {
     /** Data about the logged-in user. */
     private UserData userData;
+    
+    /** Adapter for the list. */
+    private ManageTagsListAdapter adapter;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -61,12 +69,45 @@ public class ManageTagsActivity extends TravelTrackerActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-        setContentView(R.layout.manage_tags_activity);
+        setContentView(R.layout.loading_indeterminate);
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
         
         appendNameToTitle(userData.getName());
+        
+        datasource.getAllTags(new GetUserTagsCallback(this, adapter));
 	}
+	
+    /**
+     * Callback to get all tags for a user.
+     */
+    public class GetUserTagsCallback implements ResultCallback<Collection<Tag>> {
+
+        private ManageTagsActivity activity;
+        private ManageTagsListAdapter adapter;
+
+        public GetUserTagsCallback(ManageTagsActivity activity,
+                ManageTagsListAdapter adapter) {
+            this.activity = activity;
+            this.adapter = adapter;
+        }
+
+        /** 
+         * Ask the adapter to rebuild the list, and then update the UI.
+         */
+        @Override
+        public void onResult(Collection<Tag> result) {
+            adapter.rebuildList(result, userData.getUUID());
+            // TODO Update UI
+        }
+
+        @Override
+        public void onError(String message) {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
 }

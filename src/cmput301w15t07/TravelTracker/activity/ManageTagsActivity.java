@@ -137,6 +137,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
             tagListView.setAdapter(adapter);
         }
+        onLoaded();
     }
 	
     /**

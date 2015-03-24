@@ -6,6 +6,7 @@ import java.util.UUID;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import junit.framework.TestCase;
@@ -15,6 +16,7 @@ public class GeneratedDataSourceTest extends TestCase {
     GeneratedDataSource source;
     private final int NUM_CLAIMS = 10;
     private final int NUM_ITEMS = 10;
+    private final int NUM_TAGS = 10;
     
     public GeneratedDataSourceTest(String name) {
         super(name);
@@ -46,6 +48,16 @@ public class GeneratedDataSourceTest extends TestCase {
         for (int i = 0; i < claims.size(); ++i) {
             int count = countItemsPerClaim(((Claim) claims.toArray()[i]).getUUID(), items);
             assertEquals("Got incorrect amount of items: " + count, NUM_ITEMS, count);
+        }
+        
+        Collection<Tag> tags = getTags();
+        
+        // Should have 10 tags
+        assertEquals("Got incorrect number of tags: " + tags.size(), NUM_TAGS, tags.size());
+        
+        // All tags should have the one User as parent
+        for (Tag t : tags) {
+            assertEquals("Tag didn't have User as parent.", user.getUUID(), t.getUser());
         }
     }
 
@@ -91,6 +103,17 @@ public class GeneratedDataSourceTest extends TestCase {
         
         boolean success = callback.waitForResult();
         assertTrue("Failed getting Items", success);
+        
+        return callback.getResult();
+        
+    }
+    
+    private Collection<Tag> getTags() throws InterruptedException {
+        SynchronizedResultCallback<Collection<Tag>> callback = new SynchronizedResultCallback<Collection<Tag>>();
+        source.getAllTags(callback);
+        
+        boolean success = callback.waitForResult();
+        assertTrue("Failed getting Tags", success);
         
         return callback.getResult();
         

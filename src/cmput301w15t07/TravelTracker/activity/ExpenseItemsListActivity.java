@@ -194,6 +194,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         	});
             
         }
+        onLoaded();
                 
     }
     /**

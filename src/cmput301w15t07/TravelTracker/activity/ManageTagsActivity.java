@@ -28,6 +28,8 @@ import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ManageTagsListAdapter;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.util.Observer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +44,7 @@ import android.widget.Toast;
  * @author kdbanman, colp, therabidsquirel, braedy
  *
  */
-public class ManageTagsActivity extends TravelTrackerActivity {
+public class ManageTagsActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -75,6 +77,10 @@ public class ManageTagsActivity extends TravelTrackerActivity {
             signOut();
             break;
             
+        case android.R.id.home:
+        	onBackPressed();
+        	break;
+            
         default:
             break;
         }
@@ -86,6 +92,8 @@ public class ManageTagsActivity extends TravelTrackerActivity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
         
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
@@ -95,7 +103,13 @@ public class ManageTagsActivity extends TravelTrackerActivity {
         // Make adapter
         adapter = new ManageTagsListAdapter(this);
 	}
-	
+        
+    @Override
+    public void update(DataSource observable) {
+        // Gets tags and updates adapter
+        datasource.getAllTags(new GetUserTagsCallback(this, adapter));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -152,6 +166,5 @@ public class ManageTagsActivity extends TravelTrackerActivity {
         public void onError(String message) {
             Toast.makeText(ManageTagsActivity.this, message, Toast.LENGTH_SHORT).show();
         }
-
     }
 }

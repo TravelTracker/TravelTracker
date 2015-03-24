@@ -121,6 +121,7 @@ public class ManageTagsActivity extends TravelTrackerActivity {
             addTagButton = (Button) findViewById(R.id.manageTagsAddButton);
             
             tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
+            tagListView.setAdapter(adapter);
         }
     }
 	

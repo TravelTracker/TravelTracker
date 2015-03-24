@@ -142,6 +142,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             signOut();
             break;
             
+        case android.R.id.home:
+        	onBackPressed();
+        	break;
+            
         default:
             break;
         }
@@ -152,6 +156,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();

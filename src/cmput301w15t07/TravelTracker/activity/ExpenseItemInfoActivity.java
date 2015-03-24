@@ -125,6 +125,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	        signOut();
 	        break;
 	        
+	    case android.R.id.home:
+	    	onBackPressed();
+	    	break;
+	        
 	    default:
 	        break;
 	    }
@@ -135,6 +139,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		//user info from bundles
 		Bundle bundle = getIntent().getExtras();

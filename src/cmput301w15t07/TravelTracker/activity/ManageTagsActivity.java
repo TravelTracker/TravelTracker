@@ -53,6 +53,10 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             signOut();
             break;
             
+        case android.R.id.home:
+        	onBackPressed();
+        	break;
+            
         default:
             break;
         }
@@ -64,6 +68,8 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_tags_activity);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();

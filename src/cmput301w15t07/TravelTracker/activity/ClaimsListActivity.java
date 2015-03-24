@@ -88,7 +88,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
+		switch (item.getItemId()) {
     	case R.id.claims_list_filter_by_tag:
     	    //TODO milestone 5
     	    return true;
@@ -103,7 +103,11 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			
         case R.id.claims_list_sign_out:
             signOut();
-           return true;
+            return true;
+           
+        case android.R.id.home:
+        	onBackPressed();
+        	break;
             
 		default:
 			break;
@@ -116,6 +120,8 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.claims_list_activity);
+        
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 	    
         context = this;
         

@@ -31,6 +31,10 @@ import cmput301w15t07.TravelTracker.util.ManageTagsListAdapter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Activity for a Claimant to manage his/her Tags.
@@ -44,6 +48,18 @@ public class ManageTagsActivity extends TravelTrackerActivity {
     
     /** Adapter for the list. */
     private ManageTagsListAdapter adapter;
+
+    /** Are we currently in the loading screen. */
+    private boolean loading;
+    
+    /** The EditText field where new Tag titles are entered. */
+    private EditText titleEditText;
+
+    /** The button pressed to add a Tag. */
+    private Button addTagButton;
+
+    /** The list view of Tags */
+    private ListView tagListView;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,7 +85,6 @@ public class ManageTagsActivity extends TravelTrackerActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-        setContentView(R.layout.loading_indeterminate);
         
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
@@ -77,8 +92,37 @@ public class ManageTagsActivity extends TravelTrackerActivity {
         
         appendNameToTitle(userData.getName());
         
-        datasource.getAllTags(new GetUserTagsCallback(this, adapter));
+        // Make adapter
+        adapter = new ManageTagsListAdapter(this);
 	}
+	
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Set loading screen and notify loading
+        setContentView(R.layout.loading_indeterminate);
+        loading = true;
+        
+        // Actual request
+        datasource.getAllTags(new GetUserTagsCallback(this, adapter));
+    }
+
+    /**
+     * Sets the content view to the activity view and then gets all of the
+     * widgets of the UI.
+     */
+    public void updateUI() {
+        if (loading) {
+            setContentView(R.layout.manage_tags_activity);
+            
+            titleEditText = 
+                    (EditText) findViewById(R.id.manageTagsNewTagEditText);
+            
+            addTagButton = (Button) findViewById(R.id.manageTagsAddButton);
+            
+            tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
+        }
+    }
 	
     /**
      * Callback to get all tags for a user.
@@ -100,13 +144,12 @@ public class ManageTagsActivity extends TravelTrackerActivity {
         @Override
         public void onResult(Collection<Tag> result) {
             adapter.rebuildList(result, userData.getUUID());
-            // TODO Update UI
+            activity.updateUI();
         }
 
         @Override
         public void onError(String message) {
-            // TODO Auto-generated method stub
-
+            Toast.makeText(ManageTagsActivity.this, message, Toast.LENGTH_SHORT).show();
         }
 
     }

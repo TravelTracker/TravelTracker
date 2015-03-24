@@ -22,7 +22,9 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.util.Observer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +35,7 @@ import android.view.MenuItem;
  * @author kdbanman, colp, therabidsquirel
  *
  */
-public class ManageTagsActivity extends TravelTrackerActivity {
+public class ManageTagsActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -69,4 +71,10 @@ public class ManageTagsActivity extends TravelTrackerActivity {
         
         appendNameToTitle(userData.getName());
 	}
+
+	@Override
+    public void update(DataSource observable) {
+	    // TODO Auto-generated method stub
+	    
+    }
 }

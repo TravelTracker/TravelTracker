@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
@@ -55,7 +56,7 @@ import android.widget.Toast;
  *         cellinge
  *
  */
-public class ExpenseItemsListActivity extends TravelTrackerActivity implements Observer<InMemoryDataSource> {
+public class ExpenseItemsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -210,7 +211,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     }
     
     @Override
-    public void update(InMemoryDataSource observable) {
+    public void update(DataSource observable) {
         observable.getAllItems(new GetAllItemsCallback(this, adapter));
     }
     /**

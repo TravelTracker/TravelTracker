@@ -52,7 +52,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity.ClaimCallback;
 import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
@@ -60,6 +62,7 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
+import cmput301w15t07.TravelTracker.util.Observer;
 
 
 /**
@@ -74,7 +77,7 @@ import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 
 
 
-public class ExpenseItemInfoActivity extends TravelTrackerActivity {
+public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** Data about the logged-in user. */
 	private UserData userData;
 
@@ -147,7 +150,14 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity {
         fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
 		appendNameToTitle(userData.getName());
+		
+		datasource.addObserver(this);
 	}
+
+	@Override
+    public void update(DataSource observable) {
+        datasource.getItem(itemID, new getItemCallback());
+    }
 	
 	protected void onResume() {
 		super.onResume();

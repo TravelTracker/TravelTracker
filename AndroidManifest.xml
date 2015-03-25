@@ -62,5 +62,10 @@
             android:label="@string/expense_item_info_label">
         </activity>
         
+        <activity
+            android:name=".activity.SelectLocationActivity"
+            android:label="@string/select_location_label">
+        </activity>
+        
     </application>
 </manifest>

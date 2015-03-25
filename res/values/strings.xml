@@ -87,6 +87,9 @@
         <string name= "expense_item_info_amount">Amount</string>
         <string name= "expense_item_info_category">Category</string>
         <string name= "expense_item_info_description">Description</string>
+        
+    <!-- Strings used in SelectLocationActivity -->
+    	<string name="select_location_label">Select Location</string>
     
         <!-- Used in menu -->
         <string name="expense_item_info_delete_item">Delete Expense Item</string>

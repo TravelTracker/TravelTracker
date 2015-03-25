@@ -23,6 +23,7 @@ package cmput301w15t07.TravelTracker.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import cmput301w15t07.TravelTracker.R;
 
 /**
@@ -36,6 +37,22 @@ public class SelectLocationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
         setContentView(R.layout.select_location_activity);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+        	onBackPressed();
+        	break;
+        	
+        default:
+        	break;
+        }
+    	
+        return super.onOptionsItemSelected(item);
     }
 }

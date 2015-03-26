@@ -82,7 +82,7 @@ public class TravelTrackerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
-        datasource = DataSourceSingleton.getDataSource();
+        datasource = DataSourceSingleton.getDataSource(getApplicationContext());
 	}
 	
 	/**

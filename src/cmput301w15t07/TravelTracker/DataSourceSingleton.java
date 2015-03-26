@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker;
  *  limitations under the License.
  */
 
+import android.content.Context;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 
@@ -38,12 +39,15 @@ public class DataSourceSingleton {
 	 * 
 	 * If no source has been set, a new data source is created.
 	 * 
+	 * @param appContext The application context for reporting error messages.
 	 * @return The single instance of DataSource for the application.
 	 */
-    static public DataSource getDataSource() {
+    static public DataSource getDataSource(Context appContext) {
     	if (ds == null) {
     		//ds = new InMemoryDataSource();
     		ds = new GeneratedDataSource();
+    		//ds = new CacheDataSource(appContext, new NoConnectionServerHelper());
+    		//ds = new CacheDataSource(appContext);
     	}
     	
 		return ds;

@@ -32,7 +32,6 @@ import java.util.UUID;
  */
 public class User extends Document {
 	private String userName;
-	private ArrayList<Tag> tags;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -57,15 +56,6 @@ public class User extends Document {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
-		this.<User>hasChanged(this);
-	}
-	
-	// TODO: Remove these!
-	public ArrayList<Tag> getTags() {
-		return tags;
-	}
-	public void setTags(ArrayList<Tag> tags) {
-		this.tags = tags;
 		this.<User>hasChanged(this);
 	}
 }

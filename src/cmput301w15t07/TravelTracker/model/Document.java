@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+import java.util.Date;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.util.Observable;
@@ -36,6 +37,8 @@ public abstract class Document extends Observable<Document> {
 
 	// A new document may be synced, but dirty is a safer default.
 	private boolean dirty = true;
+	
+	private Date lastChanged;
 	
 	private UUID docID;
 	
@@ -55,6 +58,14 @@ public abstract class Document extends Observable<Document> {
 		return docID;
 	}
 	
+	/**
+	 * 
+	 * @return the last time the Document was changed by any setter.
+	 */
+	public Date getLastChanged() {
+		return lastChanged;
+	}
+	
 	/** 
 	 * @return Whether or not the Document has been synced.
 	 */
@@ -63,16 +74,35 @@ public abstract class Document extends Observable<Document> {
 	}
 	
 	/**
-	 * Flag document as modified and not yet synchronized.
-	 */
-	public void setDirty() {
-		dirty = true;
-	}
-	
-	/**
 	 * Flag document as synchronized.
 	 */
 	public void setClean() {
 		dirty = false;
+	}
+	
+	/**
+	 * Maintain caching state and update observers with a change.
+	 * To be called within *all* setters of Document subclasses.
+	 * 
+	 * @param self the Document that has changed.
+	 */
+	public <E extends Document> void hasChanged(E self) {
+		setDirty();
+		setChangedDate();
+		updateObservers(self);
+	}
+	
+	/**
+	 * Flag document as modified and not yet synchronized.
+	 */
+	private void setDirty() {
+		dirty = true;
+	}
+	
+	/**
+	 * Record an internal date of last change.
+	 */
+	private void setChangedDate() {
+		lastChanged = new Date();
 	}
 }

@@ -86,7 +86,7 @@ public class Item extends Document {
 	 */
 	public void setClaim(UUID claim) {
 		this.claim = claim;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class Item extends Document {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class Item extends Document {
 	 */
 	public void setCategory(ItemCategory category) {
 		this.category = category;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class Item extends Document {
 	 */
 	public void setDate(Date date) {
 		this.date = date;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class Item extends Document {
 	 */
 	public void setAmount(Float amount) {
 		this.amount = amount;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public class Item extends Document {
 	 */
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -188,7 +188,7 @@ public class Item extends Document {
 	 */
 	public void setReceipt(Receipt receipt) {
 		this.receipt = receipt;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 	
 	/**
@@ -205,6 +205,6 @@ public class Item extends Document {
 	 */
 	public void setComplete(boolean isComplete) {
 		this.isComplete = isComplete;
-		this.updateObservers(this);
+		this.<Item>hasChanged(this);
 	}
 }

@@ -57,8 +57,7 @@ public class User extends Document {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
-		
-		updateObservers(this);
+		this.<User>hasChanged(this);
 	}
 	
 	// TODO: Remove these!
@@ -67,6 +66,6 @@ public class User extends Document {
 	}
 	public void setTags(ArrayList<Tag> tags) {
 		this.tags = tags;
-		this.updateObservers(this);
+		this.<User>hasChanged(this);
 	}
 }

@@ -70,7 +70,7 @@ public class Claim extends Document {
 	 */
 	public void setUser(UUID user) {
 		this.user = user;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class Claim extends Document {
 	 */
 	public void setApprover(UUID approver) {
 		this.approver = approver;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class Claim extends Document {
 	 */
 	public void setStatus(Status status) {
 		this.status = status;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class Claim extends Document {
 	 */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class Claim extends Document {
 	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class Claim extends Document {
 	 */
 	public void setDestinations(ArrayList<Destination> destinations) {
 		this.destinations = destinations;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class Claim extends Document {
 	 */
 	public void setComments(ArrayList<ApproverComment> comments) {
 		this.comments = comments;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 	
 	/**
@@ -187,6 +187,7 @@ public class Claim extends Document {
 	 */
 	public void addComment(ApproverComment comment) {
 		this.comments.add(comment);
+		this.<Claim>hasChanged(this);
 	}
 	
 	/**
@@ -195,6 +196,7 @@ public class Claim extends Document {
 	 */
 	public void addComment(String commentText) {
 		this.comments.add(new ApproverComment(commentText, new Date()));
+		this.<Claim>hasChanged(this);
 	}
 
 	/**
@@ -214,7 +216,7 @@ public class Claim extends Document {
 	 */
 	public void setTags(ArrayList<UUID> tags) {
 		this.tags = tags;
-		this.updateObservers(this);
+		this.<Claim>hasChanged(this);
 	}
 	
 }

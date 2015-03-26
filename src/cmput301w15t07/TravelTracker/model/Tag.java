@@ -56,7 +56,7 @@ public class Tag extends Document {
 	 */
 	public void setUser(UUID user) {
 		this.user = user;
-		this.updateObservers(this);
+		this.<Tag>hasChanged(this);
 	}
 	
 	/**
@@ -73,6 +73,6 @@ public class Tag extends Document {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-		this.updateObservers(this);
+		this.<Tag>hasChanged(this);
 	}
 }

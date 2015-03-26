@@ -43,6 +43,10 @@ public class DataSourceSingleton {
 	 * @return The single instance of DataSource for the application.
 	 */
     static public DataSource getDataSource(Context appContext) {
+    	// As per
+    	//   http://goo.gl/clVKsG
+    	// we can rely on the application context never changing, so appContext is only
+    	// used once (during initialization).
     	if (ds == null) {
     		//ds = new InMemoryDataSource();
     		ds = new GeneratedDataSource();

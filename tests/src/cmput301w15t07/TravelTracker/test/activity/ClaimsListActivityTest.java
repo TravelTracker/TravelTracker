@@ -21,12 +21,12 @@ package cmput301w15t07.TravelTracker.test.activity;
  *  limitations under the License.
  */
 
-import java.util.ArrayList;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
 import cmput301w15t07.TravelTracker.activity.ClaimsListActivity;
+import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
@@ -35,14 +35,18 @@ import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
+import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
+import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.UiThreadTest;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 /**
@@ -148,6 +152,9 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
 		final ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
+		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		
+		assertEquals(1, listView.getCount());
 		
 		getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
 		boolean success = getInstrumentation().invokeMenuActionSync(activity, R.id.claims_list_add_claim, 0);
@@ -155,39 +162,100 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		Activity newActivity = monitor.waitForActivityWithTimeout(3000);
 		assertNotNull(newActivity);
 		newActivity.finish();
+		getInstrumentation().waitForIdleSync();
+		
+		assertEquals(2, listView.getCount());
+		
 	}
 	
-	public void testEditExpenseClaim() {
+	public void testEditExpenseClaim() throws Throwable {
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
 		ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
-		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
-		ArrayAdapter<Claim> adapter =  (ArrayAdapter<Claim>) listView.getAdapter();
+		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		final ArrayAdapter<Claim> adapter =  (ArrayAdapter<Claim>) listView.getAdapter();
+		final int position = 0;
 		
-		int position = 0;
-		boolean success = listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
-		assertTrue(success);
+		runTestOnUiThread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				
+				boolean success = listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
+				assertTrue(success);
+				
+			}
+		});
+		
 		Activity newActivity = monitor.waitForActivityWithTimeout(3000);
-		assertNotNull(object)
+		assertNotNull(newActivity);
+		validateIntent(user2, adapter.getItem(position), newActivity);
+		newActivity.finish();
+		getInstrumentation().waitForIdleSync();
+		
 		
 	}
 	
-	public void testDeleteExpenseClaim() {
-		
+	public void testDeleteExpenseClaim() throws Throwable {
+		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
+		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		assertEquals(1, listView.getCount());
+		DataSourceUtils.deleteClaim(claim5, ds);
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				getInstrumentation().callActivityOnResume(activity);
+			}
+		});
+		getInstrumentation().waitForIdleSync();
+		assertEquals(0, listView.getCount());
 	}
 	
-	public void testViewExpenseClaimApprover() {
+	public void testViewExpenseClaimApprover() throws Throwable {
+		claim1.setStatus(Status.SUBMITTED);
+		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.APPROVER));
+		ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
+		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		final ArrayAdapter<Claim> adapter =  (ArrayAdapter<Claim>) listView.getAdapter();
 		
-	}
-	
-	public void testViewExpenseClaimClaimant() {
+		assertEquals("Should only be 1 submitted claim", 1, listView.getCount());
 		
+		
+		runTestOnUiThread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				int position = 0;
+				boolean success = listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
+				assertTrue(success);
+				
+			}
+		});
+		
+		Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+		assertNotNull(newActivity);
+		validateIntent(user2, claim1, newActivity);
+		newActivity.finish();
+		getInstrumentation().waitForIdleSync();
+		assertEquals("Count should not have changed", 1, listView.getCount());
 	}
 	
 	public void testFilterClaimsByTag() {
 		
 	}
 	
-	private ClaimsListActivity startActivity(UserData data){
+	private void validateIntent(User user, Claim claim, Activity openedActivity){
+		Bundle bundle = openedActivity.getIntent().getExtras();
+        UserData userData = (UserData) bundle.getSerializable(TravelTrackerActivity.USER_DATA);
+        assertEquals(user.getUUID(), userData.getUUID());
+        assertEquals(claim.getUUID(), bundle.getSerializable(TravelTrackerActivity.CLAIM_UUID));
+	}
+	
+	private ClaimsListActivity startActivity(UserData data) {
 		Intent intent = new Intent();
 		intent.putExtra(ClaimsListActivity.USER_DATA, data);
 		setActivityIntent(intent);
@@ -198,6 +266,7 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 //		} catch (InterruptedException e){
 //			fail("Could not load activity!");
 //		}
+		//getInstrumentation().waitForIdleSync();
 		return activity;
 	}
 

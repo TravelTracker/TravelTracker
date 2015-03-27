@@ -62,6 +62,11 @@ public class DataSourceUtils extends AndroidTestCase{
 		return getData(itemCB);
 	}
 	
+	public static void deleteClaim(Claim claim, DataSource ds){
+		SynchronizedResultCallback<Void> claimCB = new SynchronizedResultCallback<Void>();
+		ds.deleteClaim(claim.getUUID(), claimCB);
+	}
+	
 	/**
 	 * Convenience method to get the data out of a synchronized Result callback. Asserts
 	 * that waiting for result was successful. Handles the interrupted exception (Will fail the test).

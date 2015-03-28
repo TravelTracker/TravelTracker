@@ -30,7 +30,11 @@ public class GeneratedDataSourceTest extends TestCase {
     
     public void testAddUser() throws InterruptedException {
         User user = addUser();
-        assertNotNull("New user should be returned", user);
+        assertNotNull("New user should be returned.", user);
+        
+        User user2 = getUser(user.getUUID());
+        assertNotNull("New user wasn't added to datasource.", user2);
+        assertEquals("Users from addUser and getUser didn't match.", user, user2);
         
         Collection<Claim> claims = getClaims();
         
@@ -77,6 +81,23 @@ public class GeneratedDataSourceTest extends TestCase {
         
         boolean success = callback.waitForResult();
         assertTrue("Failed adding User.", success);
+        
+        return callback.getResult();
+    }
+    
+    /**
+     * Add a User to the DataSource.
+     * Ripped straight out of the InMemoryDataSourceTest.
+     * 
+     * @return The User, or null if there was an error.
+     * @throws InterruptedException 
+     */
+    private User getUser(UUID id) throws InterruptedException {
+        SynchronizedResultCallback<User> callback = new SynchronizedResultCallback<User>();
+        source.getUser(id, callback);
+        
+        boolean success = callback.waitForResult();
+        assertTrue("Failed getting User.", success);
         
         return callback.getResult();
     }

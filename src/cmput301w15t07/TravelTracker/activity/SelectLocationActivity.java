@@ -22,13 +22,16 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 
 /**
@@ -51,6 +54,16 @@ public class SelectLocationActivity extends Activity {
         settings.setZoomControlsEnabled(true);
         settings.setZoomGesturesEnabled(true);
         settings.setScrollGesturesEnabled(true);
+        
+        map.setOnMapClickListener(new LocationSelectedListener());
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        
+        String msg = getString(R.string.tap_to_select_location);
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
     
     @Override
@@ -77,5 +90,15 @@ public class SelectLocationActivity extends Activity {
         GoogleMap map = fragment.getMap();
         
         return map;
+    }
+    
+    /**
+     * Listener class for when a location is selected by the user.
+     */
+    class LocationSelectedListener implements OnMapClickListener {
+		@Override
+        public void onMapClick(LatLng location) {
+			// TODO: Return data
+        }
     }
 }

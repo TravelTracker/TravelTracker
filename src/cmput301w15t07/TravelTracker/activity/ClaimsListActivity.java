@@ -26,6 +26,8 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -219,6 +221,12 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      */
     private void launchSetHomeLocation() {
     	Intent intent = new Intent(context, SelectLocationActivity.class);
+    	
+    	LocationManager locMan = (LocationManager) getSystemService(LOCATION_SERVICE);
+    	Location location = locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    	
+    	intent.putExtra(SelectLocationActivity.START_LAT, location.getLatitude());
+    	intent.putExtra(SelectLocationActivity.START_LNG, location.getLongitude());
     	
     	startActivity(intent);
     }

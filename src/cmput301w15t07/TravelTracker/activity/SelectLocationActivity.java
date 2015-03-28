@@ -21,11 +21,14 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -34,6 +37,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.UserData;
 
 /**
  * Lets the user select a location using the Google Maps API.
@@ -41,6 +45,15 @@ import cmput301w15t07.TravelTracker.R;
  * @author colp
  */
 public class SelectLocationActivity extends TravelTrackerActivity {
+    /** String used to retrieve start latitude from intent */
+    public static final String START_LAT = "cmput301w15t07.TravelTracker.startLat";
+    
+    /** String used to retrieve start longitude from intent */
+    public static final String START_LNG = "cmput301w15t07.TravelTracker.startLng";
+    
+    /** Default zoom level when a position is passed in the intent */
+    private static final float zoomLevel = 9.f;
+    
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.select_location_menu, menu);
@@ -55,14 +68,32 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         
         setContentView(R.layout.select_location_activity);
         
+        // Set up map
         GoogleMap map = getMap();
+        map.setOnMapClickListener(new LocationSelectedListener());
         
         UiSettings settings = map.getUiSettings();
+        settings.setMapToolbarEnabled(false);
         settings.setZoomControlsEnabled(true);
         settings.setZoomGesturesEnabled(true);
         settings.setScrollGesturesEnabled(true);
         
-        map.setOnMapClickListener(new LocationSelectedListener());
+        // Get bundle data
+        Bundle bundle = getIntent().getExtras();
+        
+        if (bundle != null) {
+	        Double startLat = bundle.getDouble(START_LAT, Double.NaN);
+	        Double startLng = bundle.getDouble(START_LNG, Double.NaN);
+	        
+	        // Zoom in to and mark the current position
+	        if (!startLat.isNaN() && !startLng.isNaN()) {
+	        	LatLng position = new LatLng(startLat, startLng);
+	        	
+	        	map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoomLevel));
+	        	map.addMarker(new MarkerOptions()
+	        			.position(position));
+	        }
+        }
     }
     
     @Override

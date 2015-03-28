@@ -30,14 +30,13 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.UserData;
 
 /**
  * Lets the user select a location using the Google Maps API.
@@ -50,6 +49,12 @@ public class SelectLocationActivity extends TravelTrackerActivity {
     
     /** String used to retrieve start longitude from intent */
     public static final String START_LNG = "cmput301w15t07.TravelTracker.startLng";
+
+    /** String used to return start latitude in intent */
+    public static final String RESULT_LAT = "cmput301w15t07.TravelTracker.resultLat";
+    
+    /** String used to return start longitude in intent */
+    public static final String RESULT_LNG = "cmput301w15t07.TravelTracker.resultLng";
     
     /** Default zoom level when a position is passed in the intent */
     private static final float zoomLevel = 9.f;
@@ -122,6 +127,12 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         return super.onOptionsItemSelected(item);
     }
     
+    public void onBackPressed() {
+    	setResult(RESULT_CANCELED);
+    	
+    	super.onBackPressed();
+    }
+    
     /**
      * Get the map from the map fragment.
      * @return The GoogleMap in the select_location_activity_map fragment.
@@ -140,7 +151,16 @@ public class SelectLocationActivity extends TravelTrackerActivity {
     class LocationSelectedListener implements OnMapClickListener {
 		@Override
         public void onMapClick(LatLng location) {
-			// TODO: Return data
+			String msg = getString(R.string.location_selected);
+			Toast.makeText(SelectLocationActivity.this, msg, Toast.LENGTH_SHORT).show();
+			
+			// Return the selected location
+			Intent intent = new Intent();
+			intent.putExtra(RESULT_LAT, location.latitude);
+			intent.putExtra(RESULT_LNG, location.longitude);
+			
+			setResult(RESULT_OK, intent);
+			finish();
         }
     }
 }

@@ -24,6 +24,8 @@ package cmput301w15t07.TravelTracker.activity;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -34,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cmput301w15t07.TravelTracker.R;
@@ -65,6 +68,9 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
+	
+	/** Request code for home location select */
+	private static final int SELECT_LOCATION_REQUEST = 1;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -169,6 +175,24 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	}
 	
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+	    
+	    // Get the location if it was returned
+	    if (requestCode == SELECT_LOCATION_REQUEST && resultCode == RESULT_OK) {
+	    	Double lat = data.getDoubleExtra(SelectLocationActivity.RESULT_LAT, Double.NaN);
+	    	Double lng = data.getDoubleExtra(SelectLocationActivity.RESULT_LNG, Double.NaN);
+	    	
+	    	if (!lat.isNaN() && !lng.isNaN()) {
+	    		LatLng position = new LatLng(lat, lng);
+	    		
+	    		// TODO: store this in user
+	    		Toast.makeText(this, position.toString(), Toast.LENGTH_LONG).show();
+	    	}
+	    }
+	}
+	
+	@Override
 	public void update(DataSource observable) {
 		updateUI();
 	}
@@ -222,13 +246,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     private void launchSetHomeLocation() {
     	Intent intent = new Intent(context, SelectLocationActivity.class);
     	
+    	// TODO: pass this from user's current home location, or fall back to current position
     	LocationManager locMan = (LocationManager) getSystemService(LOCATION_SERVICE);
     	Location location = locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     	
     	intent.putExtra(SelectLocationActivity.START_LAT, location.getLatitude());
     	intent.putExtra(SelectLocationActivity.START_LNG, location.getLongitude());
     	
-    	startActivity(intent);
+    	startActivityForResult(intent, SELECT_LOCATION_REQUEST);
     }
 	/**
 	 * launch the claimInfo activity for a new claim

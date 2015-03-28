@@ -21,7 +21,12 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
+
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import cmput301w15t07.TravelTracker.R;
@@ -36,10 +41,16 @@ public class SelectLocationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
         setContentView(R.layout.select_location_activity);
+        
+        GoogleMap map = getMap();
+        
+        UiSettings settings = map.getUiSettings();
+        settings.setZoomControlsEnabled(true);
+        settings.setZoomGesturesEnabled(true);
+        settings.setScrollGesturesEnabled(true);
     }
     
     @Override
@@ -54,5 +65,17 @@ public class SelectLocationActivity extends Activity {
         }
     	
         return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     * Get the map from the map fragment.
+     * @return The GoogleMap in the select_location_activity_map fragment.
+     */
+    GoogleMap getMap() {
+    	FragmentManager fm = getFragmentManager();
+        MapFragment fragment = (MapFragment) fm.findFragmentById(R.id.select_location_activity_map);
+        GoogleMap map = fragment.getMap();
+        
+        return map;
     }
 }

@@ -23,9 +23,10 @@ android:
 
     # Additional components
     - addon-google_apis-google-17
+    - extra-google-google_play_services
 
     # Specify at least one system image
-    - sys-img-x86-android-17
+    - sys-img-x86-android-19
 
 # Emulator Management: Create, Start and Wait
 before_script:

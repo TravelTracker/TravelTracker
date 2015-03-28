@@ -17,6 +17,11 @@
         android:title="@string/claims_list_add_claim" />
     
     <item
+        android:id="@+id/claims_list_set_home_location"
+        android:orderInCategory="400"
+        android:title="@string/claims_list_set_home_location" />
+    
+    <item
         android:id="@+id/claims_list_sign_out"
         android:orderInCategory="500"
         android:title="@string/sign_out" />

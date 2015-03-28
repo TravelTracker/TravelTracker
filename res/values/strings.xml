@@ -34,6 +34,7 @@
 	    <string name="claims_list_filter_by_tag">Filter By Tag</string>
 	    <string name="claims_list_manage_tags">Manage Tags</string>
         <string name="claims_list_add_claim">Add Claim</string>
+        <string name="claims_list_set_home_location">Set Home Location</string>
 	
     <!-- Strings used in ClaimsListRowItem -->
         <!-- Used in layout -->

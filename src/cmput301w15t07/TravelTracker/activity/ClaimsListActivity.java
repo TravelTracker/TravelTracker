@@ -100,6 +100,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		case R.id.claims_list_add_claim:
 			launchClaimInfoNewClaim(data.getUser());
 			return true;
+            
+        case R.id.claims_list_set_home_location:
+        	launchSetHomeLocation();
+        	return true;
 			
         case R.id.claims_list_sign_out:
             signOut();
@@ -209,6 +213,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         
         intent.putExtra(ManageTagsActivity.USER_DATA, userData);
         startActivity(intent);
+    }
+    /**
+     * Launch the select location activity for home location.
+     */
+    private void launchSetHomeLocation() {
+    	Intent intent = new Intent(context, SelectLocationActivity.class);
+    	
+    	startActivity(intent);
     }
 	/**
 	 * launch the claimInfo activity for a new claim

@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
@@ -39,8 +40,14 @@ import cmput301w15t07.TravelTracker.R;
  * 
  * @author colp
  */
-public class SelectLocationActivity extends Activity {
-
+public class SelectLocationActivity extends TravelTrackerActivity {
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.select_location_menu, menu);
+        
+        return true;
+	}
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +78,10 @@ public class SelectLocationActivity extends Activity {
         switch (item.getItemId()) {
         case android.R.id.home:
         	onBackPressed();
+        	break;
+        	
+        case R.id.select_location_sign_out:
+        	signOut();
         	break;
         	
         default:

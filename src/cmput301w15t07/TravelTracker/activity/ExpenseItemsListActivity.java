@@ -28,9 +28,9 @@ import java.util.UUID;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -38,6 +38,7 @@ import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +58,11 @@ import android.widget.Toast;
  *
  */
 public class ExpenseItemsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
+    /** Key for multicallback for claim. */
+    public static final int MULTI_CLAIM_KEY = 0;
+
+    private static final int MULTI_ITEMS_KEY = 1;
+
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -94,7 +100,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.expense_items_list_add_item:
-        	//TODO get claim instance for this. 
         	launchExpenseInfoNewExpense(claim);
             return true;
             
@@ -152,10 +157,15 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         setContentView(R.layout.loading_indeterminate);
         loading = true;
         
-        datasource.getAllItems(new GetAllItemsCallback(this, adapter));
+        // Multicallback for claim and items
+        MultiCallback multi = new MultiCallback(new GetOnResumeDataCallBack(this, adapter));
         
-        //Get the current claim to be passed down to items
-        datasource.getClaim(claimID, new GetClaimCallback());
+        // Create callbacks
+        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        
+        // Notify ready so callback can execute
+        multi.ready();
     }
     
     /**
@@ -212,7 +222,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
         intent.putExtra(FROM_CLAIM_INFO, false);
         intent.putExtra(ITEM_UUID, item.getUUID());
-        intent.putExtra(CLAIM_UUID, claim.getUUID());
+        intent.putExtra(CLAIM_UUID, claimID);
         intent.putExtra(USER_DATA, userData);
         startActivity(intent);
     }
@@ -249,21 +259,61 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     	}
     	@Override
     	public void onError(String message){
-    		Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_SHORT).show();
+    		Toast.makeText(ExpenseItemsListActivity.this,
+    		        message, Toast.LENGTH_SHORT).show();
     	}
     }
     
+    /**
+     * Multicallback meant to get a claim and all of the items in the 
+     * datasource. Requests necessary UI update since this is the first
+     * callback in the activity.
+     */
+    class GetOnResumeDataCallBack implements ResultCallback<SparseArray<Object>> {
+        private ExpenseItemsListAdapter adapter;
+        private ExpenseItemsListActivity activity;
+
+        public GetOnResumeDataCallBack(ExpenseItemsListActivity activity,
+                ExpenseItemsListAdapter adapter) {
+            this.adapter = adapter;
+            this.activity = activity;
+        }
+        
+        /**
+         * Saves the claim, requests an adapter update,
+         * and then a UI change.
+         * 
+         * @param result The request result.
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onResult(SparseArray<Object> result) {
+            claim = (Claim) result.get(MULTI_CLAIM_KEY);
+            adapter.rebuildList((Collection<Item>) result.get(MULTI_ITEMS_KEY), claimID);
+            activity.changeUI();
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemsListActivity.this,
+                    message, Toast.LENGTH_LONG).show();
+        }
+        
+    }
     
     /**
      * Gets the current Items Collection from the data source then requests
      * that the adapter update its internal list with the new list. Then
-     * requests that the activity update its UI.
+     * requests that the activity update its UI. The UI update should never
+     * be needed since this call back is only used during the observer update
+     * which should only be called after the activity has started.
      */
     class GetAllItemsCallback implements ResultCallback<Collection<Item>> {
         ExpenseItemsListActivity activity;
         ExpenseItemsListAdapter adapter;
         
-        public GetAllItemsCallback(ExpenseItemsListActivity activity, ExpenseItemsListAdapter adapter) {
+        public GetAllItemsCallback(ExpenseItemsListActivity activity,
+                ExpenseItemsListAdapter adapter) {
             this.activity = activity;
             this.adapter = adapter;
         }
@@ -287,18 +337,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
                     .show();
         }
     }
-    /** Callback for getting claim */
-    class GetClaimCallback implements ResultCallback<Claim> {
-        @Override
-        public void onResult(Claim result) {
-            claim = result;  
-        }
-
-        @Override
-        public void onError(String message) {
-            Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
-        }
-    }
+    
     /**
      * Callback for deleting items
      */

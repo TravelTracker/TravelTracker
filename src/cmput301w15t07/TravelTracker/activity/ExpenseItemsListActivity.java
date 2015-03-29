@@ -145,7 +145,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         loading = true;
         
         // Multicallback for claim and items
-        MultiCallback multi = new MultiCallback(new UpdateDataCallback(this, adapter));
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
         // Create callbacks
         datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
@@ -217,7 +217,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     @Override
     public void update(DataSource observable) {
         // Multicallback for claim and items
-        MultiCallback multi = new MultiCallback(new UpdateDataCallback(this, adapter));
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
         // Create callbacks
         datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
@@ -267,15 +267,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
      * Requests list rebuilt and UI update.
      */
     class UpdateDataCallback implements ResultCallback<SparseArray<Object>> {
-        private ExpenseItemsListAdapter adapter;
-        private ExpenseItemsListActivity activity;
-
-        public UpdateDataCallback(ExpenseItemsListActivity activity,
-                ExpenseItemsListAdapter adapter) {
-            this.adapter = adapter;
-            this.activity = activity;
-        }
-        
         /**
          * Saves the claim, requests an adapter update,
          * and then a UI change.
@@ -287,7 +278,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         public void onResult(SparseArray<Object> result) {
             claim = (Claim) result.get(MULTI_CLAIM_KEY);
             adapter.rebuildList((Collection<Item>) result.get(MULTI_ITEMS_KEY), claimID);
-            activity.changeUI();
+            ExpenseItemsListActivity.this.changeUI();
         }
 
         @Override

@@ -150,8 +150,8 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	
 	public void testCreateExpenseClaim() throws Throwable {
 		
-		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
-		final ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
+		ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
+		ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
 		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 		
 		assertEquals(1, listView.getCount());
@@ -163,7 +163,7 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		assertNotNull(newActivity);
 		newActivity.finish();
 		getInstrumentation().waitForIdleSync();
-		
+		Thread.sleep(300);
 		assertEquals(2, listView.getCount());
 		
 	}
@@ -267,6 +267,7 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 //			fail("Could not load activity!");
 //		}
 		//getInstrumentation().waitForIdleSync();
+		
 		return activity;
 	}
 

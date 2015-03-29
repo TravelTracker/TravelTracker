@@ -119,15 +119,17 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+        // Retrieve user info from bundle
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
+	    
 	    setContentView(R.layout.claims_list_activity);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
 	    
         context = this;
         
-        // Retrieve user info from bundle
-        Bundle bundle = getIntent().getExtras();
-        userData = (UserData) bundle.getSerializable(USER_DATA);
+
 
         appendNameToTitle(userData.getName());
         

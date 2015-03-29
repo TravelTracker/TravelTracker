@@ -133,20 +133,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
-        // Get claim
-        datasource.getClaim(claimID, new ResultCallback<Claim>() {
-            @Override
-            public void onResult(Claim result) {
-                ExpenseItemsListActivity.this.claim = result;
-            }
-
-            @Override
-            public void onError(String message) {
-                Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        
         // Create adapter
         adapter = new ExpenseItemsListAdapter(this);
     }
@@ -158,7 +144,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         loading = true;
         
         // Multicallback for claim and items
-        MultiCallback multi = new MultiCallback(new GetOnResumeDataCallBack(this, adapter));
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback(this, adapter));
         
         // Create callbacks
         datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
@@ -229,8 +215,17 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     
     @Override
     public void update(DataSource observable) {
-        observable.getAllItems(new GetAllItemsCallback(this, adapter));
+        // Multicallback for claim and items
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback(this, adapter));
+        
+        // Create callbacks
+        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        
+        // Notify ready so callback can execute
+        multi.ready();
     }
+    
     /**
      * delete selected items from the list
      * @param selectedItems
@@ -265,15 +260,16 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     }
     
     /**
-     * Multicallback meant to get a claim and all of the items in the 
-     * datasource. Requests necessary UI update since this is the first
-     * callback in the activity.
+     * Multicallback meant to get all data required from the datasource that
+     * this activity needs on update or resume.
+     * 
+     * Requests list rebuilt and UI update.
      */
-    class GetOnResumeDataCallBack implements ResultCallback<SparseArray<Object>> {
+    class UpdateDataCallback implements ResultCallback<SparseArray<Object>> {
         private ExpenseItemsListAdapter adapter;
         private ExpenseItemsListActivity activity;
 
-        public GetOnResumeDataCallBack(ExpenseItemsListActivity activity,
+        public UpdateDataCallback(ExpenseItemsListActivity activity,
                 ExpenseItemsListAdapter adapter) {
             this.adapter = adapter;
             this.activity = activity;
@@ -299,43 +295,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
                     message, Toast.LENGTH_LONG).show();
         }
         
-    }
-    
-    /**
-     * Gets the current Items Collection from the data source then requests
-     * that the adapter update its internal list with the new list. Then
-     * requests that the activity update its UI. The UI update should never
-     * be needed since this call back is only used during the observer update
-     * which should only be called after the activity has started.
-     */
-    class GetAllItemsCallback implements ResultCallback<Collection<Item>> {
-        ExpenseItemsListActivity activity;
-        ExpenseItemsListAdapter adapter;
-        
-        public GetAllItemsCallback(ExpenseItemsListActivity activity,
-                ExpenseItemsListAdapter adapter) {
-            this.activity = activity;
-            this.adapter = adapter;
-        }
-        
-        /**
-         * Requests and adapter update and a UI change.
-         * 
-         * @param result The request result.
-         */
-        @Override
-        public void onResult(Collection<Item> result) {
-            adapter.rebuildList(result, claimID);
-            activity.changeUI();
-        }
-        
-        @Override
-        public void onError(String message){
-            Toast.makeText(ExpenseItemsListActivity.this,
-                    message,
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
     
     /**

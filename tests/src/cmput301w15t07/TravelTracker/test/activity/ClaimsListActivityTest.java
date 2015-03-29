@@ -35,18 +35,13 @@ import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
-import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import android.app.Activity;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 /**
@@ -145,7 +140,6 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 				assertEquals(1, listView.getCount());
 			}
 		});
-		
 	}
 	
 	public void testCreateExpenseClaim() throws Throwable {
@@ -165,8 +159,9 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		getInstrumentation().waitForIdleSync();
 		Thread.sleep(300);
 		assertEquals(2, listView.getCount());
-		
+
 	}
+	
 	
 	public void testEditExpenseClaim() throws Throwable {
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));

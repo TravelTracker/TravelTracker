@@ -150,7 +150,6 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		
 		assertEquals(1, listView.getCount());
 		
-		getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
 		boolean success = getInstrumentation().invokeMenuActionSync(activity, R.id.claims_list_add_claim, 0);
 		assertTrue(success);
 		Activity newActivity = monitor.waitForActivityWithTimeout(3000);

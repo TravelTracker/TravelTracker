@@ -159,7 +159,6 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			}
 		}
 		
-		update(null); 
 		callback.onResult(user);
 	}
 

@@ -60,6 +60,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		internalAddUser(user);
 		
 		callback.onResult(user);
+        updateObservers(this);
 	}
 	
 	@Override
@@ -76,6 +77,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		internalAddClaim(claim);
 		
 		callback.onResult(claim);
+        updateObservers(this);
 	}
 
 	@Override
@@ -91,6 +93,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		}
 		
 		callback.onResult(item);
+        updateObservers(this);
 	}
 
 	@Override
@@ -107,6 +110,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		}
 		
 		callback.onResult(tag);
+        updateObservers(this);
 	}
 
 	@Override
@@ -117,6 +121,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteUser(id);
 			callback.onResult(null);
+	        updateObservers(this);
 		}
 	}
 
@@ -128,6 +133,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteClaim(id);
 			callback.onResult(null);
+	        updateObservers(this);
 		}
 	}
 
@@ -139,6 +145,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteItem(id);
 			callback.onResult(null);
+            updateObservers(this);
 		}
 	}
 
@@ -150,6 +157,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteTag(id);
 			callback.onResult(null);
+            updateObservers(this);
 		}
 	}
 

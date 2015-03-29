@@ -90,17 +90,15 @@ implements Observer<DataSource> {
         switch (item.getItemId()) {
         case R.id.manage_tags_sign_out:
             signOut();
-            break;
+            return true;
             
         case android.R.id.home:
         	onBackPressed();
-        	break;
+        	return true;
             
         default:
-            break;
+            return false;
         }
-        
-        return super.onOptionsItemSelected(item);
     }
     
 	@Override

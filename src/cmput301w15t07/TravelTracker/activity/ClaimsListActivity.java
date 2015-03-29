@@ -73,9 +73,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         MenuItem tagManageMenuItem = menu.findItem(R.id.claims_list_manage_tags);
         MenuItem addClaimMenuItem = menu.findItem(R.id.claims_list_add_claim);
         
-        if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            
-        } else if (userData.getRole().equals(UserRole.APPROVER)) {
+        if (userData.getRole().equals(UserRole.APPROVER)) {
             // Menu items an approver doesn't need to see or have access to
             tagFilterMenuItem.setEnabled(false).setVisible(false);
             tagManageMenuItem.setEnabled(false).setVisible(false);
@@ -84,7 +82,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         
         return true;
     }
-    
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -107,13 +104,11 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
            
         case android.R.id.home:
         	onBackPressed();
-        	break;
+        	return true;
             
 		default:
-			break;
+			return false;
 		}
-    	
-    	return super.onOptionsItemSelected(item);
     }
 
     @Override

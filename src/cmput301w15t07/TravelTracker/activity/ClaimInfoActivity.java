@@ -86,7 +86,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     private UUID claimID;
     
     /** The current claim. */
-    Claim claim;
+    Claim claim = null;
+    
+    /** The menu for the activity. */
+    private Menu menu = null;
 
     /** The custom adapter for claim destinations. */
     DestinationAdapter destinationAdapter;
@@ -103,7 +106,16 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claim_info_menu, menu);
+        this.menu = menu;
         
+        if (claim != null) {
+            hideMenuItems(menu, claim);
+        }
+        
+        return true;
+    }
+    
+    private void hideMenuItems(Menu menu, Claim claim) {
         // Menu items
         MenuItem addDestinationMenuItem = menu.findItem(R.id.claim_info_add_destination);
         MenuItem addItemMenuItem = menu.findItem(R.id.claim_info_add_item);
@@ -118,8 +130,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         if (userData.getRole().equals(UserRole.APPROVER)) {
             deleteClaimMenuItem.setEnabled(false).setVisible(false);
         }
-        
-        return true;
     }
     
     @Override
@@ -127,30 +137,28 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         switch (item.getItemId()) {
         case R.id.claim_info_add_destination:
             addDestination();
-            break;
+            return true;
             
         case R.id.claim_info_add_item:
             //TODO get claim instance for this. <-- Copied from ExpenseItemsListActivity
             addItem(claim);
-            break;
+            return true;
             
         case R.id.claim_info_delete_claim:
             promptDeleteClaim();
-            break;
+            return true;
             
         case R.id.claim_info_sign_out:
             signOut();
-            break;
+            return true;
             
         case android.R.id.home:
         	onBackPressed();
-        	break;
+            return true;
             
         default:
-            break;
+            return false;
         }
-        
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -204,6 +212,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     	setContentView(R.layout.claim_info_activity);
     	
         populateClaimInfo(claim, items, claimant, approver);
+        
+        if (menu != null) {
+            hideMenuItems(menu, claim);
+        }
         
         // Claim attributes
         LinearLayout statusLinearLayout = (LinearLayout) findViewById(R.id.claimInfoStatusLinearLayout);

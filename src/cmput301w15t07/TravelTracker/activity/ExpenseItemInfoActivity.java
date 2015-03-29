@@ -22,23 +22,18 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.ByteBuffer;
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
@@ -52,7 +47,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity.ClaimCallback;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
@@ -73,10 +67,6 @@ import cmput301w15t07.TravelTracker.util.Observer;
  *         therabidsquirel
  *
  */
-
-
-
-
 public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** Data about the logged-in user. */
 	private UserData userData;
@@ -85,7 +75,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     private UUID claimID;
 
     /** The current claim. */
-    Claim claim;
+    Claim claim = null;
     
     /** UUID of the item. */
     private UUID itemID;
@@ -93,6 +83,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     /** The current item. */
     Item item = null;
     
+    /** The menu for the activity. */
+    private Menu menu = null;
+
     /** The last alert dialog. */
     AlertDialog lastAlertDialog = null;
     
@@ -102,38 +95,43 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_item_info_menu, menu);
-		
-		// Menu items
-		MenuItem deleteItemMenuItem = menu.findItem(R.id.expense_item_info_delete_item);
-		
-        if (!isEditable(claim.getStatus(), userData.getRole())) {
-            // Menu items that disappear when not editable
-            deleteItemMenuItem.setEnabled(false).setVisible(false);
+        this.menu = menu;
+        
+        if (claim != null) {
+            hideMenuItems(menu, claim);
         }
         
 		return true;
 	}
+	
+    private void hideMenuItems(Menu menu, Claim claim) {
+        // Menu items
+        MenuItem deleteItemMenuItem = menu.findItem(R.id.expense_item_info_delete_item);
+        
+        if (!isEditable(claim.getStatus(), userData.getRole())) {
+            // Menu items that disappear when not editable
+            deleteItemMenuItem.setEnabled(false).setVisible(false);
+        }
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case R.id.expense_item_info_delete_item:
 	        promptDeleteExpenseItem();
-	        break;
+	        return true;
 	        
 	    case R.id.expense_item_info_sign_out:
 	        signOut();
-	        break;
+	        return true;
 	        
 	    case android.R.id.home:
 	    	onBackPressed();
-	    	break;
+	    	return true;
 	        
 	    default:
-	        break;
+	        return false;
 	    }
-	    
-	    return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -198,6 +196,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         setContentView(R.layout.expense_info_activity); 
 		
         populateItemInfo(item);
+        
+        if (menu != null) {
+            hideMenuItems(menu, claim);
+        }
         
         final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
         Button dateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);

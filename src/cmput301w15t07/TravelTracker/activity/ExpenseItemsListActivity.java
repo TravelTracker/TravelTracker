@@ -71,8 +71,11 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     private UUID claimID;
     
     /** The current claim */ 
-    Claim claim;
+    Claim claim = null;
     
+    /** The menu for the activity. */
+    private Menu menu = null;
+
     /** ListView */
     private ListView itemsList;
     
@@ -85,7 +88,16 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.expense_items_list_menu, menu);
+        this.menu = menu;
         
+        if (claim != null) {
+            hideMenuItems(menu, claim);
+        }
+        
+        return true;
+    }
+    
+    private void hideMenuItems(Menu menu, Claim claim) {
         // Menu items
         MenuItem addItemMenuItem =
                 menu.findItem(R.id.expense_items_list_add_item);
@@ -94,8 +106,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             // Menu items that disappear when not editable
             addItemMenuItem.setEnabled(false).setVisible(false);
         }
-        
-        return true;
     }
     
     @Override
@@ -107,17 +117,15 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             
         case R.id.expense_items_list_sign_out:
             signOut();
-            break;
+            return true;
             
         case android.R.id.home:
         	onBackPressed();
-        	break;
+        	return true;
             
         default:
-            break;
+            return false;
         }
-        
-        return super.onOptionsItemSelected(item);
     }
     
     @Override
@@ -172,6 +180,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             
             // Switch to actual layout
             setContentView(R.layout.expense_items_list_activity);
+            
+            if (menu != null) {
+                hideMenuItems(menu, claim);
+            }
             
             // Get itemsList and set its adapter
             itemsList = (ListView) findViewById(R.id.expenseItemsListListView);

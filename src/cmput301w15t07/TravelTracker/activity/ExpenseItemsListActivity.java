@@ -61,6 +61,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     /** Key for multicallback for claim. */
     public static final int MULTI_CLAIM_KEY = 0;
 
+    /** Key for multicallback for items. */
     private static final int MULTI_ITEMS_KEY = 1;
 
     /** Data about the logged-in user. */

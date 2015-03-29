@@ -286,7 +286,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             Toast.makeText(ExpenseItemsListActivity.this,
                     message, Toast.LENGTH_LONG).show();
         }
-        
     }
     
     /**

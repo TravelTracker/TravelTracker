@@ -25,14 +25,19 @@ import java.util.Collection;
 
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Tag;
+import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ManageTagsListAdapter;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.util.Observer;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -44,9 +49,19 @@ import android.widget.Toast;
  * @author kdbanman, colp, therabidsquirel, braedy
  *
  */
-public class ManageTagsActivity extends TravelTrackerActivity implements Observer<DataSource> {
+public class ManageTagsActivity extends TravelTrackerActivity
+implements Observer<DataSource> {
+    /** Multicallback key for tags. */
+    private static final int MULTI_TAGS_KEY = 0;
+    
+    /** Multicallback key for user. */
+    private static final int MULTI_USER_KEY = 1;
+
     /** Data about the logged-in user. */
     private UserData userData;
+    
+    /** The actual user. */
+    private User user;
     
     /** Adapter for the list. */
     private ManageTagsListAdapter adapter;
@@ -102,13 +117,9 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         
         // Make adapter
         adapter = new ManageTagsListAdapter(this);
-	}
         
-    @Override
-    public void update(DataSource observable) {
-        // Gets tags and updates adapter
-        datasource.getAllTags(new GetUserTagsCallback(this, adapter));
-    }
+        datasource.addObserver(this);
+	}
 
     @Override
     protected void onResume() {
@@ -116,9 +127,54 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         // Set loading screen and notify loading
         setContentView(R.layout.loading_indeterminate);
         loading = true;
+
+        // Multicallback to get tags and user, then update UI and adapter
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
-        // Actual request
-        datasource.getAllTags(new GetUserTagsCallback(this, adapter));
+        // Get tags and user
+        datasource.getAllTags(
+                multi.<Collection<Tag>>createCallback(MULTI_TAGS_KEY));
+        datasource.getUser(userData.getUUID(),
+                multi.<User>createCallback(MULTI_USER_KEY));
+        
+        // Notify ready
+        multi.ready();
+    }
+
+    @Override
+    public void update(DataSource observable) {
+        // Multicallback to get tags and user, then update UI and adapter
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
+        
+        // Get tags and user
+        datasource.getAllTags(
+                multi.<Collection<Tag>>createCallback(MULTI_TAGS_KEY));
+        datasource.getUser(userData.getUUID(),
+                multi.<User>createCallback(MULTI_USER_KEY));
+        
+        // Notify ready
+        multi.ready();
+    }
+    
+    /**
+     * Listener for add Tag button.
+     */
+    public class AddTagOnClickListener implements OnClickListener {
+        @Override
+        public void onClick(View v) {
+            datasource.addTag(user, new ResultCallback<Tag>() {
+                @Override
+                public void onResult(Tag result) {
+                    result.setTitle(titleEditText.getText().toString());
+                }
+
+                @Override
+                public void onError(String message) {
+                    Toast.makeText(ManageTagsActivity.this, message,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     /**
@@ -133,39 +189,42 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
                     (EditText) findViewById(R.id.manageTagsNewTagEditText);
             
             addTagButton = (Button) findViewById(R.id.manageTagsAddButton);
+            addTagButton.setOnClickListener(
+                    new AddTagOnClickListener());
             
             tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
             tagListView.setAdapter(adapter);
+            
+            // Switched to real UI, no need to load anymore
+            loading = false;
         }
         onLoaded();
     }
-	
+    
+    
     /**
-     * Callback to get all tags for a user.
+     * Multicallback intended to get all data necessary for this activity upon
+     * update or resume.
      */
-    public class GetUserTagsCallback implements ResultCallback<Collection<Tag>> {
-
-        private ManageTagsActivity activity;
-        private ManageTagsListAdapter adapter;
-
-        public GetUserTagsCallback(ManageTagsActivity activity,
-                ManageTagsListAdapter adapter) {
-            this.activity = activity;
-            this.adapter = adapter;
-        }
-
+    public class UpdateDataCallback implements 
+    ResultCallback<SparseArray<Object>> {
         /** 
-         * Ask the adapter to rebuild the list, and then update the UI.
+         * Save the user, ask the adapter to rebuild the list, and then update
+         * the UI.
          */
+        @SuppressWarnings("unchecked")
         @Override
-        public void onResult(Collection<Tag> result) {
-            adapter.rebuildList(result, userData.getUUID());
-            activity.updateUI();
+        public void onResult(SparseArray<Object> result) {
+            user = (User) result.get(MULTI_USER_KEY);
+            adapter.rebuildList((Collection<Tag>) result.get(MULTI_TAGS_KEY),
+                    userData.getUUID());
+            ManageTagsActivity.this.updateUI();
         }
 
         @Override
         public void onError(String message) {
-            Toast.makeText(ManageTagsActivity.this, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ManageTagsActivity.this, message,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

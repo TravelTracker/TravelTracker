@@ -39,7 +39,7 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  */
 public class GeneratedDataSource extends InMemoryDataSource {
 	
-	/** (non-Javadoc)
+	/** 
 	 * Overrides addUser to generate starting data for a new User.
 	 * @see cmput301w15t07.TravelTracker.model.InMemoryDataSource#addUser(cmput301w15t07.TravelTracker.serverinterface.ResultCallback)
 	 */
@@ -159,7 +159,6 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			}
 		}
 		
-		update(null); 
 		callback.onResult(user);
 	}
 

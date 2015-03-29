@@ -28,9 +28,9 @@ import java.util.UUID;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -38,6 +38,7 @@ import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +58,12 @@ import android.widget.Toast;
  *
  */
 public class ExpenseItemsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
+    /** Key for multicallback for claim. */
+    public static final int MULTI_CLAIM_KEY = 0;
+
+    /** Key for multicallback for items. */
+    private static final int MULTI_ITEMS_KEY = 1;
+
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -80,7 +87,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         getMenuInflater().inflate(R.menu.expense_items_list_menu, menu);
         
         // Menu items
-        MenuItem addItemMenuItem = menu.findItem(R.id.expense_items_list_add_item);
+        MenuItem addItemMenuItem =
+                menu.findItem(R.id.expense_items_list_add_item);
         
         if (!isEditable(claim.getStatus(), userData.getRole())) {
             // Menu items that disappear when not editable
@@ -94,7 +102,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.expense_items_list_add_item:
-        	//TODO get claim instance for this. 
         	launchExpenseInfoNewExpense(claim);
             return true;
             
@@ -128,22 +135,11 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
-        // Get claim
-        datasource.getClaim(claimID, new ResultCallback<Claim>() {
-            @Override
-            public void onResult(Claim result) {
-                ExpenseItemsListActivity.this.claim = result;
-            }
-
-            @Override
-            public void onError(String message) {
-                Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        
         // Create adapter
         adapter = new ExpenseItemsListAdapter(this);
+        
+        // Set as observer
+        datasource.addObserver(this);
     }
     
     @Override
@@ -152,10 +148,17 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         setContentView(R.layout.loading_indeterminate);
         loading = true;
         
-        datasource.getAllItems(new GetAllItemsCallback(this, adapter));
+        // Multicallback for claim and items
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
-        //Get the current claim to be passed down to items
-        datasource.getClaim(claimID, new GetClaimCallback());
+        // Create callbacks
+        datasource.getClaim(claimID,
+                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(
+                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        
+        // Notify ready so callback can execute
+        multi.ready();
     }
     
     /**
@@ -195,8 +198,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             
         }
         onLoaded();
-                
     }
+    
     /**
      * Launch the ExpenseItemInfo activity for a new Item
      * @param claim The current claim 
@@ -204,6 +207,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     private void launchExpenseInfoNewExpense(Claim claim){
         datasource.addItem(claim, new CreateNewItemCallback());
     }
+    
     /** 
      * Launches the ExpenseItemInfo activity for the selected item
      * @param item Selected item to open
@@ -212,15 +216,26 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
         intent.putExtra(FROM_CLAIM_INFO, false);
         intent.putExtra(ITEM_UUID, item.getUUID());
-        intent.putExtra(CLAIM_UUID, claim.getUUID());
+        intent.putExtra(CLAIM_UUID, claimID);
         intent.putExtra(USER_DATA, userData);
         startActivity(intent);
     }
     
     @Override
     public void update(DataSource observable) {
-        observable.getAllItems(new GetAllItemsCallback(this, adapter));
+        // Multicallback for claim and items
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
+        
+        // Create callbacks
+        datasource.getClaim(claimID,
+                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(
+                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        
+        // Notify ready so callback can execute
+        multi.ready();
     }
+    
     /**
      * delete selected items from the list
      * @param selectedItems
@@ -232,9 +247,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             delete.add(adapter.getItem(i));
         }
         
+        // TODO: This could probably be converted to a multi callback if it
+        // stops us from having to request updates each time it's removed.
         DeleteItemCallback cb = new DeleteItemCallback();
         for (Item i: delete) {
-            adapter.remove(i);
             datasource.deleteItem(i.getUUID(), cb);
         }
     }
@@ -249,56 +265,40 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     	}
     	@Override
     	public void onError(String message){
-    		Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_SHORT).show();
+    		Toast.makeText(ExpenseItemsListActivity.this,
+    		        message, Toast.LENGTH_SHORT).show();
     	}
     }
     
-    
     /**
-     * Gets the current Items Collection from the data source then requests
-     * that the adapter update its internal list with the new list. Then
-     * requests that the activity update its UI.
+     * Multicallback meant to get all data required from the datasource that
+     * this activity needs on update or resume.
+     * 
+     * Requests list rebuilt and UI update.
      */
-    class GetAllItemsCallback implements ResultCallback<Collection<Item>> {
-        ExpenseItemsListActivity activity;
-        ExpenseItemsListAdapter adapter;
-        
-        public GetAllItemsCallback(ExpenseItemsListActivity activity, ExpenseItemsListAdapter adapter) {
-            this.activity = activity;
-            this.adapter = adapter;
-        }
-        
+    class UpdateDataCallback implements ResultCallback<SparseArray<Object>> {
         /**
-         * Requests and adapter update and a UI change.
+         * Saves the claim, requests an adapter update,
+         * and then a UI change.
          * 
          * @param result The request result.
          */
+        @SuppressWarnings("unchecked")
         @Override
-        public void onResult(Collection<Item> result) {
-            adapter.rebuildList(result, claimID);
-            activity.changeUI();
-        }
-        
-        @Override
-        public void onError(String message){
-            Toast.makeText(ExpenseItemsListActivity.this,
-                    message,
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
-    }
-    /** Callback for getting claim */
-    class GetClaimCallback implements ResultCallback<Claim> {
-        @Override
-        public void onResult(Claim result) {
-            claim = result;  
+        public void onResult(SparseArray<Object> result) {
+            claim = (Claim) result.get(MULTI_CLAIM_KEY);
+            adapter.rebuildList(
+                    (Collection<Item>) result.get(MULTI_ITEMS_KEY), claimID);
+            ExpenseItemsListActivity.this.changeUI();
         }
 
         @Override
         public void onError(String message) {
-            Toast.makeText(ExpenseItemsListActivity.this, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(ExpenseItemsListActivity.this,
+                    message, Toast.LENGTH_LONG).show();
         }
     }
+    
     /**
      * Callback for deleting items
      */

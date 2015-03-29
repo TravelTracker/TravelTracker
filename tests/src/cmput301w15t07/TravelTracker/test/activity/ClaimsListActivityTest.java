@@ -196,11 +196,11 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
 		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 		assertEquals(1, listView.getCount());
-		DataSourceUtils.deleteClaim(claim5, ds);
 		runTestOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
+				DataSourceUtils.deleteClaim(claim5, ds);
 				getInstrumentation().callActivityOnResume(activity);
 			}
 		});

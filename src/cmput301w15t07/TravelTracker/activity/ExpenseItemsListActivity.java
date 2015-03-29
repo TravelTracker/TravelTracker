@@ -137,6 +137,9 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         
         // Create adapter
         adapter = new ExpenseItemsListAdapter(this);
+        
+        // Set as observer
+        datasource.addObserver(this);
     }
     
     @Override
@@ -195,8 +198,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             
         }
         onLoaded();
-                
     }
+    
     /**
      * Launch the ExpenseItemInfo activity for a new Item
      * @param claim The current claim 
@@ -204,6 +207,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     private void launchExpenseInfoNewExpense(Claim claim){
         datasource.addItem(claim, new CreateNewItemCallback());
     }
+    
     /** 
      * Launches the ExpenseItemInfo activity for the selected item
      * @param item Selected item to open
@@ -243,9 +247,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             delete.add(adapter.getItem(i));
         }
         
+        // TODO: This could probably be converted to a multi callback if it
+        // stops us from having to request updates each time it's removed.
         DeleteItemCallback cb = new DeleteItemCallback();
         for (Item i: delete) {
-            adapter.remove(i);
             datasource.deleteItem(i.getUUID(), cb);
         }
     }

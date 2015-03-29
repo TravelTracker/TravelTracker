@@ -42,7 +42,7 @@ public interface ServerHelper {
 	 * When finished or on error will use the callback. 
 	 * @param documents
 	 */
-	public void deleteDocuments(Collection<Document> documents);
+	public void deleteDocuments(Collection<Document> documents) throws Exception;
 	
 	/**
 	 * Gets all claims for the passed user from the server asynchronously, returns it via 
@@ -50,7 +50,7 @@ public interface ServerHelper {
 	 * @param user
 	 * @return collection of claims
 	 */
-	public Collection<Claim> getClaims(UUID user);
+	public Collection<Claim> getClaims(UUID user) throws Exception;
 	
 	/**
 	 * Gets all expense items for the passed claim from the server asynchronously, returns it
@@ -58,14 +58,14 @@ public interface ServerHelper {
 	 * @param claim
 	 * @return collection of expense Items
 	 */
-	public Collection<Item> getExpenses(UUID claim);
+	public Collection<Item> getExpenses(UUID claim) throws Exception;
 	/**
 	 * Gets all tags for the passed user from the server asynchronously, returns it
 	 * via ResultCallback
 	 * @param user
 	 * @return collection of Tags
 	 */
-	public Collection<Tag> getTags(UUID user);
+	public Collection<Tag> getTags(UUID user) throws Exception;
 	
 	/**
 	 * Gets gets user for passed name from the server asynchronously, returns it
@@ -73,12 +73,12 @@ public interface ServerHelper {
 	 * @param name
 	 * @return user
 	 */
-	public User getUser(String name);
+	public User getUser(String name) throws Exception;
 	
 	/**
 	 * Saves passed documents to the server asynchronously, returns the documents that
 	 * were successfully saved via callback 
 	 * @param documents
 	 */
-	public void saveDocuments(Collection<Document> documents);
+	public void saveDocuments(Collection<Document> documents) throws Exception;
 }

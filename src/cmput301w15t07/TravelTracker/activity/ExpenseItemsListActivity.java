@@ -87,7 +87,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         getMenuInflater().inflate(R.menu.expense_items_list_menu, menu);
         
         // Menu items
-        MenuItem addItemMenuItem = menu.findItem(R.id.expense_items_list_add_item);
+        MenuItem addItemMenuItem =
+                menu.findItem(R.id.expense_items_list_add_item);
         
         if (!isEditable(claim.getStatus(), userData.getRole())) {
             // Menu items that disappear when not editable
@@ -148,8 +149,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
         // Create callbacks
-        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
-        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        datasource.getClaim(claimID,
+                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(
+                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
         
         // Notify ready so callback can execute
         multi.ready();
@@ -220,8 +223,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
         // Create callbacks
-        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
-        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        datasource.getClaim(claimID,
+                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(
+                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
         
         // Notify ready so callback can execute
         multi.ready();
@@ -277,7 +282,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         @Override
         public void onResult(SparseArray<Object> result) {
             claim = (Claim) result.get(MULTI_CLAIM_KEY);
-            adapter.rebuildList((Collection<Item>) result.get(MULTI_ITEMS_KEY), claimID);
+            adapter.rebuildList(
+                    (Collection<Item>) result.get(MULTI_ITEMS_KEY), claimID);
             ExpenseItemsListActivity.this.changeUI();
         }
 

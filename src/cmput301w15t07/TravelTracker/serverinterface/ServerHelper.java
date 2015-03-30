@@ -42,7 +42,7 @@ public interface ServerHelper {
 	 * When finished or on error will use the callback. 
 	 * @param documents
 	 */
-	public void deleteDocuments(Collection<Document> documents) throws Exception;
+	public <T extends Document> void deleteDocuments(Collection<T> documents) throws Exception;
 	
 	/**
 	 * Gets all claims for the passed user from the server asynchronously, returns it via 
@@ -80,5 +80,5 @@ public interface ServerHelper {
 	 * were successfully saved via callback 
 	 * @param documents
 	 */
-	public void saveDocuments(Collection<Document> documents) throws Exception;
+	public <T extends Document> void saveDocuments(Collection<T> documents) throws Exception;
 }

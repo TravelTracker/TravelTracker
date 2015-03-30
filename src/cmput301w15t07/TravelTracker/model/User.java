@@ -3,6 +3,8 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -40,6 +42,7 @@ public class User extends Document {
 	 */
 	User(UUID docID) {
 		super(docID);
+		setType(Type.USER);
 	}
 
 	/**

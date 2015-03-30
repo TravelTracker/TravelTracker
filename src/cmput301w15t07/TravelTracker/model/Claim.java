@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
+
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -54,6 +56,7 @@ public class Claim extends Document {
 		startDate = new Date();
 		endDate = new Date();
 		status = Status.IN_PROGRESS;
+		setType(Type.CLAIM);
 	}
 	
 	/**

@@ -23,6 +23,8 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
+
 /**
  * Model object for Claim Tags for Claimant use.
  * 
@@ -40,6 +42,7 @@ public class Tag extends Document {
 	 */
 	Tag(UUID docID) {
 		super(docID);
+		setType(Type.TAG);
 	}
 	
 	/**

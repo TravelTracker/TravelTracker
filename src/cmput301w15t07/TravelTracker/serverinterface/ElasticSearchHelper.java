@@ -16,39 +16,50 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Bulk;
 import io.searchbox.core.Bulk.Builder;
 import io.searchbox.core.Delete;
+import io.searchbox.core.Get;
+import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
 public class ElasticSearchHelper implements ServerHelper{
 	private JestClient conn;
 	
-	
-	private static final String CONNECTIONURL = "http://cmput301.softwareprocess.es:8080/";
-	private static final String INDEX = "cmput301w15t07";
-	
 	public ElasticSearchHelper(){
 		JestClientFactory factory = new JestClientFactory();
-		factory.setDroidClientConfig(new DroidClientConfig.Builder(CONNECTIONURL).build());
+		factory.setDroidClientConfig(new DroidClientConfig.Builder(Constants.CONNECTION_URL).build());
 		
 		conn = factory.getObject();
 	}
 
 	@Override
-	public void deleteDocuments(Collection<Document> documents) throws Exception {
+	public <T extends Document> void deleteDocuments(Collection<T> documents) throws Exception {
 		Builder bulkBuilder = new Bulk.Builder();
-		bulkBuilder.defaultIndex(INDEX);
+		bulkBuilder.defaultIndex(Constants.INDEX);
 		
 		for (Document d : documents){
-			bulkBuilder.addAction(new Delete.Builder(d.getUUID().toString()).index(INDEX).build());
+			bulkBuilder.addAction(new Delete.Builder(d.getUUID().toString())
+			.index(Constants.INDEX)
+			.type(d.getType().toString()).build());
 		}
 		
 		conn.execute(bulkBuilder.build());
 	}
 
 	@Override
-	public Collection<Claim> getClaims(UUID user) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Claim> getClaims(UUID user) throws Exception {
+		String query = "{\n" +
+						"	\"query\" : {\n" +
+						"		\"match\" : {\n" +
+						"			\"user\" : \"" + user.toString() + "\" \n" +
+						"		}\n" +
+						"	}\n" +
+						"}";
+		
+		Search search = new Search.Builder(query)
+		.addIndex(Constants.INDEX)
+		.addType(Constants.Type.CLAIM.toString()).build();
+		
+		return runSearch(search, Claim.class);
 	}
 
 	@Override
@@ -70,14 +81,24 @@ public class ElasticSearchHelper implements ServerHelper{
 	}
 
 	@Override
-	public void saveDocuments(Collection<Document> documents) {
-		// TODO Auto-generated method stub
-		
+	public <T extends Document> void saveDocuments(Collection<T> documents) throws Exception {
+		Builder bulkBuilder = new Bulk.Builder();
+		for (Document d : documents){
+			bulkBuilder.addAction(new Index.Builder(d)
+			.index(Constants.INDEX)
+			.type(d.getType().toString())
+			.id(d.getUUID().toString()).build());
+		}
+		conn.execute(bulkBuilder.build());
 	}
 	
 	@SuppressWarnings("deprecation")
 	private <T> Collection<T> runSearch(Search search, Class<T> t) throws Exception{
 		SearchResult result = conn.execute(search);
 		return result.getSourceAsObjectList(t);
+	}
+	
+	public void closeConnection(){
+		conn.shutdownClient();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 import android.graphics.BitmapFactory;
 
 /*
@@ -69,6 +70,8 @@ public class Item extends Document {
 		receipt = new Receipt();
 		
 		isComplete = true;
+		
+		setType(Type.ITEM);
 		
 	}
 	

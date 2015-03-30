@@ -24,6 +24,7 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.Date;
 import java.util.UUID;
 
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 import cmput301w15t07.TravelTracker.util.Observable;
 
 /**
@@ -41,6 +42,8 @@ public abstract class Document extends Observable<Document> {
 	private Date lastChanged;
 	
 	private UUID docID;
+	
+	private Type type;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -104,5 +107,13 @@ public abstract class Document extends Observable<Document> {
 	 */
 	private void setChangedDate() {
 		lastChanged = new Date();
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 }

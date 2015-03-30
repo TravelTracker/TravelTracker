@@ -77,13 +77,4 @@ public class User extends Document {
 	public void setHomeLocation(Geolocation homeLocation) {
 		this.homeLocation = homeLocation;
 	}
-	
-	// TODO: Remove these!
-	public ArrayList<Tag> getTags() {
-		return tags;
-	}
-	public void setTags(ArrayList<Tag> tags) {
-		this.tags = tags;
-		this.updateObservers(this);
-	}
 }

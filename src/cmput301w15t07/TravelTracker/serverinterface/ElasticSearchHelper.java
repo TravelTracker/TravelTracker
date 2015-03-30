@@ -47,13 +47,7 @@ public class ElasticSearchHelper implements ServerHelper{
 
 	@Override
 	public Collection<Claim> getClaims(UUID user) throws Exception {
-		String query = "{\n" +
-						"	\"query\" : {\n" +
-						"		\"match\" : {\n" +
-						"			\"user\" : \"" + user.toString() + "\" \n" +
-						"		}\n" +
-						"	}\n" +
-						"}";
+		String query = getQueryString("user", user.toString());
 		
 		Search search = new Search.Builder(query)
 		.addIndex(Constants.INDEX)
@@ -92,13 +86,25 @@ public class ElasticSearchHelper implements ServerHelper{
 		conn.execute(bulkBuilder.build());
 	}
 	
+	public void closeConnection(){
+		conn.shutdownClient();
+	}
+	
+	private String getQueryString(String field, String value){
+		String query = "{\n" +
+				"	\"query\" : {\n" +
+				"		\"match\" : {\n" +
+				"			\""+ field + "\" : \"" + value + "\" \n" +
+				"		}\n" +
+				"	}\n" +
+				"}";
+		return query;
+	}
+	
 	@SuppressWarnings("deprecation")
 	private <T> Collection<T> runSearch(Search search, Class<T> t) throws Exception{
 		SearchResult result = conn.execute(search);
 		return result.getSourceAsObjectList(t);
 	}
 	
-	public void closeConnection(){
-		conn.shutdownClient();
-	}
 }

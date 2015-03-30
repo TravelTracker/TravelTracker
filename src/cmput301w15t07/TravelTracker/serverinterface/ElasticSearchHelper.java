@@ -49,34 +49,31 @@ public class ElasticSearchHelper implements ServerHelper{
 	@Override
 	public Collection<Claim> getClaims(UUID user) throws Exception {
 		String query = getQueryString("user", user.toString());
-		
 		Search search = getSearch(query, Constants.Type.CLAIM);
-		
-//		Search search = new Search.Builder(query)
-//		.addIndex(Constants.INDEX)
-//		.addType(Constants.Type.CLAIM.toString()).build();
-		
 		return runSearch(search, Claim.class);
 	}
 
 	@Override
-	public Collection<Item> getExpenses(UUID claim) {
+	public Collection<Item> getExpenses(UUID claim) throws Exception {
 		String query = getQueryString("claim", claim.toString());
-		
-		
-		return null;
+		Search search = getSearch(query, Constants.Type.ITEM);
+		return runSearch(search, Item.class);
 	}
 
 	@Override
-	public Collection<Tag> getTags(UUID user) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Tag> getTags(UUID user) throws Exception {
+		String query = getQueryString("user", user.toString());
+		Search search = getSearch(query, Constants.Type.TAG);
+		return runSearch(search, Tag.class);
 	}
 
 	@Override
-	public User getUser(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public User getUser(String name) throws Exception {
+		String query = getQueryString("userName", name);
+		Search search = getSearch(query, Constants.Type.USER);
+		User [] out = new User[1];
+		runSearch(search, User.class).toArray(out);
+		return out[0];
 	}
 
 	@Override

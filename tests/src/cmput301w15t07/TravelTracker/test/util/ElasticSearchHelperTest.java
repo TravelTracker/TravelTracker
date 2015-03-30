@@ -9,6 +9,7 @@ import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.Suppress;
 
 public class ElasticSearchHelperTest extends AndroidTestCase{
 	ElasticSearchHelper es;
@@ -22,6 +23,7 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		ds = new InMemoryDataSource();
 		user1 = DataSourceUtils.addUser("Bob", ds);
 	}
+	
 	
 	public void testAddClaims() throws Exception{
 		Claim claim1 = DataSourceUtils.addEmptyClaim(user1, ds);

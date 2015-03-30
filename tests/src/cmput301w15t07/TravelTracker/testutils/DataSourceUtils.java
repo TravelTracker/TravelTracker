@@ -6,6 +6,7 @@ import android.test.AndroidTestCase;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -22,7 +23,9 @@ public class DataSourceUtils extends AndroidTestCase{
 	public static User addUser(String name, DataSource ds){
 		SynchronizedResultCallback<User> userCB = new SynchronizedResultCallback<User>();
 		ds.addUser(userCB);
-		return getData(userCB);
+		User user = getData(userCB);
+		user.setUserName(name);
+		return user;
 	}
 	
 	/**
@@ -60,6 +63,12 @@ public class DataSourceUtils extends AndroidTestCase{
 		SynchronizedResultCallback<Item> itemCB = new SynchronizedResultCallback<Item>();
 		ds.addItem(claim, itemCB);
 		return getData(itemCB);
+	}
+	
+	public static Tag addEmptyTag(User user, DataSource ds){
+		SynchronizedResultCallback<Tag> tagCB = new SynchronizedResultCallback<Tag>();
+		ds.addTag(user, tagCB);
+		return getData(tagCB);
 	}
 	
 	public static void deleteClaim(Claim claim, DataSource ds){

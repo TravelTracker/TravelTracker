@@ -33,7 +33,8 @@ import java.util.UUID;
 public class User extends Document {
 	private String userName;
 	private ArrayList<Tag> tags;
-	
+	private Geolocation homeLocation;
+
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
 	 * 
@@ -59,6 +60,22 @@ public class User extends Document {
 		this.userName = userName;
 		
 		updateObservers(this);
+	}
+	
+	/**
+	 * Get the user's home location.
+	 * @return The geolocation of the user's home location.
+	 */
+	public Geolocation getHomeLocation() {
+		return homeLocation;
+	}
+
+	/**
+	 * Set the user's home location.
+	 * @param homeLocation The new home location.
+	 */
+	public void setHomeLocation(Geolocation homeLocation) {
+		this.homeLocation = homeLocation;
 	}
 	
 	// TODO: Remove these!

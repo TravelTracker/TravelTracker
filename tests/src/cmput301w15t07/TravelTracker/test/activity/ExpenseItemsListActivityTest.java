@@ -22,22 +22,21 @@ package cmput301w15t07.TravelTracker.test.activity;
  */
 
 import java.util.Collection;
-
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
+import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
+import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
+import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.User;
-import cmput301w15t07.TravelTracker.model.UserData;
-import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.test.ActivityUnitTestCase;
-import android.test.mock.MockApplication;
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -50,22 +49,21 @@ import android.widget.ListView;
  *         braedy
  *
  */
-public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseItemsListActivity> {
-    DataSource dataSource;
-    Instrumentation instrumentation;
-    Activity activity;
-    
-    User user;
-    UserData userData;
-    Collection<Claim> allClaims;
-    Claim claim = null; // The specific claim we'll use items from
-    
-    ListView itemsList;
-    ExpenseItemsListAdapter adapter;
-    
+public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCase2<ExpenseItemsListActivity> {
+	// String constants in testing
+	private static final String CLAIMANT_USER_NAME = "claimant";
+	private static final String APPROVER_USER_NAME = "approver";
     private static final String LOG_TAG = "ExpenseItemsListTest";
+	
+    //  App relevant
+    private DataSource dataSource;
+    private Instrumentation instrumentation;
     
-
+    // Test relevant
+    private User claimant;
+    private User approver;
+    private Claim claim;
+    
 	public ExpenseItemsListActivityTest() {
 		super(ExpenseItemsListActivity.class);
 	}
@@ -73,74 +71,51 @@ public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseIt
 	@Override
 	protected void setUp() throws Exception {
 	    // Use generated data.
-        dataSource = new GeneratedDataSource();
+        dataSource = new InMemoryDataSource();
         DataSourceSingleton.setDataSource(dataSource);
         
 	    super.setUp();
-
-		if (true) return;
-        
-        MockApplication app = new MockApplication();
-        setApplication(app);
-        
         
         instrumentation = getInstrumentation();
 
-        // Get User
-        SynchronizedResultCallback<User> userCallback = new SynchronizedResultCallback<User>();
-        dataSource.addUser(userCallback);
-        boolean success = userCallback.waitForResult();
-        if (!success) {
-            throw new RuntimeException("Couldn't add User, how can I test without a User?");
-        }
-        user = userCallback.getResult();
-        userData = new UserData(user.getUUID(), user.getUserName(), UserRole.CLAIMANT);
+        // Add claimant and approver
+        claimant = DataSourceUtils.addUser(CLAIMANT_USER_NAME, dataSource);
+        approver = DataSourceUtils.addUser(APPROVER_USER_NAME, dataSource);
         
-        // Get all Claims
-        SynchronizedResultCallback<Collection<Claim>> claimCallback = new SynchronizedResultCallback<Collection<Claim>>();
-        dataSource.getAllClaims(claimCallback);
-        success = claimCallback.waitForResult();
-        if (!success) {
-            throw new RuntimeException("Couldn't get Claims, why no Claims?");
-        }
-        allClaims = claimCallback.getResult();
-        Log.d(LOG_TAG, "Length: " + allClaims.size());
-        
-        if (allClaims.isEmpty()) {
-            throw new RuntimeException("Got no claims back.");
-        }
-        
-        for (Claim c : allClaims) {
-            if (c.getUser() == user.getUUID()) {
-                claim = c;
-                Log.d("ExpenseItemsListTest", c.toString());
-                break;
-            }
-        }
-        if (claim == null) {
-            throw new RuntimeException("No claim for added user...");
-        }
-        
-        Intent intent = new Intent(instrumentation.getTargetContext(), ExpenseItemsListActivity.class);
-        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
-        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claim.getUUID());
-        startActivity(intent, null, null);
+        // Empty, no specific data needed. Just items later.
+        claim = DataSourceUtils.addEmptyClaim(claimant, dataSource);
+	}
+	
+	public void testPreconditions() throws InterruptedException {
+		// Test that the users exist
+		assertTrue("Claimant didn't exist.", userExists(CLAIMANT_USER_NAME));
+		assertTrue("Approver didn't exist.", userExists(APPROVER_USER_NAME));
+		
+		// Test that the claimant has a claim
+		assertTrue("Claimant didn't have claim.", hasClaim(claimant));
+	}
 
-        activity = getActivity();
-        itemsList = (ListView) activity.findViewById(cmput301w15t07.TravelTracker.R.id.expenseItemsListListView);
-        adapter = (ExpenseItemsListAdapter) itemsList.getAdapter();
-	}
-	
-	public void testPreconditions() {
-		if (true) return;
-		
-	    assertNotNull("Activity was null.", activity);
-	    assertNotNull("ListView was null.", itemsList);
-	    assertNotNull("Adapter was null.", adapter);
-	}
-	
+	@Suppress
 	public void testListExpenseItems() {
+		ExpenseItemsListActivity activity =
+				startActivityAsClaimant();
 		
+		ListView lv = (ListView) activity.findViewById(
+				R.id.expenseItemsListListView);
+		ExpenseItemsListAdapter adapter =
+				(ExpenseItemsListAdapter) lv.getAdapter();
+		
+		// Assert empty
+		assertEquals("List view was not empty.", 0, adapter.getCount());
+		
+		// Causes main thread activity
+		Item i = DataSourceUtils.addEmptyItem(claim, dataSource);
+		
+		// Assert 1 element
+		assertEquals("List view did not have 1 element: " + adapter.getCount(),
+				1, adapter.getCount());
+		assertEquals("First element was not the item added.", i,
+				adapter.getItem(0));
 	}
 	
 	public void testCreateExpenseItem() {
@@ -158,4 +133,83 @@ public class ExpenseItemsListActivityTest extends ActivityUnitTestCase<ExpenseIt
 	public void testDeleteExpenseItem() {
 		
 	}
+	
+    //////////////////////
+    // Helper functions //
+    //////////////////////
+	/**
+	 * @return The started activity
+	 */
+	public ExpenseItemsListActivity startActivityAsClaimant() {
+        // Set up start intent
+        Intent intent = new Intent(instrumentation.getTargetContext(),
+        		ExpenseItemsListActivity.class);
+        
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, 
+        		DataSourceUtils.getUserDataClaimant(CLAIMANT_USER_NAME));
+        
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claim.getUUID());
+        setActivityIntent(intent);
+        
+        ExpenseItemsListActivity activity = getActivity();
+        Log.d(LOG_TAG, activity.toString());
+		return activity;
+	}
+	
+    /**
+     * Tests if a user is in the datasource.
+     * 
+     * @param name Name of the User.
+     * @return true if a user with username name exists else false
+     * @throws InterruptedException
+     */
+    private boolean userExists(String name) throws InterruptedException {
+        SynchronizedResultCallback<Collection<User>> callback =
+        		new SynchronizedResultCallback<Collection<User>>();
+        dataSource.getAllUsers(callback);
+        
+        boolean success = callback.waitForResult();
+        assertTrue("Failed getting Users.", success);
+        
+        Collection<User> users = callback.getResult();
+        
+        // Find the user and report true
+        for (User u : users) {
+        	if (u.getUserName().equals(name)) {
+        		return true;
+        	}
+        }
+        
+        // Report it doesn't exist
+        return false;
+    }
+	
+	/**
+	 * Checks if a user has at least one claim.
+	 * 
+	 * @param claimant Name of the User.
+	 * @return true if the user has at least one claim attached.
+	 * @throws InterruptedException 
+	 */
+	private boolean hasClaim(User claimant) throws InterruptedException {
+		SynchronizedResultCallback<Collection<Claim>> callback =
+				new SynchronizedResultCallback<Collection<Claim>>();
+		dataSource.getAllClaims(callback);
+        
+        boolean success = callback.waitForResult();
+        assertTrue("Failed getting claims.", success);
+        
+        Collection<Claim> claims = callback.getResult();
+        
+        // Find a claim and report true
+        for (Claim c : claims) {
+        	if(c.getUser().equals(claimant.getUUID())) {
+        		return true;
+        	}
+        }
+        
+        // report no claim exists
+		return false;
+	}
+    
 }

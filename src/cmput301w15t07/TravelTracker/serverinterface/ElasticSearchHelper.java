@@ -8,6 +8,7 @@ import cmput301w15t07.TravelTracker.model.Document;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -49,16 +50,20 @@ public class ElasticSearchHelper implements ServerHelper{
 	public Collection<Claim> getClaims(UUID user) throws Exception {
 		String query = getQueryString("user", user.toString());
 		
-		Search search = new Search.Builder(query)
-		.addIndex(Constants.INDEX)
-		.addType(Constants.Type.CLAIM.toString()).build();
+		Search search = getSearch(query, Constants.Type.CLAIM);
+		
+//		Search search = new Search.Builder(query)
+//		.addIndex(Constants.INDEX)
+//		.addType(Constants.Type.CLAIM.toString()).build();
 		
 		return runSearch(search, Claim.class);
 	}
 
 	@Override
 	public Collection<Item> getExpenses(UUID claim) {
-		// TODO Auto-generated method stub
+		String query = getQueryString("claim", claim.toString());
+		
+		
 		return null;
 	}
 
@@ -88,6 +93,12 @@ public class ElasticSearchHelper implements ServerHelper{
 	
 	public void closeConnection(){
 		conn.shutdownClient();
+	}
+	
+	private Search getSearch(String query, Type type){
+		return new Search.Builder(query)
+		.addIndex(Constants.INDEX)
+		.addType(type.toString()).build();
 	}
 	
 	private String getQueryString(String field, String value){

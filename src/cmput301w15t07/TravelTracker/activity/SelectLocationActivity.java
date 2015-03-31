@@ -150,9 +150,6 @@ public class SelectLocationActivity extends TravelTrackerActivity {
     class LocationSelectedListener implements OnMapClickListener {
 		@Override
         public void onMapClick(LatLng location) {
-			String msg = getString(R.string.location_selected);
-			Toast.makeText(SelectLocationActivity.this, msg, Toast.LENGTH_SHORT).show();
-			
 			// Return the selected location
 			Intent intent = new Intent();
 			intent.putExtra(RESULT_LAT, location.latitude);

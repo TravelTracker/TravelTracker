@@ -21,6 +21,7 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import cmput301w15t07.TravelTracker.R;
@@ -30,8 +31,10 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ManageTagsListAdapter;
+import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.util.Observer;
+import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -192,13 +195,30 @@ implements Observer<DataSource> {
             
             tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
             tagListView.setAdapter(adapter);
+            tagListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            tagListView.setMultiChoiceModeListener(
+                    new MultiSelectListener(new ContextMenuListener(),
+                            R.menu.tags_list_context_menu));
             
             // Switched to real UI, no need to load anymore
             loading = false;
         }
         onLoaded();
     }
-    
+
+    public void deleteTags(ArrayList<Integer> selectedItems) {
+        // Delete in place is bad
+        ArrayList<Tag> delete = new ArrayList<Tag>();
+        for (Integer i : selectedItems) {
+            delete.add(adapter.getItem(i));
+        }
+        
+        // Real delete loop
+        ResultCallback<Void> cb = new DeleteTagCallback();
+        for (Tag t : delete) {
+            datasource.deleteTag(t.getUUID(), cb);
+        }
+    }
     
     /**
      * Multicallback intended to get all data necessary for this activity upon
@@ -223,6 +243,35 @@ implements Observer<DataSource> {
         public void onError(String message) {
             Toast.makeText(ManageTagsActivity.this, message,
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    class DeleteTagCallback implements ResultCallback<Void> {
+        // Do nothing
+        @Override
+        public void onResult(Void result) {}
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ManageTagsActivity.this, message,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     *  Listener for Context menu 
+     */
+    class ContextMenuListener implements multiSelectMenuListener {
+        @Override
+        public void menuButtonClicked(ArrayList<Integer> selectedTags,
+                MenuItem item) {
+            switch (item.getItemId()) {
+            case R.id.tags_list_context_delete:
+                deleteTags(selectedTags);
+                break;
+            default:
+                break;
+            }
         }
     }
 }

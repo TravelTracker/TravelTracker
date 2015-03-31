@@ -161,37 +161,6 @@ implements Observer<DataSource> {
         // Notify ready
         multi.ready();
     }
-    
-    /**
-     * Listener for add Tag button.
-     */
-    public class AddTagOnClickListener implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            final String title = titleEditText.getText().toString();
-            for (Tag t : tags) {
-                if (title.equals(t.getTitle())) {
-                    Toast.makeText(ManageTagsActivity.this,
-                            title + " already exists!", Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                }
-            }
-            
-            datasource.addTag(user, new ResultCallback<Tag>() {
-                @Override
-                public void onResult(Tag result) {
-                    result.setTitle(titleEditText.getText().toString());
-                }
-
-                @Override
-                public void onError(String message) {
-                    Toast.makeText(ManageTagsActivity.this, message,
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
 
     /**
      * Sets the content view to the activity view and then gets all of the
@@ -264,6 +233,10 @@ implements Observer<DataSource> {
         }
     }
     
+    /**
+     * Callback for deleting Tags. Does nothing but ignore currently.
+     *
+     */
     class DeleteTagCallback implements ResultCallback<Void> {
         // Do nothing
         @Override
@@ -273,6 +246,37 @@ implements Observer<DataSource> {
         public void onError(String message) {
             Toast.makeText(ManageTagsActivity.this, message,
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * Listener for add Tag button.
+     */
+    public class AddTagOnClickListener implements OnClickListener {
+        @Override
+        public void onClick(View v) {
+            final String title = titleEditText.getText().toString();
+            for (Tag t : tags) {
+                if (title.equals(t.getTitle())) {
+                    Toast.makeText(ManageTagsActivity.this,
+                            title + " already exists!", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+            }
+            
+            datasource.addTag(user, new ResultCallback<Tag>() {
+                @Override
+                public void onResult(Tag result) {
+                    result.setTitle(titleEditText.getText().toString());
+                }
+
+                @Override
+                public void onError(String message) {
+                    Toast.makeText(ManageTagsActivity.this, message,
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
     

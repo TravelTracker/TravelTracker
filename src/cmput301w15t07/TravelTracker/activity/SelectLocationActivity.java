@@ -58,7 +58,7 @@ public class SelectLocationActivity extends TravelTrackerActivity {
     public static final String RESULT_LNG = "cmput301w15t07.TravelTracker.resultLng";
     
     /** Default zoom level when a position is passed in the intent */
-    private static final float zoomLevel = 9.f;
+    private static final float zoomLevel = 5.f;
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

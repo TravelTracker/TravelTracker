@@ -23,6 +23,8 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.io.Serializable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * A serializable alternative to Android's LatLng class. Immutable so that
  * the containing Document will always be alerted to changes.
@@ -58,5 +60,13 @@ public class Geolocation implements Serializable {
 	 */
 	public double getLongitude() {
 		return longitude;
+	}
+	
+	/**
+	 * Get the LatLng representation of this location.
+	 * @return This Geolocation as a LatLng.
+	 */
+	public LatLng getLatLng() {
+		return new LatLng(getLatitude(), getLongitude());
 	}
 }

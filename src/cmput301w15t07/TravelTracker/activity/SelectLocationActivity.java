@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
@@ -76,6 +77,13 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         // Set up map
         GoogleMap map = getMap();
         map.setOnMapClickListener(new LocationSelectedListener());
+        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+			@Override
+			public void onMapLoaded() {
+		        String msg = getString(R.string.tap_to_select_location);
+		        Toast.makeText(SelectLocationActivity.this, msg, Toast.LENGTH_LONG).show();
+			}
+		});
         
         UiSettings settings = map.getUiSettings();
         settings.setMapToolbarEnabled(false);
@@ -99,14 +107,6 @@ public class SelectLocationActivity extends TravelTrackerActivity {
 	        			.position(position));
 	        }
         }
-    }
-    
-    @Override
-    protected void onStart() {
-        super.onStart();
-        
-        String msg = getString(R.string.tap_to_select_location);
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
     
     @Override

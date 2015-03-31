@@ -53,6 +53,7 @@ import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
+import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
 
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
@@ -175,24 +176,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    
-	    // Get the location if it was returned
-	    if (requestCode == SELECT_LOCATION_REQUEST && resultCode == RESULT_OK) {
-	    	Double lat = data.getDoubleExtra(SelectLocationActivity.RESULT_LAT, Double.NaN);
-	    	Double lng = data.getDoubleExtra(SelectLocationActivity.RESULT_LNG, Double.NaN);
-	    	
-	    	if (!lat.isNaN() && !lng.isNaN()) {
-	    		LatLng position = new LatLng(lat, lng);
-	    		
-	    		// TODO: store this in user
-	    		Toast.makeText(this, position.toString(), Toast.LENGTH_LONG).show();
-	    	}
-	    }
-	}
-	
-	@Override
 	public void update(DataSource observable) {
 		updateUI();
 	}
@@ -244,16 +227,22 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Launch the select location activity for home location.
      */
     private void launchSetHomeLocation() {
-    	Intent intent = new Intent(context, SelectLocationActivity.class);
+    	String title = getString(R.string.claims_list_set_home_location);
     	
-    	// TODO: pass this from user's current home location, or fall back to current position
-    	LocationManager locMan = (LocationManager) getSystemService(LOCATION_SERVICE);
-    	Location location = locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    	SelectLocationFragment.ResultCallback callback = new SelectLocationFragment.ResultCallback() {
+			@Override
+			public void onSelectLocationResult(LatLng location) {
+				Toast.makeText(ClaimsListActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
+			}
+			
+			@Override
+			public void onSelectLocationCancelled() {
+				Toast.makeText(ClaimsListActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+			}
+		};
     	
-    	intent.putExtra(SelectLocationActivity.START_LAT, location.getLatitude());
-    	intent.putExtra(SelectLocationActivity.START_LNG, location.getLongitude());
-    	
-    	startActivityForResult(intent, SELECT_LOCATION_REQUEST);
+    	SelectLocationFragment fragment = new SelectLocationFragment(callback ,null, title);
+    	fragment.show(getFragmentManager(), "selectLocation");
     }
 	/**
 	 * launch the claimInfo activity for a new claim

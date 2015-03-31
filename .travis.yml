@@ -32,9 +32,11 @@ android:
 before_script:
    - echo "y" | android -s update sdk --filter android-17,platform-tool --no-ui
    - android -s update project --path . --target "android-17"
-   - android -s update lib-project --path libs/google-play-services_lib
+   - cd libs/google-play-services_lib
+   - cd ../../
+   - android -s update lib-project --path . --target "android-17"
    - cd tests
-   - android -s update test-project --path . -m ../
+   - android -s update test-project --path . -m ../ --target "android-17"
     
    - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
    - emulator -avd test -no-skin -no-audio -no-window &

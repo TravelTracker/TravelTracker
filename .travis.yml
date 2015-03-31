@@ -34,9 +34,9 @@ before_script:
    - android -s update project --path . --target "android-17"
    - cd libs/google-play-services_lib
    - cd ../../
-   - android -s update lib-project --path . --target "android-17"
+   - android -s update lib-project --path .
    - cd tests
-   - android -s update test-project --path . -m ../ --target "android-17"
+   - android -s update test-project --path . -m ../
     
    - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
    - emulator -avd test -no-skin -no-audio -no-window &

@@ -29,6 +29,7 @@
     
     <!-- Strings used in ClaimsListActivity -->
         <string name="claims_list_label">Claims List</string>
+        <string name="claims_list_home_location_failed">Failed to set home location</string>
         
         <!-- Used in menu -->
 	    <string name="claims_list_filter_by_tag">Filter By Tag</string>

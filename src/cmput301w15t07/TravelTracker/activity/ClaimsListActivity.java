@@ -64,6 +64,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	private ClaimAdapter adapter;
 	private InitialData data; 
 	private Context context;
+	User user;
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
@@ -218,7 +219,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         startActivity(intent);
     }
     /**
-     * Launch the select location activity for home location.
+     * Launch the select location fragment for home location.
      */
     private void launchSetHomeLocation() {
     	String title = getString(R.string.claims_list_set_home_location);
@@ -226,16 +227,22 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	SelectLocationFragment.ResultCallback callback = new SelectLocationFragment.ResultCallback() {
 			@Override
 			public void onSelectLocationResult(LatLng location) {
-				Toast.makeText(ClaimsListActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
+				setUserLocation(location);
 			}
 			
 			@Override
-			public void onSelectLocationCancelled() {
-				Toast.makeText(ClaimsListActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
-			}
+			public void onSelectLocationCancelled() {}
 		};
     	
-    	SelectLocationFragment fragment = new SelectLocationFragment(callback ,null, title);
+		LatLng location = null;
+		User user = data.getUser();
+		Geolocation geolocation = user.getHomeLocation();
+		
+		if (geolocation != null) {
+			location = geolocation.getLatLng();
+		}
+		
+    	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title);
     	fragment.show(getFragmentManager(), "selectLocation");
     }
 	/**
@@ -250,6 +257,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			//TODO figure out what to do here
 			Log.d("ERROR", "The user in Initial Data is null");
 		}
+	}
+	/**
+	 * Set the user's location.
+	 * @param location The location to set.
+	 */
+	private void setUserLocation(final LatLng location) {
+		Geolocation geoloc = new Geolocation(location.latitude, location.longitude);
+		data.getUser().setHomeLocation(geoloc);
 	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{

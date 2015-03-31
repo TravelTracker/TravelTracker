@@ -24,24 +24,21 @@ package cmput301w15t07.TravelTracker.activity;
 
 import java.util.ArrayList;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -51,9 +48,10 @@ import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
-import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
+
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
@@ -69,9 +67,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
-	
-	/** Request code for home location select */
-	private static final int SELECT_LOCATION_REQUEST = 1;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -144,8 +139,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
         appendNameToTitle(userData.getName());
         
-        //TODO this will break when we change data sources
-        ((Observable<DataSource>) datasource).addObserver(this);
+        datasource.addObserver(this);
         
         adapter = new ClaimAdapter(context, userData.getRole());
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);

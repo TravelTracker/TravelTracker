@@ -34,9 +34,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -46,8 +48,10 @@ import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
-import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
+import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
+
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * List Claims.  Can be done as a Claimant or an Approver.
@@ -60,6 +64,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	private ClaimAdapter adapter;
 	private InitialData data; 
 	private Context context;
+	User user;
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
@@ -97,6 +102,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		case R.id.claims_list_add_claim:
 			launchClaimInfoNewClaim(data.getUser());
 			return true;
+            
+        case R.id.claims_list_set_home_location:
+        	launchSetHomeLocation();
+        	return true;
 			
         case R.id.claims_list_sign_out:
             signOut();
@@ -128,8 +137,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
         appendNameToTitle(userData.getName());
         
-        //TODO this will break when we change data sources
-        ((Observable<DataSource>) datasource).addObserver(this);
+        datasource.addObserver(this);
         
         adapter = new ClaimAdapter(context, userData.getRole());
         ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
@@ -207,6 +215,33 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         intent.putExtra(ManageTagsActivity.USER_DATA, userData);
         startActivity(intent);
     }
+    /**
+     * Launch the select location fragment for home location.
+     */
+    private void launchSetHomeLocation() {
+    	String title = getString(R.string.claims_list_set_home_location);
+    	
+    	SelectLocationFragment.ResultCallback callback = new SelectLocationFragment.ResultCallback() {
+			@Override
+			public void onSelectLocationResult(LatLng location) {
+				setUserLocation(location);
+			}
+			
+			@Override
+			public void onSelectLocationCancelled() {}
+		};
+    	
+		LatLng location = null;
+		User user = data.getUser();
+		Geolocation geolocation = user.getHomeLocation();
+		
+		if (geolocation != null) {
+			location = geolocation.getLatLng();
+		}
+		
+    	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title);
+    	fragment.show(getFragmentManager(), "selectLocation");
+    }
 	/**
 	 * launch the claimInfo activity for a new claim
 	 * @param user The current user that will be assigned to the claim 
@@ -219,6 +254,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			//TODO figure out what to do here
 			Log.d("ERROR", "The user in Initial Data is null");
 		}
+	}
+	/**
+	 * Set the user's location.
+	 * @param location The location to set.
+	 */
+	private void setUserLocation(final LatLng location) {
+		Geolocation geoloc = new Geolocation(location.latitude, location.longitude);
+		data.getUser().setHomeLocation(geoloc);
 	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{

@@ -34,7 +34,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  */
 public class User extends Document {
 	private String userName;
-	
+	private Geolocation homeLocation;
+
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
 	 * 
@@ -59,6 +60,23 @@ public class User extends Document {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+		this.<User>hasChanged(this);
+	}
+	
+	/**
+	 * Get the user's home location.
+	 * @return The geolocation of the user's home location.
+	 */
+	public Geolocation getHomeLocation() {
+		return homeLocation;
+	}
+
+	/**
+	 * Set the user's home location.
+	 * @param homeLocation The new home location.
+	 */
+	public void setHomeLocation(Geolocation homeLocation) {
+		this.homeLocation = homeLocation;
 		this.<User>hasChanged(this);
 	}
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <!-- Referenced
+    	 http://xperiment-andro.blogspot.ca/2013/02/nested-fragments.html
+    	 on 30/04/15 -->
+    <FrameLayout
+        android:id="@+id/select_location_fragment_map"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="3dp" />
+
+    <Button
+        android:id="@+id/select_location_fragment_select_location_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_location_fragment_select_location" />
+
+    <Button
+        android:id="@+id/select_location_fragment_current_location_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_location_fragment_current_location" />
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/select_location_fragment_cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@android:string/cancel" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/select_location_fragment_ok_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@android:string/ok" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -35,12 +35,16 @@ import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -184,6 +188,8 @@ implements Observer<DataSource> {
                     new MultiSelectListener(new ContextMenuListener(),
                             R.menu.tags_list_context_menu));
             
+            tagListView.setOnItemClickListener(new TagRenameListener());
+            
             // Switched to real UI, no need to load anymore
             loading = false;
         }
@@ -259,7 +265,8 @@ implements Observer<DataSource> {
             for (Tag t : tags) {
                 if (title.equals(t.getTitle())) {
                     Toast.makeText(ManageTagsActivity.this,
-                            title + " already exists!", Toast.LENGTH_SHORT)
+                            title + getString(R.string.manage_tags_tag_exists),
+                            Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
@@ -279,6 +286,99 @@ implements Observer<DataSource> {
             });
         }
     }
+    
+    /**
+     * Listens to items being clicked in the Tag ListView. Calls up the rename
+     * AlertDialog.
+     */
+    public class TagRenameListener implements OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                long id) {
+            Tag selected = adapter.getItem(position);
+            
+            // Begin making alert dialog
+            AlertDialog.Builder adb =
+                    new AlertDialog.Builder(ManageTagsActivity.this);
+            
+            // Create edit text and limit to one line of text
+            EditText input = new EditText(ManageTagsActivity.this);
+            input.setText(selected.getTitle());
+            input.setMaxLines(1);
+            input.setLines(1);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            
+            adb.setView(input);
+            
+            // Don't give listener here, see lower comment for why
+            adb.setPositiveButton(
+                    getString(R.string.manage_tags_dialog_rename), null);
+            
+            // No listener at all, just want default dismiss dialog behaviour
+            adb.setNegativeButton(
+                    getString(R.string.manage_tags_dialog_cancel), null);
+            
+            AlertDialog dialog = adb.create();
+            dialog.show();
+            
+            /* http://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
+             * Override onClickListener here to prevent the dialog from being
+             * closed before we're done with it, link above has better
+             * explanation.
+             */
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(
+                        new RenameDialogListener(dialog, input, selected));
+        }
+    }
+    
+    /**
+     * Listens for the positive (rename) button in the tag rename dialog.
+     * 
+     * Replaces the default listener which always calls dialog.dismiss and so
+     * there must be a case where this dismisses the dialog (the inputted name
+     * is not a duplicate).
+     * 
+     * For more info:
+     * http://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
+     */
+    public class RenameDialogListener implements OnClickListener {
+        private AlertDialog dialog;
+        private EditText input;
+        private Tag selected;
+
+        public RenameDialogListener(AlertDialog dialog, EditText input, 
+                Tag selected) {
+            this.dialog = dialog;
+            this.input = input;
+            this.selected = selected;
+        }
+        
+        @Override
+        public void onClick(View v) {
+            String title = input.getText().toString();
+            for (Tag t : tags) {
+                // Ignore renaming to yourself? Same as cancel.
+                if (selected.equals(t)) continue;
+                
+                // Notify on duplicate name and don't close
+                if (title.equals(t.getTitle())) {
+                    Toast.makeText(ManageTagsActivity.this,
+                            title + getString(R.string.manage_tags_tag_exists),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+            }
+            
+            // Set to new title
+            selected.setTitle(title);
+            
+            // Dismiss dialog
+            dialog.dismiss();
+        }
+    }
+
     
     /**
      *  Listener for Context menu 

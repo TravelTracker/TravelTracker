@@ -76,5 +76,7 @@ public class User extends Document {
 	 */
 	public void setHomeLocation(Geolocation homeLocation) {
 		this.homeLocation = homeLocation;
+		
+		updateObservers(this);
 	}
 }

@@ -21,7 +21,14 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-import com.google.android.gms.maps.CameraUpdate;
+import android.app.FragmentManager;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+import cmput301w15t07.TravelTracker.R;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -30,14 +37,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import android.app.FragmentManager;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
-import cmput301w15t07.TravelTracker.R;
 
 /**
  * Lets the user select a location using the Google Maps API.

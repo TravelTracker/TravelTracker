@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.model.Tag;
+import cmput301w15t07.TravelTracker.R;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,12 @@ public class ManageTagsListAdapter extends ArrayAdapter<Tag> {
         
         TextView view = (TextView) rowView.findViewById(android.R.id.text1);
         view.setText(tagData.getTitle());
+        
+        // Sets the the row selected background to be the dark grey the other
+        // list views use. Necessary in code rather than in the XML since
+        // we're using a layout from android (simple_list_item_1) where we
+        // can't affect the layout XML
+        rowView.setBackgroundResource(R.layout.background_activated);
         
         return rowView;
     }

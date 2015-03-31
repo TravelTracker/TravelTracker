@@ -2,6 +2,7 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.model.Tag;
@@ -43,7 +44,11 @@ public class ManageTagsListAdapter extends ArrayAdapter<Tag> {
         sort(new Comparator<Tag>() {
             @Override
             public int compare(Tag lhs, Tag rhs) {
-                return rhs.getTitle().compareTo(lhs.getTitle());
+                /* Use Canada as the static Locale. This likely needs
+                 * to be changed if this app left Canada 
+                 */
+                return lhs.getTitle().toLowerCase(Locale.CANADA)
+                        .compareTo(rhs.getTitle().toLowerCase(Locale.CANADA));
             }
         });
         
@@ -68,10 +73,11 @@ public class ManageTagsListAdapter extends ArrayAdapter<Tag> {
         TextView view = (TextView) rowView.findViewById(android.R.id.text1);
         view.setText(tagData.getTitle());
         
-        // Sets the the row selected background to be the dark grey the other
-        // list views use. Necessary in code rather than in the XML since
-        // we're using a layout from android (simple_list_item_1) where we
-        // can't affect the layout XML
+        /* Sets the the row selected background to be the dark grey the other
+         * list views use. Necessary in code rather than in the XML since
+         * we're using a layout from android (simple_list_item_1) where we
+         * can't affect the layout XML
+         */
         rowView.setBackgroundResource(R.layout.background_activated);
         
         return rowView;

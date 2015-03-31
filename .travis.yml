@@ -33,9 +33,8 @@ before_script:
    - echo "y" | android -s update sdk --filter android-17,platform-tool --no-ui
    - android -s update project --path . --target "android-17"
    - cd libs/google-play-services_lib
-   - cd ../../
-   - android -s update lib-project --path .
-   - cd tests
+   - android -s update lib-project --path . --target "android-17"
+   - cd ../../tests
    - android -s update test-project --path . -m ../
     
    - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI

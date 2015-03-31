@@ -81,6 +81,11 @@ implements Observer<DataSource> {
     /** The list view of Tags */
     private ListView tagListView;
     
+    /** The collection of current tags, used to make sure no it tags are 
+     * duplicated.
+     */
+    private Collection<Tag> tags;
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.manage_tags_menu, menu);
@@ -163,6 +168,16 @@ implements Observer<DataSource> {
     public class AddTagOnClickListener implements OnClickListener {
         @Override
         public void onClick(View v) {
+            final String title = titleEditText.getText().toString();
+            for (Tag t : tags) {
+                if (title.equals(t.getTitle())) {
+                    Toast.makeText(ManageTagsActivity.this,
+                            title + " already exists!", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+            }
+            
             datasource.addTag(user, new ResultCallback<Tag>() {
                 @Override
                 public void onResult(Tag result) {
@@ -233,9 +248,12 @@ implements Observer<DataSource> {
         @SuppressWarnings("unchecked")
         @Override
         public void onResult(SparseArray<Object> result) {
+            // Save data
             user = (User) result.get(MULTI_USER_KEY);
-            adapter.rebuildList((Collection<Tag>) result.get(MULTI_TAGS_KEY),
-                    userData.getUUID());
+            tags = (Collection<Tag>) result.get(MULTI_TAGS_KEY);
+
+            // Update UI
+            adapter.rebuildList(tags, userData.getUUID());
             ManageTagsActivity.this.updateUI();
         }
 

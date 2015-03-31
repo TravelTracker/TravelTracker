@@ -26,6 +26,7 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
@@ -77,6 +78,7 @@ public class SelectLocationFragment extends DialogFragment {
 	private GoogleMap map;
 	private String title;
 	private LatLng location;
+	private Location currentLocation;
 	private ResultCallback callback;
 	
 	/**
@@ -85,8 +87,6 @@ public class SelectLocationFragment extends DialogFragment {
 	 */
 	public SelectLocationFragment(ResultCallback callback) {
 		this.callback = callback;
-	    title = null;
-	    location = null;
 	}
 	
 	/**
@@ -114,6 +114,14 @@ public class SelectLocationFragment extends DialogFragment {
 	
 	public View onCreateView(android.view.LayoutInflater inflater,
 			android.view.ViewGroup container, Bundle savedInstanceState) {
+	    
+		// Determine title
+	    if (title == null) {
+	    	title = getString(R.string.select_location_fragment_default_title);
+	    }
+	    
+	    getDialog().setTitle(title);
+	    
 	    View view = inflater.inflate(R.layout.select_location_fragment, container);
 	    
 	    // Set up the map
@@ -163,14 +171,12 @@ public class SelectLocationFragment extends DialogFragment {
 			@Override
 			public void onClick(View v) {
 				Activity activity = getActivity();
-				LocationManager locMan = (LocationManager) activity.getSystemService(Activity.LOCATION_SERVICE);
-		    	Location lastLocation = locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		    	
-		    	if (lastLocation == null) {
+		    	if (currentLocation == null) {
 		    		String msg = getString(R.string.select_location_fragment_failed_to_get_location);
-		    		Toast.makeText(activity, msg, Toast.LENGTH_LONG).show();
+		    		Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
 		    	} else {
-		    		setLocation(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+		    		setLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
 		    	}
 			}
 		});
@@ -183,11 +189,23 @@ public class SelectLocationFragment extends DialogFragment {
 			}
 		});
 	    
-	    if (title == null) {
-	    	title = getString(R.string.select_location_fragment_default_title);
-	    }
-	    
-	    getDialog().setTitle(title);
+	    // Get location updates
+		LocationManager locMan = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
+		locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {}
+			
+			@Override
+			public void onProviderEnabled(String provider) {}
+			
+			@Override
+			public void onProviderDisabled(String provider) {}
+			
+			@Override
+			public void onLocationChanged(Location location) {
+				currentLocation = location;
+			}
+		});
 	    
 	    return view;
 	}
@@ -196,32 +214,22 @@ public class SelectLocationFragment extends DialogFragment {
 	public void onResume() {
 	    super.onResume();
 	    
-    	View mapView = getView().findViewById(R.id.select_location_fragment_map);
-	    
-	    // Hide map if no location
-	    if (location == null) {
-	    	mapView.setVisibility(View.GONE);
-	    	
-	    } else {
-	    	mapView.setVisibility(View.VISIBLE);
-	    	
-		    // Set up map if we haven't done so yet
-		    if (map == null) {
-			    // Remove the toolbar
-		    	map = mapFragment.getMap();
-			    UiSettings settings = map.getUiSettings();
-			    settings.setMapToolbarEnabled(false);
-			    
-			    map.setOnMapClickListener(new OnMapClickListener() {
-					@Override
-					public void onMapClick(LatLng arg0) {
-						launchSelectLocationActivity();
-					}
-				});
-			    
-			    updateMap();
-		    }
+	    // Set up map if we haven't done so yet
+	    if (map == null) {
+		    // Remove the toolbar
+	    	map = mapFragment.getMap();
+		    UiSettings settings = map.getUiSettings();
+		    settings.setMapToolbarEnabled(false);
+		    
+		    map.setOnMapClickListener(new OnMapClickListener() {
+				@Override
+				public void onMapClick(LatLng arg0) {
+					launchSelectLocationActivity();
+				}
+			});
 	    }
+	    
+	    updateMap();
 	}
 	
 	@Override
@@ -261,10 +269,20 @@ public class SelectLocationFragment extends DialogFragment {
 		if (map == null) {
 			return;
 		}
-
-		map.clear();
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
-		map.addMarker(new MarkerOptions().position(location));
+	    
+    	View mapView = getView().findViewById(R.id.select_location_fragment_map);
+	    
+	    // Hide map if no location
+	    if (location == null) {
+	    	mapView.setVisibility(View.GONE);
+	    	
+	    } else {
+	    	mapView.setVisibility(View.VISIBLE);
+	    	
+			map.clear();
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
+			map.addMarker(new MarkerOptions().position(location));
+	    }
 	}
 	
 	/**

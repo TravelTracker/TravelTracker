@@ -37,6 +37,7 @@ import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
+import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -204,8 +205,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
         Button dateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
         
-        EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-        EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+        final EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+        final EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
         
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
@@ -248,46 +249,28 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 });
                 
                 // Add listener for description editText
-                itemDescription.addTextChangedListener(new TextWatcher() {
-                    
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        item.setDescription(s.toString());
-                    }
-                    
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        // TODO Auto-generated method stub
-                    }
-                    
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        // TODO Auto-generated method stub              
-                    }
-                });
+                
+                itemDescription.setOnFocusChangeListener(new OnFocusChangeListener() {
+					
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (!hasFocus){
+							item.setDescription(itemDescription.getText().toString());
+						}
+						
+					}
+				});
                 
                 // Add listener for amount edit text
-                itemAmount.addTextChangedListener(new TextWatcher() {
-                    
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        try {
-                            item.setAmount(Float.parseFloat(s.toString()));
-                        } catch (NumberFormatException e) {
-                            //Dont do anything, the string is empty
-                        }
-                    }
-                    
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        // TODO Auto-generated method stub
-                    }
-                    
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        // TODO Auto-generated method stub
-                    }
-                });
+                itemAmount.setOnFocusChangeListener(new OnFocusChangeListener() {
+					
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						if(!hasFocus){
+							item.setAmount(Float.parseFloat((itemAmount.getText().toString())));
+						}
+					}
+				});
                 
                 // Add listener for currency spinner
                 currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){

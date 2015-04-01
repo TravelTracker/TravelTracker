@@ -71,7 +71,7 @@
         android:inputType="numberSigned|numberDecimal"
         android:labelFor="@+id/expenseItemInfoAmountEditText" >
 
-        
+        <requestFocus />
     </EditText>
 
     <Spinner

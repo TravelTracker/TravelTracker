@@ -3,9 +3,12 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -54,15 +57,24 @@ public class DestinationAdapter {
     /** The currently open destination editor fragment. */
     private DestinationEditorFragment destinationEditor = null;
     
-    /** The current view being used in the destination editor fragment. */
-    private View editingView = null;
-    
     /** Whether the current view being used in the destination editor fragment is new or not. */
     private boolean newDestination = false;
+    
+    /** The currently open destination deletion fragment. */
+    private DestinationDeletionFragment destinationDeleter = null;
+    
+    /** Used to store the location for a destination that is being prompted for deletion. */
+    private String deleteLocation;
+    
+    /** The current view being used in a destination fragment. */
+    private View editingView = null;
     
     private final static int LIST_VIEW_ID = R.layout.claim_info_destinations_list_item;
     private final static int LIST_LOCATION_ID = R.id.claimInfoDestinationsListItemLocationTextView;
     private final static int LIST_REASON_ID = R.id.claimInfoDestinationsListItemReasonTextView;
+    
+    private final static int COLOR_SELECTED = android.R.color.darker_gray;
+    private final static int COLOR_PLAIN = android.R.color.transparent;
     
     public DestinationAdapter (Claim claim, ArrayList<Destination> destinations) {
         this.claim = claim;
@@ -85,7 +97,7 @@ public class DestinationAdapter {
         this.destinations = destinations;
     }
     
-    public void displayView(Context context, UserData userData, LinearLayout linearLayout, FragmentManager manager) {
+    public void createList(Context context, UserData userData, LinearLayout linearLayout, FragmentManager manager) {
         this.context = context;
         this.linearLayout = linearLayout;
         
@@ -107,6 +119,7 @@ public class DestinationAdapter {
                 
                 @Override
                 public void onClick(View v) {
+                    v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
                     newDestination = false;
                     promptEditDestination(v, manager);
                 }
@@ -116,7 +129,8 @@ public class DestinationAdapter {
                 
                 @Override
                 public boolean onLongClick(View v) {
-                    promptDeleteDestination(v);
+                    v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
+                    promptDeleteDestination(v, manager);
                     return false;
                 }
             });
@@ -154,6 +168,7 @@ public class DestinationAdapter {
      */
     private void promptEditDestination(View view, FragmentManager manager) {
         Destination destination = (Destination) view.getTag();
+        
         editingView = view;
         destinationEditor = new DestinationEditorFragment(destination.getLocation(), destination.getReason(), new DestinationCallback());
         destinationEditor.show(manager, "destinationEditor");
@@ -161,10 +176,11 @@ public class DestinationAdapter {
     
     private void editDestination(View view, String location, String reason) {
         Destination destination = (Destination) view.getTag();
+        int index = destinations.indexOf(destination);
         destinations.remove(destination);
         
         destination = new Destination(location, reason);
-        destinations.add(destination);
+        destinations.add(index, destination);
         setDestination(view, destination);
         
         updateReasonVisibilty(view, destination.getReason());
@@ -175,23 +191,13 @@ public class DestinationAdapter {
     /**
      * Prompt for deleting a destination.
      */
-    private void promptDeleteDestination(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(R.string.claim_info_delete_destination)
-               .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteDestination(view);
-                    }
-               })
-               .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                    }
-               })
-               .create()
-               .show();
+    private void promptDeleteDestination(View view, FragmentManager manager) {
+        Destination destination = (Destination) view.getTag();
+        deleteLocation = destination.getLocation();
+        
+        editingView = view;
+        destinationDeleter = new DestinationDeletionFragment();
+        destinationDeleter.show(manager, "destinationDeleter");
     }
     
     private void deleteDestination(View view) {
@@ -223,10 +229,14 @@ public class DestinationAdapter {
         }
     }
     
-    private void setEditorDefaults() {
-        destinationEditor = null;
+    private void setFragmentDefaults() {
+        editingView.setBackgroundColor(context.getResources().getColor(COLOR_PLAIN));
         editingView = null;
+        
+        destinationEditor = null;
         newDestination = false;
+        
+        destinationDeleter = null;
     }
     
     /**
@@ -248,18 +258,48 @@ public class DestinationAdapter {
                     linearLayout.addView(editingView);
                 }
             }
-            
-            setEditorDefaults();
         }
 
         @Override
-        public void onDestinationEditorFragmentCancelled() {
-            if (newDestination) {
+        public void onDestinationEditorFragmentDismissed(boolean cancelled) {
+            if (newDestination && cancelled) {
                 Destination destination = (Destination) editingView.getTag();
                 destinations.remove(destination);
             }
             
-            setEditorDefaults();
+            setFragmentDefaults();
+        }
+    }
+    
+    /**
+     * Custom fragment for deleting a destination.
+     */
+    class DestinationDeletionFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = context.getString(R.string.claim_info_delete_destination) + "\n\n\"" + deleteLocation + "\"";
+            
+            return new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteDestination(editingView);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                    }
+                })
+                .create();
+        }
+        
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            setFragmentDefaults();
+            super.onDismiss(dialog);
         }
     }
 }

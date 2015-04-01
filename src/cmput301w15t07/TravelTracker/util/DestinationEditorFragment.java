@@ -47,14 +47,17 @@ public class DestinationEditorFragment extends DialogFragment {
         /**
          * Called when the destination's changes are confirmed.
          * 
-         * @param result The result (a location and a reason).
+         * @param location The location of the destination.
+         * @param reason The reason for going to the destination.
          */
         void onDestinationEditorFragmentResult(String location, String reason);
         
         /**
-         * Called when the dialog is cancelled.
+         * Called when the dialog is dismissed.
+         * 
+         * @param cancelled True if the dialog was closed in any manner but the positive button.
          */
-        void onDestinationEditorFragmentCancelled();
+        void onDestinationEditorFragmentDismissed(boolean cancelled);
     }
 
     /** The result listener. */
@@ -65,6 +68,9 @@ public class DestinationEditorFragment extends DialogFragment {
     
     /** The reason of the destination. */
     String reason;
+    
+    /** Used to determine whether the dialog was closed via the positive button or not. */
+    private boolean cancelled = true;
     
     private final static int VIEW_ID = R.layout.claim_info_destinations_list_edit_prompt;
     private final static int LOCATION_EDIT_ID = R.id.claimInfoDestinationsListEditPromptLocationEditText;
@@ -115,16 +121,24 @@ public class DestinationEditorFragment extends DialogFragment {
                     location = locationEditText.getText().toString();
                     reason = reasonEditText.getText().toString();
                     callback.onDestinationEditorFragmentResult(location, reason);
+                    cancelled = false;
                     dialog.dismiss();
                 }
             })
             .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    callback.onDestinationEditorFragmentCancelled();
+                    cancelled = true;
                     dialog.dismiss();
                 }
             })
             .create();
+    }
+    
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        callback.onDestinationEditorFragmentDismissed(cancelled);
+        cancelled = true;
+        super.onDismiss(dialog);
     }
 }

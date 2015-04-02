@@ -98,6 +98,9 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				
 				// Set currency
 				item.setCurrency(ItemCurrency.values()[r.nextInt(ItemCurrency.values().length)]);
+				
+				// Set category
+				item.setCategory(ItemCategory.values()[r.nextInt(ItemCategory.values().length)]);
 
 				// Random time (10 days before today to 10 after)
 				calendar = Calendar.getInstance();

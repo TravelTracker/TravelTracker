@@ -52,12 +52,8 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
     
     private Collection<Item> items;
     
-    /** Context of the activity the adapter is being used in. */
-    private Context context;
-
     public ExpenseItemsListAdapter(Context context) {
         super(context, LAYOUT_ID);
-        this.context = context;
     }
     
     /**
@@ -150,7 +146,7 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         		(TextView) rowView.findViewById(
         				R.id.expenseItemsListItemViewCostTextView);
         ItemCurrency curr = itemData.getCurrency();
-        String costString = String.valueOf(itemData.getAmount()) + " " + curr.getString(context);
+        String costString = String.valueOf(itemData.getAmount()) + " " + curr.getString(getContext());
         costView.setText(costString);
 	}
 	
@@ -206,15 +202,8 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         TextView categoryView = 
         		(TextView) rowView.findViewById(
         				R.id.expenseItemsListItemViewCategoryTextView);
-        String categoryString;
         ItemCategory category = itemData.getCategory();
-        if (category != null) {
-        	categoryString = "Category: " +
-        			itemData.getCategory().getString(getContext());
-        }
-        else {
-        	categoryString = "No category";
-        }
+        String categoryString = "Category: " + category.getString(getContext());
         categoryView.setText(categoryString);
     }
 }

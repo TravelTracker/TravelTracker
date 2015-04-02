@@ -21,3 +21,11 @@ Copyright 2015 Kirby Banman,
    See the License for the specific language governing permissions and
    limitations under the License.
 ```
+
+## Building and installing
+Use Eclipse to build and install the project.
+
+Note that all map features require a device with Google Play Services installed.
+These features will also fail unless you have added your own API key to the
+`android:name="com.google.android.geo.API_KEY"` metadata tag in AndroidManifest.xml
+(see this guide: https://developers.google.com/maps/documentation/android/start#obtain_a_google_maps_api_key)

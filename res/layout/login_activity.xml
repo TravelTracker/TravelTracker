@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/login_name"
-        android:inputType="textPersonName"
+        android:inputType="textCapWords"
         android:lines="1" >
 
         <requestFocus />

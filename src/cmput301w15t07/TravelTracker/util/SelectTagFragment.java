@@ -41,7 +41,7 @@ import android.widget.ListView;
  * 
  * @author colp
  */
-public class FilterByTagFragment extends DialogFragment {
+public class SelectTagFragment extends DialogFragment {
 	private TagCheckboxAdapter listAdapter;
 	private Collection<Tag> tags;
 	private Collection<Tag> selected;
@@ -67,7 +67,7 @@ public class FilterByTagFragment extends DialogFragment {
 		
 	    // Inflate inner layout
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    ListView listView = (ListView) inflater.inflate(R.layout.filter_by_tag_fragment, null);
+	    ListView listView = (ListView) inflater.inflate(R.layout.select_tag_fragment, null);
 	    builder.setView(listView);
 	    
 	    // Configure list view

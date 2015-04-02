@@ -2,7 +2,7 @@
 <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/filter_by_tag_listview" >
+    android:id="@+id/select_tag_listview" >
     
 
 </ListView>

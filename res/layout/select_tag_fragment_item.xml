@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
 
     <CheckBox
-        android:id="@+id/filter_by_fragment_item_checkbox"
+        android:id="@+id/select_tag_fragment_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""

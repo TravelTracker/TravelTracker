@@ -30,15 +30,14 @@ import android.widget.CheckBox;
  */
 
 /**
- * Custom adapter used to display a checkbox next to tags for the
- * FilterByTagFragment fragment.
+ * Custom adapter used to display a checkbox next to select tags.
  * 
  * @author colp
  */
 
 public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
 	public TagCheckboxAdapter(Context context) {
-	    super(context, R.layout.filter_by_tag_fragment_item, R.id.filter_by_fragment_item_checkbox);
+	    super(context, R.layout.select_tag_fragment_item, R.id.select_tag_listview);
     }
 	
 	@Override
@@ -47,7 +46,7 @@ public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
 	    
 	    Tag item = getItem(position);
 	    
-	    CheckBox checkBox = (CheckBox) view.findViewById(R.id.filter_by_fragment_item_checkbox);
+	    CheckBox checkBox = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
 	    checkBox.setText(item.getTitle());
 	    
 	    return view;

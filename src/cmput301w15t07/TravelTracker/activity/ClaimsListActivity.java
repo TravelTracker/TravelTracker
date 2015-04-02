@@ -45,7 +45,7 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
-import cmput301w15t07.TravelTracker.util.FilterByTagFragment;
+import cmput301w15t07.TravelTracker.util.SelectTagFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
@@ -71,7 +71,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	private UserData userData;
 	
 	/** The filter by tags fragment. */
-	FilterByTagFragment filterFragment;
+	SelectTagFragment filterFragment;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,7 +162,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			}
 		});
 		
-		filterFragment = new FilterByTagFragment();
+		filterFragment = new SelectTagFragment();
 	}
 	
 	@Override

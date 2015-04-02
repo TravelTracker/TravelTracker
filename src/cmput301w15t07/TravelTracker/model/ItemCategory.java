@@ -1,5 +1,7 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import cmput301w15t07.TravelTracker.R;
 
@@ -59,6 +61,25 @@ public enum ItemCategory implements ContextStringable {
 		return this.id;
 	}
 	
+    /**
+     * This method returns the String array for all the ItemCategory String values.
+     * @param context The Android context in which this is operating.
+     * @return A String array of all the ItemCategory strings.
+     */
+    public static String[] getStringArray(Context context) {
+        ItemCategory[] categories = ItemCategory.values();
+        ArrayList<String> stringList = new ArrayList<String>();
+        
+        for (ItemCategory category : categories) {
+            stringList.add(category.getString(context));
+        }
+        
+        String[] stringArray = new String[stringList.size()];
+        stringArray = stringList.toArray(stringArray);
+        
+        return stringArray;
+    }
+    
 	/**
 	 * This method returns the ItemCategory instance corresponding to the passed string.
 	 * @param text The text to search for.

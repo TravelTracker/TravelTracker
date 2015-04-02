@@ -325,23 +325,26 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-                        ItemCurrency currency = ((ItemCurrency) parent.getItemAtPosition(position));
+                        String currString = (String) parent.getItemAtPosition(position);
+                        ItemCurrency currency = ItemCurrency.fromString(currString, ExpenseItemInfoActivity.this);
                         item.setCurrency(currency);
                     }
                     
                     public void onNothingSelected(AdapterView<?> arg0){}
-                
                 });
                 
                 // Add listener for category spinner
                 categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
-                    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id){
-                        item.setCategory( (ItemCategory) adapter.getItemAtPosition(position));
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                        String catString = (String) parent.getItemAtPosition(position);
+                        ItemCategory category = ItemCategory.fromString(catString, ExpenseItemInfoActivity.this);
+                        item.setCategory(category);
                     }
                     
                     public void onNothingSelected(AdapterView<?> arg0){}
                 });
+                
             } else {
                 // These views should do nothing if the claim isn't editable
                 disableView(itemStatus);
@@ -437,27 +440,17 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             // the Field is empty, so dont load anything
         }
         
-        //TODO: import data for currency spinner
+        // Set currency spinner with strings from ItemCurrency
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
-        currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout
-        		.simple_spinner_item, ItemCurrency.values()));
-        try {
-            currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency()
-            		.toString(), this).ordinal(),true);
-        } catch (NullPointerException e) {
-            // the field is null or empty, dont load anything
-        }
+        currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout
+        		.simple_spinner_item, ItemCurrency.getStringArray(this)));
+        currencySpinner.setSelection(item.getCurrency().ordinal(), true);
         
-        //TODO: import the category for the spinner
-        //change generated data source file to get proper data for enums 
+        // Set category spinner with strings from ItemCategory
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
-        categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R
-        		.layout.simple_spinner_item, ItemCategory.values()));
-        try {
-            categorySpinner.setSelection(item.getCategory().ordinal(),true);
-        } catch (NullPointerException e) {
-            // Item is empty or null, dont load anything
-        }
+        categorySpinner.setAdapter(new ArrayAdapter<String>(this, android.R
+        		.layout.simple_spinner_item, ItemCategory.getStringArray(this)));
+        categorySpinner.setSelection(item.getCategory().ordinal(), true);
         
         EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
         try {

@@ -1,5 +1,6 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.ArrayList;
 import java.util.Currency;
 
 import cmput301w15t07.TravelTracker.R;
@@ -56,6 +57,25 @@ public enum ItemCurrency implements ContextStringable {
     }
     
     /**
+     * This method returns the String array for all the ItemCurrency String values.
+     * @param context The Android context in which this is operating.
+     * @return A String array of all the ItemCurrency strings.
+     */
+    public static String[] getStringArray(Context context) {
+        ItemCurrency[] currencies = ItemCurrency.values();
+        ArrayList<String> stringList = new ArrayList<String>();
+        
+        for (ItemCurrency currency : currencies) {
+            stringList.add(currency.getString(context));
+        }
+        
+        String[] stringArray = new String[stringList.size()];
+        stringArray = stringList.toArray(stringArray);
+        
+        return stringArray;
+    }
+    
+    /**
      * This method returns the ItemCurrency instance corresponding to the passed string.
 	 * @param text The text to search for.
 	 * @param context The Android context in which this is operating.
@@ -71,5 +91,4 @@ public enum ItemCurrency implements ContextStringable {
         }
         return null;
     }
-
 }

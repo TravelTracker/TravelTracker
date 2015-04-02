@@ -96,7 +96,7 @@
         <string name= "expense_item_info_amount">Amount</string>
         <string name= "expense_item_info_category">Category</string>
         <string name= "expense_item_info_description">Description</string>
-        <string name= "expense_item_info_capture_receipt_message">Add a new recipt image?</string>
+        <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>
         <string name= "take_photo">Take photo</string>
         <string name= "choose_from_gallery">Choose from gallery</string>
         

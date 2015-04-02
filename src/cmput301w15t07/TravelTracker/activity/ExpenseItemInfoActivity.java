@@ -21,16 +21,24 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.commons.lang3.math.IEEE754rUtils;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -91,6 +99,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     
     /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
     private Boolean fromClaimInfo;
+    
+    /** Uri of the receipt image file */
+    private Uri imageFileUri;
+    
+    private static final int CAMERA_REQUEST = 100;
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -204,8 +217,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         final CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
         Button dateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
         
-        EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-        EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
+        final EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
+        final EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
         
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
@@ -233,8 +246,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onClick(View v) {
-                        // TODO: add code for image picker
-                        
+                    	//referenced stackoverflow.com/questions/5991319
+                    	takePhoto();
                     }
                 });
                 
@@ -252,7 +265,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        item.setDescription(s.toString());
+                        //do nothing
                     }
                     
                     @Override
@@ -262,7 +275,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void afterTextChanged(Editable s) {
-                        // TODO Auto-generated method stub              
+                    	item.setDescription(s.toString());   
+                    	itemDescription.requestFocus();
                     }
                 });
                 
@@ -271,11 +285,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        try {
-                            item.setAmount(Float.parseFloat(s.toString()));
-                        } catch (NumberFormatException e) {
-                            //Dont do anything, the string is empty
-                        }
+                       //do nothing
                     }
                     
                     @Override
@@ -285,7 +295,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void afterTextChanged(Editable s) {
-                        // TODO Auto-generated method stub
+                    	try {
+                            item.setAmount(Float.parseFloat(s.toString()));
+                        } catch (NumberFormatException e) {
+                            //Dont do anything, the string is empty
+                        }
+                    	itemAmount.requestFocus();
                     }
                 });
                 
@@ -338,6 +353,38 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         onLoaded();
 	}
 	
+	public void takePhoto(){
+		//Referenced CameraTest Lab files
+		
+		//create folder to store pictures
+		String folderPath = Environment.getExternalStorageDirectory()
+				.getAbsolutePath() + "/tmp";
+		File folder = new File(folderPath);
+		if (!folder.exists()){
+			folder.mkdir();
+		}
+			
+		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		
+		//create URI for the image file
+		String imageFilePath = folderPath + "/" 
+				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
+		File imageFile = new File(imageFilePath);
+		imageFileUri = Uri.fromFile(imageFile);
+        
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		  ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
+				imageButton.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
+			
+		}
+	}
 	/**
 	 * Populate the fields with data.
 	 * @param item The item being viewed.
@@ -355,7 +402,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         ImageView receiptImageView = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
         try {
         	if (item.getReceipt().getPhoto() == null) {
-        		receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets().open("receipt.png")));
+        		receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets()
+        				.open("receipt.png")));
         	} else {
         		//TODO image populate
         	}
@@ -363,7 +411,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
 		}
       
-        //TODO: Note, amount string will have to be changed back to float before being inserted into model
+        
         String amount = Float.toString(item.getAmount());
         EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
         try {
@@ -374,9 +422,11 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         
         //TODO: import data for currency spinner
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
-        currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout.simple_spinner_item, ItemCurrency.values()));
+        currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout
+        		.simple_spinner_item, ItemCurrency.values()));
         try {
-            currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency().toString(), this).ordinal(),true);
+            currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency()
+            		.toString(), this).ordinal(),true);
         } catch (NullPointerException e) {
             // the field is null or empty, dont load anything
         }
@@ -384,7 +434,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         //TODO: import the category for the spinner
         //change generated data source file to get proper data for enums 
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
-        categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R.layout.simple_spinner_item, ItemCategory.values()));
+        categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R
+        		.layout.simple_spinner_item, ItemCategory.values()));
         try {
             categorySpinner.setSelection(item.getCategory().ordinal(),true);
         } catch (NullPointerException e) {
@@ -398,7 +449,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             // the field is empty, so dont load anything
         }
         
-        CheckedTextView itemStatus = (CheckedTextView) findViewById(R.id.expenseItemInfoStatusCheckedTextView);
+        CheckedTextView itemStatus = (CheckedTextView)
+        		findViewById(R.id.expenseItemInfoStatusCheckedTextView);
         itemStatus.setChecked(item.isComplete());
 	}
 	
@@ -466,6 +518,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		datasource.deleteItem(itemID, new DeleteCallback());
 		
 	}
+	
+	
 	/**
 	 * spawn a datepicker fragment when dateButton is pressed
 	 * @param date
@@ -538,7 +592,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 onGetAllData(item);
             }
             else{
-                Toast.makeText(ExpenseItemInfoActivity.this, "the item var is null", Toast.LENGTH_LONG).show();
+                Toast.makeText(ExpenseItemInfoActivity.this,
+                		"the item var is null", Toast.LENGTH_LONG).show();
             }
         }
         

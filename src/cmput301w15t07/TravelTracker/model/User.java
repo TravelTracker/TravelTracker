@@ -1,6 +1,5 @@
 package cmput301w15t07.TravelTracker.model;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;

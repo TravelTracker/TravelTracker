@@ -140,7 +140,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             return true;
             
         case R.id.claim_info_add_item:
-            //TODO get claim instance for this. <-- Copied from ExpenseItemsListActivity
             addItem(claim);
             return true;
             

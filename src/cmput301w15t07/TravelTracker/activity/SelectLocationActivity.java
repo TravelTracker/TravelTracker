@@ -111,19 +111,17 @@ public class SelectLocationActivity extends TravelTrackerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-        	onBackPressed();
-        	break;
-        	
         case R.id.select_location_sign_out:
         	signOut();
-        	break;
+        	return true;
         	
+        case android.R.id.home:
+            onBackPressed();
+            return true;
+            
         default:
-        	break;
+        	return false;
         }
-    	
-        return super.onOptionsItemSelected(item);
     }
     
     public void onBackPressed() {

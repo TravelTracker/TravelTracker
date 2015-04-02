@@ -45,6 +45,7 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
+import cmput301w15t07.TravelTracker.util.FilterByTagFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
@@ -69,6 +70,9 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	/** Data about the logged-in user. */
 	private UserData userData;
 	
+	/** The filter by tags fragment. */
+	FilterByTagFragment filterFragment;
+	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claims_list_menu, menu);
@@ -92,7 +96,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
     	case R.id.claims_list_filter_by_tag:
-    	    //TODO milestone 5
+    	    launchFilterByTag();
     	    return true;
     	    
     	case R.id.claims_list_manage_tags:
@@ -157,6 +161,8 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 				
 			}
 		});
+		
+		filterFragment = new FilterByTagFragment();
 	}
 	
 	@Override
@@ -241,6 +247,13 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		
     	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title);
     	fragment.show(getFragmentManager(), "selectLocation");
+    }
+    /**
+     * Launch the filter by tag fragment.
+     */
+    private void launchFilterByTag() {
+    	filterFragment.setTags(data.getTags());
+    	filterFragment.show(getFragmentManager(), "filterByTag");
     }
 	/**
 	 * launch the claimInfo activity for a new claim

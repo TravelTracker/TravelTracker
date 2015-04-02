@@ -118,7 +118,7 @@ public class TravelTrackerActivity extends Activity {
     }
     
     public void colorViewEnabled(View view) {
-        view.setBackgroundColor(Color.rgb(210, 210, 210));
+        view.setBackgroundColor(Color.rgb(220, 220, 220));
     }
     
     public void colorViewDisabled(View view) {

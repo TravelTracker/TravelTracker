@@ -418,7 +418,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Show destinations
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
-        destinationAdapter.displayView(this, userData, destinationsList, getFragmentManager());
+        destinationAdapter.createList(this, userData, destinationsList, getFragmentManager());
         
         if (userData.getRole().equals(UserRole.APPROVER)) {
         	// Claimant name

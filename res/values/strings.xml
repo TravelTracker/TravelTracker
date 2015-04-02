@@ -72,7 +72,7 @@
         <string name="claim_info_destination_edit_location">Location:</string>
         <string name="claim_info_destination_edit_reason">Reason:</string>
         <string name="claim_info_destination_error">Destinations must have a location</string>
-        <string name="claim_info_delete_destination">Are you sure you want to delete this destination?</string>
+        <string name="claim_info_delete_destination">Are you sure you want to delete the following destination?</string>
     	<string name="claim_info_not_all_items_complete">Not all expense items are complete!  Submit anyways?</string>
         
         <!-- Used in menu -->

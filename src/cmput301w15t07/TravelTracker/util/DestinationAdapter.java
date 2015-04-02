@@ -73,7 +73,7 @@ public class DestinationAdapter {
     private final static int LIST_LOCATION_ID = R.id.claimInfoDestinationsListItemLocationTextView;
     private final static int LIST_REASON_ID = R.id.claimInfoDestinationsListItemReasonTextView;
     
-    private final static int COLOR_SELECTED = android.R.color.darker_gray;
+    private final static int COLOR_SELECTED = android.R.color.holo_blue_light;
     private final static int COLOR_PLAIN = android.R.color.transparent;
     
     public DestinationAdapter (Claim claim, ArrayList<Destination> destinations) {

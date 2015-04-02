@@ -30,6 +30,7 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -114,5 +115,13 @@ public class TravelTrackerActivity extends Activity {
     
     public void disableView(View view) {
         view.setEnabled(false);
+    }
+    
+    public void colorViewEnabled(View view) {
+        view.setBackgroundColor(Color.rgb(210, 210, 210));
+    }
+    
+    public void colorViewDisabled(View view) {
+        view.setBackgroundColor(this.getResources().getColor(android.R.color.transparent));
     }
 }

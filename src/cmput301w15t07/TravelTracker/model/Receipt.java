@@ -1,6 +1,7 @@
 package cmput301w15t07.TravelTracker.model;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -35,13 +36,14 @@ import android.graphics.Bitmap;
  */
 public class Receipt {
 	private Bitmap photo;
+	private Uri imageUri;
 	
-	public Receipt(Bitmap photo) {
+	public Receipt(Bitmap photo, Uri uri) {
 		this.photo = photo;
 	}
 	
 	public Receipt() {
-		this(null);  //TODO add a default Bitmap somehow
+		this(null,null);  //TODO add a default Bitmap somehow
 	}
 
 	/**
@@ -52,4 +54,7 @@ public class Receipt {
 		return photo;
 	}
 
+	public Uri getUri(){
+		return imageUri;
+	}
 }

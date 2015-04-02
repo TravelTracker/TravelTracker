@@ -22,6 +22,7 @@ package cmput301w15t07.TravelTracker.activity;
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
@@ -57,6 +58,7 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
+import cmput301w15t07.TravelTracker.model.Receipt;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
@@ -103,9 +105,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
     private Boolean fromClaimInfo;
     
-    /** Uri of the receipt image file */
-    private Uri imageFileUri;
+    /** The current receipt image filepath for viewing image */ 
+    String currentPhotoPath = null;
     
+    private Uri imageUri;
     private static final int CAMERA_REQUEST = 100;
     
 	@Override
@@ -263,8 +266,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onClick(View v) {
-                    	//referenced stackoverflow.com/questions/5991319
-                    	takePhoto();
+                    	promptTakePhoto();
                     }
                 });
                 
@@ -372,20 +374,62 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         
         onLoaded();
 	}
+	/**
+	 * Prompt for adding receipt image to expense item
+	 */
+	public void promptTakePhoto(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.expense_item_info_capture_receipt_message)
+			.setPositiveButton(R.string.take_photo, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					takePhoto();					
+				}
+			})
+			.setNegativeButton(R.string.choose_from_gallery, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO: choose form gallery
+				}
+			});
+		lastAlertDialog = builder.create();
+		lastAlertDialog.show();
+	}
 	
+	/**\
+	 * creates an image file with a unique name to be used by camera activity 
+	 * @return	image file with unique name
+	 * @throws IOException if the file could not be created
+	 */
+	//Referenced devleoper.android.com/training/camera/photobasics.html
+	private File createImageFile() throws IOException{
+		File storageDir = Environment.getExternalStoragePublicDirectory(
+				Environment.DIRECTORY_PICTURES);
+		String imageFileName = "JPEG_" 
+				+ String.valueOf(System.currentTimeMillis()) + "_";
+		File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+		currentPhotoPath = "file:" + image.getAbsolutePath();
+		return image;
+	}
+	
+	/**
+	 * launch the camera activity and take a photo
+	 */
 	public void takePhoto(){
 		//Referenced CameraTest Lab files
-		
-		//create folder to store pictures
+		/*
+		//create folder to store pictures to save full size pictures
 		String folderPath = Environment.getExternalStorageDirectory()
 				.getAbsolutePath() + "/tmp";
 		File folder = new File(folderPath);
 		if (!folder.exists()){
 			folder.mkdir();
 		}
-			
+			*/
 		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		
+		/*
 		//create URI for the image file
 		String imageFilePath = folderPath + "/" 
 				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
@@ -393,16 +437,46 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		imageFileUri = Uri.fromFile(imageFile);
         
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
-        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        */
+        //check if there is an app that can handle the intent
+        if (cameraIntent.resolveActivity(getPackageManager()) != null){
+        	//create the file where the image should go
+        	File imageFile = null;
+        	try{
+        		imageFile = createImageFile();
+        	}catch (IOException exception){
+        		//error occured when creating the file
+        		Toast.makeText(ExpenseItemInfoActivity.this, "image could not be created",
+        			Toast.LENGTH_LONG).show();
+        	}
+        	//only continue if the file was succesfully created
+        	if (imageFile != null){
+        		imageUri = Uri.fromFile(imageFile);
+        		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        	}
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        }
 	}
 	
+	//get the bmp thumbnail for the image 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
 		  ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
-				imageButton.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
-			
+				
+				Bitmap imageBitmap = null;
+				try {
+					imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				item.setReceipt(new Receipt(imageBitmap,imageUri));
+				imageButton.setImageBitmap(imageBitmap);
 		}
 	}
 	/**

@@ -23,16 +23,12 @@ package cmput301w15t07.TravelTracker.activity;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
-
-import org.apache.commons.lang3.math.IEEE754rUtils;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -65,7 +61,6 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.Observer;
-
 
 /**
  * Activity for viewing and managing data related to an individual Expense Item.
@@ -308,7 +303,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-                        Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
+                        ItemCurrency currency = ((ItemCurrency) parent.getItemAtPosition(position));
                         item.setCurrency(currency);
                     }
                     

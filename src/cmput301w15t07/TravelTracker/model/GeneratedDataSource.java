@@ -1,12 +1,9 @@
 package cmput301w15t07.TravelTracker.model;
 
 import java.util.Calendar;
-import java.util.Currency;
-import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
-import android.util.Log;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 
 /*
@@ -34,7 +31,8 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  * Mock data source extending InMemoryDataSource that creates data upon User creation.
  * Most useful in testing UI.
  * 
- * @author braedy
+ * @author braedy,
+ *         therabidsquirel
  *
  */
 public class GeneratedDataSource extends InMemoryDataSource {
@@ -80,8 +78,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			claim.setEndDate(calendar.getTime());
 			
 			// Set status
-			claim.setStatus(
-					Status.values()[r.nextInt(Status.values().length)]);
+			claim.setStatus(Status.values()[r.nextInt(Status.values().length)]);
 			
 			// Set approver if status is not in progress
 			if (claim.getStatus() != Status.IN_PROGRESS) {
@@ -100,28 +97,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
 				
 				// Set currency
-				Currency curr = null;
-				for(int k = 0; k < 100; ++k) {
-					try {
-						 curr = Currency.getInstance(
-								 Locale.getAvailableLocales()[r.nextInt(Locale.getAvailableLocales().length)]);
-					}
-					catch (IllegalArgumentException e) {
-						// Some locales aren't supported, just try again
-						continue;
-					}
-					
-					// Success!
-					break;
-				}
-				
-				// If we make it through on iterations..
-				if (curr == null)  {
-					Log.w("GeneratedDataSource", "Couldn't get a good currency, defaulting to CAD");
-					curr = Currency.getInstance(Locale.CANADA);
-				}
-				
-				item.setCurrency(curr);
+				item.setCurrency(ItemCurrency.values()[r.nextInt(ItemCurrency.values().length)]);
 
 				// Random time (10 days before today to 10 after)
 				calendar = Calendar.getInstance();

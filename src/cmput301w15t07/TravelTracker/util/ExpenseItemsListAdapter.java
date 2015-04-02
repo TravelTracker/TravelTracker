@@ -23,12 +23,12 @@ package cmput301w15t07.TravelTracker.util;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Currency;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
+import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -43,16 +43,21 @@ import android.widget.TextView;
  * values of an Item. Extends an ArrayAdapter to manage Items from some
  * List.
  * 
- * @author braedy
+ * @author braedy,
+ *         therabidsquirel
  *
  */
 public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
     private static final int LAYOUT_ID = R.layout.expense_items_list_item_view;
     
     private Collection<Item> items;
+    
+    /** Context of the activity the adapter is being used in. */
+    private Context context;
 
     public ExpenseItemsListAdapter(Context context) {
         super(context, LAYOUT_ID);
+        this.context = context;
     }
     
     /**
@@ -144,9 +149,8 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
 		TextView costView =
         		(TextView) rowView.findViewById(
         				R.id.expenseItemsListItemViewCostTextView);
-        Currency curr = itemData.getCurrency();
-        String costString = String.valueOf(itemData.getAmount()) + " " +
-        		curr.getCurrencyCode();
+        ItemCurrency curr = itemData.getCurrency();
+        String costString = String.valueOf(itemData.getAmount()) + " " + curr.getString(context);
         costView.setText(costString);
 	}
 	

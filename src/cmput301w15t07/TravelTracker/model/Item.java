@@ -1,11 +1,9 @@
 package cmput301w15t07.TravelTracker.model;
 
-import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-import android.graphics.BitmapFactory;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -32,7 +30,9 @@ import android.graphics.BitmapFactory;
  * Model object for individual expense Items made by Users acting as Claimants.
  * Expense Items belong to a Claim.
  * 
- * @author kdbanman, braedy
+ * @author kdbanman,
+ *         braedy,
+ *         therabidsquirel
  *
  */
 public class Item extends Document {
@@ -41,7 +41,7 @@ public class Item extends Document {
 	private ItemCategory category;
 	private Date date;
 	private Float amount;
-	private Currency currency;
+	private ItemCurrency currency;
 	private Receipt receipt;
 	private boolean isComplete;
 
@@ -65,7 +65,7 @@ public class Item extends Document {
 		
 		// Start at 0 of unknown currency
 		amount = 0.f;
-		currency = Currency.getInstance("CAD");
+		currency = ItemCurrency.CAD;
 		
 		receipt = new Receipt();
 		
@@ -164,7 +164,7 @@ public class Item extends Document {
 	 * Get the currency type of the expense.
 	 * @return The currency.
 	 */
-	public Currency getCurrency() {
+	public ItemCurrency getCurrency() {
 		return currency;
 	}
 	
@@ -172,7 +172,7 @@ public class Item extends Document {
 	 * Set the currency type of the expense.
 	 * @param currency The currency.
 	 */
-	public void setCurrency(Currency currency) {
+	public void setCurrency(ItemCurrency currency) {
 		this.currency = currency;
 		this.<Item>hasChanged(this);
 	}

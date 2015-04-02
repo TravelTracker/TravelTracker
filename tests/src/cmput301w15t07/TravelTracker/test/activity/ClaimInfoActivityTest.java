@@ -22,7 +22,6 @@ package cmput301w15t07.TravelTracker.test.activity;
  */
 
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 
 import android.app.Activity;
@@ -46,6 +45,7 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
@@ -59,7 +59,8 @@ import cmput301w15t07.TravelTracker.util.DatePickerFragment;
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman,
- * 		   colp
+ * 		   colp,
+ *         therabidsquirel
  *
  */
 public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<ClaimInfoActivity> {
@@ -382,17 +383,17 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		claim.setEndDate(end.getTime());
 		
 		Item item = addItemToClaim();
-		item.setCurrency(Currency.getInstance("CAD"));
+		item.setCurrency(ItemCurrency.CAD);
 		item.setAmount(30.5f);
 		item.setDate(new Date());
 		
 		item = addItemToClaim();
-		item.setCurrency(Currency.getInstance("CAD"));
+		item.setCurrency(ItemCurrency.CAD);
 		item.setAmount(20.f);
 		item.setDate(new Date());
 		
 		item = addItemToClaim();
-		item.setCurrency(Currency.getInstance("JPY"));
+		item.setCurrency(ItemCurrency.JPY);
 		item.setAmount(300.f);
 		item.setDate(new Date());
 		

@@ -38,6 +38,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.Observer;
@@ -71,6 +73,12 @@ import cmput301w15t07.TravelTracker.util.Observer;
  *
  */
 public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Observer<DataSource> {
+    /** Key for multicallback for claim. */
+    public static final int MULTI_CLAIM_KEY = 0;
+
+    /** Key for multicallback for item. */
+    public static final int MULTI_ITEM_KEY = 1;
+    
     /** Data about the logged-in user. */
 	private UserData userData;
 
@@ -166,22 +174,36 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		datasource.addObserver(this);
 	}
 
-	@Override
-    public void update(DataSource observable) {
-        datasource.getItem(itemID, new getItemCallback());
-    }
-	
 	protected void onResume() {
 		super.onResume();
 		
         // Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
-        // TODO This should probably be a MultiCallback
-		datasource.getClaim(claimID, new getClaimCallback());
-		datasource.getItem(itemID, new getItemCallback());
+        // Multicallback for claim and item
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
+        
+        // Create callbacks
+		datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+		datasource.getItem(itemID, multi.<Item>createCallback(MULTI_ITEM_KEY));
+		
+        // Notify ready so callbacks can execute
+        multi.ready();
 	}
 	
+    @Override
+    public void update(DataSource observable) {
+        // Multicallback for claim and item
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
+        
+        // Create callbacks
+        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getItem(itemID, multi.<Item>createCallback(MULTI_ITEM_KEY));
+        
+        // Notify ready so callbacks can execute
+        multi.ready();
+    }
+    
 	@Override
 	public void onBackPressed() {
 	    // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
@@ -525,6 +547,29 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		datePicker.show(getFragmentManager(), "datePicker");
 	}
 	
+    /**
+     * Multicallback meant to get all data required from the datasource that
+     * this activity needs on update or resume.
+     */
+    class UpdateDataCallback implements ResultCallback<SparseArray<Object>> {
+        /**
+         * Saves the claim and item, then calls method with retrieved data.
+         * 
+         * @param result The request result.
+         */
+        @Override
+        public void onResult(SparseArray<Object> result) {
+            claim = (Claim) result.get(MULTI_CLAIM_KEY);
+            item = (Item) result.get(MULTI_ITEM_KEY);
+            ExpenseItemInfoActivity.this.onGetAllData(item);
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
+    
 	/**
      * Callback for Item deletion.
      */
@@ -559,42 +604,5 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		public void onDatePickerFragmentCancelled() {
 			// Do nothing
 		}
-	}
-	
-	/**
-	 * Callback for claim data.
-	 */
-	class getClaimCallback implements ResultCallback<Claim> {
-        @Override
-        public void onResult(Claim claim) {
-            ExpenseItemInfoActivity.this.claim = claim;
-        }
-
-        @Override
-        public void onError(String message) {
-            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-        }
-	}
-	
-	/**
-	 * Callback for item data.
-	 */
-	class getItemCallback implements ResultCallback<Item> {
-        @Override
-        public void onResult(Item item) {
-            ExpenseItemInfoActivity.this.item = item;
-            if (ExpenseItemInfoActivity.this.item != null){
-                onGetAllData(item);
-            }
-            else{
-                Toast.makeText(ExpenseItemInfoActivity.this,
-                		"the item var is null", Toast.LENGTH_LONG).show();
-            }
-        }
-        
-        @Override
-        public void onError(String message) {
-            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-        }
 	}
 }

@@ -169,6 +169,21 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         multi.ready();
     }
     
+    @Override
+    public void update(DataSource observable) {
+        // Multicallback for claim and items
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
+        
+        // Create callbacks
+        datasource.getClaim(claimID,
+                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(
+                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        
+        // Notify ready so callback can execute
+        multi.ready();
+    }
+    
     /**
      * If the current UI is the indeterminate loading screen then the UI is
      * changed to the activity layout and the views set up accordingly.
@@ -231,21 +246,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         intent.putExtra(CLAIM_UUID, claimID);
         intent.putExtra(USER_DATA, userData);
         startActivity(intent);
-    }
-    
-    @Override
-    public void update(DataSource observable) {
-        // Multicallback for claim and items
-        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
-        
-        // Create callbacks
-        datasource.getClaim(claimID,
-                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
-        datasource.getAllItems(
-                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
-        
-        // Notify ready so callback can execute
-        multi.ready();
     }
     
     /**

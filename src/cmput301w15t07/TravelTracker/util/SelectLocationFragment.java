@@ -26,8 +26,6 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +34,13 @@ import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.SelectLocationActivity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -49,9 +54,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * A dialog fragment which allows the user to set a location using
  * either GPS or SelectLocationActivity.
  * 
+ * Referred to
+ * http://developer.android.com/training/location/retrieve-current.html
+ * on 02/04/15
+ * 
  * @author colp
  */
-public class SelectLocationFragment extends DialogFragment {
+public class SelectLocationFragment extends DialogFragment
+	implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 	/**
 	 * Callback interface for results from SelectLocationFragment.
 	 */
@@ -74,12 +84,18 @@ public class SelectLocationFragment extends DialogFragment {
 	/** The amount of zoom applied to the lite map. */
 	private static final float zoomLevel = 5.f;
 	
+	/** Whether the GoogleApiClient has connected yet. */
+	private boolean connected = false;
+	
+	/** The last location received from the location API */
+	private Location lastLocation;
+	
 	private MapFragment mapFragment;
 	private GoogleMap map;
 	private String title;
 	private LatLng location;
-	private Location currentLocation;
 	private ResultCallback callback;
+	private GoogleApiClient googleApiClient;
 	
 	/**
 	 * Construct a fragment with no title or start location.
@@ -171,12 +187,23 @@ public class SelectLocationFragment extends DialogFragment {
 			@Override
 			public void onClick(View v) {
 				Activity activity = getActivity();
+				
+				// Not connected yet
+				if (connected == false) {
+		    		String msg = getString(R.string.select_location_fragment_not_connected);
+					Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+					
+					return;
+				}
 		    	
-		    	if (currentLocation == null) {
+				// No location
+		    	if (lastLocation == null) {
 		    		String msg = getString(R.string.select_location_fragment_failed_to_get_location);
 		    		Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+		    		
+	    		// Try connecting
 		    	} else {
-		    		setLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+		    		setLocation(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
 		    	}
 			}
 		});
@@ -188,24 +215,15 @@ public class SelectLocationFragment extends DialogFragment {
 				launchSelectLocationActivity();
 			}
 		});
-	    
-	    // Get location updates
-		LocationManager locMan = (LocationManager) getActivity().getSystemService(Activity.LOCATION_SERVICE);
-		locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
-			@Override
-			public void onStatusChanged(String provider, int status, Bundle extras) {}
-			
-			@Override
-			public void onProviderEnabled(String provider) {}
-			
-			@Override
-			public void onProviderDisabled(String provider) {}
-			
-			@Override
-			public void onLocationChanged(Location location) {
-				currentLocation = location;
-			}
-		});
+		
+	    // Connect to Google Play client
+		googleApiClient = new GoogleApiClient.Builder(getActivity())
+			.addConnectionCallbacks(this)
+			.addOnConnectionFailedListener(this)
+			.addApi(LocationServices.API)
+			.build();
+		
+		googleApiClient.connect();
 	    
 	    return view;
 	}
@@ -247,6 +265,36 @@ public class SelectLocationFragment extends DialogFragment {
 	    	}
 	    }
 	}
+
+	// Google Play location API
+	
+	@Override
+    public void onConnected(Bundle arg0) {
+		connected = true;
+		
+		lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+		
+		// Referenced
+		// http://stackoverflow.com/questions/28268642/android-location-not-updating
+		// on 02/04/15
+		LocationRequest request = new LocationRequest();
+		request.setInterval(1000);
+		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
+    }
+
+	@Override
+    public void onConnectionSuspended(int arg0) {}
+
+	@Override
+    public void onConnectionFailed(ConnectionResult arg0) {}
+
+	@Override
+    public void onLocationChanged(Location arg0) {
+	    lastLocation = arg0;
+    }
+	
+	// End Google Play location API
 	
 	/**
 	 * Set the map's location.

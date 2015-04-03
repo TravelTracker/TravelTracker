@@ -37,6 +37,28 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * saving said objects.
  * This is the final DataSource for the deployed app.
  * 
+ * The caching datasource will have a bunch of HashMap<UUID, Document subclass>, just like the in memory data 
+ * source. Those hash maps are for the Document objects that the Views and Controllers refer to.
+ * 
+ * The cache will try to run save or delete with the ES server every time those in memory documents change 
+ * (possibly capped at once per second or something).
+ * If a save fails due to no connection, it will add the document id to a queue of to-save documents, and save
+ * the changed (dirty) document to a local file
+ * If a delete fails due to no connection, it will add the document id to a queue of to-delete documents, and 
+ * save the deleted document to a local file (it's saved to use the document last changed timestamp for 
+ * conflict resolution upon reconnection)
+ * If a save or delete fails for another reason, I don't think this is very recoverable, so the user will be 
+ * notified but I'm not quite sure what to do here yet.
+ * The to-save and to-delete lists will be stored in local files, and the CacheDataSource will look for them 
+ * and use them when being constructed, in case the app closed before reconnecting with the server.
+ * 
+ * When the caching datasource reconnects to the ES server, it'll try to save the documents in the to-save list, 
+ * and try to delete the documents in the to-delete list. I say "try" because the cache will need to pull from 
+ * the server all documents from the two lists, and only run the save/delete if the local last change timestamp 
+ * is more recent than the remote last change timestamp.
+ * 
+ * Whew.
+ * 
  * @author kdbanman
  */
 public class CacheDataSource extends Observable<DataSource> implements
@@ -69,7 +91,8 @@ public class CacheDataSource extends Observable<DataSource> implements
 	@Override
 	public void update(Document observable) {		
 		// every time a document changes 
-
+		// TODO try 
+		
 	}
 
 	@Override

@@ -59,8 +59,11 @@ public class GsonIOManager {
 			ret = gson.fromJson(reader, (new TypeToken<T>() {}).getType());
 			
 			fis.close();
+		} catch (FileNotFoundException e) {
+			throw e;
 		} catch (IOException e) {
 			Log.e("GSONIOManager", "file read failed");
+			Log.e("GSONIOManager", e.getMessage());
 			ret = null;
 		}
 		return ret;
@@ -76,6 +79,7 @@ public class GsonIOManager {
 			fos.close();
 		} catch (IOException e) {
 			Log.e("GSONIOManager", "file read failed");
+			Log.e("GSONIOManager", e.getMessage());
 		}
 	}
 }

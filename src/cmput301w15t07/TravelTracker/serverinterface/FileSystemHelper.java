@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Document;
@@ -66,10 +67,25 @@ public class FileSystemHelper implements ServerHelper {
 		
 		savedDocs = new HashMap<Class<? extends Document>, PersistentList<UUID>>();
 		
-		savedDocs.put(User.class, new PersistentList<UUID>(USERS_FILENAME, ctx));
-		savedDocs.put(Claim.class, new PersistentList<UUID>(CLAIMS_FILENAME, ctx));
-		savedDocs.put(Item.class, new PersistentList<UUID>(ITEMS_FILENAME, ctx));
-		savedDocs.put(Tag.class, new PersistentList<UUID>(TAGS_FILENAME, ctx));
+		savedDocs.put(User.class, new PersistentList<UUID>(USERS_FILENAME, ctx, UUID.class));
+		savedDocs.put(Claim.class, new PersistentList<UUID>(CLAIMS_FILENAME, ctx, UUID.class));
+		savedDocs.put(Item.class, new PersistentList<UUID>(ITEMS_FILENAME, ctx, UUID.class));
+		savedDocs.put(Tag.class, new PersistentList<UUID>(TAGS_FILENAME, ctx, UUID.class));
+	}
+	
+	/**
+	 * Removes all files associated with the cache.
+	 */
+	public void purgeFileSystem() {
+		purgeFiles(User.class);
+		purgeFiles(Claim.class);
+		purgeFiles(Item.class);
+		purgeFiles(Tag.class);
+		
+		ctx.deleteFile(USERS_FILENAME);
+		ctx.deleteFile(CLAIMS_FILENAME);
+		ctx.deleteFile(ITEMS_FILENAME);
+		ctx.deleteFile(TAGS_FILENAME);
 	}
 
 	@Override
@@ -83,7 +99,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Claim> getClaims(UUID user) throws Exception {
-		Collection<Claim> claims = this.<Claim>loadAll(savedDocs.get(Claim.class));
+		Collection<Claim> claims = this.<Claim>loadAll(savedDocs.get(Claim.class), Claim.class);
 		ArrayList<Claim> userClaims = new ArrayList<Claim>();
 		for (Claim claim : claims) {
 			if (claim.getUser().equals(user))
@@ -94,7 +110,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Item> getExpenses(UUID claim) throws Exception {
-		Collection<Item> items = this.<Item>loadAll(savedDocs.get(Item.class));
+		Collection<Item> items = this.<Item>loadAll(savedDocs.get(Item.class), Item.class);
 		ArrayList<Item> claimItems = new ArrayList<Item>();
 		for (Item item : items) {
 			if (item.getClaim().equals(claim))
@@ -105,7 +121,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Tag> getTags(UUID user) throws Exception {
-		Collection<Tag> tags = this.<Tag>loadAll(savedDocs.get(Tag.class));
+		Collection<Tag> tags = this.<Tag>loadAll(savedDocs.get(Tag.class), Tag.class);
 		ArrayList<Tag> userTags = new ArrayList<Tag>();
 		for (Tag tag : tags) {
 			if (tag.getUser().equals(user))
@@ -116,7 +132,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public User getUser(String name) throws Exception {
-		Collection<User> users = this.<User>loadAll(savedDocs.get(User.class));
+		Collection<User> users = this.<User>loadAll(savedDocs.get(User.class), User.class);
 		for (User user : users) {
 			if (user.getUserName().equals(name))
 				return user;
@@ -134,21 +150,21 @@ public class FileSystemHelper implements ServerHelper {
 	}
 	
 	
-	private <T extends Document> Collection<T> loadAll(Collection<UUID> documents) {
+	private <T extends Document> Collection<T> loadAll(Collection<UUID> documents, Class<? extends Document> clazz) {
 		ArrayList<T> docs = new ArrayList<T>();
 		
 		for (UUID id : documents) {
-			T doc = this.<T>loadDoc(id.toString());
+			T doc = this.<T>loadDoc(id.toString(), clazz);
 			if (doc != null)
 				docs.add(doc);
 		}
 		return docs;
 	}
 	
-	private <T extends Document> T loadDoc(String filename) {
+	private <T extends Document> T loadDoc(String filename, Class<? extends Document> clazz) {
 		GsonIOManager gson = new GsonIOManager(ctx);
 		try {
-			return gson.<T>load(filename);
+			return gson.<T>load(filename, clazz);
 		} catch (FileNotFoundException e) {
 			warn("Could not find cached " + filename + " to load.");
 		} catch (JsonSyntaxException e) {
@@ -164,7 +180,7 @@ public class FileSystemHelper implements ServerHelper {
 	 */
 	private <T extends Document> void saveDocument(T doc) {
 		GsonIOManager gson = new GsonIOManager(ctx);
-		gson.<T>save(doc, doc.getUUID().toString());
+		gson.save(doc, doc.getUUID().toString(), (new TypeToken<T>() {}).getType());
 		savedDocs.get(doc.getClass()).add(doc.getUUID());
 	}
 	
@@ -173,12 +189,19 @@ public class FileSystemHelper implements ServerHelper {
 	 * 
 	 * @param doc document to delete.
 	 */
-	private <T extends Document> void deleteDocument(T doc) {	
-		if (savedDocs.get(doc.getClass()).remove(doc.getUUID())) {
+	private <T extends Document> void deleteDocument(T doc) {
+		PersistentList<UUID> savedList = savedDocs.get(doc.getClass());
+		if (savedList.remove(doc.getUUID())) {
 			if (!ctx.deleteFile(doc.getUUID().toString()))
 				warn("Could not find cached " + doc.getUUID().toString() + " to delete.");
 		} else {
 			Log.i("FileSystemHelper", "delete called on nonexistent document " + doc.getUUID().toString());
+		}
+	}
+	
+	private void purgeFiles(Class<? extends Document> clazz) {
+		for (UUID id : savedDocs.get(clazz)) {
+			ctx.deleteFile(id.toString());
 		}
 	}
 	

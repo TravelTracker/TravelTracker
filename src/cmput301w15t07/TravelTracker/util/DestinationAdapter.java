@@ -18,6 +18,7 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
+import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.UserData;
 
 /*
@@ -155,7 +156,7 @@ public class DestinationAdapter {
         this.context = context;
         this.linearLayout = linearLayout;
         
-        Destination destination = new Destination("", "");
+        Destination destination = new Destination("", null, "");
         destinations.add(destination);
         View view = createView(destination, userData, manager);
         
@@ -170,16 +171,20 @@ public class DestinationAdapter {
         Destination destination = (Destination) view.getTag();
         
         editingView = view;
-        destinationEditor = new DestinationEditorFragment(destination.getLocation(), destination.getReason(), new DestinationCallback());
+        destinationEditor = new DestinationEditorFragment(new DestinationCallback(),
+                                                          destination.getLocation(),
+                                                          destination.getGeolocation(),
+                                                          destination.getReason(),
+                                                          manager);
         destinationEditor.show(manager, "destinationEditor");
     }
     
-    private void editDestination(View view, String location, String reason) {
+    private void editDestination(View view, String location, Geolocation geolocation, String reason) {
         Destination destination = (Destination) view.getTag();
         int index = destinations.indexOf(destination);
         destinations.remove(destination);
         
-        destination = new Destination(location, reason);
+        destination = new Destination(location, geolocation, reason);
         destinations.add(index, destination);
         setDestination(view, destination);
         
@@ -244,15 +249,22 @@ public class DestinationAdapter {
      */
     class DestinationCallback implements DestinationEditorFragment.ResultCallback {
         @Override
-        public void onDestinationEditorFragmentResult(String location, String reason) {
+        public void onDestinationEditorFragmentResult(String location, Geolocation geolocation, String reason) {
+            // Invalid location and geolocation
+            if (location.isEmpty() && geolocation == null) {
+                errorToast(context.getString(R.string.claim_info_destination_error_dual_location));
+                
             // Invalid location
-            if (location.isEmpty()) {
-                String error = context.getString(R.string.claim_info_destination_error);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+            } else if (location.isEmpty()) {
+                errorToast(context.getString(R.string.claim_info_destination_error_location));
+                
+            // Invalid geolocation
+            } else if (geolocation == null) {
+                errorToast(context.getString(R.string.claim_info_destination_error_geolocation));
                 
             // Valid location and reason, so update the destination
             } else {
-                editDestination(editingView, location, reason);
+                editDestination(editingView, location, geolocation, reason);
                 
                 if (newDestination) {
                     linearLayout.addView(editingView);
@@ -268,6 +280,10 @@ public class DestinationAdapter {
             }
             
             setFragmentDefaults();
+        }
+        
+        private void errorToast(String message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         }
     }
     

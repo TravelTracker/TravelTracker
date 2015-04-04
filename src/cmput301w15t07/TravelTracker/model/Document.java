@@ -116,4 +116,40 @@ public abstract class Document extends Observable<Document> {
 	public void setType(Type type) {
 		this.type = type;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (dirty ? 1231 : 1237);
+		result = prime * result + ((docID == null) ? 0 : docID.hashCode());
+		result = prime * result
+				+ ((lastChanged == null) ? 0 : lastChanged.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Document))
+			return false;
+		Document other = (Document) obj;
+		if (docID == null) {
+			if (other.docID != null)
+				return false;
+		} else if (!docID.equals(other.docID))
+			return false;
+		if (lastChanged == null) {
+			if (other.lastChanged != null)
+				return false;
+		} else if (!lastChanged.equals(other.lastChanged))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
 }

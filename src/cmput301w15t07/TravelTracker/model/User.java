@@ -78,4 +78,37 @@ public class User extends Document {
 		this.homeLocation = homeLocation;
 		this.<User>hasChanged(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((homeLocation == null) ? 0 : homeLocation.hashCode());
+		result = prime * result
+				+ ((userName == null) ? 0 : userName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof User))
+			return false;
+		User other = (User) obj;
+		if (homeLocation == null) {
+			if (other.homeLocation != null)
+				return false;
+		} else if (!homeLocation.equals(other.homeLocation))
+			return false;
+		if (userName == null) {
+			if (other.userName != null)
+				return false;
+		} else if (!userName.equals(other.userName))
+			return false;
+		return true;
+	}
 }

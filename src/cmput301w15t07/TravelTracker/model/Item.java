@@ -210,4 +210,63 @@ public class Item extends Document {
 		this.isComplete = isComplete;
 		this.<Item>hasChanged(this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+		result = prime * result
+				+ ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((claim == null) ? 0 : claim.hashCode());
+		result = prime * result
+				+ ((currency == null) ? 0 : currency.hashCode());
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + (isComplete ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof Item))
+			return false;
+		Item other = (Item) obj;
+		if (amount == null) {
+			if (other.amount != null)
+				return false;
+		} else if (!amount.equals(other.amount))
+			return false;
+		if (category != other.category)
+			return false;
+		if (claim == null) {
+			if (other.claim != null)
+				return false;
+		} else if (!claim.equals(other.claim))
+			return false;
+		if (currency != other.currency)
+			return false;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (isComplete != other.isComplete)
+			return false;
+		if (receipt == null) {
+			if (other.receipt != null)
+				return false;
+		}
+		return true;
+	}
 }

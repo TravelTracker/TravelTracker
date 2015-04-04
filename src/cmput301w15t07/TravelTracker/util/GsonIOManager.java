@@ -27,12 +27,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.GsonBuilder;
 
 /**
  * Facade to wrap streams and GSON ugliness.
@@ -43,19 +44,20 @@ import com.google.gson.reflect.TypeToken;
 public class GsonIOManager {
 	
 	private Context ctx;
+	private Gson gson;
 	
 	public GsonIOManager(Context ctx) {
 		this.ctx = ctx;
+		gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();;
 	}
 	
-	public <T> T load(String filename) throws FileNotFoundException {
-		Gson gson = new Gson();
+	public <T> T load(String filename, Type type) throws FileNotFoundException {
 		T ret;
 		try {
 			FileInputStream fis = ctx.openFileInput(filename);
 			InputStreamReader reader = new InputStreamReader(fis);
 			
-			ret = gson.fromJson(reader, (new TypeToken<T>() {}).getType());
+			ret = gson.fromJson(reader, type);
 			
 			fis.close();
 		} catch (FileNotFoundException e) {
@@ -68,12 +70,11 @@ public class GsonIOManager {
 		return ret;
 	}
 	
-	public <T> void save(T toSave, String filename) {
-		Gson gson = new Gson();
+	public void save(Object toSave, String filename, Type type) {
 		try {
 			FileOutputStream fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
 			OutputStreamWriter writer = new OutputStreamWriter(fos);
-			gson.toJson(toSave, (new TypeToken<T>() {}).getType(), writer);
+			gson.toJson(toSave, type, writer);
 			writer.flush();
 			fos.close();
 		} catch (IOException e) {

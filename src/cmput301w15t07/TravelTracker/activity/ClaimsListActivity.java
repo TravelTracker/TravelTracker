@@ -21,10 +21,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,7 +52,7 @@ import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * List Claims.  Can be done as a Claimant or an Approver.
+ * List Claims. Can be done as a Claimant or an Approver.
  * 
  * @author kdbanman,
  *         colp,
@@ -64,9 +62,9 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class ClaimsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
 	//Class Fields
+    private ListView claimsList;
 	private ClaimAdapter adapter;
-	private InitialData data; 
-	private Context context;
+	private InitialData data;
 	User user;
 	
 	/** Data about the logged-in user. */
@@ -133,10 +131,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
         appendNameToTitle(userData.getName());
+	    
+        // Create adapter
+        adapter = new ClaimAdapter(this, userData.getRole());
         
-        context = this;
-        adapter = new ClaimAdapter(context, userData.getRole());
-
         datasource.addObserver(this);
 	}
 	
@@ -145,7 +143,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Called in onResume() and update(DataSource observable).
      */
     @Override
-    public void updateActivity(){
+    public void updateActivity() {
         // Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
@@ -153,24 +151,20 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     }
     
     /**
-     * 
-     * @param data
+     * Change to the activity's layout and set it up its views accordingly.
      */
-    public void onGetInitialData(InitialData data) {
+    private void onGetInitialData() {
         setContentView(R.layout.claims_list_activity);
         
-        this.data = data;
-        
-        adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers());
-        ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
-        listView.setAdapter(adapter);
+        claimsList = (ListView) findViewById(R.id.claimsListClaimListView);
+        claimsList.setAdapter(adapter);
         
         if (userData.getRole().equals(UserRole.CLAIMANT)){
-            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-            listView.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
+            claimsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            claimsList.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
         }
         
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        claimsList.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 launchClaimInfo(adapter.getItem(position));
@@ -205,7 +199,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	 * @param claim
 	 */
 	private void launchClaimInfo(Claim claim){
-		Intent intent = new Intent(context, ClaimInfoActivity.class);
+		Intent intent = new Intent(this, ClaimInfoActivity.class);
     	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
     	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
     	startActivity(intent);
@@ -215,7 +209,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Launch the Tag managing activity.
      */
     private void launchManageTags() {
-        Intent intent = new Intent(context, ManageTagsActivity.class);
+        Intent intent = new Intent(this, ManageTagsActivity.class);
         intent.putExtra(ManageTagsActivity.USER_DATA, userData);
         startActivity(intent);
     }
@@ -275,12 +269,14 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	class initalDataCallback implements ResultCallback<InitialData>{
 		@Override
 		public void onResult(InitialData result) {
-		    onGetInitialData(result);
+	        adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
+	        data = result;
+		    onGetInitialData();
 		}
 
 		@Override
 		public void onError(String message) {
-	        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+	        Toast.makeText(ClaimsListActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -293,7 +289,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
 		@Override
 		public void onError(String message) {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ClaimsListActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -306,7 +302,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
 		@Override
 		public void onError(String message) {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ClaimsListActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
 	}
 	

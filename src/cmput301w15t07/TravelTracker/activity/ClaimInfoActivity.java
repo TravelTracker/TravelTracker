@@ -369,9 +369,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 					public void onClick(DialogInterface dialog, int which) {
 						// Do nothing
 					}
-			   })
-			   .create()
-			   .show();
+			   });
+		
+		lastAlertDialog = builder.create();
+		lastAlertDialog.show();
     }
 
     /**

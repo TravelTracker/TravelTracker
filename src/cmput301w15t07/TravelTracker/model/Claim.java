@@ -30,7 +30,9 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 /**
  * Model object for Claim made by Users acting as Claimants.
  * 
- * @author kdbanman, braedy
+ * @author kdbanman,
+ *         braedy,
+ *         therabidsquirel
  *
  */
 public class Claim extends Document {
@@ -194,11 +196,11 @@ public class Claim extends Document {
 	}
 	
 	/**
-	 * Add a comment to the claim with today's date.
+	 * Add a comment to the start of the claim's list with today's date.
 	 * @param commentText The comment's text.
 	 */
 	public void addComment(String commentText) {
-		this.comments.add(new ApproverComment(commentText, new Date()));
+		this.comments.add(0, new ApproverComment(commentText, new Date()));
 		this.<Claim>hasChanged(this);
 	}
 

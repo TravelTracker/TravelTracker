@@ -35,12 +35,12 @@ import android.content.Context;
  */
 public enum ItemCurrency implements ContextStringable {
     CAD(R.string.enum_item_currency_CAD),
-    USD(R.string.enum_item_currency_USD),
+    CHF(R.string.enum_item_currency_CHF),
+    CNY(R.string.enum_item_currency_CNY),
     EUR(R.string.enum_item_currency_EUR),
     GBP(R.string.enum_item_currency_GBP),
-    CHF(R.string.enum_item_currency_CHF),
     JPY(R.string.enum_item_currency_JPY),
-    CNY(R.string.enum_item_currency_CNY);
+    USD(R.string.enum_item_currency_USD);
     
     private final int id;
     

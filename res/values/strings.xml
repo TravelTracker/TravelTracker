@@ -136,13 +136,13 @@
 
     <!-- Strings used in enum ItemCurrency -->
         <string name="enum_item_currency_CAD">CAD</string>
-        <string name="enum_item_currency_USD">USD</string>
+        <string name="enum_item_currency_CHF">CHF</string>
+        <string name="enum_item_currency_CNY">CNY</string>
         <string name="enum_item_currency_EUR">EUR</string>
         <string name="enum_item_currency_GBP">GBP</string>
-        <string name="enum_item_currency_CHF">CHF</string>
         <string name="enum_item_currency_JPY">JPY</string>
-        <string name="enum_item_currency_CNY">CNY</string>
-
+        <string name="enum_item_currency_USD">USD</string>
+        
     <!-- Strings used in enum Status -->
         <string name="enum_status_in_progress">In Progress</string>
         <string name="enum_status_submitted">Submitted</string>

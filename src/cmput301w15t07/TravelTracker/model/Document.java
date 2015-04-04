@@ -24,6 +24,8 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 import cmput301w15t07.TravelTracker.util.Observable;
 
@@ -39,11 +41,11 @@ public abstract class Document extends Observable<Document> {
 	// A new document may be synced, but dirty is a safer default.
 	private boolean dirty = true;
 	
-	private Date lastChanged;
+	@Expose private Date lastChanged;
 	
-	private UUID docID;
+	@Expose private UUID docID;
 	
-	private Type type;
+	@Expose private Type type;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -52,6 +54,14 @@ public abstract class Document extends Observable<Document> {
 	 */
 	Document(UUID docID) {
 		this.docID = docID;
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Document() {
+		this.docID = UUID.randomUUID();
 	}
 	
 	/**

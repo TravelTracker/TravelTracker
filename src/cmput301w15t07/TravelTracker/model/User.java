@@ -2,6 +2,8 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /*
@@ -32,8 +34,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class User extends Document {
-	private String userName;
-	private Geolocation homeLocation;
+	@Expose private String userName;
+	@Expose private Geolocation homeLocation;
 
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -43,6 +45,14 @@ public class User extends Document {
 	User(UUID docID) {
 		super(docID);
 		setType(Type.USER);
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private User() {
+		this(UUID.randomUUID());
 	}
 
 	/**

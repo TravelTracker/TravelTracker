@@ -41,7 +41,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /**
  * Lets the user select a location using the Google Maps API.
  * 
- * @author colp
+ * @author colp,
+ *         therabidsquirel
  */
 public class SelectLocationActivity extends TravelTrackerActivity {
     /** String used to retrieve start latitude from intent */
@@ -67,10 +68,26 @@ public class SelectLocationActivity extends TravelTrackerActivity {
 	}
 	
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.select_location_sign_out:
+            signOut();
+            return true;
+            
+        case android.R.id.home:
+            onBackPressed();
+            return true;
+            
+        default:
+            return false;
+        }
+    }
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
         
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.select_location_activity);
         
         // Set up map
@@ -108,22 +125,16 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         }
     }
     
+    /**
+     * There is no dataset in SelectLocationActivity.
+     * Called in onResume() and update(DataSource observable).
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.select_location_sign_out:
-        	signOut();
-        	return true;
-        	
-        case android.R.id.home:
-            onBackPressed();
-            return true;
-            
-        default:
-        	return false;
-        }
+    public void updateActivity() {
+        // Do nothing
     }
-    
+
+    @Override
     public void onBackPressed() {
     	setResult(RESULT_CANCELED);
     	

@@ -57,10 +57,6 @@ public enum ItemCategory implements ContextStringable {
 	    return context.getString(id);
 	}
 	
-	public int getId(){
-		return this.id;
-	}
-	
     /**
      * This method returns the String array for all the ItemCategory String values.
      * @param context The Android context in which this is operating.

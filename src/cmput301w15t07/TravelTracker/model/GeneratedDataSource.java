@@ -127,7 +127,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			
 			//Add some destinations
 			for (int k = 0; k < (new Random()).nextInt(5); k++){
-				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), "A test Reason"));
+				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), null, "A test Reason"));
 			}
 			
 			// Add some comments (from the same user for simplicity's sake, though this is impossible)

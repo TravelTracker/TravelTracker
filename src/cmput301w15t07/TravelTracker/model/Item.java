@@ -43,6 +43,7 @@ public class Item extends Document {
 	private Float amount;
 	private ItemCurrency currency;
 	private Receipt receipt;
+	private Geolocation geolocation;
 	private boolean isComplete;
 
 	/**
@@ -194,6 +195,23 @@ public class Item extends Document {
 		this.<Item>hasChanged(this);
 	}
 	
+    /**
+     * Get the attached Geolocation.
+     * @return The geolocation.
+     */
+    public Geolocation getGeolocation() {
+        return geolocation;
+    }
+    
+    /**
+     * Set the attached Geolocation.
+     * @param geolocation The geolocation.
+     */
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+        this.<Item>hasChanged(this);
+    }
+    
 	/**
 	 * Get the status of the expense item.
 	 * @return The status.
@@ -224,6 +242,8 @@ public class Item extends Document {
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+		        + ((geolocation == null) ? 0 : geolocation.hashCode());
 		result = prime * result + (isComplete ? 1231 : 1237);
 		return result;
 	}
@@ -261,6 +281,11 @@ public class Item extends Document {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
+		if (geolocation == null) {
+		    if (other.geolocation != null)
+		        return false;
+		} else if (!geolocation.equals(other.geolocation))
+		    return false;
 		if (isComplete != other.isComplete)
 			return false;
 		if (receipt == null) {

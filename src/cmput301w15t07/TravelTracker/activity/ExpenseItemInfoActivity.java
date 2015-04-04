@@ -162,6 +162,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		//user info from bundles
 		Bundle bundle = getIntent().getExtras();
 		userData = (UserData) bundle.getSerializable(USER_DATA);
+        appendNameToTitle(userData.getName());
 		
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
@@ -172,30 +173,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         // Get whether we came from ClaimInfoActivity or not
         fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
-		appendNameToTitle(userData.getName());
-		
 		datasource.addObserver(this);
 	}
 
-	protected void onResume() {
-		super.onResume();
-		
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
+    @Override
+    public void updateActivity() {
         // Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
-        // Multicallback for claim and item
-        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
-        
-        // Create callbacks
-		datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
-		datasource.getItem(itemID, multi.<Item>createCallback(MULTI_ITEM_KEY));
-		
-        // Notify ready so callbacks can execute
-        multi.ready();
-	}
-	
-    @Override
-    public void update(DataSource observable) {
         // Multicallback for claim and item
         MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
@@ -374,6 +363,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         
         onLoaded();
 	}
+	
 	/**
 	 * Prompt for adding receipt image to expense item
 	 */

@@ -28,15 +28,18 @@ package cmput301w15t07.TravelTracker.model;
  * This is so that mutations must be made at the Claim for observer notification
  * and cache dirtying.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class Destination {
 	private String location;
+	private Geolocation geolocation;
 	private String reason;
 	
-	public Destination(String location, String reason) {
+	public Destination(String location, Geolocation geolocation, String reason) {
 		this.location = location;
+		this.geolocation = geolocation;
 		this.reason = reason;
 	}
 	
@@ -47,7 +50,15 @@ public class Destination {
 	public String getLocation() {
 		return location;
 	}
-
+	
+    /**
+     * Get the geolocation of the destination.
+     * @return The geolocation.
+     */
+	public Geolocation getGeolocation() {
+	    return geolocation;
+	}
+	
 	/**
 	 * Get the reason for travel to the destination.
 	 * @return The reason.
@@ -62,6 +73,8 @@ public class Destination {
 		int result = 1;
 		result = prime * result
 				+ ((location == null) ? 0 : location.hashCode());
+        result = prime * result
+                + ((geolocation == null) ? 0 : geolocation.hashCode());
 		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
 		return result;
 	}
@@ -80,6 +93,11 @@ public class Destination {
 				return false;
 		} else if (!location.equals(other.location))
 			return false;
+		if (geolocation == null) {
+		    if (other.geolocation != null)
+		        return false;
+		} else if (!geolocation.equals(other.geolocation))
+		    return false;
 		if (reason == null) {
 			if (other.reason != null)
 				return false;
@@ -87,5 +105,4 @@ public class Destination {
 			return false;
 		return true;
 	}
-	
 }

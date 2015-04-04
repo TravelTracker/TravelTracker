@@ -1,7 +1,6 @@
 package cmput301w15t07.TravelTracker.serverinterface;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,9 +10,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Document;

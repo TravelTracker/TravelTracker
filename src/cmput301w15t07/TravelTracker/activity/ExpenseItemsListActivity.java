@@ -53,7 +53,7 @@ import android.widget.Toast;
  * 
  * @author kdbanman,
  *         therabidsquirel,
- *         braedy
+ *         braedy,
  *         cellinge
  *
  */
@@ -81,9 +81,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     
     /** ListView adapter */
     private ExpenseItemsListAdapter adapter;
-    
-    /**  Whether the item is currently loading  */
-    private boolean loading;
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,7 +134,6 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
-
         appendNameToTitle(userData.getName());
         
         // Get claim info
@@ -146,39 +142,24 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Create adapter
         adapter = new ExpenseItemsListAdapter(this);
         
-        // Set as observer
         datasource.addObserver(this);
     }
     
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void updateActivity() {
+        // Show loading circle
         setContentView(R.layout.loading_indeterminate);
-        loading = true;
         
         // Multicallback for claim and items
         MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
         // Create callbacks
-        datasource.getClaim(claimID,
-                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
-        datasource.getAllItems(
-                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
-        
-        // Notify ready so callback can execute
-        multi.ready();
-    }
-    
-    @Override
-    public void update(DataSource observable) {
-        // Multicallback for claim and items
-        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
-        
-        // Create callbacks
-        datasource.getClaim(claimID,
-                multi.<Claim>createCallback(MULTI_CLAIM_KEY));
-        datasource.getAllItems(
-                multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
+        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_KEY));
         
         // Notify ready so callback can execute
         multi.ready();
@@ -189,41 +170,34 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
      * changed to the activity layout and the views set up accordingly.
      */
     private void changeUI() {
-        if (loading) {
-            // No longer loading
-            loading = false;
-            
-            // Switch to actual layout
-            setContentView(R.layout.expense_items_list_activity);
-            
-            if (menu != null) {
-                hideMenuItems(menu, claim);
-            }
-            
-            // Get itemsList and set its adapter
-            itemsList = (ListView) findViewById(R.id.expenseItemsListListView);
-            itemsList.setAdapter(adapter);
-
-            // Add delete listener only if we're a claimant and the claim
-            // is in an editable state
-            if (isEditable(claim.getStatus(), userData.getRole())) {
-            	itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-            	itemsList.setMultiChoiceModeListener(
-            			new MultiSelectListener(new ContextMenuListener(),
-            					R.menu.items_list_context_menu));
-            }
-
-            // Set onClick listener, send the Item to the Item Info Activity
-        	itemsList.setOnItemClickListener(new OnItemClickListener() {
-        		@Override
-        		public void onItemClick(AdapterView<?> parent, View view,
-        				int position, long id) {
-        			// Launch edit expense item info with this item
-        			launchExpenseItemInfo(adapter.getItem(position));
-        		}
-        	});
-            
+        setContentView(R.layout.expense_items_list_activity);
+        
+        if (menu != null) {
+            hideMenuItems(menu, claim);
         }
+        
+        // Get itemsList and set its adapter
+        itemsList = (ListView) findViewById(R.id.expenseItemsListListView);
+        itemsList.setAdapter(adapter);
+
+        // Add delete listener only if we're a claimant and the claim
+        // is in an editable state
+        if (isEditable(claim.getStatus(), userData.getRole())) {
+            itemsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            itemsList.setMultiChoiceModeListener(new MultiSelectListener(new ContextMenuListener(),
+                                                 R.menu.items_list_context_menu));
+        }
+
+        // Set onClick listener, send the Item to the Item Info Activity
+        itemsList.setOnItemClickListener(new OnItemClickListener() {
+        	@Override
+        	public void onItemClick(AdapterView<?> parent, View view,
+        			int position, long id) {
+        		// Launch edit expense item info with this item
+        		launchExpenseItemInfo(adapter.getItem(position));
+        	}
+        });
+        
         onLoaded();
     }
     
@@ -345,5 +319,4 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             }
         }
     }
-    
 }

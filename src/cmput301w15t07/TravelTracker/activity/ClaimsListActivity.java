@@ -21,10 +21,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
-
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +32,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
@@ -53,16 +52,19 @@ import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * List Claims.  Can be done as a Claimant or an Approver.
+ * List Claims. Can be done as a Claimant or an Approver.
  * 
- * @author kdbanman, colp, thornhil, therabidsquirel
+ * @author kdbanman,
+ *         colp,
+ *         thornhil,
+ *         therabidsquirel
  *
  */
 public class ClaimsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
 	//Class Fields
+    private ListView claimsList;
 	private ClaimAdapter adapter;
-	private InitialData data; 
-	private Context context;
+	private InitialData data;
 	User user;
 	
 	/** Data about the logged-in user. */
@@ -122,54 +124,61 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
-	    
-	    setContentView(R.layout.claims_list_activity);
-        
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-	    
-        context = this;
-        
-
-
         appendNameToTitle(userData.getName());
+	    
+        // Create adapter
+        adapter = new ClaimAdapter(this, userData.getRole());
         
         datasource.addObserver(this);
         
-        adapter = new ClaimAdapter(context, userData.getRole());
-        ListView listView = (ListView) findViewById(R.id.claimsListClaimListView);
-        listView.setAdapter(adapter);
+        // TODO Remove this without things breaking
+        setContentView(R.layout.claims_list_activity);
+	}
+	
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
+    @Override
+    public void updateActivity() {
+        // Show loading circle
+        // TODO Uncomment this without things breaking
+//        setContentView(R.layout.loading_indeterminate);
+        
+        new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
+    }
+    
+    /**
+     * Change to the activity's layout and set it up its views accordingly.
+     */
+    private void onGetInitialData() {
+        // TODO Uncomment this without things breaking
+//        setContentView(R.layout.claims_list_activity);
+        
+        claimsList = (ListView) findViewById(R.id.claimsListClaimListView);
+        claimsList.setAdapter(adapter);
         
         if (userData.getRole().equals(UserRole.CLAIMANT)){
-	        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-	        listView.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
+            claimsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            claimsList.setMultiChoiceModeListener(new MultiSelectListener(new contextMenuListener(), R.menu.claims_list_context_menu));
         }
         
-        listView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				launchClaimInfo(adapter.getItem(position));
-				
-			}
-		});
-	}
-	
-	@Override
-	protected void onResume() {
-	    super.onResume();
-        updateUI();
+        claimsList.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                launchClaimInfo(adapter.getItem(position));
+            }
+        });
         
-        //TODO get the data based on user
-	}
-	
-	@Override
-	public void update(DataSource observable) {
-		updateUI();
-	}
+        onLoaded();
+    }
+    
 	/**
 	 * delete the claims at set adapter positions 
 	 * @param adapterPositions
@@ -189,31 +198,27 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			datasource.deleteClaim(c.getUUID(), dcb);
 		}
 	}
-	/** Update the UI when the dataset changes */
-	private void updateUI(){
-		//TODO start a spinner here
-		new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
-	}
+	
 	/**
 	 * Launch the claimInfo activity for the selected claim 
 	 * @param claim
 	 */
 	private void launchClaimInfo(Claim claim){
-		Intent intent = new Intent(context, ClaimInfoActivity.class);
+		Intent intent = new Intent(this, ClaimInfoActivity.class);
     	intent.putExtra(ClaimInfoActivity.CLAIM_UUID, claim.getUUID());
-    	
     	intent.putExtra(ClaimInfoActivity.USER_DATA, userData);
     	startActivity(intent);
 	}
+	
     /**
      * Launch the Tag managing activity.
      */
     private void launchManageTags() {
-        Intent intent = new Intent(context, ManageTagsActivity.class);
-        
+        Intent intent = new Intent(this, ManageTagsActivity.class);
         intent.putExtra(ManageTagsActivity.USER_DATA, userData);
         startActivity(intent);
     }
+    
     /**
      * Launch the select location fragment for home location.
      */
@@ -241,6 +246,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title);
     	fragment.show(getFragmentManager(), "selectLocation");
     }
+    
 	/**
 	 * launch the claimInfo activity for a new claim
 	 * @param user The current user that will be assigned to the claim 
@@ -254,6 +260,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 			Log.d("ERROR", "The user in Initial Data is null");
 		}
 	}
+	
 	/**
 	 * Set the user's location.
 	 * @param location The location to set.
@@ -262,26 +269,24 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		Geolocation geoloc = new Geolocation(location.latitude, location.longitude);
 		data.getUser().setHomeLocation(geoloc);
 	}
+	
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{
-
 		@Override
 		public void onResult(InitialData result) {
-			adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
-			data = result;
-			//TODO stop spinner
+	        adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
+	        data = result;
+		    onGetInitialData();
 		}
 
 		@Override
 		public void onError(String message) {
-			// TODO Auto-generated method stub
-			// TODO stop spinner
+	        Toast.makeText(ClaimsListActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
-		
 	}
+	
 	/** Callback for creating a new claim */ 
 	class createNewClaimCallback implements ResultCallback<Claim>{
-
 		@Override
 		public void onResult(Claim result) {
 			launchClaimInfo(result);
@@ -289,13 +294,12 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
 		@Override
 		public void onError(String message) {
-			// TODO Auto-generated method stub
+            Toast.makeText(ClaimsListActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
-		
 	}
+	
 	/** Callback for deleting a claim */
 	class deleteClaimCallback implements ResultCallback<Void>{
-
 		@Override
 		public void onResult(Void result) {
 			// TODO Auto-generated method stub
@@ -303,27 +307,21 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 
 		@Override
 		public void onError(String message) {
-			// TODO Auto-generated method stub
-			
+            Toast.makeText(ClaimsListActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
-
 	}
 	
 	class contextMenuListener implements multiSelectMenuListener{
-
 		@Override
-		public void menuButtonClicked(ArrayList<Integer> selectedItems,
-				MenuItem item) {
+		public void menuButtonClicked(ArrayList<Integer> selectedItems, MenuItem item) {
 			switch (item.getItemId()) {
 			case R.id.claims_list_context_delete:
 				deleteClaims(selectedItems);
 				break;
+				
 			default:
 				break;
 			}
-			
 		}
-		
 	}
-	
 }

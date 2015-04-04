@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 /**
  * A serializable alternative to Android's LatLng class. Immutable so that
  * the containing Document will always be alerted to changes.
+ * 
  * @author colp
  */
 public class Geolocation implements Serializable {

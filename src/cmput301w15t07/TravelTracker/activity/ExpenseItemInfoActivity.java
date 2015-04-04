@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.common.collect.BiMap;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -110,6 +113,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     
     private Uri imageUri;
     private static final int CAMERA_REQUEST = 100;
+    private static final int RESULT_LOAD_IMAGE = 999; 
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -381,11 +385,17 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO: choose form gallery
+					chooseImageFromGallery();
 				}
 			});
 		lastAlertDialog = builder.create();
 		lastAlertDialog.show();
+	}
+	
+	public void chooseImageFromGallery(){
+		Intent intent = new Intent(	Intent.ACTION_PICK, 
+				MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		startActivityForResult(intent, RESULT_LOAD_IMAGE);
 	}
 	
 	/**\
@@ -407,27 +417,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	/**
 	 * launch the camera activity and take a photo
 	 */
-	public void takePhoto(){
-		//Referenced CameraTest Lab files
-		/*
-		//create folder to store pictures to save full size pictures
-		String folderPath = Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/tmp";
-		File folder = new File(folderPath);
-		if (!folder.exists()){
-			folder.mkdir();
-		}
-			*/
+	public void takePhoto(){		
 		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		/*
-		//create URI for the image file
-		String imageFilePath = folderPath + "/" 
-				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
-		File imageFile = new File(imageFilePath);
-		imageFileUri = Uri.fromFile(imageFile);
-        
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
-        */
         //check if there is an app that can handle the intent
         if (cameraIntent.resolveActivity(getPackageManager()) != null){
         	//create the file where the image should go
@@ -453,6 +444,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
 		  ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+		  //if Result is from takePhoto()
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
 				
 				Bitmap imageBitmap = null;
@@ -466,7 +458,24 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 					e.printStackTrace();
 				}
 				item.setReceipt(new Receipt(imageBitmap,imageUri));
-				imageButton.setImageBitmap(imageBitmap);
+				//imageButton.setImageBitmap(imageBitmap);
+		}
+		//if result is from chooseImageFromGallery()
+		//refrenced viralpirate.net/blocks/pick-image-from-galary-android-app
+		//i know this url is misspelled, but thats what the site is ^^
+		else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
+			imageUri = data.getData();
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+			Cursor cursor = getContentResolver().query(imageUri, 
+					filePathColumn, null, null, null);
+			cursor.moveToFirst();
+			
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			String picturePath = cursor.getString(columnIndex);
+			cursor.close();
+			
+			item.setReceipt(new Receipt(BitmapFactory.decodeFile(picturePath),imageUri));
+			
 		}
 	}
 	/**
@@ -489,7 +498,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         		receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets()
         				.open("receipt.png")));
         	} else {
-        		//TODO image populate
+        		receiptImageView.setImageBitmap(item.getReceipt().getPhoto());
         	}
 		} catch (IOException e1) {
 			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();

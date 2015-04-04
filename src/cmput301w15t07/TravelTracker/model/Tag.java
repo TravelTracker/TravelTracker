@@ -34,8 +34,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class Tag extends Document {
-	@Expose private UUID user;
-	@Expose private String title;
+	private UUID user;
+	private String title;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.

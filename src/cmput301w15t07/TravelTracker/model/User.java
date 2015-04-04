@@ -34,8 +34,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class User extends Document {
-	@Expose private String userName;
-	@Expose private Geolocation homeLocation;
+	private String userName;
+	private Geolocation homeLocation;
 
 	/**
 	 * Package protected constructor, intended for use only by DataSource.

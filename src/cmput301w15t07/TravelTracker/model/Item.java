@@ -38,15 +38,15 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class Item extends Document {
-	@Expose private UUID claim;
-	@Expose private String description;
-	@Expose private ItemCategory category;
-	@Expose private Date date;
-	@Expose private Float amount;
-	@Expose private ItemCurrency currency;
-	@Expose private Receipt receipt;
-	@Expose private Geolocation geolocation;
-	@Expose private boolean isComplete;
+	private UUID claim;
+	private String description;
+	private ItemCategory category;
+	private Date date;
+	private Float amount;
+	private ItemCurrency currency;
+	private Receipt receipt;
+	private Geolocation geolocation;
+	private boolean isComplete;
 
 	/**
 	 * Package protected constructor, intended for use only by DataSource.

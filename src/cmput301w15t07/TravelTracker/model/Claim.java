@@ -38,14 +38,14 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class Claim extends Document {
-	@Expose private UUID user;
-	@Expose private UUID approver;
-	@Expose private Status status;
-	@Expose private Date startDate;
-	@Expose private Date endDate;
-	@Expose private ArrayList<Destination> destinations;
-	@Expose private ArrayList<ApproverComment> comments;
-	@Expose private ArrayList<UUID> tags;
+	private UUID user;
+	private UUID approver;
+	private Status status;
+	private Date startDate;
+	private Date endDate;
+	private ArrayList<Destination> destinations;
+	private ArrayList<ApproverComment> comments;
+	private ArrayList<UUID> tags;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.

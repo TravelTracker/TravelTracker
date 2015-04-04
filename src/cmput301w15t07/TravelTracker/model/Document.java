@@ -39,13 +39,13 @@ import cmput301w15t07.TravelTracker.util.Observable;
 public abstract class Document extends Observable<Document> {
 
 	// A new document may be synced, but dirty is a safer default.
-	private boolean dirty = true;
+	transient private boolean dirty = true;
 	
-	@Expose private Date lastChanged;
+	private Date lastChanged;
 	
-	@Expose private UUID docID;
+	private UUID docID;
 	
-	@Expose private Type type;
+	private Type type;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -152,11 +152,6 @@ public abstract class Document extends Observable<Document> {
 			if (other.docID != null)
 				return false;
 		} else if (!docID.equals(other.docID))
-			return false;
-		if (lastChanged == null) {
-			if (other.lastChanged != null)
-				return false;
-		} else if (!lastChanged.equals(other.lastChanged))
 			return false;
 		if (type != other.type)
 			return false;

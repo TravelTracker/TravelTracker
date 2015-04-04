@@ -32,7 +32,7 @@ import java.util.List;
  * @param <E>
  */
 public abstract class Observable <E> {
-    private List<Observer<E>> observers = new ArrayList<Observer<E>>();
+    transient private List<Observer<E>> observers = new ArrayList<Observer<E>>();
 
     public Observable() {
         observers = new ArrayList<Observer<E>>();

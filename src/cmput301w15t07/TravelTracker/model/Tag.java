@@ -23,6 +23,8 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /**
@@ -32,8 +34,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class Tag extends Document {
-	private UUID user;
-	private String title;
+	@Expose private UUID user;
+	@Expose private String title;
 	
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -43,6 +45,14 @@ public class Tag extends Document {
 	Tag(UUID docID) {
 		super(docID);
 		setType(Type.TAG);
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Tag() {
+		this(UUID.randomUUID());
 	}
 	
 	/**

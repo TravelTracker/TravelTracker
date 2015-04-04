@@ -3,6 +3,8 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /*
@@ -36,15 +38,15 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class Item extends Document {
-	private UUID claim;
-	private String description;
-	private ItemCategory category;
-	private Date date;
-	private Float amount;
-	private ItemCurrency currency;
-	private Receipt receipt;
-	private Geolocation geolocation;
-	private boolean isComplete;
+	@Expose private UUID claim;
+	@Expose private String description;
+	@Expose private ItemCategory category;
+	@Expose private Date date;
+	@Expose private Float amount;
+	@Expose private ItemCurrency currency;
+	@Expose private Receipt receipt;
+	@Expose private Geolocation geolocation;
+	@Expose private boolean isComplete;
 
 	/**
 	 * Package protected constructor, intended for use only by DataSource.
@@ -74,6 +76,14 @@ public class Item extends Document {
 		
 		setType(Type.ITEM);
 		
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Item() {
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**

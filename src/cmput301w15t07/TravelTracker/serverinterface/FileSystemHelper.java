@@ -59,7 +59,6 @@ public class FileSystemHelper implements ServerHelper {
 	private Context ctx;
 	
 	private HashMap<Class<? extends Document>, PersistentList<UUID>> savedDocs;
-	private HashMap<Class<? extends Document>, Type> docTypes;
 	
 	/**
 	 * 
@@ -69,17 +68,11 @@ public class FileSystemHelper implements ServerHelper {
 		this.ctx = ctx;
 		
 		savedDocs = new HashMap<Class<? extends Document>, PersistentList<UUID>>();
-		docTypes = new HashMap<Class<? extends Document>, Type>();
 		
 		savedDocs.put(User.class, new PersistentList<UUID>(USERS_FILENAME, ctx));
 		savedDocs.put(Claim.class, new PersistentList<UUID>(CLAIMS_FILENAME, ctx));
 		savedDocs.put(Item.class, new PersistentList<UUID>(ITEMS_FILENAME, ctx));
 		savedDocs.put(Tag.class, new PersistentList<UUID>(TAGS_FILENAME, ctx));
-		
-		docTypes.put(User.class, (new TypeToken<User>() {}).getType());
-		docTypes.put(Claim.class, (new TypeToken<Claim>() {}).getType());
-		docTypes.put(Item.class, (new TypeToken<Item>() {}).getType());
-		docTypes.put(Tag.class, (new TypeToken<Tag>() {}).getType());
 	}
 
 	@Override

@@ -66,42 +66,12 @@ public class GsonIOManager {
 		return ret;
 	}
 	
-	public <T> T load(String filename, Type type) throws FileNotFoundException {
-		Gson gson = new Gson();
-		T ret;
-		try {
-			FileInputStream fis = ctx.openFileInput(filename);
-			InputStreamReader reader = new InputStreamReader(fis);
-			
-			ret = gson.fromJson(reader, type);
-			
-			fis.close();
-		} catch (IOException e) {
-			Log.e("GSONIOManager", "file read failed");
-			ret = null;
-		}
-		return ret;
-	}
-	
 	public <T> void save(T toSave, String filename) {
 		Gson gson = new Gson();
 		try {
 			FileOutputStream fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
 			OutputStreamWriter writer = new OutputStreamWriter(fos);
 			gson.toJson(toSave, (new TypeToken<T>() {}).getType(), writer);
-			writer.flush();
-			fos.close();
-		} catch (IOException e) {
-			Log.e("GSONIOManager", "file read failed");
-		}
-	}
-	
-	public void save(Object toSave, String filename, Type type) {
-		Gson gson = new Gson();
-		try {
-			FileOutputStream fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-			OutputStreamWriter writer = new OutputStreamWriter(fos);
-			gson.toJson(toSave, type, writer);
 			writer.flush();
 			fos.close();
 		} catch (IOException e) {

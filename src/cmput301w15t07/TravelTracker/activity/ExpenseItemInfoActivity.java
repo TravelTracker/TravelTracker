@@ -259,7 +259,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onClick(View v) {
-                    	promptTakePhoto();
+                    	if (item.getReceipt().getPhoto() == null) {
+                    		promptTakePhoto();
+                    	}else {
+                    		promptChangePhoto();
+                    	}
+                    	
                     }
                 });
                 
@@ -369,8 +374,44 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	}
 	
 	/**
-	 * Prompt for adding receipt image to expense item
+	 * Prompt for changing, viewing, or deleting a receipt image
+	 * will only be spawned if a receipt image exists for the current item
 	 */
+	public void promptChangePhoto(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.expense_item_info_change_receipt_message)
+			.setPositiveButton(R.string.change_image, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					promptTakePhoto();
+					
+				}
+			})
+			.setNeutralButton(R.string.view_image, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//view the receipt image
+					
+				}
+			})
+			.setNegativeButton(R.string.delete_image, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//set the receipt to a new one to delete photo 
+					item.setReceipt(new Receipt());
+					
+				}
+			});
+		lastAlertDialog = builder.create();
+		lastAlertDialog.show();
+	}
+		/**
+		 * prompt for creating a new receipt image 
+		 */
+	
 	public void promptTakePhoto(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.expense_item_info_capture_receipt_message)
@@ -458,7 +499,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 					e.printStackTrace();
 				}
 				item.setReceipt(new Receipt(imageBitmap,imageUri));
-				//imageButton.setImageBitmap(imageBitmap);
 		}
 		//if result is from chooseImageFromGallery()
 		//refrenced viralpirate.net/blocks/pick-image-from-galary-android-app

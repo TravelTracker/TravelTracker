@@ -73,6 +73,8 @@ public class Destination {
 		int result = 1;
 		result = prime * result
 				+ ((location == null) ? 0 : location.hashCode());
+        result = prime * result
+                + ((geolocation == null) ? 0 : geolocation.hashCode());
 		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
 		return result;
 	}
@@ -91,6 +93,11 @@ public class Destination {
 				return false;
 		} else if (!location.equals(other.location))
 			return false;
+		if (geolocation == null) {
+		    if (other.geolocation != null)
+		        return false;
+		} else if (!geolocation.equals(other.geolocation))
+		    return false;
 		if (reason == null) {
 			if (other.reason != null)
 				return false;

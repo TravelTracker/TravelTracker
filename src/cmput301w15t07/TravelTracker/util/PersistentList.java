@@ -21,12 +21,9 @@ package cmput301w15t07.TravelTracker.util;
  *  limitations under the License.
  */
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,6 +44,7 @@ public class PersistentList<T> implements List<T> {
 	
 	private ArrayList<T> list;
 	private String filename;
+	private Class<T> wrappedClass;
 	
 	private Context ctx;
 	
@@ -57,9 +55,10 @@ public class PersistentList<T> implements List<T> {
 	 * @param filename
 	 * @param ctx
 	 */
-	public PersistentList(String filename, Context ctx) {
+	public PersistentList(String filename, Context ctx, Class<T> clazz) {
 		this.filename = filename;
 		this.ctx = ctx;
+		this.wrappedClass = clazz;
 		
 		loadList();
 	}
@@ -201,7 +200,7 @@ public class PersistentList<T> implements List<T> {
 		list = null;
 		GsonIOManager gson = new GsonIOManager(ctx);
 		try {
-			list = gson.<ArrayList<T>>load(filename);
+			list = gson.<ArrayList<T>>load(filename, new ArrayListType());
 		} catch (FileNotFoundException e) {
 			Log.i("PersistentList", "file not found - creating empty persistent list");
 			list = new ArrayList<T>();
@@ -210,6 +209,29 @@ public class PersistentList<T> implements List<T> {
 	
 	private void saveList() {
 		GsonIOManager gson = new GsonIOManager(ctx);
-		gson.<ArrayList<T>>save(list, filename);
+		gson.save(list, filename, new ArrayListType());
+	}
+
+	/*
+	 * Three methods below are courtesy of
+	 * 	http://pastebin.com/PV6cP9jc
+	 * on 4 April 2015
+	 */
+	public class ArrayListType implements ParameterizedType {
+		
+		@Override
+		public Type[] getActualTypeArguments() {
+			return new Type[] {wrappedClass};
+		}
+	
+		@Override
+		public Type getOwnerType() {
+			return null;
+		}
+	
+		@Override
+		public Type getRawType() {
+			return ArrayList.class;
+		}
 	}
 }

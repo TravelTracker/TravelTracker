@@ -114,7 +114,10 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
         startActivity(intent);
     }
     
-    /** appends the users name to the title */
+    /**
+     * Appends the user's name to the title.
+     * @param name The user's name.
+     */
     public void appendNameToTitle(String name) {
         setTitle(getTitle() + " - " + name);
     }

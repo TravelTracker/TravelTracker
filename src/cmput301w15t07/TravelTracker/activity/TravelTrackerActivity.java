@@ -27,7 +27,7 @@ import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.UserRole;
-import android.annotation.SuppressLint;
+import cmput301w15t07.TravelTracker.util.Observer;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -43,8 +43,7 @@ import android.view.View;
  *         therabidsquirel
  *
  */
-@SuppressLint("Registered") // This is not an activity itself, it doesn't need to be registered
-public class TravelTrackerActivity extends Activity {
+public abstract class TravelTrackerActivity extends Activity implements Observer<DataSource> {
     /** String used to retrieve user data from intent */
     public static final String USER_DATA = "cmput301w15t07.TravelTracker.userData";
     
@@ -86,9 +85,25 @@ public class TravelTrackerActivity extends Activity {
         datasource = DataSourceSingleton.getDataSource(getApplicationContext());
 	}
 	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    updateActivity();
+	}
+	
+	@Override
+	public void update(DataSource observable) {
+        updateActivity();
+	}
+	
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
+	abstract public void updateActivity();
+	
 	/**
-	 * sign out of the app
-	 * clears activity stack and exits to login activity
+	 * Sign out of the app, clears the activity stack, and exits to login activity.
 	 */
     public void signOut() {
         // adapted from 
@@ -98,6 +113,7 @@ public class TravelTrackerActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Removes other Activities from stack
         startActivity(intent);
     }
+    
     /** appends the users name to the title */
     public void appendNameToTitle(String name) {
         setTitle(getTitle() + " - " + name);

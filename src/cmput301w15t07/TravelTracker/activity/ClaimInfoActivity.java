@@ -65,7 +65,7 @@ import cmput301w15t07.TravelTracker.util.TagAdapter;
  * 
  * @author kdbanman,
  *         therabidsquirel,
- *         colp
+ *         colp,
  *         skwidz
  *
  */
@@ -169,27 +169,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
+        appendNameToTitle(userData.getName());
         
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
-        appendNameToTitle(userData.getName());
-        
         datasource.addObserver(this);
     }
     
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
     @Override
-    protected void onResume() {
-    	super.onResume();
-    	
-    	// Show loading circle
+    public void updateActivity(){
+        // Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
-        datasource.getClaim(claimID, new ClaimCallback());
-    }
-    
-    @Override
-    public void update(DataSource observable) {
         datasource.getClaim(claimID, new ClaimCallback());
     }
     
@@ -200,6 +196,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     public AlertDialog getLastAlertDialog() {
     	return lastAlertDialog;
     }
+    
     /**
      * attach listeners to buttons/textviews/etc.
      * hide buttons/views according to user role
@@ -348,10 +345,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      */
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
-        intent.putExtra(FROM_CLAIM_INFO, true);
-        intent.putExtra(ITEM_UUID, item.getUUID());
-        intent.putExtra(CLAIM_UUID, claim.getUUID());
-        intent.putExtra(USER_DATA, userData);
+        intent.putExtra(ExpenseItemInfoActivity.FROM_CLAIM_INFO, true);
+        intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
+        intent.putExtra(ExpenseItemInfoActivity.CLAIM_UUID, claim.getUUID());
+        intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
         startActivity(intent);
     }
     
@@ -372,10 +369,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 					public void onClick(DialogInterface dialog, int which) {
 						// Do nothing
 					}
-			   });
-		lastAlertDialog = builder.create();
-		
-		lastAlertDialog.show();
+			   })
+			   .create()
+			   .show();
     }
 
     /**
@@ -444,8 +440,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     	    LinearLayout approverLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverLinearLayout);
     	    approverLinearLayout.setVisibility(View.GONE);
     	}
-    	
-
         
         // Show approver comments
         LinearLayout commentsList = (LinearLayout) findViewById(R.id.claimInfoCommentsLinearLayout);
@@ -466,16 +460,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 			}
 		});
     }
+    
     /**
      * starts the expenseItemList activity
      */
     public void viewItems() {
         // Start next activity
         Intent intent = new Intent(this, ExpenseItemsListActivity.class);
-        intent.putExtra(USER_DATA, userData);
-        intent.putExtra(CLAIM_UUID, claimID);
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
         startActivity(intent);
     }
+    
     /**
      * spawns the datepicker fragment for startdate button
      */
@@ -485,6 +481,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
+    
     /**
      * spawns the datpicker fragment for the end date button
      */
@@ -494,6 +491,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
+    
     /**
      * submits the selected claim and adds a comment if there exists one in the field
      */
@@ -719,9 +717,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		}
 		
 		@Override
-		public void onDatePickerFragmentCancelled() {
-			// Do nothing
-		}
+		public void onDatePickerFragmentCancelled() {}
 	}
     
     /**
@@ -745,9 +741,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		}
 		
 		@Override
-		public void onDatePickerFragmentCancelled() {
-			// Do nothing
-		}
+		public void onDatePickerFragmentCancelled() {}
 	}
     
     /**

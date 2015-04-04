@@ -39,7 +39,9 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 /**
  * Launch activity.  Log in as a User with a Name and Role.
  * 
- * @author kdbanman, colp, therabidsquirel
+ * @author kdbanman,
+ *         colp,
+ *         therabidsquirel
  *
  */
 public class LoginActivity extends TravelTrackerActivity {
@@ -57,6 +59,15 @@ public class LoginActivity extends TravelTrackerActivity {
 			}
 		});
 	}
+
+    /**
+     * There is no dataset in LoginActivity.
+     * Called in onResume() and update(DataSource observable).
+     */
+    @Override
+    public void updateActivity() {
+        // Do nothing
+    }
 
 	/**
 	 * Attempt to log in to the application using information from the name and role views.

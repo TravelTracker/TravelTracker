@@ -291,8 +291,15 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	 * @param tagIDs The list of tag IDs. Only claims with at least one of these tags will be displayed.
 	 */
 	private void filterByTags(HashSet<UUID> tagIDs) {
-		Toast.makeText(this, ""+tagIDs.size(), Toast.LENGTH_SHORT).show();
 		filterTags = tagIDs;
+		
+		rebuildList();
+	}
+	/**
+	 * Rebuild the ListView.
+	 */
+	private void rebuildList() {
+		adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers(), filterTags);
 	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{
@@ -300,7 +307,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		@Override
 		public void onResult(InitialData result) {
 			// Populate the list of tags
-			if (filterTags == null) {
+			//if (filterTags == null) {
 				filterTags = new HashSet<UUID>();
 				
 				for (Tag tag : result.getTags()) {
@@ -308,7 +315,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 				}
 				
 			// Turn on new tags by default
-			} else {
+			/*} else {
 				Collection<Tag> oldTags = data.getTags();
 				
 				for (Tag tag : result.getTags()) {
@@ -316,10 +323,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 						filterTags.add(tag.getUUID());
 					}
 				}
-			}
+			}*/
 			
-			adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
 			data = result;
+			filterByTags(filterTags); // Will automatically rebuild list
 			//TODO stop spinner
 		}
 

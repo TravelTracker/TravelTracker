@@ -46,7 +46,7 @@ import cmput301w15t07.TravelTracker.R;
  * @author ryant26
  *
  */
-public class ClaimAdapter extends ArrayAdapter<Claim>{
+public class ClaimAdapter extends ArrayAdapter<Claim> {
 	
 	private Collection<Claim> claims;
 	private Collection<Item> items;
@@ -60,17 +60,38 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 	
 	/**
 	 * This function rebuilds the list with the passed claims
-	 * @param claims
-	 * @param items
+	 * 
+	 * @param claims The claims to display.
+	 * @param items The user's expense items (used to find totals).
+	 * @param users The list of users (to get user names).
+	 * @param tags The list of tag UUIDs to filter by, or null for no filter. Only claims tagged with at least one of these tags will be displayed.
 	 */
-	public void rebuildList(Collection<Claim> claims, Collection<Item> items, Collection<User> users){
+	public void rebuildList(Collection<Claim> claims, Collection<Item> items,
+			Collection<User> users, Collection<UUID> tagIDs){
 		this.claims = claims;
 		this.items = items;
 		this.users = users;
 
 		//possible performance bottleneck
 		clear();
-		addAll(claims);
+		
+		if (tagIDs == null) {
+			addAll(claims);
+		} else {
+			// Add claims one at a time
+			for (Claim claim : claims) {
+				ArrayList<UUID> claimTags = claim.getTags();
+				
+				// Only add if tagged correctly
+				for (UUID uuid : claimTags) {
+					if (tagIDs.contains(uuid)) {
+						add(claim);
+						break;
+					}
+				}
+			}
+		}
+		
 		sort(new Comparator<Claim>() {
 
 			@Override
@@ -84,21 +105,6 @@ public class ClaimAdapter extends ArrayAdapter<Claim>{
 
 		});
 		notifyDataSetChanged();
-	}
-	
-	/**
-	 * this method filters the list by tag
-	 * @param items
-	 */
-	public void filterListByTags(Collection<Item> items){
-		//TODO filter list by tags
-	}
-	
-	/**
-	 * This method removes all applied filters
-	 */
-	public void removeAllFilters(){
-		//TODO implement this
 	}
 	
 	@Override

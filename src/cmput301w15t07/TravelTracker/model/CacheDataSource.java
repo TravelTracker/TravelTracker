@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
@@ -190,20 +191,43 @@ public class CacheDataSource extends InMemoryDataSource {
 	
 	/**
 	 * 
-	 * @param toSave 
+	 * @author kdbanman
+	 *
 	 */
-	private void syncDocuments() {
-		// attempt to pull all data from main (push all to backup and return if fail)
-		// do deletions that are not out-of-date on received
-		// do same on remote using helper calls
-			// clear deletion list if successful
+	private class syncDocumentsTask extends AsyncTask<Void, Void, String> {
+
+		private ResultCallback callback;
 		
-		// merge every remaining received document into inmemory
-		// update observers (on gui thread!) (merge not cause update())
+		public syncDocumentsTask(ResultCallback<?> callback) {
+			this.callback = callback;
+		}
+
+		@Override
+		protected String doInBackground(Void... params) {
+			// attempt to pull all data from main (push all to backup and return if fail)
+			// do deletions that are not out-of-date on received
+			// do same on remote using helper calls
+				// clear deletion list if successful
+			
+			// merge every remaining received document into inmemory
+			// update observers (on gui thread!) (merge not cause update())
+			
+			// push in memory to server
+				// set all documents to clean and purge backup if successful
+				// push all to backup if fail
+			return null;
+		}
 		
-		// push in memory to server
-			// set all documents to clean and purge backup if successful
-			// push all to backup if fail
+		/**
+		 * back on UI thread, do callback stuff, update observers.
+		 * 
+		 * @param errMsg  The error message if an error was encountered.  Null otherwise (hacky!).
+		 */
+		@Override
+		protected void onPostExecute(String errMsg) {
+			// if not null errmsg assume success
+			
+		}
 	}
 
 }

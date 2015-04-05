@@ -24,6 +24,8 @@ package cmput301w15t07.TravelTracker.test.activity;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.w3c.dom.Comment;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -36,12 +38,14 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
 import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
 import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
+import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
@@ -348,7 +352,30 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 	}
 	
-	public void testAddCommentToExpenseItem() {
+	public void testAddCommentToExpenseItem() throws Throwable {
+		startWithClaim(UserRole.APPROVER);
+		
+		final Button approveButton = (Button) activity.findViewById(R.id.claimInfoClaimApproveButton);
+		final String approverComment = "Approved Comment";
+		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+			EditText comment = (EditText) activity.findViewById(R.id.claimInfoCommentEditText);
+			comment.setText(approverComment);
+			approveButton.performClick();
+			activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+			}
+		});
+		getInstrumentation().waitForIdleSync();
+		assertEquals(Status.APPROVED, claim.getStatus());
+		for (ApproverComment comment : claim.getComments()){
+			if (comment.getComment().equals(approverComment)){
+				return;
+			}
+		}
+		fail("Did not find the approver comment");
 		
 	}
 	

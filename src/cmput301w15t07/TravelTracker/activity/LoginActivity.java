@@ -109,7 +109,7 @@ public class LoginActivity extends TravelTrackerActivity {
 		
 		// Invalid user name
 		if (userName.isEmpty()) {
-			nameEditText.setError(getString(R.string.login_no_name_error));
+			nameEditText.setError(getString(R.string.error_no_name));
 			return;
 		}
 		

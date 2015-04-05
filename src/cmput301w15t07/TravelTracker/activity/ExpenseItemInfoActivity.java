@@ -109,7 +109,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     /** The current receipt image filepath for viewing image */ 
     String currentPhotoPath = null;
     
+    /** Uri for the receipt image */
     private Uri imageUri;
+    
     private static final int CAMERA_REQUEST = 100;
     private static final int RESULT_LOAD_IMAGE = 999; 
     

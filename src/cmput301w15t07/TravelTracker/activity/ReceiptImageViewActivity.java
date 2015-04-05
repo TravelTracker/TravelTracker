@@ -21,14 +21,11 @@
 
 package cmput301w15t07.TravelTracker.activity;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
 import java.util.UUID;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
@@ -41,14 +38,11 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  */
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
-    /** String used to retrieve URI reference from intent */
-    public static final String URI_DATA = "cmput301w15t07.TravelTracker.uriData";
-	
-	/** Immutable URI reference of the image. */
-	private Uri imageUri;
-	
+   
+	/** UUID for the Item */
 	private UUID itemID; 
 	
+	/** the current expense item */
 	private Item item;
 	
 	@Override
@@ -74,10 +68,7 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 		 
 	}
 	
-    /**
-     * There is no dataset in LoginActivity.
-     * Called in onResume() and update(DataSource observable).
-     */
+  
     @Override
     public void updateActivity() {
         // Do nothing

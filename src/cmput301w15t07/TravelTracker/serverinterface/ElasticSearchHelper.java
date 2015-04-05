@@ -80,30 +80,28 @@ public class ElasticSearchHelper implements ServerHelper{
 	
 	@Override
 	public Collection<Claim> getAllClaims() throws Exception {
-		String query = getAllQueryString();
-		Search search = getSearch(query, Constants.Type.CLAIM);
-		return runSearch(search, Claim.class);
+		return getAllAction(Constants.Type.CLAIM, Claim.class);		
 	}
 
 	@Override
 	public Collection<Item> getAllItems() throws Exception {
-		String query = getAllQueryString();
-		Search search = getSearch(query, Constants.Type.ITEM);
-		return runSearch(search, Item.class);
+		return getAllAction(Constants.Type.ITEM, Item.class);		
 	}
 
 	@Override
 	public Collection<Tag> getAllTags() throws Exception {
-		String query = getAllQueryString();
-		Search search = getSearch(query, Constants.Type.TAG);
-		return runSearch(search, Tag.class);
+		return getAllAction(Constants.Type.TAG, Tag.class);		
 	}
 
 	@Override
 	public Collection<User> getAllUsers() throws Exception {
+		return getAllAction(Constants.Type.USER, User.class);
+	}
+	
+	private <T> Collection<T> getAllAction(Constants.Type type, Class<T> t) throws Exception{
 		String query = getAllQueryString();
-		Search search = getSearch(query, Constants.Type.USER);
-		return runSearch(search, User.class);
+		Search search = getSearch(query, type);
+		return runSearch(search, t);
 	}
 
 	@Override

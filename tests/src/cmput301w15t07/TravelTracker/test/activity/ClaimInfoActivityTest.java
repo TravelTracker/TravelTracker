@@ -379,12 +379,24 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		
 	}
 	
-	public void testReturnExpenseClaim() {
+	public void testReturnExpenseClaim() throws Throwable {
 		
 	}
 	
-	public void testApproveExpenseClaim() {
+	public void testApproveExpenseClaim() throws Throwable {
+		startWithClaim(UserRole.APPROVER);
+		final Button approveButton = (Button) activity.findViewById(R.id.claimInfoClaimApproveButton);
 		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				approveButton.performClick();
+				activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();				
+			}
+		});
+		getInstrumentation().waitForIdleSync();
+		assertEquals(Status.APPROVED, claim.getStatus());
 	}
 	
 	public void testViewExpenseItems() throws InterruptedException {

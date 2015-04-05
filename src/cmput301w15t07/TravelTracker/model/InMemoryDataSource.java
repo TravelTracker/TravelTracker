@@ -252,12 +252,6 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		callback.onResult(tags.values());
 
 	}
-
-	@Override
-	public Collection<Document> getDirtyDocuments() {
-		// this is for caching, probably not meaningful for in-memory storage.
-		return null;
-	}
 	
 	@Override
 	public void update(Document observable) {

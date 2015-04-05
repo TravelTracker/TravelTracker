@@ -171,9 +171,12 @@ public class CacheDataSource extends Observable<DataSource> implements
 	public void getAllTags(ResultCallback<Collection<Tag>> callback) {
 	}
 
-	@Override
-	public Collection<Document> getDirtyDocuments() {
+	private Collection<Document> getDirtyDocuments() {
 		return null;
+	}
+	
+	private void saveDocumentsSync(Collection<Document> toSave) {
+		
 	}
 
 }

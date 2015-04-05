@@ -37,7 +37,7 @@ import android.widget.CheckBox;
 
 public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
 	public TagCheckboxAdapter(Context context) {
-	    super(context, R.layout.select_tag_fragment_item, R.id.select_tag_listview);
+	    super(context, R.layout.select_tag_fragment_item, R.id.select_tag_fragment_item_checkbox);
     }
 	
 	@Override

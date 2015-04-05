@@ -70,9 +70,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	/** Data about the logged-in user. */
 	private UserData userData;
 	
-	/** The filter by tags fragment. */
-	SelectTagFragment filterFragment;
-	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claims_list_menu, menu);
@@ -161,8 +158,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 				
 			}
 		});
-		
-		filterFragment = new SelectTagFragment();
 	}
 	
 	@Override
@@ -252,7 +247,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Launch the filter by tag fragment.
      */
     private void launchFilterByTag() {
-    	filterFragment.setTags(data.getTags());
+		SelectTagFragment filterFragment = new SelectTagFragment(data.getTags());
     	filterFragment.show(getFragmentManager(), "filterByTag");
     }
 	/**

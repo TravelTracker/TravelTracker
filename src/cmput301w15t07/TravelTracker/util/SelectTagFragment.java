@@ -1,5 +1,6 @@
 package cmput301w15t07.TravelTracker.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import cmput301w15t07.TravelTracker.R;
@@ -11,6 +12,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -46,6 +48,27 @@ public class SelectTagFragment extends DialogFragment {
 	private Collection<Tag> tags;
 	private Collection<Tag> selected;
 	
+	/**
+	 * Construct the fragment with no tags selected.
+	 * 
+	 * @param tags The collection of available tags.
+	 */
+	public SelectTagFragment(Collection<Tag> tags) {
+	    this.tags = tags;
+	    this.selected = new ArrayList<Tag>();
+    }
+	
+	/**
+	 * Construct the fragment
+	 * 
+	 * @param tags The collection of available tags.
+	 * @param selected The collection of tags which are currently selected.
+	 */
+	public SelectTagFragment(Collection<Tag> tags, Collection<Tag> selected) {
+		this.tags = tags;
+		this.selected = selected;
+    }
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Create alert dialog
@@ -78,13 +101,5 @@ public class SelectTagFragment extends DialogFragment {
 		listAdapter.addAll(tags);
 		
 	    return builder.create();
-	}
-	
-	/**
-	 * Set the available tags.
-	 * @param tags The list of the user's tags.
-	 */
-	public void setTags(Collection<Tag> tags) {
-		this.tags = tags;
 	}
 }

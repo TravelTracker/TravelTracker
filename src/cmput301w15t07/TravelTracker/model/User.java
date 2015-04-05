@@ -30,7 +30,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 /**
  * Model object for Users.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class User extends Document {
@@ -45,6 +46,9 @@ public class User extends Document {
 	User(UUID docID) {
 		super(docID);
 		setType(Type.USER);
+		
+		userName = "";
+		homeLocation = null; // As home location can be unset, there's no better default than null unfortunately.
 	}
 	
 	/**

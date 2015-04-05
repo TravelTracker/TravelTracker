@@ -54,10 +54,9 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		
 		// Add ten random tags
 		for (int i = 0; i < 10; ++i) {
-		    Tag t = new Tag(UUID.randomUUID());
+		    Tag t = new Tag(UUID.randomUUID(), user.getUUID());
 		    
 		    // Set data
-		    t.setUser(user.getUUID());
 		    t.setTitle(getRandomString(r, 5, 10));
 		    
 		    internalAddTag(t);
@@ -66,8 +65,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		// Want 10 random claims
 		for (int i = 0; i < 10; ++i) {
 			// Create claim and set data
-			Claim claim = new Claim(UUID.randomUUID());
-			claim.setUser(user.getUUID());
+			Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
 			
 			// Random start time (up to 10 days ago)
 			Calendar calendar = Calendar.getInstance();

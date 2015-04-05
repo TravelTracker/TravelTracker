@@ -40,6 +40,7 @@ public class Receipt {
 	
 	public Receipt(Bitmap photo, Uri uri) {
 		this.photo = photo;
+		this.imageUri = uri;
 	}
 	
 	public Receipt() {

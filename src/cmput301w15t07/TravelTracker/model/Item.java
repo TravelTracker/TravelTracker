@@ -56,26 +56,17 @@ public class Item extends Document {
 	 */
 	Item(UUID docID, UUID claimID) {
 		super(docID);
+        setType(Type.ITEM);
 		
 		claim = claimID;
-		
-		// Empty description
 		description = "";
-		
 		category = ItemCategory.NO_CATEGORY;
-		
 		date = new Date();
-		
-		// Start at 0 of unknown currency
 		amount = 0.f;
 		currency = ItemCurrency.CAD;
-		
 		receipt = new Receipt();
-		
+		geolocation = null; // As geolocation is optional, there's no better default than null unfortunately.
 		isComplete = true;
-		
-		setType(Type.ITEM);
-		
 	}
 	
 	/**

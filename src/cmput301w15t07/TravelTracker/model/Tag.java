@@ -30,7 +30,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 /**
  * Model object for Claim Tags for Claimant use.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class Tag extends Document {
@@ -42,9 +43,12 @@ public class Tag extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	Tag(UUID docID) {
+	Tag(UUID docID, UUID userID) {
 		super(docID);
 		setType(Type.TAG);
+		
+		user = userID;
+		title = "";
 	}
 	
 	/**
@@ -52,7 +56,7 @@ public class Tag extends Document {
 	 */
 	@SuppressWarnings("unused")
 	private Tag() {
-		this(UUID.randomUUID());
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**

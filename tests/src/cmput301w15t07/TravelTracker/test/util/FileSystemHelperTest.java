@@ -2,10 +2,12 @@ package cmput301w15t07.TravelTracker.test.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Document;
 import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
@@ -13,6 +15,7 @@ import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.Receipt;
+import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
@@ -249,5 +252,56 @@ public class FileSystemHelperTest extends InstrumentationTestCase {
 		assertEquals(0, fs.getTags(u1.getUUID()).size());
 		assertNull(fs.getUser("Billington"));
 		assertNull(fs.getUser("Stevula"));
+	}
+	
+
+	
+	public void testEditClaim() throws Exception {
+		
+
+		User newUser = DataSourceUtils.addUser("newguy", ds);
+		Claim originalClaim = DataSourceUtils.addEmptyClaim(newUser, ds);
+
+		assertEquals(0, fs.getClaims(newUser.getUUID()).size());
+
+		fs.<User>saveDocuments(new ArrayList<User>(Arrays.asList(newUser)));
+		fs.<Claim>saveDocuments(new ArrayList<Claim>(Arrays.asList(originalClaim)));
+
+		assertEquals(1, fs.getClaims(newUser.getUUID()).size());
+		
+		// retrieve saved claim for later comparison
+		Claim[] claims = new Claim[1];
+		fs.getClaims(newUser.getUUID()).toArray(claims);
+		Claim referenceClaim = claims[0];
+		
+		assertEquals(referenceClaim, originalClaim);
+		
+
+		originalClaim.setStartDate(new Date());
+		originalClaim.addComment("a comment");
+		originalClaim.setApprover(u1.getUUID());
+		originalClaim.setStatus(Status.RETURNED);
+		originalClaim.setTags(new ArrayList<UUID>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())));
+		originalClaim.setDestinations(new ArrayList<Destination>(Arrays.asList(new Destination("loc", new Geolocation(72.3, 99.9), "because"))));
+		originalClaim.setEndDate(new Date());
+		
+		assertFalse(originalClaim.equals(referenceClaim));
+		assertEquals(referenceClaim.getUUID(), originalClaim.getUUID());
+		assertEquals(referenceClaim.getUser(), originalClaim.getUser());
+		assertEquals(referenceClaim.getUser(), newUser.getUUID());
+		
+		// saving original claim again should update the claim, so that the same retrieval process
+		// as got referenceClaim should get an updated version.
+		fs.<Claim>saveDocuments(new ArrayList<Claim>(Arrays.asList(originalClaim)));
+		assertEquals(1, fs.getClaims(newUser.getUUID()).size());
+		fs.getClaims(newUser.getUUID()).toArray(claims);
+		Claim updatedClaim = claims[0];
+		
+		assertEquals(referenceClaim.getUser(), updatedClaim.getUser());
+		assertEquals(updatedClaim.getUser(), newUser.getUUID());
+		assertEquals(updatedClaim, originalClaim);
+		
+		fs.deleteDocuments(new ArrayList<Document>(Arrays.asList(originalClaim)));
+		assertEquals(0, fs.getClaims(newUser.getUUID()).size());
 	}
 }

@@ -180,8 +180,11 @@ public class FileSystemHelper implements ServerHelper {
 	 */
 	private <T extends Document> void saveDocument(T doc) {
 		GsonIOManager gson = new GsonIOManager(ctx);
+		// create or overwrite file named as UUID string
 		gson.save(doc, doc.getUUID().toString(), (new TypeToken<T>() {}).getType());
-		savedDocs.get(doc.getClass()).add(doc.getUUID());
+		// add to saved list if not seen before
+		PersistentList<UUID> saved = savedDocs.get(doc.getClass());
+		if (!saved.contains(doc.getUUID())) saved.add(doc.getUUID());
 	}
 	
 	/**

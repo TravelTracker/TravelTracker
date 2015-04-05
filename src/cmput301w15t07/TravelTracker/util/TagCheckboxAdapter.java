@@ -1,18 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
-
-import android.content.Context;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Tag;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -33,6 +18,21 @@ import cmput301w15t07.TravelTracker.model.Tag;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.util;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
+
+import android.content.Context;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Tag;
 
 /**
  * Custom adapter used to display a checkbox next to select tags.

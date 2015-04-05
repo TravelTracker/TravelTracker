@@ -1,13 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
-
-import com.google.gson.annotations.Expose;
-
-import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -28,6 +18,16 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
+
+import com.google.gson.annotations.Expose;
+
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /**
  * Model object for Claim made by Users acting as Claimants.

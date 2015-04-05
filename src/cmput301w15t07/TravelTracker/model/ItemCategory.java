@@ -1,10 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-
-import android.content.Context;
-import cmput301w15t07.TravelTracker.R;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -25,6 +18,13 @@ import cmput301w15t07.TravelTracker.R;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+
+import android.content.Context;
+import cmput301w15t07.TravelTracker.R;
 
 /**
  * Model enum for Expense Item Category.

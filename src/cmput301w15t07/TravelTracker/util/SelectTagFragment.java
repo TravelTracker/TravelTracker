@@ -1,20 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
-
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.widget.ListView;
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Tag;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -35,6 +18,23 @@ import cmput301w15t07.TravelTracker.model.Tag;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.util;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
+
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.widget.ListView;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Tag;
 
 /**
  * A fragment for selecting tags.

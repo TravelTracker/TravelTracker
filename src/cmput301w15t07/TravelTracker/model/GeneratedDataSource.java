@@ -1,13 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -28,6 +18,16 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 
 /**
  * Mock data source extending InMemoryDataSource that creates data upon User creation.

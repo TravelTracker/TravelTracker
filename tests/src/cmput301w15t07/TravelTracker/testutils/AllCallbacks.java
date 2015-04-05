@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.testutils;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.testutils;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.testutils;
+
 import java.util.Collection;
 
 import android.test.AndroidTestCase;
@@ -29,7 +29,6 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
-
 
 /**
  * This is a convenience class for testing to get all of the data you might need from a datasource

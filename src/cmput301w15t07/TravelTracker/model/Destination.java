@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -20,6 +18,8 @@ package cmput301w15t07.TravelTracker.model;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
 
 /**
  * Model object for Claim Destinations.

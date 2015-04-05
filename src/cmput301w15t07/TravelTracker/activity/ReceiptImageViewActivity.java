@@ -1,22 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.UUID;
-
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.SparseArray;
-import android.widget.ImageView;
-import android.widget.Toast;
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Item;
-import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -37,6 +18,24 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.activity;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.UUID;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.SparseArray;
+import android.widget.ImageView;
+import android.widget.Toast;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	

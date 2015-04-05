@@ -83,7 +83,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		internalAddUser(user);
 		
 		callback.onResult(user);
-        updateObservers(this);
+		updateHandler.post(updateRunnable);
 	}
 	
 	@Override
@@ -99,7 +99,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		internalAddClaim(claim);
 		
 		callback.onResult(claim);
-        updateObservers(this);
+        updateHandler.post(updateRunnable);
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         internalAddItem(item);
         
 		callback.onResult(item);
-        updateObservers(this);
+        updateHandler.post(updateRunnable);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         internalAddTag(tag);
         
 		callback.onResult(tag);
-        updateObservers(this);
+        updateHandler.post(updateRunnable);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteUser(id);
 			callback.onResult(null);
-	        updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -154,7 +154,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteClaim(id);
 			callback.onResult(null);
-	        updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteItem(id);
 			callback.onResult(null);
-            updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -178,7 +178,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteTag(id);
 			callback.onResult(null);
-            updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 

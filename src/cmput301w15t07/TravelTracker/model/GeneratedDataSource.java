@@ -1,9 +1,11 @@
 package cmput301w15t07.TravelTracker.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import android.util.Log;
@@ -88,7 +90,19 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				claim.setApprover(user.getUUID());
 			}
 			
-			// Could set tags here
+			// Set tags
+			ArrayList<UUID> tagIDs = new ArrayList<UUID>(tags.keySet());
+		    int tagCount = r.nextInt(5);
+		    if (tagCount > 0) {
+		        ArrayList<UUID> tags = new ArrayList<UUID>();
+		        
+    		    for (int j = 0; j < tagCount; ++j) {
+    		        int tagIndex = r.nextInt(tagIDs.size());
+    		        tags.add(tagIDs.get(tagIndex));
+    		    }
+    		    
+    		    claim.setTags(tags);
+		    }
 			
 			internalAddClaim(claim);
 			

@@ -68,11 +68,8 @@
         android:layout_toEndOf="@+id/expenseItemInfoExpenseDateTextView"
         android:layout_toStartOf="@+id/expenseItemInfoCurrencySpinner"
         android:ems="10"
-        android:inputType="numberSigned|numberDecimal"
-        android:labelFor="@+id/expenseItemInfoAmountEditText" >
-
-        
-    </EditText>
+        android:hint="@string/expense_item_info_amount_hint"
+        android:inputType="numberSigned|numberDecimal" />
 
     <Spinner
         android:id="@+id/expenseItemInfoCategorySpinner"
@@ -93,7 +90,6 @@
 
     <EditText
         android:id="@+id/expenseItemInfoDescriptionEditText"
-        android:labelFor="@+id/expenseItemInfoDescriptionEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/expenseItemInfoDescriptionTextView"
@@ -101,6 +97,7 @@
         android:layout_below="@+id/expenseItemInfoDescriptionTextView"
         android:layout_marginTop="16dp"
         android:ems="10"
+        android:hint="@string/edit_text_hint_text"
         android:inputType="textMultiLine" />
 
     <TextView

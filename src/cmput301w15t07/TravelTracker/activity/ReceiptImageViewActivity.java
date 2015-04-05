@@ -26,6 +26,8 @@ import java.util.UUID;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
@@ -43,7 +45,10 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	private UUID itemID; 
 	
 	/** the current expense item */
-	private Item item;
+	private Item item = null;
+	
+	/** The menu for the Activity */ 
+	private Menu menu = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -68,7 +73,30 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 		 
 	}
 	
-  
+	@Override public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.receipt_image_view_menu, menu);
+		this.menu = menu;
+		return true; 
+	};
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.expense_item_info_sign_out:
+	        signOut();
+	        return true;
+	        
+	    case android.R.id.home:
+	    	onBackPressed();
+	    	return true;
+	        
+	    default:
+	        return false;
+		}
+	}
+	
+	
+	
     @Override
     public void updateActivity() {
         // Do nothing

@@ -21,13 +21,19 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+import java.io.FileNotFoundException;
 import java.util.Collection;
+
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
@@ -35,6 +41,7 @@ import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.GsonIOManager;
 
 /**
  * Launch activity.  Log in as a User with a Name and Role.
@@ -45,10 +52,33 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *
  */
 public class LoginActivity extends TravelTrackerActivity {
+    
+    private static final String LOGIN_FILENAME = "cached_login.json";
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_activity);
+		
+		// Attempt to find last login.
+		UserData userData = loadUserData();
+		
+		// If not null, load was successful and a last login was found.
+		if (userData != null) {
+		    // Set user's name from last login.
+	        EditText nameEditText = (EditText) findViewById(R.id.loginNameEditText);
+	        nameEditText.setText(userData.getName());
+	        
+	        // Set user's role from last login.
+            UserRole role = userData.getRole();
+	        if (role.equals(UserRole.CLAIMANT)) {
+                RadioButton button = (RadioButton) findViewById(R.id.loginClaimantRadioButton);
+                button.setChecked(true);
+	        } else if (role.equals(UserRole.APPROVER)) {
+                RadioButton button = (RadioButton) findViewById(R.id.loginApproverRadioButton);
+                button.setChecked(true);
+	        }
+		}
 
 		// Attach login listener to login button
 		Button loginButton = (Button) findViewById(R.id.loginLoginButton);
@@ -110,9 +140,40 @@ public class LoginActivity extends TravelTrackerActivity {
 	public void loginWithUserData(UserData userData) {
 		// Start next activity
 		Intent intent = new Intent(this, ClaimsListActivity.class);
+		saveUserData(userData);
 		intent.putExtra(ClaimsListActivity.USER_DATA, userData);
 		startActivity(intent);
 	}
+
+	/**
+	 * Attempt to load the UserData object from a predetermined file.
+	 * @return The UserData object from the file, or null if an error occurs or no file is found.
+	 */
+	private UserData loadUserData() {
+        GsonIOManager gson = new GsonIOManager(this);
+        try {
+            return gson.<UserData>load(LOGIN_FILENAME, (new TypeToken<UserData>() {}).getType());
+        } catch (FileNotFoundException e) {
+            // Do nothing. File is expected not to be found if running app for first time.
+        } catch (JsonSyntaxException e) {
+            warn("Cached " + LOGIN_FILENAME + " is incorrect type.");
+        }
+        return null;
+    }
+	
+	/**
+	 * Save a UserData object to a predetermined file.
+	 * @param userData UserData to save.
+	 */
+	private void saveUserData(UserData userData) {
+        GsonIOManager gson = new GsonIOManager(this);
+        gson.save(userData, LOGIN_FILENAME, (new TypeToken<UserData>() {}).getType());
+	}
+    
+    private void warn(String message) {
+        Log.e("LoginActivity", message);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
 	
 	/**
 	 * Callback for getAllUsers which attempts to get the user ID and log in.

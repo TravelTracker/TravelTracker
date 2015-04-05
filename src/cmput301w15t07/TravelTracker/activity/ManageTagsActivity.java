@@ -21,6 +21,7 @@
 
 package cmput301w15t07.TravelTracker.activity;
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,6 +37,7 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.SparseArray;
@@ -83,6 +85,9 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
 
     /** The list view of Tags */
     private ListView tagListView;
+    
+    /** The last dialog put on screen, for testing */
+    private Dialog lastDialog;
     
     /**
      * The collection of current tags, used to make sure no it tags are duplicated.
@@ -186,6 +191,10 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         }
     }
     
+    public Dialog getLastDialog(){
+    	return lastDialog;
+    }
+    
     /**
      * Multicallback intended to get all data necessary for this activity upon
      * update or resume.
@@ -287,6 +296,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             
             // Create edit text and limit to one line of text
             EditText input = new EditText(ManageTagsActivity.this);
+            input.setId(getTaskId());
             input.setText(selected.getTitle());
             input.setMaxLines(1);
             input.setLines(1);
@@ -302,6 +312,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             
             AlertDialog dialog = adb.create();
             dialog.show();
+            lastDialog = dialog;
             
             /* http://stackoverflow.com/questions/2620444/how-to-prevent-a-dialog-from-closing-when-a-button-is-clicked
              * Override onClickListener here to prevent the dialog from being

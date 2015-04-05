@@ -22,6 +22,7 @@
 package cmput301w15t07.TravelTracker.test.activity;
 
 import java.util.Collection;
+
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
@@ -86,8 +87,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         claim = DataSourceUtils.addEmptyClaim(claimant, dataSource);
 	}
 
-	@Suppress
-	public void testListExpenseItems() {
+	public void testListExpenseItems() throws InterruptedException {
 		ExpenseItemsListActivity activity =
 				startActivityAsClaimant();
 		
@@ -101,6 +101,9 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 		
 		// Causes main thread activity
 		Item i = DataSourceUtils.addEmptyItem(claim, dataSource);
+		
+		instrumentation.waitForIdleSync();
+		Thread.sleep(300);
 		
 		// Assert 1 element
 		assertEquals("List view did not have 1 element: " + adapter.getCount(),

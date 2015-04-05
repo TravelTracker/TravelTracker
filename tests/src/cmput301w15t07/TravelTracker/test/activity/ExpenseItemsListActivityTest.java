@@ -85,15 +85,6 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         // Empty, no specific data needed. Just items later.
         claim = DataSourceUtils.addEmptyClaim(claimant, dataSource);
 	}
-	
-	public void testPreconditions() throws InterruptedException {
-		// Test that the users exist
-		assertTrue("Claimant didn't exist.", userExists(CLAIMANT_USER_NAME));
-		assertTrue("Approver didn't exist.", userExists(APPROVER_USER_NAME));
-		
-		// Test that the claimant has a claim
-		assertTrue("Claimant didn't have claim.", hasClaim(claimant));
-	}
 
 	@Suppress
 	public void testListExpenseItems() {

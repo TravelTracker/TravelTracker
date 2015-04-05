@@ -150,11 +150,9 @@ public class SelectTagFilterFragment extends DialogFragment {
 	}
 	
 	private void updateListEnabled() {
-	    // Update enabled state of checkboxes
-	    for (int i = listView.getFirstVisiblePosition(); i <= listView.getLastVisiblePosition(); ++i) {
-	        View view = listView.getChildAt(i);
-	        CheckBox cb = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
-	        cb.setEnabled(filterEnabled);
-	    }
+	    listAdapter.setEnabled(filterEnabled);
+	    
+	    // Have to rebuild list to get checkboxes to update. Yuck.
+	    listView.setAdapter(listAdapter);
 	}
 }

@@ -1,21 +1,19 @@
 package cmput301w15t07.TravelTracker.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Tag;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Tag;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -45,28 +43,50 @@ import android.widget.ListView;
  */
 public class SelectTagFragment extends DialogFragment {
 	private TagCheckboxAdapter listAdapter;
-	private Collection<Tag> tags;
-	private Collection<Tag> selected;
+	private ListView listView;
+	private HashSet<Tag> tags;
+	private HashSet<UUID> selected;
+	private ResultCallback callback;
+	
+	/**
+	 * Callback interface for results from SelectTagFragment.
+	 */
+	public interface ResultCallback {
+		/**
+		 * Called when the tags are selected.
+		 * @param selected The selected tag UUIDs.
+		 */
+		void onSelectTagFragmentResult(HashSet<UUID> selected);
+		
+		/**
+		 * Called when the dialog is cancelled.
+		 */
+		void onSelectTagFragmentCancelled();
+	}
 	
 	/**
 	 * Construct the fragment with no tags selected.
 	 * 
-	 * @param tags The collection of available tags.
+	 * @param tags The set of available tags.
+	 * @param callback The callback for when the user finishes entering data.
 	 */
-	public SelectTagFragment(Collection<Tag> tags) {
-	    this.tags = tags;
-	    this.selected = new ArrayList<Tag>();
+	public SelectTagFragment(Collection<Tag> tags, ResultCallback callback) {
+	    this.tags = new HashSet<Tag>(tags);
+	    this.selected = new HashSet<UUID>();
+	    this.callback = callback;
     }
 	
 	/**
 	 * Construct the fragment
 	 * 
-	 * @param tags The collection of available tags.
-	 * @param selected The collection of tags which are currently selected.
+	 * @param tags The set of available tags.
+	 * @param selected The set of tag UUIDs which are currently selected.
+	 * @param callback The callback for when the user finishes entering data.
 	 */
-	public SelectTagFragment(Collection<Tag> tags, Collection<Tag> selected) {
-		this.tags = tags;
-		this.selected = selected;
+	public SelectTagFragment(Collection<Tag> tags, Collection<UUID> selected, ResultCallback callback) {
+		this.tags = new HashSet<Tag>(tags);
+		this.selected = new HashSet<UUID>(selected);
+		this.callback = callback;
     }
 	
 	@Override
@@ -76,25 +96,25 @@ public class SelectTagFragment extends DialogFragment {
     	.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
+				HashSet<UUID> selected = listAdapter.getSelected();
 				
+				callback.onSelectTagFragmentResult(selected);
 			}
 		})
 		.setNegativeButton(android.R.string.cancel, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				
+				callback.onSelectTagFragmentCancelled();
 			}
 		});
 		
 	    // Inflate inner layout
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    ListView listView = (ListView) inflater.inflate(R.layout.select_tag_fragment, null);
+	    listView = (ListView) inflater.inflate(R.layout.select_tag_fragment, null);
 	    builder.setView(listView);
 	    
 	    // Configure list view
-	    listAdapter = new TagCheckboxAdapter(getActivity());
+	    listAdapter = new TagCheckboxAdapter(getActivity(), selected);
 	    listView.setAdapter(listAdapter);
 		
 		listAdapter.clear();

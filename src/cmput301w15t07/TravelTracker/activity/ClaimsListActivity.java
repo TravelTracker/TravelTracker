@@ -23,6 +23,9 @@ package cmput301w15t07.TravelTracker.activity;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +42,7 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Geolocation;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -69,6 +73,9 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	
 	/** Data about the logged-in user. */
 	private UserData userData;
+	
+	/** Tags UUIDs selected for filtering. */
+	private HashSet<UUID> filterTags;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -247,7 +254,15 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Launch the filter by tag fragment.
      */
     private void launchFilterByTag() {
-		SelectTagFragment filterFragment = new SelectTagFragment(data.getTags());
+		SelectTagFragment filterFragment = new SelectTagFragment(data.getTags(), filterTags, new SelectTagFragment.ResultCallback() {
+			@Override
+			public void onSelectTagFragmentResult(HashSet<UUID> selected) {
+				filterByTags(selected);
+			}
+			
+			@Override
+			public void onSelectTagFragmentCancelled() { }
+		});
     	filterFragment.show(getFragmentManager(), "filterByTag");
     }
 	/**
@@ -271,11 +286,38 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		Geolocation geoloc = new Geolocation(location.latitude, location.longitude);
 		data.getUser().setHomeLocation(geoloc);
 	}
+	/**
+	 * Filter the claims by tag UUIDs.
+	 * @param tagIDs The list of tag IDs. Only claims with at least one of these tags will be displayed.
+	 */
+	private void filterByTags(HashSet<UUID> tagIDs) {
+		Toast.makeText(this, ""+tagIDs.size(), Toast.LENGTH_SHORT).show();
+		filterTags = tagIDs;
+	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{
 
 		@Override
 		public void onResult(InitialData result) {
+			// Populate the list of tags
+			if (filterTags == null) {
+				filterTags = new HashSet<UUID>();
+				
+				for (Tag tag : result.getTags()) {
+					filterTags.add(tag.getUUID());
+				}
+				
+			// Turn on new tags by default
+			} else {
+				Collection<Tag> oldTags = data.getTags();
+				
+				for (Tag tag : result.getTags()) {
+					if (!oldTags.contains(tag)) {
+						filterTags.add(tag.getUUID());
+					}
+				}
+			}
+			
 			adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
 			data = result;
 			//TODO stop spinner

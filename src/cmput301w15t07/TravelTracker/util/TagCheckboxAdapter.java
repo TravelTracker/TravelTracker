@@ -1,12 +1,18 @@
 package cmput301w15t07.TravelTracker.util;
 
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Tag;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Tag;
 
 /*
  *   Copyright 2015 Kirby Banman,
@@ -36,19 +42,52 @@ import android.widget.CheckBox;
  */
 
 public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
-	public TagCheckboxAdapter(Context context) {
+	private HashSet<UUID> selected;
+	
+	/**
+	 * Constructor
+	 * @param context The Android context in which to create the adapter.
+	 * @param selected The UUIDs of selected tags.
+	 */
+	public TagCheckboxAdapter(Context context, Collection<UUID> selected) {
 	    super(context, R.layout.select_tag_fragment_item, R.id.select_tag_fragment_item_checkbox);
+	    
+	    this.selected = new HashSet<UUID>(selected);
     }
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 	    View view = super.getView(position, convertView, parent);
-	    
-	    Tag item = getItem(position);
+	    Tag tag = getItem(position);
+	    final UUID uuid = tag.getUUID();
 	    
 	    CheckBox checkBox = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
-	    checkBox.setText(item.getTitle());
+	    checkBox.setText(tag.getTitle());
+	    
+	    // Check box if already selected
+	    if (selected.contains(uuid)) {
+	    	checkBox.setChecked(true);
+	    }
+	    
+	    checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					selected.add(uuid);
+				} else {
+					selected.remove(uuid);
+				}
+			}
+		});
 	    
 	    return view;
+	}
+	
+	/**
+	 * Get the UUIDs of selected tags.
+	 * @return The set of selected tag UUIDs.
+	 */
+	public HashSet<UUID> getSelected() {
+		return selected;
 	}
 }

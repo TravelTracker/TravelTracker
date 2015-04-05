@@ -512,7 +512,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				item.setReceipt(new Receipt(imageBitmap,imageUri));
+				item.setReceipt(new Receipt(imageBitmap));
 		}
 		//if result is from chooseImageFromGallery()
 		//refrenced viralpirate.net/blocks/pick-image-from-galary-android-app
@@ -528,7 +528,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			
-			item.setReceipt(new Receipt(BitmapFactory.decodeFile(picturePath),imageUri));
+			item.setReceipt(new Receipt(BitmapFactory.decodeFile(picturePath)));
 			
 		}
 	}

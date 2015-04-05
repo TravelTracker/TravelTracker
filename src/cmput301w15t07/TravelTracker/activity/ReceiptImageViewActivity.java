@@ -83,6 +83,10 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
         // Do nothing
     }
 	
+    /**
+     * Load the image into the imageveiw
+     * @param image the bitmap image to be loaded into the imageView 
+     */
 	protected void loadImage(Bitmap image) {
 		ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);
 		if (image != null) {

@@ -223,7 +223,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
      */
     private void launchReceiptImageView(){
         Intent intent = new Intent(this, ReceiptImageViewActivity.class);
-        intent.putExtra(ReceiptImageViewActivity.URI_DATA, item.getReceipt().getUri());
+        intent.putExtra(ITEM_UUID, itemID);
         startActivity(intent);
     }
     

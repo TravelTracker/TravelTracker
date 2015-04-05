@@ -6,11 +6,10 @@ import java.util.UUID;
 
 import android.content.Context;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Tag;
 
@@ -61,23 +60,25 @@ public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
 	    Tag tag = getItem(position);
 	    final UUID uuid = tag.getUUID();
 	    
-	    CheckBox checkBox = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
+	    final CheckBox checkBox = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
 	    checkBox.setText(tag.getTitle());
 	    
 	    // Check box if already selected
 	    if (selected.contains(uuid)) {
 	    	checkBox.setChecked(true);
+	    } else {
+	    	checkBox.setChecked(false);
 	    }
 	    
-	    checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	    checkBox.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
+            public void onClick(View v) {
+				if (checkBox.isChecked()) {
 					selected.add(uuid);
 				} else {
 					selected.remove(uuid);
 				}
-			}
+            }
 		});
 	    
 	    return view;

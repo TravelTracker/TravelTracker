@@ -56,7 +56,7 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.receipt_image_view);
 		Bundle bundle = getIntent().getExtras();
-		 itemID = (UUID) bundle.getSerializable(ExpenseItemInfoActivity.ITEM_UUID);
+		 itemID = (UUID) bundle.getSerializable(ITEM_UUID);
 		 datasource.getItem(itemID, new ResultCallback<Item>() {
 			
 			@Override

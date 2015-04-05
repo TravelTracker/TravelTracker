@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * A fragment for editing a destination.
@@ -81,10 +82,16 @@ public class DestinationEditorFragment extends DialogFragment {
     /** The fragment manager of the activity that called this fragment. */
     FragmentManager manager;
     
+    /** The dialog that will let the user edit the destination. */
+    AlertDialog dialog;
+    
+    /** The listener for approving edits to the destination. */
+    AcceptEditListener acceptEditListener;
+    
     /** The fragment to edit and view the geolocation of the destination. */
     SelectLocationFragment geolocationFragment = null;
     
-    /** Used to determine whether the dialog was closed via the positive button or not. */
+    /** False if the dialog was closed via the positive button. */
     private boolean cancelled = true;
     
     private final static int VIEW_ID = R.layout.claim_info_destinations_list_edit_prompt;
@@ -160,29 +167,17 @@ public class DestinationEditorFragment extends DialogFragment {
             }
         });
         
-        return new AlertDialog.Builder(context)
+        dialog =  new AlertDialog.Builder(context)
             .setView(promptView)
             .setTitle(context.getString(R.string.claim_info_destination_edit_title))
-            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    location = locationEditText.getText().toString();
-                    reason = reasonEditText.getText().toString();
-                    callback.onDestinationEditorFragmentResult(location, geolocation, reason);
-                    cancelled = false;
-                    dialog.dismiss();
-                }
-            })
-            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    cancelled = true;
-                    dialog.dismiss();
-                }
-            })
+            .setPositiveButton(context.getString(android.R.string.ok), null)
+            .setNegativeButton(context.getString(android.R.string.cancel), null)
             .create();
+        
+        acceptEditListener = new AcceptEditListener(context, dialog, locationEditText, reasonEditText);
+        return dialog;
     }
-
+    
     @Override
     public void onDismiss(DialogInterface dialog) {
         callback.onDestinationEditorFragmentDismissed(cancelled);
@@ -190,8 +185,62 @@ public class DestinationEditorFragment extends DialogFragment {
         super.onDismiss(dialog);
     }
     
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        super.show(manager, tag);
+        
+        // This line taken on April 5, 2015 from:
+        //     http://stackoverflow.com/a/20066590
+        // The dialog and the acceptEditListener were not created, as onCreateDialog had not been called yet,
+        // so this was throwing a null pointer exception before adding this line.
+        manager.executePendingTransactions();
+        
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(acceptEditListener);
+    }
+    
     private void updateGeolocationCheckBox(View view, Geolocation geolocation) {
         CheckBox checkBox = (CheckBox) view.findViewById(GEOLOCATION_CHECKBOX_ID);
         checkBox.setChecked(geolocation != null);
+    }
+    
+    /**
+     * Listener for the positive (OK) button in the destination editor fragment. If errors
+     * in editing are present, will notify the user without closing the fragment.
+     */
+    public class AcceptEditListener implements android.view.View.OnClickListener {
+        private Context context;
+        private Dialog dialog;
+        private EditText locationEditText;
+        private EditText reasonEditText;
+        
+        public AcceptEditListener(Context context, Dialog dialog, EditText locationEditText, EditText reasonEditText) {
+            this.context = context;
+            this.dialog = dialog;
+            this.locationEditText = locationEditText;
+            this.reasonEditText = reasonEditText;
+        }
+        
+        @Override
+        public void onClick(View v) {
+            location = locationEditText.getText().toString();
+            
+            // Empty location is invalid, don't close dialog.
+            if (location.isEmpty()) {
+                locationEditText.setError(context.getString(R.string.error_no_name));
+                return;
+            }
+            
+            // No geolocation is invalid, don't close dialog.
+            if (geolocation == null) {
+                String error = context.getString(R.string.claim_info_destination_error_geolocation);
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+                return;
+            }
+            
+            reason = reasonEditText.getText().toString();
+            callback.onDestinationEditorFragmentResult(location, geolocation, reason);
+            cancelled = false;
+            dialog.dismiss();
+        }
     }
 }

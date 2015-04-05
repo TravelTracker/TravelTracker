@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /*
@@ -59,6 +61,14 @@ public class Claim extends Document {
 		endDate = new Date();
 		status = Status.IN_PROGRESS;
 		setType(Type.CLAIM);
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Claim() {
+		this(UUID.randomUUID());
 	}
 	
 	/**

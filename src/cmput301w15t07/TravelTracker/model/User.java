@@ -2,6 +2,8 @@ package cmput301w15t07.TravelTracker.model;
 
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /*
@@ -43,6 +45,14 @@ public class User extends Document {
 	User(UUID docID) {
 		super(docID);
 		setType(Type.USER);
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private User() {
+		this(UUID.randomUUID());
 	}
 
 	/**

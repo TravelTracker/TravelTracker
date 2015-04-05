@@ -29,6 +29,7 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -46,6 +47,7 @@ public class ClaimsListDataHelper {
 	private static final int ITEMS_ID = 1;
 	private static final int USER_ID = 2;
 	private static final int USERS_ID = 3;
+	private static final int TAGS_ID = 4;
 	
 	private UserRole userRole;
 	private ResultCallback<InitialData> callback;
@@ -66,6 +68,7 @@ public class ClaimsListDataHelper {
 		ds.getAllItems(mc.<Collection<Item>>createCallback(ITEMS_ID));
 		ds.getUser(userData.getUUID(), mc.<User>createCallback(USER_ID));
 		ds.getAllUsers(mc.<Collection<User>>createCallback(USERS_ID));
+		ds.getAllTags(mc.<Collection<Tag>>createCallback(TAGS_ID));
 		mc.ready();
 	}
 	
@@ -75,6 +78,8 @@ public class ClaimsListDataHelper {
 		data.setClaims(getClaimsForUser((Collection<Claim>)array.get(CLAIMS_ID), data.getUser(), role));
 		data.setItems(getItemsForClaims(data.getClaims(), (Collection<Item>) array.get(ITEMS_ID)));
 		data.setUsers((Collection<User>)array.get(USERS_ID));
+		data.setTags((Collection<Tag>)array.get(TAGS_ID));
+		
 		return data;
 	}
 	
@@ -118,6 +123,7 @@ public class ClaimsListDataHelper {
 		private Collection<Claim> claims;
 		private Collection<Item> items;
 		private Collection<User> users;
+		private Collection<Tag> tags;
 		
 		public User getUser() {
 			return user;
@@ -131,6 +137,9 @@ public class ClaimsListDataHelper {
 		public Collection<User> getUsers() {
 			return users;
 		}
+		public Collection<Tag> getTags() {
+			return tags;
+		}
 		
 		private void setUser(User user) {
 			this.user = user;
@@ -143,6 +152,9 @@ public class ClaimsListDataHelper {
 		}
 		private void setUsers(Collection<User> users){
 			this.users = users;
+		}
+		private void setTags(Collection<Tag> tags){
+			this.tags = tags;
 		}
 	}
 	

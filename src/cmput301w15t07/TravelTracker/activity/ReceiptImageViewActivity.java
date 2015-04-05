@@ -68,11 +68,9 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 		 
 	}
 	
-  
+    // There is no dataset in ReceiptImageViewActivity, this needs no implementation.
     @Override
-    public void updateActivity() {
-        // Do nothing
-    }
+    public void updateActivity() {}
 	
     /**
      * Load the image into the imageveiw

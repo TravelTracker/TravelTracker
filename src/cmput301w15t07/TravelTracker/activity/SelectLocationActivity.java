@@ -125,14 +125,9 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         }
     }
     
-    /**
-     * There is no dataset in SelectLocationActivity.
-     * Called in onResume() and update(DataSource observable).
-     */
+    // There is no dataset in SelectLocationActivity, this needs no implementation.
     @Override
-    public void updateActivity() {
-        // Do nothing
-    }
+    public void updateActivity() {}
 
     @Override
     public void onBackPressed() {

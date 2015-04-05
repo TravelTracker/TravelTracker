@@ -149,10 +149,4 @@ public interface DataSource {
 	 * @param callback The result callback. On success, the result is the collection of Tags.
 	 */
 	public void getAllTags(ResultCallback<Collection<Tag>> callback);
-	
-	/**
-	 * @return A collection of all documents served by the DataSource which have
-	 * marked themselves dirty.
-	 */
-	public Collection<Document> getDirtyDocuments();
 }

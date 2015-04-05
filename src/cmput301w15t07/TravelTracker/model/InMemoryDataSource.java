@@ -24,9 +24,12 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import android.os.Handler;
+import android.os.Looper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
@@ -45,12 +48,32 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	protected HashMap<UUID, User> users;
 	protected HashMap<UUID, Item> items;
 	protected HashMap<UUID, Tag> tags;
+	
+	/** Handler that puts a Runnable onto the UI thread. */
+	Handler updateHandler;
+	
+	/** Runnable that executes update on the UI thread. */
+	Runnable updateRunnable;
 
 	public InMemoryDataSource() {
 		claims = new HashMap<UUID, Claim>();
 		users = new HashMap<UUID, User>();
 		items = new HashMap<UUID, Item>();
 		tags = new HashMap<UUID, Tag>();
+		
+		/* Use the main looper (UI thread)
+		 * 
+		 * http://stackoverflow.com/a/27776529
+		 * Second and fourth answer, with third answer comments being
+		 * relevant.
+		 */
+		updateHandler = new Handler(Looper.getMainLooper());
+		updateRunnable = new Runnable() {
+			@Override
+			public void run() {
+				updateObservers(InMemoryDataSource.this);
+			}
+		};
 	}
 	
 	@Override
@@ -61,7 +84,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		internalAddUser(user);
 		
 		callback.onResult(user);
-        updateObservers(this);
+		updateHandler.post(updateRunnable);
 	}
 	
 	@Override
@@ -77,7 +100,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		internalAddClaim(claim);
 		
 		callback.onResult(claim);
-        updateObservers(this);
+        updateHandler.post(updateRunnable);
 	}
 
 	@Override
@@ -93,7 +116,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         internalAddItem(item);
         
 		callback.onResult(item);
-        updateObservers(this);
+        updateHandler.post(updateRunnable);
 	}
 
 	@Override
@@ -109,7 +132,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         internalAddTag(tag);
         
 		callback.onResult(tag);
-        updateObservers(this);
+        updateHandler.post(updateRunnable);
 	}
 
 	@Override
@@ -120,7 +143,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteUser(id);
 			callback.onResult(null);
-	        updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -132,7 +155,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteClaim(id);
 			callback.onResult(null);
-	        updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -144,7 +167,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteItem(id);
 			callback.onResult(null);
-            updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -156,7 +179,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		} else {
 			internalDeleteTag(id);
 			callback.onResult(null);
-            updateObservers(this);
+	        updateHandler.post(updateRunnable);
 		}
 	}
 
@@ -230,16 +253,15 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		callback.onResult(tags.values());
 
 	}
-
-	@Override
-	public Collection<Document> getDirtyDocuments() {
-		// this is for caching, probably not meaningful for in-memory storage.
-		return null;
-	}
 	
 	@Override
 	public void update(Document observable) {
-		updateObservers(this);
+		/* http://developer.android.com/reference/android/os/Handler.html#removeCallbacks%28java.lang.Runnable%29
+		 * Might be useful in the near future.
+		 */
+		
+		// Post the updateRunnable to the main thread (UI thread)
+		updateHandler.post(updateRunnable);
 	}
     
     /**
@@ -354,5 +376,73 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	 */
 	protected void internalDeleteTag(UUID id) {
 		tags.remove(id);
+	}
+	
+	/**
+	 * @return A collection of references to the Users
+	 */
+	public Collection<User> getUsers() {
+		return users.values();
+	}
+	
+	/**
+	 * @return A collection of references to the Claims
+	 */
+	public Collection<Claim> getClaims() {
+		return claims.values();
+	}
+	
+	/**
+	 * @return A collection of references to the Items
+	 */
+	public Collection<Item> getItems() {
+		return items.values();
+	}
+	
+	/**
+	 * @return A collection of references to the Tags
+	 */
+	public Collection<Tag> getTags() {
+		return tags.values();
+	}
+	
+	/**
+	 * Get the Users that are dirty.
+	 * @return A collection of references to the Users that are marked dirty.
+	 */
+	public Collection<User> getDirtyUsers() {
+		return this.<User>getDirty(users);
+	}
+	
+	/**
+	 * Get the Claims that are dirty.
+	 * @return A collection of references to the Claims that are marked dirty.
+	 */
+	public Collection<Claim> getDirtyClaims() {
+		return this.<Claim>getDirty(claims);
+	}
+	
+	/**
+	 * Get the Items that are dirty.
+	 * @return A collection of references to the Items that are marked dirty.
+	 */
+	public Collection<Item> getDirtyItems() {
+		return this.<Item>getDirty(items);
+	}
+	
+	/**
+	 * Get the Tags that are dirty.
+	 * @return A collection of references to the Tags that are marked dirty.
+	 */
+	public Collection<Tag> getDirtyTags() {
+		return this.<Tag>getDirty(tags);
+	}
+	
+	private <T extends Document> Collection<T> getDirty(Map<UUID, T> documents) {
+		Collection<T> dirty = new ArrayList<T>();
+		for (T document : documents.values()) {
+			if (document.isDirty()) dirty.add(document);
+		}
+		return dirty;
 	}
 }

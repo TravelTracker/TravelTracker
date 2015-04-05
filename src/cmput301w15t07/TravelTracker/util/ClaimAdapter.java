@@ -139,6 +139,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 			distHeader.setVisibility(View.GONE);
 			distLevel.setVisibility(View.GONE);
 		} else if (role.equals(UserRole.CLAIMANT)) {
+		    date.setVisibility(View.GONE);
 		    setDistance(distLevel, claim);
 		}
 

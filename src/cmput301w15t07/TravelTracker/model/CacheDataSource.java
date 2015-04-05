@@ -30,8 +30,10 @@ import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ServerHelper;
+import cmput301w15t07.TravelTracker.util.DeletionFlag;
 import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
+import cmput301w15t07.TravelTracker.util.PersistentList;
 
 /**
  * DataSource that caches Document model objects with local persistence iff ServerHelper reports an error
@@ -62,19 +64,16 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * 
  * @author kdbanman
  */
-public class CacheDataSource extends Observable<DataSource> implements
-		DataSource, Observer<Document> {
+public class CacheDataSource extends InMemoryDataSource {
+	
+	private static final String TODELETE_FILENAME = "cached_deletions.json";
 	
 	private Context appContext;
 	
 	private ServerHelper mainHelper;
 	private ServerHelper backupHelper;
 	
-	// inUse* attributes are maps containing the Documents requested by the app's Views.
-	private HashMap<UUID, Claim> inUseClaims;
-	private HashMap<UUID, User> inUseUsers;
-	private HashMap<UUID, Item> inUseItems;
-	private HashMap<UUID, Tag> inUseTags;
+	private PersistentList<DeletionFlag> deletions;
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
@@ -89,56 +88,71 @@ public class CacheDataSource extends Observable<DataSource> implements
 	 * @param backup The interface for data persistence when main fails.
 	 */
 	public CacheDataSource(Context appContext, ServerHelper main, ServerHelper backup) {
+		super();
+		
 		this.appContext = appContext;
 		this.mainHelper = main;
 		
-		inUseClaims = new HashMap<UUID, Claim>();
-		inUseUsers = new HashMap<UUID, User>();
-		inUseItems = new HashMap<UUID, Item>();
-		inUseTags = new HashMap<UUID, Tag>();
+		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
 	}
 
-	@Override
-	public void update(Document observable) {		
-		// every time a document changes 
-		// TODO try 
-		
-	}
-
-	@Override
-	public void addUser(ResultCallback<User> callback) {
-	}
-
-	@Override
-	public void addClaim(User user, ResultCallback<Claim> callback) {
-	}
-
-	@Override
-	public void addItem(Claim claim, ResultCallback<Item> callback) {
-	}
-
-	@Override
-	public void addTag(User user, ResultCallback<Tag> callback) {
-	}
+	/*
+	 * existing superclass add* methods are fine, added document will
+	 * be dirty, so it will be picked up on next sync cycle.
+	 * 
+	 * getters and deleters need some additional behaviour (like 
+	 * preliminary synchronization) before affecting in-memory Documents
+	 * 
+	 */
 
 	@Override
 	public void deleteUser(UUID id, ResultCallback<Void> callback) {
+		if (users.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(users.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteUser(id, callback);
+		}
 	}
 
 	@Override
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
+		if (claims.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(claims.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteClaim(id, callback);
+		}
 	}
 
 	@Override
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
+		if (items.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(items.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteItem(id, callback);
+		}
 	}
 
 	@Override
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
+		if (tags.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(tags.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteTag(id, callback);
+		}
 	}
 
 	@Override
 	public void getUser(UUID id, ResultCallback<User> callback) {
+		// TODO: write below for User, then abstract into wrapped asynctask.
+		
+		// check main, if fail check backup.
+		// if found in either, merge with inmemory.
+		// call inmemory.getUser(id, callback) because it will be there now
+		// (or if it isn't there it wasn't on the server or backup either)
 	}
 
 	@Override
@@ -169,11 +183,25 @@ public class CacheDataSource extends Observable<DataSource> implements
 
 	@Override
 	public void getAllTags(ResultCallback<Collection<Tag>> callback) {
+		
 	}
-
-	@Override
-	public Collection<Document> getDirtyDocuments() {
-		return null;
+	
+	/**
+	 * 
+	 * @param toSave 
+	 */
+	private void syncDocuments() {
+		// attempt to pull all data from main (push all to backup and return if fail)
+		// do deletions that are not out-of-date on received
+		// do same on remote using helper calls
+			// clear deletion list if successful
+		
+		// merge every remaining received document into inmemory
+		// update observers (on gui thread!) (merge not cause update())
+		
+		// push in memory to server
+			// set all documents to clean and purge backup if successful
+			// push all to backup if fail
 	}
 
 }

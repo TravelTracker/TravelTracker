@@ -5,8 +5,9 @@
     
         <!-- Used in layouts -->
         <string name="date_format">mm/dd/yyyy</string>
-        <string name="input_text">Input text</string>
         <string name="content_description_receipt_image">Receipt Image</string>
+        <string name="edit_text_hint_text">Enter text</string>
+        <string name="edit_text_hint_name">Name</string>
         <string name="error_no_name">Please enter a name</string>
     
         <!-- Used in menus -->
@@ -15,7 +16,6 @@
 
     <!-- Strings used in LoginActivity -->
         <!-- Used in layout -->
-        <string name="login_name">Name</string>
         <string name="login_login">Login</string>
         <string name="login_claimant">Claimant</string>
         <string name="login_approver">Approver</string>
@@ -114,6 +114,7 @@
         <string name= "expense_item_info_is_complete">Complete</string>
         <string name= "expense_item_info_date">Expense Date</string>
         <string name= "expense_item_info_amount">Amount</string>
+        <string name= "expense_item_info_amount_hint">Enter amount</string>
         <string name= "expense_item_info_category">Category</string>
         <string name= "expense_item_info_description">Description</string>
         <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>

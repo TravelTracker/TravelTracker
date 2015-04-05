@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/login_name"
+        android:hint="@string/edit_text_hint_name"
         android:inputType="textCapWords"
         android:lines="1" >
 

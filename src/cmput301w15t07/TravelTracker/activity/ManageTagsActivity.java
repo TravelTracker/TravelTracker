@@ -298,6 +298,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             EditText input = new EditText(ManageTagsActivity.this);
             input.setId(getTaskId());
             input.setText(selected.getTitle());
+            input.setHint(R.string.edit_text_hint_name);
             input.setMaxLines(1);
             input.setLines(1);
             input.setInputType(InputType.TYPE_CLASS_TEXT);

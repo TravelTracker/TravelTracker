@@ -106,7 +106,8 @@ public class SelectTagFragment extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				callback.onSelectTagFragmentCancelled();
 			}
-		});
+		})
+		.setTitle(getString(R.string.select_tag_title));
 		
 	    // Inflate inner layout
 	    LayoutInflater inflater = getActivity().getLayoutInflater();

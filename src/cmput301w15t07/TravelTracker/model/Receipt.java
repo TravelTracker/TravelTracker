@@ -36,15 +36,14 @@ import android.net.Uri;
  */
 public class Receipt {
 	private Bitmap photo;
-	private Uri imageUri;
 	
-	public Receipt(Bitmap photo, Uri uri) {
+	public Receipt(Bitmap photo) {
 		this.photo = photo;
-		this.imageUri = uri;
+		
 	}
 	
 	public Receipt() {
-		this(null,null);  //TODO add a default Bitmap somehow
+		this(null);  //TODO add a default Bitmap somehow
 	}
 
 	/**
@@ -55,7 +54,4 @@ public class Receipt {
 		return photo;
 	}
 
-	public Uri getUri(){
-		return imageUri;
-	}
 }

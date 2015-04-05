@@ -241,7 +241,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             
             // Empty tag name is invalid
             if (title.isEmpty()) {
-                titleEditText.setError(getString(R.string.manage_tags_no_name_error));
+                titleEditText.setError(getString(R.string.error_no_name));
                 return;
             }
             
@@ -341,7 +341,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             
             // Empty tag name is invalid, don't close dialog.
             if (title.isEmpty()) {
-                input.setError(ManageTagsActivity.this.getString(R.string.manage_tags_no_name_error));
+                input.setError(ManageTagsActivity.this.getString(R.string.error_no_name));
                 return;
             }
             

@@ -7,6 +7,7 @@
         <string name="date_format">mm/dd/yyyy</string>
         <string name="input_text">Input text</string>
         <string name="content_description_receipt_image">Receipt Image</string>
+        <string name="error_no_name">Please enter a name</string>
     
         <!-- Used in menus -->
         <string name="sign_out">Sign Out</string>
@@ -18,7 +19,6 @@
         <string name="login_login">Login</string>
         <string name="login_claimant">Claimant</string>
         <string name="login_approver">Approver</string>
-        <string name="login_no_name_error">Please enter a name</string>
     
     <!-- Strings used in ManageTagsActivity -->
         <string name="manage_tags_label">Manage Tags</string>
@@ -32,7 +32,6 @@
         <string name="manage_tags_dialog_cancel">Cancel</string>
         
         <!-- Used in error -->
-        <string name="manage_tags_no_name_error">Tag name cannot be empty</string>
         <string name="manage_tags_tag_exists">" already exists!"</string>
     
     <!-- Strings used in ClaimsListActivity -->
@@ -83,9 +82,7 @@
         <string name="claim_info_destination_edit_checkbox">Has Location</string>
         <string name="claim_info_destination_edit_fragment_title">Set Location</string>
         <string name="claim_info_destination_edit_reason">Reason:</string>
-        <string name="claim_info_destination_error_location">Destinations must have a name</string>
         <string name="claim_info_destination_error_geolocation">Destinations must have a location</string>
-        <string name="claim_info_destination_error_dual_location">Destinations must have a name and location</string>
         <string name="claim_info_delete_destination">Are you sure you want to delete the following destination?</string>
         <string name="claim_info_submit_confirm">Submit claim for approval?</string>
         <string name="claim_info_not_submitted">Claim not submitted!</string>

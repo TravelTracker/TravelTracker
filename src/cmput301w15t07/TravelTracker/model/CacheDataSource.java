@@ -63,18 +63,14 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * @author kdbanman
  */
 public class CacheDataSource extends Observable<DataSource> implements
-		DataSource, Observer<Document> {
+		DataSource, Observer<DataSource> {
+	
+	private InMemoryDataSource inMemory;
 	
 	private Context appContext;
 	
 	private ServerHelper mainHelper;
 	private ServerHelper backupHelper;
-	
-	// inUse* attributes are maps containing the Documents requested by the app's Views.
-	private HashMap<UUID, Claim> inUseClaims;
-	private HashMap<UUID, User> inUseUsers;
-	private HashMap<UUID, Item> inUseItems;
-	private HashMap<UUID, Tag> inUseTags;
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
@@ -92,53 +88,76 @@ public class CacheDataSource extends Observable<DataSource> implements
 		this.appContext = appContext;
 		this.mainHelper = main;
 		
-		inUseClaims = new HashMap<UUID, Claim>();
-		inUseUsers = new HashMap<UUID, User>();
-		inUseItems = new HashMap<UUID, Item>();
-		inUseTags = new HashMap<UUID, Tag>();
+		this.inMemory = new InMemoryDataSource();
+		inMemory.addObserver(this);
 	}
 
 	@Override
-	public void update(Document observable) {		
-		// every time a document changes 
-		// TODO try 
-		
+	public void update(DataSource observable) {		
+		// every time a document changes, the delegate datasource tells us here
+		updateObservers(this);
 	}
 
 	@Override
 	public void addUser(ResultCallback<User> callback) {
+		inMemory.addUser(callback);
+		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void addClaim(User user, ResultCallback<Claim> callback) {
+		inMemory.addClaim(user, callback);
+		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void addItem(Claim claim, ResultCallback<Item> callback) {
+		inMemory.addItem(claim, callback);
+		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void addTag(User user, ResultCallback<Tag> callback) {
+		inMemory.addTag(user, callback);
+		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void deleteUser(UUID id, ResultCallback<Void> callback) {
+		// add to toDelete list - will be picked up on sync cycle
+		// remove from inmemory - may come back after sync cycle
+		inMemory.deleteUser(id, callback);
 	}
 
 	@Override
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
+		// add to toDelete list - will be picked up on sync cycle
+		// remove from inmemory - may come back after sync cycle
+		inMemory.deleteClaim(id, callback);
 	}
 
 	@Override
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
+		// add to toDelete list - will be picked up on sync cycle
+		// remove from inmemory - may come back after sync cycle
+		inMemory.deleteItem(id, callback);
 	}
 
 	@Override
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
+		// add to toDelete list - will be picked up on sync cycle
+		// remove from inmemory - may come back after sync cycle
+		inMemory.deleteTag(id, callback);
 	}
 
 	@Override
 	public void getUser(UUID id, ResultCallback<User> callback) {
+		// TODO: write below for User, then abstract into wrapped callback.
+		
+		// check main, if fail check backup.
+		// if found in either, merge with inmemory.
+		// call inmemory.getUser(id, callback) because it will be there now
+		// (or if it isn't there it wasn't on the server or backup either)
 	}
 
 	@Override
@@ -169,14 +188,25 @@ public class CacheDataSource extends Observable<DataSource> implements
 
 	@Override
 	public void getAllTags(ResultCallback<Collection<Tag>> callback) {
-	}
-
-	private Collection<Document> getDirtyDocuments() {
-		return null;
+		
 	}
 	
-	private void saveDocumentsSync(Collection<Document> toSave) {
+	/**
+	 * 
+	 * @param toSave 
+	 */
+	private void syncDocuments() {
+		// attempt to pull all data from main (push all to backup and return if fail)
+		// do deletions that are not out-of-date on received
+		// do same on remote using helper calls
+			// clear deletion list if successful
 		
+		// merge every remaining received document into inmemory
+		// update observers (on gui thread!) (merge not cause update())
+		
+		// push in memory to server
+			// set all documents to clean and purge backup if successful
+			// push all to backup if fail
 	}
 
 }

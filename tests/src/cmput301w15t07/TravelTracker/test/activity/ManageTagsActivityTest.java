@@ -36,6 +36,10 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 /**
@@ -64,17 +68,37 @@ public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<Man
 		user = DataSourceUtils.addUser("Bob", ds);
 	}
 	
-	public void testManageTagsNumberOfTags() throws InterruptedException {
+	public void testCreateTag() throws Throwable {
 		int numberOfTags = 10;
+		final String tagName = "NewTag";		
 		startWithTags(numberOfTags);
 		
 		ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
 		
-		assertEquals(numberOfTags, listView.getCount());
-	}
-	
-	public void testCreateTag() {
+		final EditText tagBox = (EditText) activity.findViewById(R.id.manageTagsNewTagEditText);
+		final Button addButton = (Button) activity.findViewById(R.id.manageTagsAddButton);
 		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				tagBox.setText(tagName);
+				addButton.performClick();
+			}
+		});
+		
+		getInstrumentation().waitForIdleSync();
+		ListAdapter adapter = listView.getAdapter();
+		assertEquals(numberOfTags + 1, adapter.getCount());
+		
+		for (int i = 0; i < listView.getCount(); i++){
+			Tag tag = (Tag) adapter.getItem(i);
+			if (tag.getTitle().equals(tagName)){
+				return;
+			}
+		}
+		
+		fail("Did not find a tag that matched the added tag");
 	}
 	
 	public void testEditTag() {
@@ -88,6 +112,8 @@ public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<Man
 	private void startWithTags(int number) throws InterruptedException{
 		ArrayList<Tag> tags = addEmptyTags(number);
 		startActivity();
+		
+		assertEquals(number, ((ListView)activity.findViewById(R.id.manageTagsTagListView)).getAdapter().getCount());
 	}
 	
 	private void startActivity() throws InterruptedException{

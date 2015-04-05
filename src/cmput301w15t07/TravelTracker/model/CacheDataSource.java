@@ -150,9 +150,11 @@ public class CacheDataSource extends InMemoryDataSource {
 		// TODO: write below for User, then abstract into wrapped asynctask.
 		
 		// check main, if fail check backup.
-		// if found in either, merge with inmemory.
-		// call inmemory.getUser(id, callback) because it will be there now
-		// (or if it isn't there it wasn't on the server or backup either)
+		// if found in either
+			// merge with inmemory.
+			// call inmemory.getUser(id, callback) because it will be there now
+			// (or if it isn't there it wasn't on the server or backup either)
+		// else user not found
 	}
 
 	@Override

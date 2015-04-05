@@ -42,6 +42,7 @@ import cmput301w15t07.TravelTracker.model.Tag;
 
 public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
 	private HashSet<UUID> selected;
+	private boolean enabled = true;
 	
 	/**
 	 * Constructor
@@ -81,6 +82,10 @@ public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
             }
 		});
 	    
+	    if (!enabled) {
+	        checkBox.setEnabled(false);
+	    }
+	    
 	    return view;
 	}
 	
@@ -90,5 +95,12 @@ public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
 	 */
 	public HashSet<UUID> getSelected() {
 		return selected;
+	}
+	
+	/**
+	 * Set whether the checkbox should be enabled.
+	 */
+	public void setEnabled(boolean enabled) {
+	    this.enabled = enabled;
 	}
 }

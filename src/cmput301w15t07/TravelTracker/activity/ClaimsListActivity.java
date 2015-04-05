@@ -49,6 +49,7 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
+import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
 import cmput301w15t07.TravelTracker.util.SelectTagFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
@@ -76,6 +77,9 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	
 	/** Tags UUIDs selected for filtering. */
 	private HashSet<UUID> filterTags;
+	
+	/** Whether the filter is enabled. */
+	private boolean filterEnabled = false;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -254,14 +258,16 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Launch the filter by tag fragment.
      */
     private void launchFilterByTag() {
-		SelectTagFragment filterFragment = new SelectTagFragment(data.getTags(), filterTags, new SelectTagFragment.ResultCallback() {
-			@Override
-			public void onSelectTagFragmentResult(HashSet<UUID> selected) {
-				filterByTags(selected);
-			}
-			
-			@Override
-			public void onSelectTagFragmentCancelled() { }
+		SelectTagFilterFragment filterFragment = new SelectTagFilterFragment(data.getTags(), filterEnabled,
+		        filterTags, new SelectTagFilterFragment.ResultCallback() {
+            @Override
+            public void onSelectTagFilterFragmentResult(HashSet<UUID> selected,
+                    boolean filterEnabled) {
+                filterByTags(selected, filterEnabled);
+            }
+
+            @Override
+            public void onSelectTagFilterFragmentCancelled() { }
 		});
     	filterFragment.show(getFragmentManager(), "filterByTag");
     }
@@ -289,9 +295,11 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	/**
 	 * Filter the claims by tag UUIDs.
 	 * @param tagIDs The list of tag IDs. Only claims with at least one of these tags will be displayed.
+	 * @param filterEnabled Whether the filter is enabled.
 	 */
-	private void filterByTags(HashSet<UUID> tagIDs) {
+	private void filterByTags(HashSet<UUID> tagIDs, boolean filterEnabled) {
 		filterTags = tagIDs;
+		this.filterEnabled = filterEnabled;
 		
 		rebuildList();
 	}
@@ -299,7 +307,13 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	 * Rebuild the ListView.
 	 */
 	private void rebuildList() {
-		adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers(), filterTags);
+	    // Only pass tags if filter is enabled
+	    HashSet<UUID> tags = null;
+	    if (filterEnabled) {
+	        tags = filterTags;
+	    }
+	    
+		adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers(), tags);
 	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{
@@ -307,7 +321,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		@Override
 		public void onResult(InitialData result) {
 			// Populate the list of tags
-			//if (filterTags == null) {
+			if (filterTags == null) {
 				filterTags = new HashSet<UUID>();
 				
 				for (Tag tag : result.getTags()) {
@@ -315,7 +329,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 				}
 				
 			// Turn on new tags by default
-			/*} else {
+			} else {
 				Collection<Tag> oldTags = data.getTags();
 				
 				for (Tag tag : result.getTags()) {
@@ -323,10 +337,10 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 						filterTags.add(tag.getUUID());
 					}
 				}
-			}*/
+			}
 			
 			data = result;
-			filterByTags(filterTags); // Will automatically rebuild list
+			filterByTags(filterTags, filterEnabled); // Will automatically rebuild list
 			//TODO stop spinner
 		}
 

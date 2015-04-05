@@ -111,6 +111,10 @@
     	<string name="select_location_fragment_default_title">Select location</string>
     	<string name="select_location_fragment_failed_to_get_location">Failed to get current location</string>
     	<string name="select_location_fragment_not_connected">Not connected to Google Play</string>
+    	
+    <!-- Strings used in SelectTagFilterFragment -->
+    	<string name="select_tag_filter_fragment_enable_filter">Enable filter</string>
+    	<string name="select_tag_filter_title">Tag filter settings</string>
 
     <!-- Strings used in enum ItemCategory -->
         <string name="enum_item_category_no_category">No Category</string>

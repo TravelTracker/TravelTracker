@@ -33,6 +33,7 @@ import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -323,7 +324,27 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		assertEquals("Claimant name should be shown", expected, text);
 	}
 	
-	public void testSubmitExpenseClaim() {
+	public void testSubmitExpenseClaim() throws Throwable {
+		startWithClaim(UserRole.CLAIMANT);
+		
+		final Button submitButton = (Button) activity.findViewById(R.id.claimInfoClaimSubmitButton);
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				submitButton.performClick();
+				try{
+					AlertDialog dialog = activity.getLastAlertDialog();
+					dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+				} catch (NullPointerException e){
+					Log.d("DEBUG", "Dialog was not shown");
+				}		
+			}
+		});
+
+		getInstrumentation().waitForIdleSync();
+		assertEquals("Claim Status was not changed upon submit", Status.SUBMITTED, claim.getStatus());
+		assertTrue(activity.isFinishing());
 		
 	}
 	

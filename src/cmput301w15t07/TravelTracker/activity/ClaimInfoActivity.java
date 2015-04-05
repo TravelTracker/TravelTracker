@@ -529,7 +529,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 				};
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-				builder.setMessage(dialogMessage)
+				lastAlertDialog =  builder.setMessage(dialogMessage)
 				       .setPositiveButton(android.R.string.yes, submitDialogClickListener)
 				       .setNegativeButton(android.R.string.no, submitDialogClickListener)
 				       .show();

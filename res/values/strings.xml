@@ -86,7 +86,16 @@
         <string name="claim_info_destination_error_geolocation">Destinations must have a location</string>
         <string name="claim_info_destination_error_dual_location">Destinations must have a name and location</string>
         <string name="claim_info_delete_destination">Are you sure you want to delete the following destination?</string>
-    	<string name="claim_info_not_all_items_complete">Not all expense items are complete! Submit anyways?</string>
+        <string name="claim_info_submit_confirm">Submit claim for approval?</string>
+        <string name="claim_info_not_submitted">Claim not submitted!</string>
+        <string name="claim_info_submit_error_destination">Claim has no destinations! Expense items may also be incomplete. Submit anyway?</string>
+        <string name="claim_info_submit_error_item">Some expense items have no description or are not marked complete! Submit anyway?</string>
+        <string name="claim_info_submit_error_item_description">Some expense items have no description! Submit anyway?</string>
+        <string name="claim_info_submit_error_item_completeness">Some expense items are not marked complete! Submit anyway?</string>
+        <string name="claim_info_return_confirm">Return claim to claimant for revision?</string>
+        <string name="claim_info_not_returned">Claim not returned to claimant!</string>
+        <string name="claim_info_approve_confirm">Approve claim?</string>
+        <string name="claim_info_not_approved">Claim not approved!</string>
         
         <!-- Used in menu -->
         <string name="claim_info_add_destination">Add Destination</string>
@@ -116,8 +125,10 @@
         <string name= "delete_image">Delete image</string>
         <string name= "view_image">View image</string>
         <string name= "change_image">Change image</string>
+        
     <!-- Strings used in RecieptImageVeiwAcivity -->
     	<string name= "receipt_image_view_label">Veiw Receipt Image</string>  
+    	
     <!-- Strings used in SelectLocationActivity -->
     	<string name="select_location_label">Select Location</string>
     	<string name="tap_to_select_location">Tap to select a location</string>
@@ -172,11 +183,5 @@
     <!-- Strings used in enum UserRole -->
         <string name="enum_user_role_claimant">Claimant</string>
         <string name="enum_user_role_approver">Approver</string>
-        <string name="claim_info_not_submitted">Claim not submitted!</string>
-        <string name="claim_info_submit_confim">Submit claim for approval?</string>
-        <string name="claim_info_return_confirm">Return claim to claimant for revision?</string>
-        <string name="claim_info_approve_confirm">Approve claim?</string>
-        <string name="claim_info_not_returned">Claim not returned to claimant!</string>
-        <string name="claim_info_not_approved">Claim not approved!</string>
    
 </resources>

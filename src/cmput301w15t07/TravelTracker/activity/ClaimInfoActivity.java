@@ -494,28 +494,43 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     }
     
     /**
-     * submits the selected claim and adds a comment if there exists one in the field
+     * Submits the selected claim and adds a comment if there exists one in the field.
      */
     public void submitClaim() {
-    	// submit only if all items of claim are flagged as complete
+    	// Submit only if claim has at least one destination, a description, all items of
+        // claim have a description, and all items of claim are flagged as complete.
     	datasource.getAllItems(new ResultCallback<Collection<Item>>() {
 
 			@Override
 			public void onResult(Collection<Item> items) {
-				boolean allComplete = true;
-				for(Item item : items) {
-					// only inspect items belonging to this claim
-					if (item.getClaim().equals(claim.getUUID()))
-						allComplete = allComplete && item.isComplete();
-				}
-				int dialogMessage = allComplete ? 
-						R.string.claim_info_submit_confim :
-						R.string.claim_info_not_all_items_complete;
-				
+			    int dialogMessage = R.string.claim_info_submit_confirm;
+			    
+			    if (claim.getDestinations().isEmpty()) {
+			        dialogMessage = R.string.claim_info_submit_error_destination;
+			    } else {
+			        boolean descriptions = false;
+			        boolean indicators = false;
+			        
+	                for(Item item : items) {
+	                    // Only inspect items belonging to this claim.
+	                    if (item.getClaim().equals(claim.getUUID())) {
+                            descriptions = (item.getDescription().isEmpty()) ? true : descriptions;
+                            indicators = (!item.isComplete()) ? true : indicators;
+	                    }
+	                }
+	                
+	                if (descriptions && indicators)
+	                    dialogMessage = R.string.claim_info_submit_error_item;
+	                else if (descriptions)
+                        dialogMessage = R.string.claim_info_submit_error_item_description;
+	                else if (indicators)
+                        dialogMessage = R.string.claim_info_submit_error_item_completeness;
+			    }
+			    
 				DialogInterface.OnClickListener submitDialogClickListener = new DialogInterface.OnClickListener() {
 				    @Override
 				    public void onClick(DialogInterface dialog, int which) {
-				        switch (which){
+				        switch (which) {
 				        case DialogInterface.BUTTON_POSITIVE:
 				            claim.setStatus(Status.SUBMITTED);
 				            ClaimInfoActivity.this.finish();

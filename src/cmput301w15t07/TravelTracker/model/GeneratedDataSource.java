@@ -126,8 +126,11 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			}
 			
 			//Add some destinations
-			for (int k = 0; k < (new Random()).nextInt(5); k++){
-				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), null, "A test Reason"));
+			for (int k = 0; k < r.nextInt(5); k++){
+			    double lat = (double) (r.nextInt(181) - 91);
+			    double lng = (double) (r.nextInt(360) - 180);
+			    Geolocation loc = new Geolocation(lat, lng);
+				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), loc, "A test Reason"));
 			}
 			
 			// Add some comments (from the same user for simplicity's sake, though this is impossible)

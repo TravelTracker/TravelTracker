@@ -274,7 +274,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	class initalDataCallback implements ResultCallback<InitialData>{
 		@Override
 		public void onResult(InitialData result) {
-	        adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
+	        adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers(), result.getUser());
 	        data = result;
 		    onGetInitialData();
 		}

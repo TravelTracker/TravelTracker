@@ -47,7 +47,15 @@
     <!-- Strings used in ClaimsListRowItem -->
         <!-- Used in layout -->
         <string name="claims_list_row_item_total">Total:</string>
-
+        <string name="claims_list_row_item_distance_header">Distance from home location:</string>
+        <string name="claims_list_row_item_distance_no_home">No home location set</string>
+        <string name="claims_list_row_item_distance_no_dest">No destinations in claim</string>
+        <string name="claims_list_row_item_distance_level_1">Very Close</string>
+        <string name="claims_list_row_item_distance_level_2">Close</string>
+        <string name="claims_list_row_item_distance_level_3">Distant</string>
+        <string name="claims_list_row_item_distance_level_4">Very Distant</string>
+        <string name="claims_list_row_item_distance_level_5">Extremely Distant</string>
+        
     <!-- Strings used in ClaimInfoActivity -->
         <string name="claim_info_label">Claim Info</string>
     

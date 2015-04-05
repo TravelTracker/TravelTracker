@@ -223,7 +223,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
      */
     private void launchReceiptImageView(){
         Intent intent = new Intent(this, ReceiptImageViewActivity.class);
-        intent.putExtra(ReceiptImageViewActivity.URI_DATA, item.getReceipt().getUri());
+        intent.putExtra(ITEM_UUID, itemID);
         startActivity(intent);
     }
     
@@ -591,21 +591,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         itemStatus.setChecked(item.isComplete());
 	}
 	
-	/**
-	 * Get the index in a spinner array.
-	 * @param spinner The spinner.
-	 * @param string The string to find.
-	 * @return The index of the item containing the string
-	 */
-	public int getIndex(Spinner spinner, String string){
-		int index = 0;
-		for(int i=0;i<spinner.getCount();i++){
-			if (spinner.getItemAtPosition(i).equals(string)){
-				index = i; 
-			}
-		}
-		return index;
-	}
 
 	/**
 	 * Set the date in the date button after 

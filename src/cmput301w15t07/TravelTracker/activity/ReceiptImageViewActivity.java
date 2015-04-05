@@ -23,13 +23,22 @@ package cmput301w15t07.TravelTracker.activity;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.UUID;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+/**
+ * Activity for viewing receipt images 
+ * @author cellinge
+ *
+ */
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
     /** String used to retrieve URI reference from intent */
@@ -38,22 +47,31 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	/** Immutable URI reference of the image. */
 	private Uri imageUri;
 	
+	private UUID itemID; 
+	
+	private Item item;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.receipt_image_view);
 		Bundle bundle = getIntent().getExtras();
-		 imageUri = (Uri) bundle.getSerializable(URI_DATA);
-		 //Toast.makeText(this, imageUri.toString(), Toast.LENGTH_LONG).show();
-		 try {
-			loadImage(imageUri);
-		} catch (FileNotFoundException e) {
-			Toast.makeText(this, "File Not Found", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 itemID = (UUID) bundle.getSerializable(ExpenseItemInfoActivity.ITEM_UUID);
+		 datasource.getItem(itemID, new ResultCallback<Item>() {
+			
+			@Override
+			public void onResult(Item result) {
+				item = result;
+				loadImage(item.getReceipt().getPhoto());
+			}
+			
+			@Override
+			public void onError(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		 
 	}
 	
     /**
@@ -65,12 +83,10 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
         // Do nothing
     }
 	
-	protected void loadImage(Uri uri) throws FileNotFoundException, IOException{
+	protected void loadImage(Bitmap image) {
 		ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);
-		Bitmap bitmap = null;
-			//bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-		if (bitmap != null) {
-			//imageView.setImageBitmap(bitmap);
+		if (image != null) {
+			imageView.setImageBitmap(image);
 		}
 		else{
 			Toast.makeText(this, "bitmap is null", Toast.LENGTH_SHORT).show();

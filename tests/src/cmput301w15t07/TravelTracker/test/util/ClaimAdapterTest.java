@@ -1,5 +1,6 @@
 package cmput301w15t07.TravelTracker.test.util;
 
+
 import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.AllCallbacks;
@@ -21,7 +22,7 @@ public class ClaimAdapterTest extends AndroidTestCase{
 	
 	public void testCLaimsSortedClaimant(){
 		adapter = new ClaimAdapter(getContext(), UserRole.CLAIMANT);
-		adapter.rebuildList(acb.getClaims(), acb.getItems(), acb.getUsers());
+		adapter.rebuildList(acb.getClaims(), acb.getItems(), acb.getUsers(), null);
 		 for (int i = 1; i < adapter.getCount(); i++){
 			 assertTrue(adapter.getItem(i).getStartDate().compareTo(adapter.getItem(i-1).getStartDate()) < 1);
 		 }
@@ -29,7 +30,7 @@ public class ClaimAdapterTest extends AndroidTestCase{
 	
 	public void testCLaimsSortedApprover(){
 		adapter = new ClaimAdapter(getContext(), UserRole.APPROVER);
-		adapter.rebuildList(acb.getClaims(), acb.getItems(), acb.getUsers());
+		adapter.rebuildList(acb.getClaims(), acb.getItems(), acb.getUsers(), null);
 		 for (int i = 1; i < adapter.getCount(); i++){
 			 assertTrue(adapter.getItem(i).getStartDate().compareTo(adapter.getItem(i-1).getStartDate()) > -1);
 		 }
@@ -37,7 +38,7 @@ public class ClaimAdapterTest extends AndroidTestCase{
 	
 	public void testAdapterMappingDS(){
 		adapter = new ClaimAdapter(getContext(), UserRole.APPROVER);
-		adapter.rebuildList(acb.getClaims(), acb.getItems(), acb.getUsers());
+		adapter.rebuildList(acb.getClaims(), acb.getItems(), acb.getUsers(), null);
 		assertEquals(acb.getClaims().size(), adapter.getCount());
 	}
 	

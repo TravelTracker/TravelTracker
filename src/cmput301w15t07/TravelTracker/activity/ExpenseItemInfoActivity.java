@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
-import com.google.common.collect.BiMap;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;

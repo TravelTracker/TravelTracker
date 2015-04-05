@@ -48,7 +48,6 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
 import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
-import cmput301w15t07.TravelTracker.util.SelectTagFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;

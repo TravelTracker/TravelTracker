@@ -24,7 +24,6 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;

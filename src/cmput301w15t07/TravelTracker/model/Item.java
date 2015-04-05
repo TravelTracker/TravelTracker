@@ -24,8 +24,6 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.Date;
 import java.util.UUID;
 
-import com.google.gson.annotations.Expose;
-
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /**

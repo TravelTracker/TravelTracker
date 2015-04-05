@@ -24,8 +24,6 @@ package cmput301w15t07.TravelTracker.test.activity;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.w3c.dom.Comment;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;

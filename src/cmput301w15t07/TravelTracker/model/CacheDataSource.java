@@ -96,68 +96,58 @@ public class CacheDataSource extends InMemoryDataSource {
 		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
 	}
 
-	@Override
-	public void update(Document observable) {		
-		// every time a document changes, the delegate datasource tells us here
-		updateObservers(this);
-	}
-
-	@Override
-	public void addUser(ResultCallback<User> callback) {
-		super.addUser(callback);
-		// added document will be dirty - will be picked up on sync cycle
-	}
-
-	@Override
-	public void addClaim(User user, ResultCallback<Claim> callback) {
-		super.addClaim(user, callback);
-		// added document will be dirty - will be picked up on sync cycle
-	}
-
-	@Override
-	public void addItem(Claim claim, ResultCallback<Item> callback) {
-		super.addItem(claim, callback);
-		// added document will be dirty - will be picked up on sync cycle
-	}
-
-	@Override
-	public void addTag(User user, ResultCallback<Tag> callback) {
-		super.addTag(user, callback);
-		// added document will be dirty - will be picked up on sync cycle
-	}
+	/*
+	 * existing superclass add* methods are fine, added document will
+	 * be dirty, so it will be picked up on next sync cycle.
+	 * 
+	 * getters and deleters need some additional behaviour (like 
+	 * preliminary synchronization) before affecting in-memory Documents
+	 * 
+	 */
 
 	@Override
 	public void deleteUser(UUID id, ResultCallback<Void> callback) {
-		// add to toDelete list - will be picked up on sync cycle
-		
-		// remove from inmemory - may come back after sync cycle
-		super.deleteUser(id, callback);
+		if (users.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(users.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteUser(id, callback);
+		}
 	}
 
 	@Override
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
-		// add to toDelete list - will be picked up on sync cycle
-		// remove from inmemory - may come back after sync cycle
-		super.deleteClaim(id, callback);
+		if (claims.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(claims.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteClaim(id, callback);
+		}
 	}
 
 	@Override
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
-		// add to toDelete list - will be picked up on sync cycle
-		// remove from inmemory - may come back after sync cycle
-		super.deleteItem(id, callback);
+		if (items.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(items.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteItem(id, callback);
+		}
 	}
 
 	@Override
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
-		// add to toDelete list - will be picked up on sync cycle
-		// remove from inmemory - may come back after sync cycle
-		super.deleteTag(id, callback);
+		if (tags.get(id) != null) {
+			// add to toDelete list - will be picked up on sync cycle
+			deletions.add(new DeletionFlag(tags.get(id)));
+			// remove from inmemory - may come back after sync cycle
+			super.deleteTag(id, callback);
+		}
 	}
 
 	@Override
 	public void getUser(UUID id, ResultCallback<User> callback) {
-		// TODO: write below for User, then abstract into wrapped callback.
+		// TODO: write below for User, then abstract into wrapped asynctask.
 		
 		// check main, if fail check backup.
 		// if found in either, merge with inmemory.

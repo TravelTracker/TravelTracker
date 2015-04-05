@@ -52,7 +52,6 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		claim2 = DataSourceUtils.addEmptyClaim(user1, ds);
 	}
 	
-	@Suppress
 	public void testAddClaims() throws Exception{
 		ArrayList<Claim> claims = new ArrayList<Claim>();
 		claims.add(claim1);
@@ -66,7 +65,6 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		assertEquals(0, es.getClaims(user1.getUUID()).size());
 	}
 	
-	@Suppress
 	public void testAddExpense() throws Exception{
 		ArrayList<Item> items = new ArrayList<Item>();
 		items.add(DataSourceUtils.addEmptyItem(claim1, ds));
@@ -80,7 +78,6 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		assertEquals(0, es.getExpenses(claim1.getUUID()).size());
 	}
 	
-	@Suppress
 	public void testAAddUser() throws Exception {
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(user1);
@@ -94,7 +91,6 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		//TODO test cleanup successful
 	}
 	
-	@Suppress
 	public void testAddTag() throws Exception {
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		tags.add(DataSourceUtils.addEmptyTag(user1, ds));

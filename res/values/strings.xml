@@ -32,6 +32,7 @@
         <string name="manage_tags_dialog_cancel">Cancel</string>
         
         <!-- Used in error -->
+        <string name="manage_tags_no_name_error">Tag name cannot be empty</string>
         <string name="manage_tags_tag_exists">" already exists!"</string>
     
     <!-- Strings used in ClaimsListActivity -->

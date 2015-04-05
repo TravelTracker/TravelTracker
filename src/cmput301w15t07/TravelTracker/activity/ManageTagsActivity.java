@@ -238,6 +238,14 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         @Override
         public void onClick(View v) {
             final String title = titleEditText.getText().toString();
+            
+            // Empty tag name is invalid
+            if (title.isEmpty()) {
+                titleEditText.setError(getString(R.string.manage_tags_no_name_error));
+                return;
+            }
+            
+            // Pre-existing tag name is invalid
             for (Tag t : tags) {
                 if (title.equals(t.getTitle())) {
                     Toast.makeText(ManageTagsActivity.this,
@@ -287,12 +295,10 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             adb.setView(input);
             
             // Don't give listener here, see lower comment for why
-            adb.setPositiveButton(
-                    getString(R.string.manage_tags_dialog_rename), null);
+            adb.setPositiveButton(getString(R.string.manage_tags_dialog_rename), null);
             
             // No listener at all, just want default dismiss dialog behaviour
-            adb.setNegativeButton(
-                    getString(R.string.manage_tags_dialog_cancel), null);
+            adb.setNegativeButton(getString(R.string.manage_tags_dialog_cancel), null);
             
             AlertDialog dialog = adb.create();
             dialog.show();
@@ -323,8 +329,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         private EditText input;
         private Tag selected;
 
-        public RenameDialogListener(AlertDialog dialog, EditText input, 
-                Tag selected) {
+        public RenameDialogListener(AlertDialog dialog, EditText input, Tag selected) {
             this.dialog = dialog;
             this.input = input;
             this.selected = selected;
@@ -333,6 +338,13 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         @Override
         public void onClick(View v) {
             String title = input.getText().toString();
+            
+            // Empty tag name is invalid, don't close dialog.
+            if (title.isEmpty()) {
+                input.setError(ManageTagsActivity.this.getString(R.string.manage_tags_no_name_error));
+                return;
+            }
+            
             for (Tag t : tags) {
                 // Ignore renaming to yourself? Same as cancel.
                 if (selected.equals(t)) continue;

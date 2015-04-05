@@ -380,23 +380,29 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	}
 	
 	public void testReturnExpenseClaim() throws Throwable {
-		
+		claimActionHelper(R.id.claimInfoClaimReturnButton, Status.RETURNED);
 	}
 	
 	public void testApproveExpenseClaim() throws Throwable {
+		claimActionHelper(R.id.claimInfoClaimApproveButton, Status.APPROVED);
+	}
+	
+	private void claimActionHelper(int buttonId, Status expectedStatus) throws Throwable{
 		startWithClaim(UserRole.APPROVER);
-		final Button approveButton = (Button) activity.findViewById(R.id.claimInfoClaimApproveButton);
+		final Button approveButton = (Button) activity.findViewById(buttonId);
 		
 		runTestOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
 				approveButton.performClick();
-				activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();				
+				activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 			}
 		});
 		getInstrumentation().waitForIdleSync();
-		assertEquals(Status.APPROVED, claim.getStatus());
+		assertEquals(expectedStatus, claim.getStatus());
+		assertTrue(activity.isFinishing());
+		
 	}
 	
 	public void testViewExpenseItems() throws InterruptedException {

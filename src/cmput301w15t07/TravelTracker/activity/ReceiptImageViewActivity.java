@@ -32,8 +32,10 @@ import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
+    /** String used to retrieve URI reference from intent */
+    public static final String URI_DATA = "cmput301w15t07.TravelTracker.uriData";
 	
-	/** UUID of the item */
+	/** Immutable URI reference of the image. */
 	private Uri imageUri;
 	
 	@Override
@@ -41,7 +43,7 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.receipt_image_view);
 		Bundle bundle = getIntent().getExtras();
-		 imageUri = (Uri) bundle.getSerializable("Uri");
+		 imageUri = (Uri) bundle.getSerializable(URI_DATA);
 		 //Toast.makeText(this, imageUri.toString(), Toast.LENGTH_LONG).show();
 		 try {
 			loadImage(imageUri);

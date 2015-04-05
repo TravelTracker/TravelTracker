@@ -140,7 +140,7 @@ public class LoginActivity extends TravelTrackerActivity {
 	public void loginWithUserData(UserData userData) {
 		// Start next activity
 		Intent intent = new Intent(this, ClaimsListActivity.class);
-		saveUserData(userData);
+		saveUserData(userData); // Save this login to file.
 		intent.putExtra(ClaimsListActivity.USER_DATA, userData);
 		startActivity(intent);
 	}

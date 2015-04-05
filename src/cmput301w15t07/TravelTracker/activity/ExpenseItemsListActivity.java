@@ -215,10 +215,10 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
      */
     private void launchExpenseItemInfo(Item item){
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
-        intent.putExtra(FROM_CLAIM_INFO, false);
-        intent.putExtra(ITEM_UUID, item.getUUID());
-        intent.putExtra(CLAIM_UUID, claimID);
-        intent.putExtra(USER_DATA, userData);
+        intent.putExtra(ExpenseItemInfoActivity.FROM_CLAIM_INFO, false);
+        intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
+        intent.putExtra(ExpenseItemInfoActivity.CLAIM_UUID, claimID);
+        intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
         startActivity(intent);
     }
     

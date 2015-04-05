@@ -240,7 +240,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         viewItemsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewItems();
+                launchExpenseItemsList();
             }
         });
     	
@@ -340,10 +340,20 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     }
     
     /**
+     * Launches the ExpenseItemsList activity.
+     */
+    private void launchExpenseItemsList() {
+        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
+        startActivity(intent);
+    }
+    
+    /**
      * Launches the ExpenseItemInfo activity for a selected item
      * @param item The selected expense item 
      */
-    private void launchExpenseItemInfo(Item item){
+    private void launchExpenseItemInfo(Item item) {
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
         intent.putExtra(ExpenseItemInfoActivity.FROM_CLAIM_INFO, true);
         intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
@@ -460,17 +470,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 			    scrollView.fullScroll(ScrollView.FOCUS_UP);
 			}
 		});
-    }
-    
-    /**
-     * starts the expenseItemList activity
-     */
-    public void viewItems() {
-        // Start next activity
-        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
-        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
-        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
-        startActivity(intent);
     }
     
     /**

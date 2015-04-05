@@ -212,4 +212,28 @@ public class FileSystemHelper implements ServerHelper {
 		Log.e("FileSystemHelper", msg);
 		Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
 	}
+
+	@Override
+	public Collection<Claim> getAllClaims() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<Item> getAllItems() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<Tag> getAllTags() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<User> getAllUsers() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -35,6 +35,7 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.os.Bundle;
@@ -127,17 +128,13 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 
 		assertEquals(0, listView.getCount());
-		runTestOnUiThread(new Runnable()
-		{
-			
-			@Override
-			public void run()
-			{
-				ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
-				claim4.setStatus(Status.SUBMITTED);
-				assertEquals(1, listView.getCount());
-			}
-		});
+		
+		claim4.setStatus(Status.SUBMITTED);
+
+		getInstrumentation().waitForIdleSync();
+		Thread.sleep(300);
+		
+		assertEquals(1, listView.getCount());
 	}
 	
 	public void testCreateExpenseClaim() throws Throwable {

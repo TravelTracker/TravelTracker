@@ -34,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
@@ -250,26 +249,10 @@ public class DestinationAdapter {
     class DestinationCallback implements DestinationEditorFragment.ResultCallback {
         @Override
         public void onDestinationEditorFragmentResult(String location, Geolocation geolocation, String reason) {
-            // Invalid location and geolocation
-            if (location.isEmpty() && geolocation == null) {
-                errorToast(context.getString(R.string.claim_info_destination_error_dual_location));
-                
-            // Invalid location
-            } else if (location.isEmpty()) {
-                errorToast(context.getString(R.string.claim_info_destination_error_location));
-                
-            // Invalid geolocation
-            } else if (geolocation == null) {
-                errorToast(context.getString(R.string.claim_info_destination_error_geolocation));
-                
-            // Valid location and reason, so update the destination
-            } else {
-                editDestination(editingView, location, geolocation, reason);
-                
-                if (newDestination) {
-                    linearLayout.addView(editingView);
-                }
-            }
+            if (newDestination)
+                linearLayout.addView(editingView);
+            
+            editDestination(editingView, location, geolocation, reason);
         }
 
         @Override
@@ -280,10 +263,6 @@ public class DestinationAdapter {
             }
             
             setFragmentDefaults();
-        }
-        
-        private void errorToast(String message) {
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         }
     }
     

@@ -21,56 +21,95 @@
 
 package cmput301w15t07.TravelTracker.activity;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
+import java.util.UUID;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+/**
+ * Activity for viewing receipt images 
+ * @author cellinge
+ *
+ */
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
-    /** String used to retrieve URI reference from intent */
-    public static final String URI_DATA = "cmput301w15t07.TravelTracker.uriData";
+   
+	/** UUID for the Item */
+	private UUID itemID; 
 	
-	/** Immutable URI reference of the image. */
-	private Uri imageUri;
+	/** the current expense item */
+	private Item item = null;
+	
+	/** The menu for the Activity */ 
+	private Menu menu = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.receipt_image_view);
 		Bundle bundle = getIntent().getExtras();
-		 imageUri = (Uri) bundle.getSerializable(URI_DATA);
-		 //Toast.makeText(this, imageUri.toString(), Toast.LENGTH_LONG).show();
-		 try {
-			loadImage(imageUri);
-		} catch (FileNotFoundException e) {
-			Toast.makeText(this, "File Not Found", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		 itemID = (UUID) bundle.getSerializable(ITEM_UUID);
+		 datasource.getItem(itemID, new ResultCallback<Item>() {
+			
+			@Override
+			public void onResult(Item result) {
+				item = result;
+				loadImage(item.getReceipt().getPhoto());
+			}
+			
+			@Override
+			public void onError(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		 
+	}
+	
+	@Override public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.receipt_image_view_menu, menu);
+		this.menu = menu;
+		return true; 
+	};
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()){
+		case R.id.expense_item_info_sign_out:
+	        signOut();
+	        return true;
+	        
+	    case android.R.id.home:
+	    	onBackPressed();
+	    	return true;
+	        
+	    default:
+	        return false;
 		}
 	}
 	
-    /**
-     * There is no dataset in LoginActivity.
-     * Called in onResume() and update(DataSource observable).
-     */
+	
+	
     @Override
     public void updateActivity() {
         // Do nothing
     }
 	
-	protected void loadImage(Uri uri) throws FileNotFoundException, IOException{
+    /**
+     * Load the image into the imageveiw
+     * @param image the bitmap image to be loaded into the imageView 
+     */
+	protected void loadImage(Bitmap image) {
 		ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);
-		Bitmap bitmap = null;
-			//bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-		if (bitmap != null) {
-			//imageView.setImageBitmap(bitmap);
+		if (image != null) {
+			imageView.setImageBitmap(image);
 		}
 		else{
 			Toast.makeText(this, "bitmap is null", Toast.LENGTH_SHORT).show();

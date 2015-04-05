@@ -24,6 +24,7 @@ package cmput301w15t07.TravelTracker.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -375,5 +376,73 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	 */
 	protected void internalDeleteTag(UUID id) {
 		tags.remove(id);
+	}
+	
+	/**
+	 * @return A collection of references to the Users
+	 */
+	public Collection<User> getUsers() {
+		return users.values();
+	}
+	
+	/**
+	 * @return A collection of references to the Claims
+	 */
+	public Collection<Claim> getClaims() {
+		return claims.values();
+	}
+	
+	/**
+	 * @return A collection of references to the Items
+	 */
+	public Collection<Item> getItems() {
+		return items.values();
+	}
+	
+	/**
+	 * @return A collection of references to the Tags
+	 */
+	public Collection<Tag> getTags() {
+		return tags.values();
+	}
+	
+	/**
+	 * Get the Users that are dirty.
+	 * @return A collection of references to the Users that are marked dirty.
+	 */
+	public Collection<User> getDirtyUsers() {
+		return this.<User>getDirty(users);
+	}
+	
+	/**
+	 * Get the Claims that are dirty.
+	 * @return A collection of references to the Claims that are marked dirty.
+	 */
+	public Collection<Claim> getDirtyClaims() {
+		return this.<Claim>getDirty(claims);
+	}
+	
+	/**
+	 * Get the Items that are dirty.
+	 * @return A collection of references to the Items that are marked dirty.
+	 */
+	public Collection<Item> getDirtyItems() {
+		return this.<Item>getDirty(items);
+	}
+	
+	/**
+	 * Get the Tags that are dirty.
+	 * @return A collection of references to the Tags that are marked dirty.
+	 */
+	public Collection<Tag> getDirtyTags() {
+		return this.<Tag>getDirty(tags);
+	}
+	
+	private <T extends Document> Collection<T> getDirty(Map<UUID, T> documents) {
+		Collection<T> dirty = new ArrayList<T>();
+		for (T document : documents.values()) {
+			if (document.isDirty()) dirty.add(document);
+		}
+		return dirty;
 	}
 }

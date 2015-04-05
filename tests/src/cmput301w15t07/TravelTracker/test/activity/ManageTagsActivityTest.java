@@ -39,6 +39,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -134,8 +135,21 @@ public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<Man
 		fail("Edited Tag does not exist");
 	}
 	
-	public void testDeleteTag() {
+	public void testDeleteTag() throws Throwable {
+		//As far as I can tell we cannot long press a listview item programmatically and obtain a reference to the context menu view
+		// If we are really concerned about this, we can store a reference to it in the activity and then get it that way.
+		int numberOfTags = 10;
+		final String tagName = "MyNewTag";
+		startWithTags(numberOfTags);
 		
+		final int position = 0;
+		final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+		final ListAdapter adapter = listView.getAdapter();
+		
+		
+		DataSourceUtils.deleteTag(((Tag)adapter.getItem(position)), ds);
+		getInstrumentation().waitForIdleSync();
+		assertEquals(numberOfTags -1, adapter.getCount());
 	}
 	
 	private void startWithTags(int number) throws InterruptedException{

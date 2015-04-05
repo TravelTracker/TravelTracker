@@ -30,8 +30,10 @@ import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ServerHelper;
+import cmput301w15t07.TravelTracker.util.DeletionFlag;
 import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
+import cmput301w15t07.TravelTracker.util.PersistentList;
 
 /**
  * DataSource that caches Document model objects with local persistence iff ServerHelper reports an error
@@ -62,15 +64,16 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * 
  * @author kdbanman
  */
-public class CacheDataSource extends Observable<DataSource> implements
-		DataSource, Observer<DataSource> {
+public class CacheDataSource extends InMemoryDataSource {
 	
-	private InMemoryDataSource inMemory;
+	private static final String TODELETE_FILENAME = "cached_deletions.json";
 	
 	private Context appContext;
 	
 	private ServerHelper mainHelper;
 	private ServerHelper backupHelper;
+	
+	private PersistentList<DeletionFlag> deletions;
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
@@ -85,69 +88,71 @@ public class CacheDataSource extends Observable<DataSource> implements
 	 * @param backup The interface for data persistence when main fails.
 	 */
 	public CacheDataSource(Context appContext, ServerHelper main, ServerHelper backup) {
+		super();
+		
 		this.appContext = appContext;
 		this.mainHelper = main;
 		
-		this.inMemory = new InMemoryDataSource();
-		inMemory.addObserver(this);
+		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
 	}
 
 	@Override
-	public void update(DataSource observable) {		
+	public void update(Document observable) {		
 		// every time a document changes, the delegate datasource tells us here
 		updateObservers(this);
 	}
 
 	@Override
 	public void addUser(ResultCallback<User> callback) {
-		inMemory.addUser(callback);
+		super.addUser(callback);
 		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void addClaim(User user, ResultCallback<Claim> callback) {
-		inMemory.addClaim(user, callback);
+		super.addClaim(user, callback);
 		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void addItem(Claim claim, ResultCallback<Item> callback) {
-		inMemory.addItem(claim, callback);
+		super.addItem(claim, callback);
 		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void addTag(User user, ResultCallback<Tag> callback) {
-		inMemory.addTag(user, callback);
+		super.addTag(user, callback);
 		// added document will be dirty - will be picked up on sync cycle
 	}
 
 	@Override
 	public void deleteUser(UUID id, ResultCallback<Void> callback) {
 		// add to toDelete list - will be picked up on sync cycle
+		
 		// remove from inmemory - may come back after sync cycle
-		inMemory.deleteUser(id, callback);
+		super.deleteUser(id, callback);
 	}
 
 	@Override
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
 		// add to toDelete list - will be picked up on sync cycle
 		// remove from inmemory - may come back after sync cycle
-		inMemory.deleteClaim(id, callback);
+		super.deleteClaim(id, callback);
 	}
 
 	@Override
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
 		// add to toDelete list - will be picked up on sync cycle
 		// remove from inmemory - may come back after sync cycle
-		inMemory.deleteItem(id, callback);
+		super.deleteItem(id, callback);
 	}
 
 	@Override
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
 		// add to toDelete list - will be picked up on sync cycle
 		// remove from inmemory - may come back after sync cycle
-		inMemory.deleteTag(id, callback);
+		super.deleteTag(id, callback);
 	}
 
 	@Override

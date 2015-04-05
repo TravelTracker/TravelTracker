@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import android.os.Handler;
+import android.os.Looper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.Observable;
 import cmput301w15t07.TravelTracker.util.Observer;
@@ -44,12 +46,32 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	protected HashMap<UUID, User> users;
 	protected HashMap<UUID, Item> items;
 	protected HashMap<UUID, Tag> tags;
+	
+	/** Handler that puts a Runnable onto the UI thread. */
+	Handler updateHandler;
+	
+	/** Runnable that executes update on the UI thread. */
+	Runnable updateRunnable;
 
 	public InMemoryDataSource() {
 		claims = new HashMap<UUID, Claim>();
 		users = new HashMap<UUID, User>();
 		items = new HashMap<UUID, Item>();
 		tags = new HashMap<UUID, Tag>();
+		
+		/* Use the main looper (UI thread)
+		 * 
+		 * http://stackoverflow.com/a/27776529
+		 * Second and fourth answer, with third answer comments being
+		 * relevant.
+		 */
+		updateHandler = new Handler(Looper.getMainLooper());
+		updateRunnable = new Runnable() {
+			@Override
+			public void run() {
+				updateObservers(InMemoryDataSource.this);
+			}
+		};
 	}
 	
 	@Override
@@ -240,7 +262,12 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	
 	@Override
 	public void update(Document observable) {
-		updateObservers(this);
+		/* http://developer.android.com/reference/android/os/Handler.html#removeCallbacks%28java.lang.Runnable%29
+		 * Might be useful in the near future.
+		 */
+		
+		// Post the updateRunnable to the main thread (UI thread)
+		updateHandler.post(updateRunnable);
 	}
     
     /**

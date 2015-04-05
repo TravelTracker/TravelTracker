@@ -107,6 +107,61 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		assertEquals(0, es.getTags(user1.getUUID()).size());
 	}
 	
+	@Suppress
+	public void testGetAllExpenses() throws Exception{
+		ArrayList<Item> items = new ArrayList<Item>();
+		items.add(DataSourceUtils.addEmptyItem(claim1, ds));
+		items.add(DataSourceUtils.addEmptyItem(claim1, ds));
+		
+		es.saveDocuments(items);
+		Thread.sleep(1000);
+		assertEquals(items.size(), es.getAllItems().size());
+		
+		cleanUp(items);
+		assertEquals(0, es.getAllItems().size());
+	}
+	
+	@Suppress
+	public void testGetAllClaims() throws Exception {
+		ArrayList<Claim> claims = new ArrayList<Claim>();
+		claims.add(claim1);
+		claims.add(claim2);
+		
+		es.saveDocuments(claims);
+		Thread.sleep(1000);
+		assertEquals(claims.size(), es.getAllClaims().size());
+		
+		cleanUp(claims);
+		assertEquals(0, es.getAllClaims().size());
+	}
+	
+	@Suppress
+	public void testGetAllTags() throws Exception {
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(DataSourceUtils.addEmptyTag(user1, ds));
+		
+		es.saveDocuments(tags);
+		Thread.sleep(1000);
+		assertEquals(tags.size(), es.getAllTags().size());
+		
+		cleanUp(tags);
+		assertEquals(0, es.getAllTags().size());
+	}
+	
+	@Suppress
+	public void testGetAllUsers() throws Exception {
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(user1);
+		
+		
+		es.saveDocuments(users);
+		Thread.sleep(1000);
+		assertEquals(1, es.getAllUsers().size());
+		
+		cleanUp(users);
+		assertEquals(0, es.getAllUsers().size());
+	}
+	
 	private <T extends Document> void cleanUp(ArrayList<T> models) throws Exception{
 		es.deleteDocuments(models);
 		Thread.sleep(1000);

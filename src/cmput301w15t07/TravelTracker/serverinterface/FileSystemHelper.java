@@ -99,7 +99,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Claim> getClaims(UUID user) throws Exception {
-		Collection<Claim> claims = this.<Claim>loadAll(savedDocs.get(Claim.class), Claim.class);
+		Collection<Claim> claims = getAllClaims();
 		ArrayList<Claim> userClaims = new ArrayList<Claim>();
 		for (Claim claim : claims) {
 			if (claim.getUser().equals(user))
@@ -110,7 +110,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Item> getExpenses(UUID claim) throws Exception {
-		Collection<Item> items = this.<Item>loadAll(savedDocs.get(Item.class), Item.class);
+		Collection<Item> items = getAllItems();
 		ArrayList<Item> claimItems = new ArrayList<Item>();
 		for (Item item : items) {
 			if (item.getClaim().equals(claim))
@@ -121,7 +121,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Tag> getTags(UUID user) throws Exception {
-		Collection<Tag> tags = this.<Tag>loadAll(savedDocs.get(Tag.class), Tag.class);
+		Collection<Tag> tags = getAllTags();
 		ArrayList<Tag> userTags = new ArrayList<Tag>();
 		for (Tag tag : tags) {
 			if (tag.getUser().equals(user))
@@ -132,7 +132,7 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public User getUser(String name) throws Exception {
-		Collection<User> users = this.<User>loadAll(savedDocs.get(User.class), User.class);
+		Collection<User> users = getAllUsers();
 		for (User user : users) {
 			if (user.getUserName().equals(name))
 				return user;
@@ -143,26 +143,22 @@ public class FileSystemHelper implements ServerHelper {
 
 	@Override
 	public Collection<Claim> getAllClaims() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.<Claim>loadAll(savedDocs.get(Claim.class), Claim.class);
 	}
 
 	@Override
 	public Collection<Item> getAllItems() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.<Item>loadAll(savedDocs.get(Item.class), Item.class);
 	}
 
 	@Override
 	public Collection<Tag> getAllTags() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.<Tag>loadAll(savedDocs.get(Tag.class), Tag.class);
 	}
 
 	@Override
 	public Collection<User> getAllUsers() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return this.<User>loadAll(savedDocs.get(User.class), User.class);
 	}
 
 	@Override

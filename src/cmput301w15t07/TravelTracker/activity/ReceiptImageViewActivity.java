@@ -39,16 +39,9 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  */
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
-
 	
 	/** UUID of the item */
 	private Uri imageUri;
-	
-	@Override
-	public void updateActivity() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -67,6 +60,15 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 			e.printStackTrace();
 		}
 	}
+	
+    /**
+     * There is no dataset in LoginActivity.
+     * Called in onResume() and update(DataSource observable).
+     */
+    @Override
+    public void updateActivity() {
+        // Do nothing
+    }
 	
 	protected void loadImage(Uri uri) throws FileNotFoundException, IOException{
 		ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);

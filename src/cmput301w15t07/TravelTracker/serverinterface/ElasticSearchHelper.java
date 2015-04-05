@@ -74,8 +74,6 @@ public class ElasticSearchHelper implements ServerHelper{
 				return null;
 			}
 		});
-		
-		
 	}
 	
 	@Override

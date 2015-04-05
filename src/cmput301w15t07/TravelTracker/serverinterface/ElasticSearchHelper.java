@@ -80,26 +80,30 @@ public class ElasticSearchHelper implements ServerHelper{
 	
 	@Override
 	public Collection<Claim> getAllClaims() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		String query = getAllQueryString();
+		Search search = getSearch(query, Constants.Type.CLAIM);
+		return runSearch(search, Claim.class);
 	}
 
 	@Override
 	public Collection<Item> getAllItems() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		String query = getAllQueryString();
+		Search search = getSearch(query, Constants.Type.ITEM);
+		return runSearch(search, Item.class);
 	}
 
 	@Override
 	public Collection<Tag> getAllTags() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		String query = getAllQueryString();
+		Search search = getSearch(query, Constants.Type.TAG);
+		return runSearch(search, Tag.class);
 	}
 
 	@Override
 	public Collection<User> getAllUsers() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		String query = getAllQueryString();
+		Search search = getSearch(query, Constants.Type.USER);
+		return runSearch(search, User.class);
 	}
 
 	@Override

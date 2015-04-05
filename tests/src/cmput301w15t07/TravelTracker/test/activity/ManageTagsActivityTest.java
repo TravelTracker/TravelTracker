@@ -21,8 +21,22 @@ package cmput301w15t07.TravelTracker.test.activity;
  *  limitations under the License.
  */
 
+import java.util.ArrayList;
+
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
+import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ManageTagsActivity;
+import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
+import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
+import cmput301w15t07.TravelTracker.model.Tag;
+import cmput301w15t07.TravelTracker.model.User;
+import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ListView;
 
 /**
  * Test for tag management activities.
@@ -34,12 +48,29 @@ import android.test.ActivityInstrumentationTestCase2;
  */
 public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<ManageTagsActivity> {
 
+	DataSource ds;
+	User user;
+	ManageTagsActivity activity;
+	
 	public ManageTagsActivityTest() {
 		super(ManageTagsActivity.class);
 	}
 	
-	public void testManageTags() {
-		// bad name for original use case.  tests listing behaviour
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		ds = new InMemoryDataSource();
+		DataSourceSingleton.setDataSource(ds);
+		user = DataSourceUtils.addUser("Bob", ds);
+	}
+	
+	public void testManageTagsNumberOfTags() throws InterruptedException {
+		int numberOfTags = 10;
+		startWithTags(numberOfTags);
+		
+		ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+		
+		assertEquals(numberOfTags, listView.getCount());
 	}
 	
 	public void testCreateTag() {
@@ -52,6 +83,32 @@ public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<Man
 	
 	public void testDeleteTag() {
 		
+	}
+	
+	private void startWithTags(int number) throws InterruptedException{
+		ArrayList<Tag> tags = addEmptyTags(number);
+		startActivity();
+	}
+	
+	private void startActivity() throws InterruptedException{
+		// Create the intent
+	Intent intent = new Intent();
+	intent.putExtra(TravelTrackerActivity.USER_DATA,
+					new UserData(user.getUUID(), user.getUserName(), UserRole.CLAIMANT));
+	
+	// Start the activity
+	setActivityIntent(intent);
+	activity = getActivity();
+	activity.waitUntilLoaded();
+	}
+	
+	private ArrayList<Tag> addEmptyTags(int number){
+		ArrayList<Tag> out = new ArrayList<Tag>();
+		for (int i=0; i < number; i++){
+			Tag tag = DataSourceUtils.addEmptyTag(user, ds);
+			tag.setTitle("Tag" + i);
+		}
+		return out;
 	}
 
 }

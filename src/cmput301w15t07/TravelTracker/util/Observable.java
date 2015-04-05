@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.util;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.util;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ import java.util.List;
  * @param <E>
  */
 public abstract class Observable <E> {
-    private List<Observer<E>> observers = new ArrayList<Observer<E>>();
+    transient private List<Observer<E>> observers = new ArrayList<Observer<E>>();
 
     public Observable() {
         observers = new ArrayList<Observer<E>>();

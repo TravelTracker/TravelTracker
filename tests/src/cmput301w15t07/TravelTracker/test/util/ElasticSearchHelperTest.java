@@ -1,8 +1,28 @@
+/*
+ *   Copyright 2015 Kirby Banman,
+ *                  Stuart Bildfell,
+ *                  Elliot Colp,
+ *                  Christian Ellinger,
+ *                  Braedy Kuzma,
+ *                  Ryan Thornhill
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package cmput301w15t07.TravelTracker.test.util;
 
 import java.util.ArrayList;
 
-import cmput301w15t07.TravelTracker.activity.ExpenseItemInfoActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Document;
@@ -14,7 +34,6 @@ import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.Suppress;
-import android.util.Log;
 
 public class ElasticSearchHelperTest extends AndroidTestCase{
 	ElasticSearchHelper es;
@@ -86,6 +105,61 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		
 		cleanUp(tags);
 		assertEquals(0, es.getTags(user1.getUUID()).size());
+	}
+	
+	@Suppress
+	public void testGetAllExpenses() throws Exception{
+		ArrayList<Item> items = new ArrayList<Item>();
+		items.add(DataSourceUtils.addEmptyItem(claim1, ds));
+		items.add(DataSourceUtils.addEmptyItem(claim1, ds));
+		
+		es.saveDocuments(items);
+		Thread.sleep(1000);
+		assertEquals(items.size(), es.getAllItems().size());
+		
+		cleanUp(items);
+		assertEquals(0, es.getAllItems().size());
+	}
+	
+	@Suppress
+	public void testGetAllClaims() throws Exception {
+		ArrayList<Claim> claims = new ArrayList<Claim>();
+		claims.add(claim1);
+		claims.add(claim2);
+		
+		es.saveDocuments(claims);
+		Thread.sleep(1000);
+		assertEquals(claims.size(), es.getAllClaims().size());
+		
+		cleanUp(claims);
+		assertEquals(0, es.getAllClaims().size());
+	}
+	
+	@Suppress
+	public void testGetAllTags() throws Exception {
+		ArrayList<Tag> tags = new ArrayList<Tag>();
+		tags.add(DataSourceUtils.addEmptyTag(user1, ds));
+		
+		es.saveDocuments(tags);
+		Thread.sleep(1000);
+		assertEquals(tags.size(), es.getAllTags().size());
+		
+		cleanUp(tags);
+		assertEquals(0, es.getAllTags().size());
+	}
+	
+	@Suppress
+	public void testGetAllUsers() throws Exception {
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(user1);
+		
+		
+		es.saveDocuments(users);
+		Thread.sleep(1000);
+		assertEquals(1, es.getAllUsers().size());
+		
+		cleanUp(users);
+		assertEquals(0, es.getAllUsers().size());
 	}
 	
 	private <T extends Document> void cleanUp(ArrayList<T> models) throws Exception{

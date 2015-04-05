@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,20 +19,20 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.activity;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Currency;
 import java.util.Date;
 import java.util.UUID;
-
-import org.apache.commons.lang3.math.IEEE754rUtils;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +40,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.View;
 import android.view.MenuItem;
@@ -60,12 +59,13 @@ import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
+import cmput301w15t07.TravelTracker.model.Receipt;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
+import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.Observer;
-
 
 /**
  * Activity for viewing and managing data related to an individual Expense Item.
@@ -76,6 +76,12 @@ import cmput301w15t07.TravelTracker.util.Observer;
  *
  */
 public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Observer<DataSource> {
+    /** Key for multicallback for claim. */
+    public static final int MULTI_CLAIM_KEY = 0;
+
+    /** Key for multicallback for item. */
+    public static final int MULTI_ITEM_KEY = 1;
+    
     /** Data about the logged-in user. */
 	private UserData userData;
 
@@ -100,10 +106,14 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     /** Boolean for whether we got to this activity from ClaimInfoActivity or not */
     private Boolean fromClaimInfo;
     
-    /** Uri of the receipt image file */
-    private Uri imageFileUri;
+    /** The current receipt image filepath for viewing image */ 
+    String currentPhotoPath = null;
+    
+    /** Uri for the receipt image */
+    private Uri imageUri;
     
     private static final int CAMERA_REQUEST = 100;
+    private static final int RESULT_LOAD_IMAGE = 999; 
     
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,6 +166,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		//user info from bundles
 		Bundle bundle = getIntent().getExtras();
 		userData = (UserData) bundle.getSerializable(USER_DATA);
+        appendNameToTitle(userData.getName());
 		
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
@@ -166,40 +177,58 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         // Get whether we came from ClaimInfoActivity or not
         fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
-		appendNameToTitle(userData.getName());
-		
 		datasource.addObserver(this);
 	}
 
-	@Override
-    public void update(DataSource observable) {
-        datasource.getItem(itemID, new getItemCallback());
-    }
-	
-	protected void onResume() {
-		super.onResume();
-		
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
+    @Override
+    public void updateActivity() {
         // Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
-        // TODO This should probably be a MultiCallback
-		datasource.getClaim(claimID, new getClaimCallback());
-		datasource.getItem(itemID, new getItemCallback());
-	}
-	
+        // Multicallback for claim and item
+        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
+        
+        // Create callbacks
+        datasource.getClaim(claimID, multi.<Claim>createCallback(MULTI_CLAIM_KEY));
+        datasource.getItem(itemID, multi.<Item>createCallback(MULTI_ITEM_KEY));
+        
+        // Notify ready so callbacks can execute
+        multi.ready();
+    }
+    
 	@Override
 	public void onBackPressed() {
 	    // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
 	    if (fromClaimInfo) {
-	        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
-	        intent.putExtra(USER_DATA, userData);
-	        intent.putExtra(CLAIM_UUID, claimID);
-	        startActivity(intent);
+	        launchExpenseItemsList();
 	    }
         
 	    super.onBackPressed();
 	}
+
+    /**
+     * Launches the ExpenseItemsList activity.
+     */
+    private void launchExpenseItemsList() {
+        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
+        startActivity(intent);
+    }
 	
+    /**
+     * Launches the ReceiptImageView activity.
+     */
+    private void launchReceiptImageView(){
+        Intent intent = new Intent(this, ReceiptImageViewActivity.class);
+        intent.putExtra(ReceiptImageViewActivity.ITEM_UUID, itemID);
+        startActivity(intent);
+    }
+    
 	/**
 	 * Fill buttons/spinners/editText with data from item, set listeners, hide or
 	 * disable things according to user's role and claim's status
@@ -246,8 +275,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onClick(View v) {
-                    	//referenced stackoverflow.com/questions/5991319
-                    	takePhoto();
+                    	if (item.getReceipt().getPhoto() == null) {
+                    		promptTakePhoto();
+                    	}else {
+                    		promptChangePhoto();
+                    	}
+                    	
                     }
                 });
                 
@@ -308,23 +341,26 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 currencySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-                        Currency currency = ((ItemCurrency) parent.getItemAtPosition(position)).getCurrency(ExpenseItemInfoActivity.this);
+                        String currString = (String) parent.getItemAtPosition(position);
+                        ItemCurrency currency = ItemCurrency.fromString(currString, ExpenseItemInfoActivity.this);
                         item.setCurrency(currency);
                     }
                     
                     public void onNothingSelected(AdapterView<?> arg0){}
-                
                 });
                 
                 // Add listener for category spinner
                 categorySpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
                     
-                    public void onItemSelected(AdapterView<?> adapter, View view, int position, long id){
-                        item.setCategory( (ItemCategory) adapter.getItemAtPosition(position));
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+                        String catString = (String) parent.getItemAtPosition(position);
+                        ItemCategory category = ItemCategory.fromString(catString, ExpenseItemInfoActivity.this);
+                        item.setCategory(category);
                     }
                     
                     public void onNothingSelected(AdapterView<?> arg0){}
                 });
+                
             } else {
                 // These views should do nothing if the claim isn't editable
                 disableView(itemStatus);
@@ -353,35 +389,148 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         onLoaded();
 	}
 	
-	public void takePhoto(){
-		//Referenced CameraTest Lab files
-		
-		//create folder to store pictures
-		String folderPath = Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/tmp";
-		File folder = new File(folderPath);
-		if (!folder.exists()){
-			folder.mkdir();
-		}
-			
-		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		
-		//create URI for the image file
-		String imageFilePath = folderPath + "/" 
-				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
-		File imageFile = new File(imageFilePath);
-		imageFileUri = Uri.fromFile(imageFile);
-        
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
-        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+	/**
+	 * Prompt for changing, viewing, or deleting a receipt image
+	 * will only be spawned if a receipt image exists for the current item
+	 */
+	public void promptChangePhoto(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.expense_item_info_change_receipt_message)
+			.setPositiveButton(R.string.change_image, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					promptTakePhoto();
+					
+				}
+			})
+			.setNeutralButton(R.string.view_image, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					launchReceiptImageView();
+					
+				}
+			})
+			.setNegativeButton(R.string.delete_image, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//set the receipt to a new one to delete photo 
+					item.setReceipt(new Receipt());
+					
+				}
+			});
+		lastAlertDialog = builder.create();
+		lastAlertDialog.show();
 	}
 	
+	/**
+	 * Prompt for creating a new receipt image.
+	 */
+	public void promptTakePhoto(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.expense_item_info_capture_receipt_message)
+			.setPositiveButton(R.string.take_photo, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					takePhoto();					
+				}
+			})
+			.setNegativeButton(R.string.choose_from_gallery, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					chooseImageFromGallery();
+				}
+			});
+		lastAlertDialog = builder.create();
+		lastAlertDialog.show();
+	}
+	
+	public void chooseImageFromGallery(){
+		Intent intent = new Intent(	Intent.ACTION_PICK, 
+				MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		startActivityForResult(intent, RESULT_LOAD_IMAGE);
+	}
+	
+	/**\
+	 * creates an image file with a unique name to be used by camera activity 
+	 * @return	image file with unique name
+	 * @throws IOException if the file could not be created
+	 */
+	//Referenced devleoper.android.com/training/camera/photobasics.html
+	private File createImageFile() throws IOException{
+		File storageDir = Environment.getExternalStoragePublicDirectory(
+				Environment.DIRECTORY_PICTURES);
+		String imageFileName = "JPEG_" 
+				+ String.valueOf(System.currentTimeMillis()) + "_";
+		File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+		currentPhotoPath = "file:" + image.getAbsolutePath();
+		return image;
+	}
+	
+	/**
+	 * launch the camera activity and take a photo
+	 */
+	public void takePhoto(){		
+		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //check if there is an app that can handle the intent
+        if (cameraIntent.resolveActivity(getPackageManager()) != null){
+        	//create the file where the image should go
+        	File imageFile = null;
+        	try{
+        		imageFile = createImageFile();
+        	}catch (IOException exception){
+        		//error occured when creating the file
+        		Toast.makeText(ExpenseItemInfoActivity.this, "image could not be created",
+        			Toast.LENGTH_LONG).show();
+        	}
+        	//only continue if the file was succesfully created
+        	if (imageFile != null){
+        		imageUri = Uri.fromFile(imageFile);
+        		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        	}
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        }
+	}
+	
+	//get the bmp thumbnail for the image 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
 		  ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+		  //if Result is from takePhoto()
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
-				imageButton.setImageDrawable(Drawable.createFromPath(imageFileUri.getPath()));
+				
+				Bitmap imageBitmap = null;
+				try {
+					imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				item.setReceipt(new Receipt(imageBitmap));
+		}
+		//if result is from chooseImageFromGallery()
+		//refrenced viralpirate.net/blocks/pick-image-from-galary-android-app
+		//i know this url is misspelled, but thats what the site is ^^
+		else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
+			imageUri = data.getData();
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+			Cursor cursor = getContentResolver().query(imageUri, 
+					filePathColumn, null, null, null);
+			cursor.moveToFirst();
+			
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			String picturePath = cursor.getString(columnIndex);
+			cursor.close();
+			
+			item.setReceipt(new Receipt(BitmapFactory.decodeFile(picturePath)));
 			
 		}
 	}
@@ -405,7 +554,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         		receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets()
         				.open("receipt.png")));
         	} else {
-        		//TODO image populate
+        		receiptImageView.setImageBitmap(item.getReceipt().getPhoto());
         	}
 		} catch (IOException e1) {
 			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
@@ -420,27 +569,17 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             // the Field is empty, so dont load anything
         }
         
-        //TODO: import data for currency spinner
+        // Set currency spinner with strings from ItemCurrency
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
-        currencySpinner.setAdapter(new ArrayAdapter<ItemCurrency>(this, android.R.layout
-        		.simple_spinner_item, ItemCurrency.values()));
-        try {
-            currencySpinner.setSelection(ItemCurrency.fromString(item.getCurrency()
-            		.toString(), this).ordinal(),true);
-        } catch (NullPointerException e) {
-            // the field is null or empty, dont load anything
-        }
+        currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout
+        		.simple_spinner_item, ItemCurrency.getStringArray(this)));
+        currencySpinner.setSelection(item.getCurrency().ordinal(), true);
         
-        //TODO: import the category for the spinner
-        //change generated data source file to get proper data for enums 
+        // Set category spinner with strings from ItemCategory
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
-        categorySpinner.setAdapter(new ArrayAdapter<ItemCategory>(this, android.R
-        		.layout.simple_spinner_item, ItemCategory.values()));
-        try {
-            categorySpinner.setSelection(item.getCategory().ordinal(),true);
-        } catch (NullPointerException e) {
-            // Item is empty or null, dont load anything
-        }
+        categorySpinner.setAdapter(new ArrayAdapter<String>(this, android.R
+        		.layout.simple_spinner_item, ItemCategory.getStringArray(this)));
+        categorySpinner.setSelection(item.getCategory().ordinal(), true);
         
         EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
         try {
@@ -454,21 +593,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         itemStatus.setChecked(item.isComplete());
 	}
 	
-	/**
-	 * Get the index in a spinner array.
-	 * @param spinner The spinner.
-	 * @param string The string to find.
-	 * @return The index of the item containing the string
-	 */
-	public int getIndex(Spinner spinner, String string){
-		int index = 0;
-		for(int i=0;i<spinner.getCount();i++){
-			if (spinner.getItemAtPosition(i).equals(string)){
-				index = i; 
-			}
-		}
-		return index;
-	}
 
 	/**
 	 * Set the date in the date button after 
@@ -530,6 +654,29 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		datePicker.show(getFragmentManager(), "datePicker");
 	}
 	
+    /**
+     * Multicallback meant to get all data required from the datasource that
+     * this activity needs on update or resume.
+     */
+    class UpdateDataCallback implements ResultCallback<SparseArray<Object>> {
+        /**
+         * Saves the claim and item, then calls method with retrieved data.
+         * 
+         * @param result The request result.
+         */
+        @Override
+        public void onResult(SparseArray<Object> result) {
+            claim = (Claim) result.get(MULTI_CLAIM_KEY);
+            item = (Item) result.get(MULTI_ITEM_KEY);
+            ExpenseItemInfoActivity.this.onGetAllData(item);
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
+    
 	/**
      * Callback for Item deletion.
      */
@@ -564,42 +711,5 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		public void onDatePickerFragmentCancelled() {
 			// Do nothing
 		}
-	}
-	
-	/**
-	 * Callback for claim data.
-	 */
-	class getClaimCallback implements ResultCallback<Claim> {
-        @Override
-        public void onResult(Claim claim) {
-            ExpenseItemInfoActivity.this.claim = claim;
-        }
-
-        @Override
-        public void onError(String message) {
-            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-        }
-	}
-	
-	/**
-	 * Callback for item data.
-	 */
-	class getItemCallback implements ResultCallback<Item> {
-        @Override
-        public void onResult(Item item) {
-            ExpenseItemInfoActivity.this.item = item;
-            if (ExpenseItemInfoActivity.this.item != null){
-                onGetAllData(item);
-            }
-            else{
-                Toast.makeText(ExpenseItemInfoActivity.this,
-                		"the item var is null", Toast.LENGTH_LONG).show();
-            }
-        }
-        
-        @Override
-        public void onError(String message) {
-            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-        }
 	}
 }

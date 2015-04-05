@@ -1,8 +1,32 @@
+/*
+ *   Copyright 2015 Kirby Banman,
+ *                  Stuart Bildfell,
+ *                  Elliot Colp,
+ *                  Christian Ellinger,
+ *                  Braedy Kuzma,
+ *                  Ryan Thornhill
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */ 
+
 package cmput301w15t07.TravelTracker.serverinterface;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.UUID;
 
+import android.R.bool;
+import ch.boye.httpclientandroidlib.conn.ConnectTimeoutException;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Document;
 import cmput301w15t07.TravelTracker.model.Item;
@@ -17,7 +41,6 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Bulk;
 import io.searchbox.core.Bulk.Builder;
 import io.searchbox.core.Delete;
-import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
@@ -34,7 +57,7 @@ public class ElasticSearchHelper implements ServerHelper{
 
 	@Override
 	public <T extends Document> void deleteDocuments(Collection<T> documents) throws Exception {
-		Builder bulkBuilder = new Bulk.Builder();
+		final Builder bulkBuilder = new Bulk.Builder();
 		bulkBuilder.defaultIndex(Constants.INDEX);
 		
 		for (Document d : documents){
@@ -43,7 +66,40 @@ public class ElasticSearchHelper implements ServerHelper{
 			.type(d.getType().toString()).build());
 		}
 		
-		conn.execute(bulkBuilder.build());
+		runESOperation(new ESOperation<Void>() {
+
+			@Override
+			public Void run() throws Exception {
+				conn.execute(bulkBuilder.build());
+				return null;
+			}
+		});
+	}
+	
+	@Override
+	public Collection<Claim> getAllClaims() throws Exception {
+		return getAllAction(Constants.Type.CLAIM, Claim.class);		
+	}
+
+	@Override
+	public Collection<Item> getAllItems() throws Exception {
+		return getAllAction(Constants.Type.ITEM, Item.class);		
+	}
+
+	@Override
+	public Collection<Tag> getAllTags() throws Exception {
+		return getAllAction(Constants.Type.TAG, Tag.class);		
+	}
+
+	@Override
+	public Collection<User> getAllUsers() throws Exception {
+		return getAllAction(Constants.Type.USER, User.class);
+	}
+	
+	private <T> Collection<T> getAllAction(Constants.Type type, Class<T> t) throws Exception{
+		String query = getAllQueryString();
+		Search search = getSearch(query, type);
+		return runSearch(search, t);
 	}
 
 	@Override
@@ -78,14 +134,23 @@ public class ElasticSearchHelper implements ServerHelper{
 
 	@Override
 	public <T extends Document> void saveDocuments(Collection<T> documents) throws Exception {
-		Builder bulkBuilder = new Bulk.Builder();
+		final Builder bulkBuilder = new Bulk.Builder();
 		for (Document d : documents){
 			bulkBuilder.addAction(new Index.Builder(d)
 			.index(Constants.INDEX)
 			.type(d.getType().toString())
 			.id(d.getUUID().toString()).build());
 		}
-		conn.execute(bulkBuilder.build());
+		
+		runESOperation(new ESOperation<Void>() {
+
+			@Override
+			public Void run() throws Exception {
+				conn.execute(bulkBuilder.build());
+				return null;
+			}
+		});
+		
 	}
 	
 	public void closeConnection(){
@@ -100,6 +165,8 @@ public class ElasticSearchHelper implements ServerHelper{
 	
 	private String getQueryString(String field, String value){
 		String query = "{\n" +
+				"	\"from\": 0," +
+				"	\"size\": 100," +
 				"	\"query\" : {\n" +
 				"		\"match\" : {\n" +
 				"			\""+ field + "\" : \"" + value + "\" \n" +
@@ -109,10 +176,63 @@ public class ElasticSearchHelper implements ServerHelper{
 		return query;
 	}
 	
+	private String getAllQueryString(){
+		//NOTE arbitrary size limit of 100
+		return "{\n" +
+				"	\"from\": 0," +
+				"	\"size\": 100," +
+				"	\"query\" : {\n" +
+				"		\"match_all\" : {}\n" +
+				"	}\n" +
+				"}";
+	}
+	
 	@SuppressWarnings("deprecation")
 	private <T> Collection<T> runSearch(Search search, Class<T> t) throws Exception{
-		SearchResult result = conn.execute(search);
-		return result.getSourceAsObjectList(t);
+		Collection<T> out = null;
+		final Search methodSearch = search;
+		final Class<T> classT = t;
+		
+		out = runESOperation(new ESOperation<Collection<T>>() {
+
+			@Override
+			public Collection<T> run() throws Exception {
+				SearchResult result = conn.execute(methodSearch);
+				return result.getSourceAsObjectList(classT);
+			}
+		});
+		
+		return out;
+		
+	}
+	
+	/**
+	 * This method performs runs an ESOperation with a single retry for timeouts
+	 * @param opp the operation that should be run
+	 * @return T the return type of the passed ESOperation
+	 * @throws Exception
+	 */
+	private <T> T runESOperation(ESOperation<T> opp) throws Exception{
+		T out = null;
+		boolean retry = true;
+		while (true){
+			try{
+				out = opp.run();				
+				break;
+			} catch (ConnectTimeoutException e){
+				if (retry){
+					retry = false;
+					continue;
+				} else {
+					throw e;
+				}
+			}
+		}
+		return out;
+	}
+
+	private interface ESOperation <T> {
+		public T run() throws Exception;
 	}
 	
 }

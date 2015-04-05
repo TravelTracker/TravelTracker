@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.util;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.util;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -31,7 +31,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.DatePicker;
-
 
 /**
  * A fragment for picking the date.

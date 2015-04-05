@@ -10,12 +10,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="@string/claim_info_destination_edit_location"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:attr/textColorTertiary" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
         android:id="@+id/claimInfoDestinationsListEditPromptLocationEditText"
-        android:labelFor="@+id/claimInfoDestinationsListEditPromptLocationEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -26,18 +24,47 @@
         <requestFocus />
     </EditText>
     
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/claimInfoDestinationsListEditPromptGeolocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/claim_info_destination_edit_view_button" />
+
+        <!--
+            Last two lines taken on April 3, 2015 from:
+            http://stackoverflow.com/questions/3156781/how-to-show-android-checkbox-at-right-side
+        -->
+        <CheckBox
+            android:id="@+id/claimInfoDestinationsListEditPromptGeolocationCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:longClickable="false"
+            android:text="@string/claim_info_destination_edit_checkbox"
+            android:textColor="?android:attr/textColorTertiary"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/claimInfoDestinationsListEditPromptReasonTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="@string/claim_info_destination_edit_reason"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="?android:attr/textColorTertiary" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
         android:id="@+id/claimInfoDestinationsListEditPromptReasonEditText"
-        android:labelFor="@+id/claimInfoDestinationsListEditPromptReasonEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"

@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,12 +19,15 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
 import android.content.Context;
+import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
+import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ServerHelper;
 import cmput301w15t07.TravelTracker.util.Observable;
@@ -37,6 +38,28 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * saving said objects.
  * This is the final DataSource for the deployed app.
  * 
+ * The caching datasource will have a bunch of HashMap<UUID, Document subclass>, just like the in memory data 
+ * source. Those hash maps are for the Document objects that the Views and Controllers refer to.
+ * 
+ * The cache will try to run save or delete with the ES server every time those in memory documents change 
+ * (possibly capped at once per second or something).
+ * If a save fails due to no connection, it will add the document id to a queue of to-save documents, and save
+ * the changed (dirty) document to a local file
+ * If a delete fails due to no connection, it will add the document id to a queue of to-delete documents, and 
+ * save the deleted document to a local file (it's saved to use the document last changed timestamp for 
+ * conflict resolution upon reconnection)
+ * If a save or delete fails for another reason, I don't think this is very recoverable, so the user will be 
+ * notified but I'm not quite sure what to do here yet.
+ * The to-save and to-delete lists will be stored in local files, and the CacheDataSource will look for them 
+ * and use them when being constructed, in case the app closed before reconnecting with the server.
+ * 
+ * When the caching datasource reconnects to the ES server, it'll try to save the documents in the to-save list, 
+ * and try to delete the documents in the to-delete list. I say "try" because the cache will need to pull from 
+ * the server all documents from the two lists, and only run the save/delete if the local last change timestamp 
+ * is more recent than the remote last change timestamp.
+ * 
+ * Whew.
+ * 
  * @author kdbanman
  */
 public class CacheDataSource extends Observable<DataSource> implements
@@ -44,7 +67,8 @@ public class CacheDataSource extends Observable<DataSource> implements
 	
 	private Context appContext;
 	
-	private ServerHelper server;
+	private ServerHelper mainHelper;
+	private ServerHelper backupHelper;
 	
 	// inUse* attributes are maps containing the Documents requested by the app's Views.
 	private HashMap<UUID, Claim> inUseClaims;
@@ -54,11 +78,19 @@ public class CacheDataSource extends Observable<DataSource> implements
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
-	 * @param server The interface for remote server or test stubs.
 	 */
-	public CacheDataSource(Context appContext, ServerHelper server) {
+	public CacheDataSource(Context appContext) {
+		this(appContext, new ElasticSearchHelper(), new FileSystemHelper(appContext));
+	}
+	
+	/**
+	 * @param appContext May be null. Application context for displaying errors.
+	 * @param main The interface for remote server or test stubs.
+	 * @param backup The interface for data persistence when main fails.
+	 */
+	public CacheDataSource(Context appContext, ServerHelper main, ServerHelper backup) {
 		this.appContext = appContext;
-		this.server = server;
+		this.mainHelper = main;
 		
 		inUseClaims = new HashMap<UUID, Claim>();
 		inUseUsers = new HashMap<UUID, User>();
@@ -69,7 +101,8 @@ public class CacheDataSource extends Observable<DataSource> implements
 	@Override
 	public void update(Document observable) {		
 		// every time a document changes 
-
+		// TODO try 
+		
 	}
 
 	@Override

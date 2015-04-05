@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,7 +37,8 @@ import cmput301w15t07.TravelTracker.util.Observer;
  * Mock data source for early stages of development and unit testing.  Intended for use
  * by dependency injection.
  * 
- * @author colp
+ * @author colp,
+ *         therabidsquirel
  *
  */
 public class InMemoryDataSource extends Observable<DataSource> implements DataSource, Observer<Document> {
@@ -87,7 +88,7 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	
 	@Override
 	public void addClaim(User user, ResultCallback<Claim> callback) {
-		Claim claim = new Claim(UUID.randomUUID());
+		Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
 		claim.addObserver(this);
 		
 		if (!users.containsValue(user)) {
@@ -95,7 +96,6 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 			return;
 		}
 		
-		claim.setUser(user.getUUID());
 		internalAddClaim(claim);
 		
 		callback.onResult(claim);
@@ -107,30 +107,29 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 		Item item = new Item(UUID.randomUUID(), claim.getUUID());
 		item.addObserver(this);
 		
-		internalAddItem(item);
-		
 		if (!claims.containsValue(claim)) {
 			callback.onError("Claim not found.");
 			return;
 		}
 		
+        internalAddItem(item);
+        
 		callback.onResult(item);
         updateObservers(this);
 	}
 
 	@Override
 	public void addTag(User user, ResultCallback<Tag> callback) {
-		Tag tag = new Tag(UUID.randomUUID());
+		Tag tag = new Tag(UUID.randomUUID(), user.getUUID());
 		tag.addObserver(this);
-		
-		tag.setUser(user.getUUID());
-		internalAddTag(tag);
 		
 		if (!users.containsValue(user)) {
 			callback.onError("User not found.");
 			return;
 		}
 		
+        internalAddTag(tag);
+        
 		callback.onResult(tag);
         updateObservers(this);
 	}

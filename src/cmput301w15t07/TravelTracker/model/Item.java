@@ -1,12 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.Currency;
-import java.util.Date;
-import java.util.UUID;
-
-import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-import android.graphics.BitmapFactory;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -28,11 +19,20 @@ import android.graphics.BitmapFactory;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.Date;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
+
 /**
  * Model object for individual expense Items made by Users acting as Claimants.
  * Expense Items belong to a Claim.
  * 
- * @author kdbanman, braedy
+ * @author kdbanman,
+ *         braedy,
+ *         therabidsquirel
  *
  */
 public class Item extends Document {
@@ -41,8 +41,9 @@ public class Item extends Document {
 	private ItemCategory category;
 	private Date date;
 	private Float amount;
-	private Currency currency;
+	private ItemCurrency currency;
 	private Receipt receipt;
+	private Geolocation geolocation;
 	private boolean isComplete;
 
 	/**
@@ -53,26 +54,25 @@ public class Item extends Document {
 	 */
 	Item(UUID docID, UUID claimID) {
 		super(docID);
+        setType(Type.ITEM);
 		
 		claim = claimID;
-		
-		// Empty description
 		description = "";
-		
 		category = ItemCategory.NO_CATEGORY;
-		
 		date = new Date();
-		
-		// Start at 0 of unknown currency
 		amount = 0.f;
-		currency = Currency.getInstance("CAD");
-		
+		currency = ItemCurrency.CAD;
 		receipt = new Receipt();
-		
+		geolocation = null; // As geolocation is optional, there's no better default than null unfortunately.
 		isComplete = true;
-		
-		setType(Type.ITEM);
-		
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Item() {
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public class Item extends Document {
 	 * Get the currency type of the expense.
 	 * @return The currency.
 	 */
-	public Currency getCurrency() {
+	public ItemCurrency getCurrency() {
 		return currency;
 	}
 	
@@ -172,7 +172,7 @@ public class Item extends Document {
 	 * Set the currency type of the expense.
 	 * @param currency The currency.
 	 */
-	public void setCurrency(Currency currency) {
+	public void setCurrency(ItemCurrency currency) {
 		this.currency = currency;
 		this.<Item>hasChanged(this);
 	}
@@ -194,6 +194,23 @@ public class Item extends Document {
 		this.<Item>hasChanged(this);
 	}
 	
+    /**
+     * Get the attached Geolocation.
+     * @return The geolocation.
+     */
+    public Geolocation getGeolocation() {
+        return geolocation;
+    }
+    
+    /**
+     * Set the attached Geolocation.
+     * @param geolocation The geolocation.
+     */
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+        this.<Item>hasChanged(this);
+    }
+    
 	/**
 	 * Get the status of the expense item.
 	 * @return The status.
@@ -209,5 +226,71 @@ public class Item extends Document {
 	public void setComplete(boolean isComplete) {
 		this.isComplete = isComplete;
 		this.<Item>hasChanged(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+		result = prime * result
+				+ ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((claim == null) ? 0 : claim.hashCode());
+		result = prime * result
+				+ ((currency == null) ? 0 : currency.hashCode());
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+		        + ((geolocation == null) ? 0 : geolocation.hashCode());
+		result = prime * result + (isComplete ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof Item))
+			return false;
+		Item other = (Item) obj;
+		if (amount == null) {
+			if (other.amount != null)
+				return false;
+		} else if (!amount.equals(other.amount))
+			return false;
+		if (category != other.category)
+			return false;
+		if (claim == null) {
+			if (other.claim != null)
+				return false;
+		} else if (!claim.equals(other.claim))
+			return false;
+		if (currency != other.currency)
+			return false;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (geolocation == null) {
+		    if (other.geolocation != null)
+		        return false;
+		} else if (!geolocation.equals(other.geolocation))
+		    return false;
+		if (isComplete != other.isComplete)
+			return false;
+		if (receipt == null) {
+			if (other.receipt != null)
+				return false;
+		}
+		return true;
 	}
 }

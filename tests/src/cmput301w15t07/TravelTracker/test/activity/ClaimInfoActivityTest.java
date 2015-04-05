@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.test.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,8 +19,9 @@ package cmput301w15t07.TravelTracker.test.activity;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.test.activity;
+
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 
 import android.app.Activity;
@@ -34,18 +33,22 @@ import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
 import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
 import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
+import cmput301w15t07.TravelTracker.model.ApproverComment;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
+import cmput301w15t07.TravelTracker.model.ItemCurrency;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
@@ -59,7 +62,8 @@ import cmput301w15t07.TravelTracker.util.DatePickerFragment;
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman,
- * 		   colp
+ * 		   colp,
+ *         therabidsquirel
  *
  */
 public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<ClaimInfoActivity> {
@@ -322,19 +326,80 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		assertEquals("Claimant name should be shown", expected, text);
 	}
 	
-	public void testSubmitExpenseClaim() {
+	public void testSubmitExpenseClaim() throws Throwable {
+		startWithClaim(UserRole.CLAIMANT);
+		
+		final Button submitButton = (Button) activity.findViewById(R.id.claimInfoClaimSubmitButton);
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				submitButton.performClick();
+				try{
+					AlertDialog dialog = activity.getLastAlertDialog();
+					dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+				} catch (NullPointerException e){
+					Log.d("DEBUG", "Dialog was not shown");
+				}		
+			}
+		});
+
+		getInstrumentation().waitForIdleSync();
+		assertEquals("Claim Status was not changed upon submit", Status.SUBMITTED, claim.getStatus());
+		assertTrue(activity.isFinishing());
 		
 	}
 	
-	public void testAddCommentToExpenseItem() {
+	public void testAddCommentToExpenseItem() throws Throwable {
+		startWithClaim(UserRole.APPROVER);
+		
+		final Button approveButton = (Button) activity.findViewById(R.id.claimInfoClaimApproveButton);
+		final String approverComment = "Approved Comment";
+		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+			EditText comment = (EditText) activity.findViewById(R.id.claimInfoCommentEditText);
+			comment.setText(approverComment);
+			approveButton.performClick();
+			activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+			}
+		});
+		getInstrumentation().waitForIdleSync();
+		assertEquals(Status.APPROVED, claim.getStatus());
+		for (ApproverComment comment : claim.getComments()){
+			if (comment.getComment().equals(approverComment)){
+				return;
+			}
+		}
+		fail("Did not find the approver comment");
 		
 	}
 	
-	public void testReturnExpenseClaim() {
-		
+	public void testReturnExpenseClaim() throws Throwable {
+		claimActionHelper(R.id.claimInfoClaimReturnButton, Status.RETURNED);
 	}
 	
-	public void testApproveExpenseClaim() {
+	public void testApproveExpenseClaim() throws Throwable {
+		claimActionHelper(R.id.claimInfoClaimApproveButton, Status.APPROVED);
+	}
+	
+	private void claimActionHelper(int buttonId, Status expectedStatus) throws Throwable{
+		startWithClaim(UserRole.APPROVER);
+		final Button approveButton = (Button) activity.findViewById(buttonId);
+		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				approveButton.performClick();
+				activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+			}
+		});
+		getInstrumentation().waitForIdleSync();
+		assertEquals(expectedStatus, claim.getStatus());
+		assertTrue(activity.isFinishing());
 		
 	}
 	
@@ -382,17 +447,17 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 		claim.setEndDate(end.getTime());
 		
 		Item item = addItemToClaim();
-		item.setCurrency(Currency.getInstance("CAD"));
+		item.setCurrency(ItemCurrency.CAD);
 		item.setAmount(30.5f);
 		item.setDate(new Date());
 		
 		item = addItemToClaim();
-		item.setCurrency(Currency.getInstance("CAD"));
+		item.setCurrency(ItemCurrency.CAD);
 		item.setAmount(20.f);
 		item.setDate(new Date());
 		
 		item = addItemToClaim();
-		item.setCurrency(Currency.getInstance("JPY"));
+		item.setCurrency(ItemCurrency.JPY);
 		item.setAmount(300.f);
 		item.setDate(new Date());
 		

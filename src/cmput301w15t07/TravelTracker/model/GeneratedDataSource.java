@@ -1,14 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.Calendar;
-import java.util.Currency;
-import java.util.Locale;
-import java.util.Random;
-import java.util.UUID;
-
-import android.util.Log;
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -30,11 +19,21 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Random;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+
 /**
  * Mock data source extending InMemoryDataSource that creates data upon User creation.
  * Most useful in testing UI.
  * 
- * @author braedy
+ * @author braedy,
+ *         therabidsquirel
  *
  */
 public class GeneratedDataSource extends InMemoryDataSource {
@@ -54,10 +53,9 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		
 		// Add ten random tags
 		for (int i = 0; i < 10; ++i) {
-		    Tag t = new Tag(UUID.randomUUID());
+		    Tag t = new Tag(UUID.randomUUID(), user.getUUID());
 		    
 		    // Set data
-		    t.setUser(user.getUUID());
 		    t.setTitle(getRandomString(r, 5, 10));
 		    
 		    internalAddTag(t);
@@ -66,8 +64,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		// Want 10 random claims
 		for (int i = 0; i < 10; ++i) {
 			// Create claim and set data
-			Claim claim = new Claim(UUID.randomUUID());
-			claim.setUser(user.getUUID());
+			Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
 			
 			// Random start time (up to 10 days ago)
 			Calendar calendar = Calendar.getInstance();
@@ -80,15 +77,26 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			claim.setEndDate(calendar.getTime());
 			
 			// Set status
-			claim.setStatus(
-					Status.values()[r.nextInt(Status.values().length)]);
+			claim.setStatus(Status.values()[r.nextInt(Status.values().length)]);
 			
 			// Set approver if status is not in progress
 			if (claim.getStatus() != Status.IN_PROGRESS) {
 				claim.setApprover(user.getUUID());
 			}
 			
-			// Could set tags here
+			// Set tags
+			ArrayList<UUID> tagIDs = new ArrayList<UUID>(tags.keySet());
+		    int tagCount = r.nextInt(5);
+		    if (tagCount > 0) {
+		        ArrayList<UUID> tags = new ArrayList<UUID>();
+		        
+    		    for (int j = 0; j < tagCount; ++j) {
+    		        int tagIndex = r.nextInt(tagIDs.size());
+    		        tags.add(tagIDs.get(tagIndex));
+    		    }
+    		    
+    		    claim.setTags(tags);
+		    }
 			
 			internalAddClaim(claim);
 			
@@ -100,28 +108,10 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
 				
 				// Set currency
-				Currency curr = null;
-				for(int k = 0; k < 100; ++k) {
-					try {
-						 curr = Currency.getInstance(
-								 Locale.getAvailableLocales()[r.nextInt(Locale.getAvailableLocales().length)]);
-					}
-					catch (IllegalArgumentException e) {
-						// Some locales aren't supported, just try again
-						continue;
-					}
-					
-					// Success!
-					break;
-				}
+				item.setCurrency(ItemCurrency.values()[r.nextInt(ItemCurrency.values().length)]);
 				
-				// If we make it through on iterations..
-				if (curr == null)  {
-					Log.w("GeneratedDataSource", "Couldn't get a good currency, defaulting to CAD");
-					curr = Currency.getInstance(Locale.CANADA);
-				}
-				
-				item.setCurrency(curr);
+				// Set category
+				item.setCategory(ItemCategory.values()[r.nextInt(ItemCategory.values().length)]);
 
 				// Random time (10 days before today to 10 after)
 				calendar = Calendar.getInstance();
@@ -147,8 +137,11 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			}
 			
 			//Add some destinations
-			for (int k = 0; k < (new Random()).nextInt(5); k++){
-				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), "A test Reason"));
+			for (int k = 0; k < r.nextInt(5); k++){
+			    double lat = (double) (r.nextInt(181) - 91);
+			    double lng = (double) (r.nextInt(360) - 180);
+			    Geolocation loc = new Geolocation(lat, lng);
+				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), loc, "A test Reason"));
 			}
 			
 			// Add some comments (from the same user for simplicity's sake, though this is impossible)

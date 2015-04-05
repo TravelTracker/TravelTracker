@@ -7,6 +7,7 @@
         <string name="date_format">mm/dd/yyyy</string>
         <string name="input_text">Input text</string>
         <string name="content_description_receipt_image">Receipt Image</string>
+        <string name="error_no_name">Please enter a name</string>
     
         <!-- Used in menus -->
         <string name="sign_out">Sign Out</string>
@@ -18,7 +19,6 @@
         <string name="login_login">Login</string>
         <string name="login_claimant">Claimant</string>
         <string name="login_approver">Approver</string>
-        <string name="login_no_name_error">Please enter a name</string>
     
     <!-- Strings used in ManageTagsActivity -->
         <string name="manage_tags_label">Manage Tags</string>
@@ -47,7 +47,15 @@
     <!-- Strings used in ClaimsListRowItem -->
         <!-- Used in layout -->
         <string name="claims_list_row_item_total">Total:</string>
-
+        <string name="claims_list_row_item_distance_header">Distance from home location:</string>
+        <string name="claims_list_row_item_distance_no_home">No home location set</string>
+        <string name="claims_list_row_item_distance_no_dest">No destinations in claim</string>
+        <string name="claims_list_row_item_distance_level_1">Very Close</string>
+        <string name="claims_list_row_item_distance_level_2">Close</string>
+        <string name="claims_list_row_item_distance_level_3">Distant</string>
+        <string name="claims_list_row_item_distance_level_4">Very Distant</string>
+        <string name="claims_list_row_item_distance_level_5">Extremely Distant</string>
+        
     <!-- Strings used in ClaimInfoActivity -->
         <string name="claim_info_label">Claim Info</string>
     
@@ -70,10 +78,22 @@
         <string name="claim_info_end_date_error">End date must not come before start date</string>
         <string name="claim_info_destination_edit_title">Destination Editor</string>
         <string name="claim_info_destination_edit_location">Name:</string>
+        <string name="claim_info_destination_edit_view_button">View Location</string>
+        <string name="claim_info_destination_edit_checkbox">Has Location</string>
+        <string name="claim_info_destination_edit_fragment_title">Set Location</string>
         <string name="claim_info_destination_edit_reason">Reason:</string>
-        <string name="claim_info_destination_error">Destinations must have a name</string>
+        <string name="claim_info_destination_error_geolocation">Destinations must have a location</string>
         <string name="claim_info_delete_destination">Are you sure you want to delete the following destination?</string>
-    	<string name="claim_info_not_all_items_complete">Not all expense items are complete! Submit anyways?</string>
+        <string name="claim_info_submit_confirm">Submit claim for approval?</string>
+        <string name="claim_info_not_submitted">Claim not submitted!</string>
+        <string name="claim_info_submit_error_destination">Claim has no destinations! Expense items may also be incomplete. Submit anyway?</string>
+        <string name="claim_info_submit_error_item">Some expense items have no description or are not marked complete! Submit anyway?</string>
+        <string name="claim_info_submit_error_item_description">Some expense items have no description! Submit anyway?</string>
+        <string name="claim_info_submit_error_item_completeness">Some expense items are not marked complete! Submit anyway?</string>
+        <string name="claim_info_return_confirm">Return claim to claimant for revision?</string>
+        <string name="claim_info_not_returned">Claim not returned to claimant!</string>
+        <string name="claim_info_approve_confirm">Approve claim?</string>
+        <string name="claim_info_not_approved">Claim not approved!</string>
         
         <!-- Used in menu -->
         <string name="claim_info_add_destination">Add Destination</string>
@@ -96,7 +116,17 @@
         <string name= "expense_item_info_amount">Amount</string>
         <string name= "expense_item_info_category">Category</string>
         <string name= "expense_item_info_description">Description</string>
+        <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>
+        <string name= "expense_item_info_change_receipt_message">Change, delete or view current receipt image</string>
+        <string name= "take_photo">Take photo</string>
+        <string name= "choose_from_gallery">Choose from gallery</string>
+        <string name= "delete_image">Delete image</string>
+        <string name= "view_image">View image</string>
+        <string name= "change_image">Change image</string>
         
+    <!-- Strings used in RecieptImageVeiwAcivity -->
+    	<string name= "receipt_image_view_label">Veiw Receipt Image</string>  
+    	
     <!-- Strings used in SelectLocationActivity -->
     	<string name="select_location_label">Select Location</string>
     	<string name="tap_to_select_location">Tap to select a location</string>
@@ -111,6 +141,13 @@
     	<string name="select_location_fragment_default_title">Select location</string>
     	<string name="select_location_fragment_failed_to_get_location">Failed to get current location</string>
     	<string name="select_location_fragment_not_connected">Not connected to Google Play</string>
+    	
+    <!-- Strings used in SelectTagFragment -->
+    	<string name="select_tag_title">Select tags</string>
+    	
+    <!-- Strings used in SelectTagFilterFragment -->
+    	<string name="select_tag_filter_fragment_enable_filter">Enable filter</string>
+    	<string name="select_tag_filter_title">Tag filter settings</string>
 
     <!-- Strings used in enum ItemCategory -->
         <string name="enum_item_category_no_category">No Category</string>
@@ -128,13 +165,13 @@
 
     <!-- Strings used in enum ItemCurrency -->
         <string name="enum_item_currency_CAD">CAD</string>
-        <string name="enum_item_currency_USD">USD</string>
+        <string name="enum_item_currency_CHF">CHF</string>
+        <string name="enum_item_currency_CNY">CNY</string>
         <string name="enum_item_currency_EUR">EUR</string>
         <string name="enum_item_currency_GBP">GBP</string>
-        <string name="enum_item_currency_CHF">CHF</string>
         <string name="enum_item_currency_JPY">JPY</string>
-        <string name="enum_item_currency_CNY">CNY</string>
-
+        <string name="enum_item_currency_USD">USD</string>
+        
     <!-- Strings used in enum Status -->
         <string name="enum_status_in_progress">In Progress</string>
         <string name="enum_status_submitted">Submitted</string>
@@ -144,11 +181,5 @@
     <!-- Strings used in enum UserRole -->
         <string name="enum_user_role_claimant">Claimant</string>
         <string name="enum_user_role_approver">Approver</string>
-        <string name="claim_info_not_submitted">Claim not submitted!</string>
-        <string name="claim_info_submit_confim">Submit claim for approval?</string>
-        <string name="claim_info_return_confirm">Return claim to claimant for revision?</string>
-        <string name="claim_info_approve_confirm">Approve claim?</string>
-        <string name="claim_info_not_returned">Claim not returned to claimant!</string>
-        <string name="claim_info_not_approved">Claim not approved!</string>
    
 </resources>

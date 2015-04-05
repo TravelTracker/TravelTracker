@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ import cmput301w15t07.TravelTracker.util.Observable;
 public abstract class Document extends Observable<Document> {
 
 	// A new document may be synced, but dirty is a safer default.
-	private boolean dirty = true;
+	transient private boolean dirty = true;
 	
 	private Date lastChanged;
 	
@@ -52,6 +52,14 @@ public abstract class Document extends Observable<Document> {
 	 */
 	Document(UUID docID) {
 		this.docID = docID;
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Document() {
+		this.docID = UUID.randomUUID();
 	}
 	
 	/**
@@ -115,5 +123,36 @@ public abstract class Document extends Observable<Document> {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (dirty ? 1231 : 1237);
+		result = prime * result + ((docID == null) ? 0 : docID.hashCode());
+		result = prime * result
+				+ ((lastChanged == null) ? 0 : lastChanged.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Document))
+			return false;
+		Document other = (Document) obj;
+		if (docID == null) {
+			if (other.docID != null)
+				return false;
+		} else if (!docID.equals(other.docID))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
 	}
 }

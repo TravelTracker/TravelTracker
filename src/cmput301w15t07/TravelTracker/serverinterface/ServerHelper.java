@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.serverinterface;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -20,6 +18,8 @@ package cmput301w15t07.TravelTracker.serverinterface;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.serverinterface;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -43,6 +43,34 @@ public interface ServerHelper {
 	 * @param documents
 	 */
 	public <T extends Document> void deleteDocuments(Collection<T> documents) throws Exception;
+	
+	/**
+	 * This method returns all claims from the server
+	 * @return all claims in the server
+	 * @throws Exception
+	 */
+	public Collection<Claim> getAllClaims() throws Exception;
+	
+	/**
+	 * This method returns all items from the server
+	 * @return all items in server
+	 * @throws Exception
+	 */
+	public Collection<Item> getAllItems() throws Exception;
+	
+	/**
+	 * This method gets all tags from the server
+	 * @return all tags in server
+	 * @throws Exception
+	 */
+	public Collection<Tag> getAllTags() throws Exception;
+	
+	/**
+	 * This method gets all users from the server
+	 * @return	all users in server
+	 * @throws Exception
+	 */
+	public Collection<User> getAllUsers() throws Exception;
 	
 	/**
 	 * Gets all claims for the passed user from the server asynchronously, returns it via 

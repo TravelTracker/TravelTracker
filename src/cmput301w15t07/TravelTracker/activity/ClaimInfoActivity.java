@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -20,6 +18,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.activity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +65,7 @@ import cmput301w15t07.TravelTracker.util.TagAdapter;
  * 
  * @author kdbanman,
  *         therabidsquirel,
- *         colp
+ *         colp,
  *         skwidz
  *
  */
@@ -169,27 +169,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
+        appendNameToTitle(userData.getName());
         
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
-        appendNameToTitle(userData.getName());
-        
         datasource.addObserver(this);
     }
     
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
     @Override
-    protected void onResume() {
-    	super.onResume();
-    	
-    	// Show loading circle
+    public void updateActivity(){
+        // Show loading circle
         setContentView(R.layout.loading_indeterminate);
         
-        datasource.getClaim(claimID, new ClaimCallback());
-    }
-    
-    @Override
-    public void update(DataSource observable) {
         datasource.getClaim(claimID, new ClaimCallback());
     }
     
@@ -200,6 +196,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     public AlertDialog getLastAlertDialog() {
     	return lastAlertDialog;
     }
+    
     /**
      * attach listeners to buttons/textviews/etc.
      * hide buttons/views according to user role
@@ -243,7 +240,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         viewItemsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewItems();
+                launchExpenseItemsList();
             }
         });
     	
@@ -343,15 +340,25 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     }
     
     /**
+     * Launches the ExpenseItemsList activity.
+     */
+    private void launchExpenseItemsList() {
+        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
+        startActivity(intent);
+    }
+    
+    /**
      * Launches the ExpenseItemInfo activity for a selected item
      * @param item The selected expense item 
      */
-    private void launchExpenseItemInfo(Item item){
+    private void launchExpenseItemInfo(Item item) {
         Intent intent = new Intent(this, ExpenseItemInfoActivity.class);
-        intent.putExtra(FROM_CLAIM_INFO, true);
-        intent.putExtra(ITEM_UUID, item.getUUID());
-        intent.putExtra(CLAIM_UUID, claim.getUUID());
-        intent.putExtra(USER_DATA, userData);
+        intent.putExtra(ExpenseItemInfoActivity.FROM_CLAIM_INFO, true);
+        intent.putExtra(ExpenseItemInfoActivity.ITEM_UUID, item.getUUID());
+        intent.putExtra(ExpenseItemInfoActivity.CLAIM_UUID, claim.getUUID());
+        intent.putExtra(ExpenseItemInfoActivity.USER_DATA, userData);
         startActivity(intent);
     }
     
@@ -373,8 +380,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 						// Do nothing
 					}
 			   });
-		lastAlertDialog = builder.create();
 		
+		lastAlertDialog = builder.create();
 		lastAlertDialog.show();
     }
 
@@ -444,12 +451,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     	    LinearLayout approverLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverLinearLayout);
     	    approverLinearLayout.setVisibility(View.GONE);
     	}
-    	
-
         
         // Show approver comments
         LinearLayout commentsList = (LinearLayout) findViewById(R.id.claimInfoCommentsLinearLayout);
-        commentsListAdapter = new ApproverCommentAdapter(this, datasource, claim.getComments());
+        commentsListAdapter = new ApproverCommentAdapter(this, claim.getComments());
         
         for (int i = 0; i < commentsListAdapter.getCount(); i++) {
         	View commentView = commentsListAdapter.getView(i, null, null);
@@ -466,16 +471,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 			}
 		});
     }
-    /**
-     * starts the expenseItemList activity
-     */
-    public void viewItems() {
-        // Start next activity
-        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
-        intent.putExtra(USER_DATA, userData);
-        intent.putExtra(CLAIM_UUID, claimID);
-        startActivity(intent);
-    }
+    
     /**
      * spawns the datepicker fragment for startdate button
      */
@@ -485,6 +481,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
+    
     /**
      * spawns the datpicker fragment for the end date button
      */
@@ -494,29 +491,45 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
+    
     /**
-     * submits the selected claim and adds a comment if there exists one in the field
+     * Submits the selected claim and adds a comment if there exists one in the field.
      */
     public void submitClaim() {
-    	// submit only if all items of claim are flagged as complete
+    	// Submit only if claim has at least one destination, a description, all items of
+        // claim have a description, and all items of claim are flagged as complete.
     	datasource.getAllItems(new ResultCallback<Collection<Item>>() {
 
 			@Override
 			public void onResult(Collection<Item> items) {
-				boolean allComplete = true;
-				for(Item item : items) {
-					// only inspect items belonging to this claim
-					if (item.getClaim().equals(claim.getUUID()))
-						allComplete = allComplete && item.isComplete();
-				}
-				int dialogMessage = allComplete ? 
-						R.string.claim_info_submit_confim :
-						R.string.claim_info_not_all_items_complete;
-				
+			    int dialogMessage = R.string.claim_info_submit_confirm;
+			    
+			    if (claim.getDestinations().isEmpty()) {
+			        dialogMessage = R.string.claim_info_submit_error_destination;
+			    } else {
+			        boolean descriptions = false;
+			        boolean indicators = false;
+			        
+	                for(Item item : items) {
+	                    // Only inspect items belonging to this claim.
+	                    if (item.getClaim().equals(claim.getUUID())) {
+                            descriptions = (item.getDescription().isEmpty()) ? true : descriptions;
+                            indicators = (!item.isComplete()) ? true : indicators;
+	                    }
+	                }
+	                
+	                if (descriptions && indicators)
+	                    dialogMessage = R.string.claim_info_submit_error_item;
+	                else if (descriptions)
+                        dialogMessage = R.string.claim_info_submit_error_item_description;
+	                else if (indicators)
+                        dialogMessage = R.string.claim_info_submit_error_item_completeness;
+			    }
+			    
 				DialogInterface.OnClickListener submitDialogClickListener = new DialogInterface.OnClickListener() {
 				    @Override
 				    public void onClick(DialogInterface dialog, int which) {
-				        switch (which){
+				        switch (which) {
 				        case DialogInterface.BUTTON_POSITIVE:
 				            claim.setStatus(Status.SUBMITTED);
 				            ClaimInfoActivity.this.finish();
@@ -530,7 +543,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 				};
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-				builder.setMessage(dialogMessage)
+				lastAlertDialog =  builder.setMessage(dialogMessage)
 				       .setPositiveButton(android.R.string.yes, submitDialogClickListener)
 				       .setNegativeButton(android.R.string.no, submitDialogClickListener)
 				       .show();
@@ -572,7 +585,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		};
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-		builder.setMessage(R.string.claim_info_return_confirm)
+		lastAlertDialog = builder.setMessage(R.string.claim_info_return_confirm)
 		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
@@ -606,7 +619,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		};
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-		builder.setMessage(R.string.claim_info_approve_confirm)
+		lastAlertDialog = builder.setMessage(R.string.claim_info_approve_confirm)
 		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
@@ -719,9 +732,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		}
 		
 		@Override
-		public void onDatePickerFragmentCancelled() {
-			// Do nothing
-		}
+		public void onDatePickerFragmentCancelled() {}
 	}
     
     /**
@@ -745,9 +756,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		}
 		
 		@Override
-		public void onDatePickerFragmentCancelled() {
-			// Do nothing
-		}
+		public void onDatePickerFragmentCancelled() {}
 	}
     
     /**

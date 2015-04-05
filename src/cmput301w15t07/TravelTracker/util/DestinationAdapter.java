@@ -1,25 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
-import java.util.ArrayList;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
-import cmput301w15t07.TravelTracker.model.Claim;
-import cmput301w15t07.TravelTracker.model.Destination;
-import cmput301w15t07.TravelTracker.model.UserData;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -40,6 +18,28 @@ import cmput301w15t07.TravelTracker.model.UserData;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.util;
+
+import java.util.ArrayList;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
+import cmput301w15t07.TravelTracker.model.Claim;
+import cmput301w15t07.TravelTracker.model.Destination;
+import cmput301w15t07.TravelTracker.model.Geolocation;
+import cmput301w15t07.TravelTracker.model.UserData;
 
 /**
  * Custom adapter for dealing with displaying and editing destinations dynamically
@@ -155,7 +155,7 @@ public class DestinationAdapter {
         this.context = context;
         this.linearLayout = linearLayout;
         
-        Destination destination = new Destination("", "");
+        Destination destination = new Destination("", null, "");
         destinations.add(destination);
         View view = createView(destination, userData, manager);
         
@@ -170,16 +170,20 @@ public class DestinationAdapter {
         Destination destination = (Destination) view.getTag();
         
         editingView = view;
-        destinationEditor = new DestinationEditorFragment(destination.getLocation(), destination.getReason(), new DestinationCallback());
+        destinationEditor = new DestinationEditorFragment(new DestinationCallback(),
+                                                          destination.getLocation(),
+                                                          destination.getGeolocation(),
+                                                          destination.getReason(),
+                                                          manager);
         destinationEditor.show(manager, "destinationEditor");
     }
     
-    private void editDestination(View view, String location, String reason) {
+    private void editDestination(View view, String location, Geolocation geolocation, String reason) {
         Destination destination = (Destination) view.getTag();
         int index = destinations.indexOf(destination);
         destinations.remove(destination);
         
-        destination = new Destination(location, reason);
+        destination = new Destination(location, geolocation, reason);
         destinations.add(index, destination);
         setDestination(view, destination);
         
@@ -244,20 +248,11 @@ public class DestinationAdapter {
      */
     class DestinationCallback implements DestinationEditorFragment.ResultCallback {
         @Override
-        public void onDestinationEditorFragmentResult(String location, String reason) {
-            // Invalid location
-            if (location.isEmpty()) {
-                String error = context.getString(R.string.claim_info_destination_error);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-                
-            // Valid location and reason, so update the destination
-            } else {
-                editDestination(editingView, location, reason);
-                
-                if (newDestination) {
-                    linearLayout.addView(editingView);
-                }
-            }
+        public void onDestinationEditorFragmentResult(String location, Geolocation geolocation, String reason) {
+            if (newDestination)
+                linearLayout.addView(editingView);
+            
+            editDestination(editingView, location, geolocation, reason);
         }
 
         @Override

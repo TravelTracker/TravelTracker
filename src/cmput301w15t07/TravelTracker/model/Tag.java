@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
 import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
@@ -28,7 +28,8 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 /**
  * Model object for Claim Tags for Claimant use.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class Tag extends Document {
@@ -40,9 +41,20 @@ public class Tag extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	Tag(UUID docID) {
+	Tag(UUID docID, UUID userID) {
 		super(docID);
 		setType(Type.TAG);
+		
+		user = userID;
+		title = "";
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Tag() {
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**
@@ -77,5 +89,36 @@ public class Tag extends Document {
 	public void setTitle(String title) {
 		this.title = title;
 		this.<Tag>hasChanged(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof Tag))
+			return false;
+		Tag other = (Tag) obj;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		return true;
 	}
 }

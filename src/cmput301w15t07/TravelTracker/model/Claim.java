@@ -1,11 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
-
-import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -27,10 +19,20 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
+
 /**
  * Model object for Claim made by Users acting as Claimants.
  * 
- * @author kdbanman, braedy
+ * @author kdbanman,
+ *         braedy,
+ *         therabidsquirel
  *
  */
 public class Claim extends Document {
@@ -48,15 +50,26 @@ public class Claim extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	Claim(UUID docID) {
+	Claim(UUID docID, UUID userID) {
 		super(docID);
+        setType(Type.CLAIM);
+        
+        user = userID;
+        approver = null; // As a claim won't have an approver to begin with, there's no better default than null unfortunately.
+        status = Status.IN_PROGRESS;
+        startDate = new Date();
+        endDate = new Date();
 		destinations = new ArrayList<Destination>();
 		comments = new ArrayList<ApproverComment>();
 		tags = new ArrayList<UUID>();
-		startDate = new Date();
-		endDate = new Date();
-		status = Status.IN_PROGRESS;
-		setType(Type.CLAIM);
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private Claim() {
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**
@@ -194,11 +207,11 @@ public class Claim extends Document {
 	}
 	
 	/**
-	 * Add a comment to the claim with today's date.
+	 * Add a comment to the start of the claim's list with today's date.
 	 * @param commentText The comment's text.
 	 */
 	public void addComment(String commentText) {
-		this.comments.add(new ApproverComment(commentText, new Date()));
+		this.comments.add(0, new ApproverComment(commentText, new Date()));
 		this.<Claim>hasChanged(this);
 	}
 
@@ -220,6 +233,74 @@ public class Claim extends Document {
 	public void setTags(ArrayList<UUID> tags) {
 		this.tags = tags;
 		this.<Claim>hasChanged(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((approver == null) ? 0 : approver.hashCode());
+		result = prime * result
+				+ ((comments == null) ? 0 : comments.hashCode());
+		result = prime * result
+				+ ((destinations == null) ? 0 : destinations.hashCode());
+		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+		result = prime * result
+				+ ((startDate == null) ? 0 : startDate.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof Claim))
+			return false;
+		Claim other = (Claim) obj;
+		if (approver == null) {
+			if (other.approver != null)
+				return false;
+		} else if (!approver.equals(other.approver))
+			return false;
+		if (comments == null) {
+			if (other.comments != null)
+				return false;
+		} else if (!comments.equals(other.comments))
+			return false;
+		if (destinations == null) {
+			if (other.destinations != null)
+				return false;
+		} else if (!destinations.equals(other.destinations))
+			return false;
+		if (endDate == null) {
+			if (other.endDate != null)
+				return false;
+		} else if (!endDate.equals(other.endDate))
+			return false;
+		if (startDate == null) {
+			if (other.startDate != null)
+				return false;
+		} else if (!startDate.equals(other.startDate))
+			return false;
+		if (status != other.status)
+			return false;
+		if (tags == null) {
+			if (other.tags != null)
+				return false;
+		} else if (!tags.equals(other.tags))
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		return true;
 	}
 	
 }

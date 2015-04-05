@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.test.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,7 @@ package cmput301w15t07.TravelTracker.test.activity;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.test.activity;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
@@ -41,7 +40,6 @@ import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 

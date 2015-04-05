@@ -1,10 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.Currency;
-
-import cmput301w15t07.TravelTracker.R;
-import android.content.Context;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -26,6 +19,14 @@ import android.content.Context;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Currency;
+
+import cmput301w15t07.TravelTracker.R;
+import android.content.Context;
+
 /**
  * Model enum for Expense Item Currency.
  * 
@@ -34,12 +35,12 @@ import android.content.Context;
  */
 public enum ItemCurrency implements ContextStringable {
     CAD(R.string.enum_item_currency_CAD),
-    USD(R.string.enum_item_currency_USD),
+    CHF(R.string.enum_item_currency_CHF),
+    CNY(R.string.enum_item_currency_CNY),
     EUR(R.string.enum_item_currency_EUR),
     GBP(R.string.enum_item_currency_GBP),
-    CHF(R.string.enum_item_currency_CHF),
     JPY(R.string.enum_item_currency_JPY),
-    CNY(R.string.enum_item_currency_CNY);
+    USD(R.string.enum_item_currency_USD);
     
     private final int id;
     
@@ -53,6 +54,25 @@ public enum ItemCurrency implements ContextStringable {
     
     public Currency getCurrency(Context context) {
         return Currency.getInstance(getString(context));
+    }
+    
+    /**
+     * This method returns the String array for all the ItemCurrency String values.
+     * @param context The Android context in which this is operating.
+     * @return A String array of all the ItemCurrency strings.
+     */
+    public static String[] getStringArray(Context context) {
+        ItemCurrency[] currencies = ItemCurrency.values();
+        ArrayList<String> stringList = new ArrayList<String>();
+        
+        for (ItemCurrency currency : currencies) {
+            stringList.add(currency.getString(context));
+        }
+        
+        String[] stringArray = new String[stringList.size()];
+        stringArray = stringList.toArray(stringArray);
+        
+        return stringArray;
     }
     
     /**
@@ -71,5 +91,4 @@ public enum ItemCurrency implements ContextStringable {
         }
         return null;
     }
-
 }

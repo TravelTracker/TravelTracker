@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,8 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
 /**
  * Model object for Claim Destinations.
  * 
@@ -28,15 +28,18 @@ package cmput301w15t07.TravelTracker.model;
  * This is so that mutations must be made at the Claim for observer notification
  * and cache dirtying.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class Destination {
 	private String location;
+	private Geolocation geolocation;
 	private String reason;
 	
-	public Destination(String location, String reason) {
+	public Destination(String location, Geolocation geolocation, String reason) {
 		this.location = location;
+		this.geolocation = geolocation;
 		this.reason = reason;
 	}
 	
@@ -47,7 +50,15 @@ public class Destination {
 	public String getLocation() {
 		return location;
 	}
-
+	
+    /**
+     * Get the geolocation of the destination.
+     * @return The geolocation.
+     */
+	public Geolocation getGeolocation() {
+	    return geolocation;
+	}
+	
 	/**
 	 * Get the reason for travel to the destination.
 	 * @return The reason.
@@ -55,5 +66,43 @@ public class Destination {
 	public String getReason() {
 		return reason;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
+        result = prime * result
+                + ((geolocation == null) ? 0 : geolocation.hashCode());
+		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Destination))
+			return false;
+		Destination other = (Destination) obj;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (geolocation == null) {
+		    if (other.geolocation != null)
+		        return false;
+		} else if (!geolocation.equals(other.geolocation))
+		    return false;
+		if (reason == null) {
+			if (other.reason != null)
+				return false;
+		} else if (!reason.equals(other.reason))
+			return false;
+		return true;
+	}
 }

@@ -1,10 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-import java.util.UUID;
-
-import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -26,10 +19,17 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
+
 /**
  * Model object for Users.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class User extends Document {
@@ -44,6 +44,17 @@ public class User extends Document {
 	User(UUID docID) {
 		super(docID);
 		setType(Type.USER);
+		
+		userName = "";
+		homeLocation = null; // As home location can be unset, there's no better default than null unfortunately.
+	}
+	
+	/**
+	 * Private no-args constructor for GSON.
+	 */
+	@SuppressWarnings("unused")
+	private User() {
+		this(UUID.randomUUID());
 	}
 
 	/**
@@ -78,5 +89,38 @@ public class User extends Document {
 	public void setHomeLocation(Geolocation homeLocation) {
 		this.homeLocation = homeLocation;
 		this.<User>hasChanged(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((homeLocation == null) ? 0 : homeLocation.hashCode());
+		result = prime * result
+				+ ((userName == null) ? 0 : userName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof User))
+			return false;
+		User other = (User) obj;
+		if (homeLocation == null) {
+			if (other.homeLocation != null)
+				return false;
+		} else if (!homeLocation.equals(other.homeLocation))
+			return false;
+		if (userName == null) {
+			if (other.userName != null)
+				return false;
+		} else if (!userName.equals(other.userName))
+			return false;
+		return true;
 	}
 }

@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -20,6 +18,8 @@ package cmput301w15t07.TravelTracker.activity;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.activity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,11 +53,13 @@ import android.widget.Toast;
 /**
  * Activity for a Claimant to manage his/her Tags.
  * 
- * @author kdbanman, colp, therabidsquirel, braedy
+ * @author kdbanman,
+ *         colp,
+ *         therabidsquirel,
+ *         braedy
  *
  */
-public class ManageTagsActivity extends TravelTrackerActivity
-implements Observer<DataSource> {
+public class ManageTagsActivity extends TravelTrackerActivity implements Observer<DataSource> {
     /** Multicallback key for tags. */
     private static final int MULTI_TAGS_KEY = 0;
     
@@ -73,9 +75,6 @@ implements Observer<DataSource> {
     /** Adapter for the list. */
     private ManageTagsListAdapter adapter;
 
-    /** Are we currently in the loading screen. */
-    private boolean loading;
-    
     /** The EditText field where new Tag titles are entered. */
     private EditText titleEditText;
 
@@ -85,8 +84,8 @@ implements Observer<DataSource> {
     /** The list view of Tags */
     private ListView tagListView;
     
-    /** The collection of current tags, used to make sure no it tags are 
-     * duplicated.
+    /**
+     * The collection of current tags, used to make sure no it tags are duplicated.
      */
     private Collection<Tag> tags;
     
@@ -122,7 +121,6 @@ implements Observer<DataSource> {
         // Retrieve user info from bundle
         Bundle bundle = getIntent().getExtras();
         userData = (UserData) bundle.getSerializable(USER_DATA);
-        
         appendNameToTitle(userData.getName());
         
         // Make adapter
@@ -131,36 +129,21 @@ implements Observer<DataSource> {
         datasource.addObserver(this);
 	}
 
+    /**
+     * Update the activity when the dataset changes.
+     * Called in onResume() and update(DataSource observable).
+     */
     @Override
-    protected void onResume() {
-        super.onResume();
-        // Set loading screen and notify loading
+    public void updateActivity() {
+        // Show loading circle
         setContentView(R.layout.loading_indeterminate);
-        loading = true;
-
+        
         // Multicallback to get tags and user, then update UI and adapter
         MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
         // Get tags and user
-        datasource.getAllTags(
-                multi.<Collection<Tag>>createCallback(MULTI_TAGS_KEY));
-        datasource.getUser(userData.getUUID(),
-                multi.<User>createCallback(MULTI_USER_KEY));
-        
-        // Notify ready
-        multi.ready();
-    }
-
-    @Override
-    public void update(DataSource observable) {
-        // Multicallback to get tags and user, then update UI and adapter
-        MultiCallback multi = new MultiCallback(new UpdateDataCallback());
-        
-        // Get tags and user
-        datasource.getAllTags(
-                multi.<Collection<Tag>>createCallback(MULTI_TAGS_KEY));
-        datasource.getUser(userData.getUUID(),
-                multi.<User>createCallback(MULTI_USER_KEY));
+        datasource.getAllTags(multi.<Collection<Tag>>createCallback(MULTI_TAGS_KEY));
+        datasource.getUser(userData.getUUID(), multi.<User>createCallback(MULTI_USER_KEY));
         
         // Notify ready
         multi.ready();
@@ -171,28 +154,21 @@ implements Observer<DataSource> {
      * widgets of the UI.
      */
     public void updateUI() {
-        if (loading) {
-            setContentView(R.layout.manage_tags_activity);
-            
-            titleEditText = 
-                    (EditText) findViewById(R.id.manageTagsNewTagEditText);
-            
-            addTagButton = (Button) findViewById(R.id.manageTagsAddButton);
-            addTagButton.setOnClickListener(
-                    new AddTagOnClickListener());
-            
-            tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
-            tagListView.setAdapter(adapter);
-            tagListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-            tagListView.setMultiChoiceModeListener(
-                    new MultiSelectListener(new ContextMenuListener(),
-                            R.menu.tags_list_context_menu));
-            
-            tagListView.setOnItemClickListener(new TagRenameListener());
-            
-            // Switched to real UI, no need to load anymore
-            loading = false;
-        }
+        setContentView(R.layout.manage_tags_activity);
+        
+        titleEditText = (EditText) findViewById(R.id.manageTagsNewTagEditText);
+        
+        addTagButton = (Button) findViewById(R.id.manageTagsAddButton);
+        addTagButton.setOnClickListener(new AddTagOnClickListener());
+        
+        tagListView = (ListView) findViewById(R.id.manageTagsTagListView);
+        tagListView.setAdapter(adapter);
+        tagListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        tagListView.setMultiChoiceModeListener(new MultiSelectListener(new ContextMenuListener(),
+                                                                       R.menu.tags_list_context_menu));
+        
+        tagListView.setOnItemClickListener(new TagRenameListener());
+        
         onLoaded();
     }
 
@@ -262,6 +238,14 @@ implements Observer<DataSource> {
         @Override
         public void onClick(View v) {
             final String title = titleEditText.getText().toString();
+            
+            // Empty tag name is invalid
+            if (title.isEmpty()) {
+                titleEditText.setError(getString(R.string.error_no_name));
+                return;
+            }
+            
+            // Pre-existing tag name is invalid
             for (Tag t : tags) {
                 if (title.equals(t.getTitle())) {
                     Toast.makeText(ManageTagsActivity.this,
@@ -311,12 +295,10 @@ implements Observer<DataSource> {
             adb.setView(input);
             
             // Don't give listener here, see lower comment for why
-            adb.setPositiveButton(
-                    getString(R.string.manage_tags_dialog_rename), null);
+            adb.setPositiveButton(getString(R.string.manage_tags_dialog_rename), null);
             
             // No listener at all, just want default dismiss dialog behaviour
-            adb.setNegativeButton(
-                    getString(R.string.manage_tags_dialog_cancel), null);
+            adb.setNegativeButton(getString(R.string.manage_tags_dialog_cancel), null);
             
             AlertDialog dialog = adb.create();
             dialog.show();
@@ -347,8 +329,7 @@ implements Observer<DataSource> {
         private EditText input;
         private Tag selected;
 
-        public RenameDialogListener(AlertDialog dialog, EditText input, 
-                Tag selected) {
+        public RenameDialogListener(AlertDialog dialog, EditText input, Tag selected) {
             this.dialog = dialog;
             this.input = input;
             this.selected = selected;
@@ -357,6 +338,13 @@ implements Observer<DataSource> {
         @Override
         public void onClick(View v) {
             String title = input.getText().toString();
+            
+            // Empty tag name is invalid, don't close dialog.
+            if (title.isEmpty()) {
+                input.setError(ManageTagsActivity.this.getString(R.string.error_no_name));
+                return;
+            }
+            
             for (Tag t : tags) {
                 // Ignore renaming to yourself? Same as cancel.
                 if (selected.equals(t)) continue;

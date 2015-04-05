@@ -59,7 +59,7 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()){
-		case R.id.expense_item_info_sign_out:
+		case R.id.receipt_image_view_sign_out:
 	        signOut();
 	        return true;
 	        

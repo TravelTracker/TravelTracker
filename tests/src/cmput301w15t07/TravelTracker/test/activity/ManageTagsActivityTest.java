@@ -21,6 +21,10 @@
 
 package cmput301w15t07.TravelTracker.test.activity;
 
+import java.util.ArrayList;
+
+import cmput301w15t07.TravelTracker.DataSourceSingleton;
+import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ManageTagsActivity;
 import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.DataSource;

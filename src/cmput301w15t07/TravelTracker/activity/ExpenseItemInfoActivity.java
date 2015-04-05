@@ -539,15 +539,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	 * @param item The item being viewed.
 	 */
 	public void populateItemInfo(Item item) {
-        //TODO:catch null pointer exceptions for empty claims/fields
+	    // Set the date.
         Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
-        try {
-            setButtonDate(itemDateButton, item.getDate());
-        } catch (NullPointerException e){
-            //the field is empty, so dont load anything
-        }
+        setButtonDate(itemDateButton, item.getDate());
         
-        // populate receipt image
+        // Populate receipt image.
+        // TODO This should not have to worry about null values, Receipt should handle that.
         ImageView receiptImageView = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
         try {
         	if (item.getReceipt().getPhoto() == null) {
@@ -560,33 +557,26 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
 		}
       
-        
+        // Set the amount.
         String amount = Float.toString(item.getAmount());
         EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
-        try {
-            itemAmount.setText(amount);
-        } catch (NullPointerException e) {
-            // the Field is empty, so dont load anything
-        }
+        itemAmount.setText(amount);
         
-        // Set currency spinner with strings from ItemCurrency
+        // Set currency spinner with strings from ItemCurrency.
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout
         		.simple_spinner_item, ItemCurrency.getStringArray(this)));
         currencySpinner.setSelection(item.getCurrency().ordinal(), true);
         
-        // Set category spinner with strings from ItemCategory
+        // Set category spinner with strings from ItemCategory.
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
         categorySpinner.setAdapter(new ArrayAdapter<String>(this, android.R
         		.layout.simple_spinner_item, ItemCategory.getStringArray(this)));
         categorySpinner.setSelection(item.getCategory().ordinal(), true);
         
+        // Set the description.
         EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-        try {
-            itemDescription.setText(item.getDescription());
-        } catch (NullPointerException e) {
-            // the field is empty, so dont load anything
-        }
+        itemDescription.setText(item.getDescription());
         
         CheckedTextView itemStatus = (CheckedTextView)
         		findViewById(R.id.expenseItemInfoStatusCheckedTextView);

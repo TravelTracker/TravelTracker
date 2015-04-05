@@ -25,7 +25,6 @@ import java.util.List;
 
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.ApproverComment;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,13 +40,8 @@ import android.widget.TextView;
  *
  */
 public class ApproverCommentAdapter extends ArrayAdapter<ApproverComment> {
-
-	private DataSource ds;
-
-	public ApproverCommentAdapter(Context context, DataSource ds, List<ApproverComment> comments) {
+	public ApproverCommentAdapter(Context context, List<ApproverComment> comments) {
 		super(context, R.layout.claim_info_comments_list_item, comments);
-		
-		this.ds = ds;
 	}
 	
 	@Override

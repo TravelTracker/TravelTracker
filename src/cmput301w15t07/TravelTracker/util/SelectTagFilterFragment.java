@@ -24,7 +24,7 @@ package cmput301w15t07.TravelTracker.util;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -99,7 +99,9 @@ public class SelectTagFilterFragment extends DialogFragment {
 		this.callback = callback;
     }
 	
-	@Override
+    // For building a dialog we have to pass a null ViewGroup root to LayoutInflater.inflate()
+	@SuppressLint("InflateParams")
+    @Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Create alert dialog
 	    Builder builder = new Builder(getActivity())

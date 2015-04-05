@@ -444,7 +444,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Show approver comments
         LinearLayout commentsList = (LinearLayout) findViewById(R.id.claimInfoCommentsLinearLayout);
-        commentsListAdapter = new ApproverCommentAdapter(this, datasource, claim.getComments());
+        commentsListAdapter = new ApproverCommentAdapter(this, claim.getComments());
         
         for (int i = 0; i < commentsListAdapter.getCount(); i++) {
         	View commentView = commentsListAdapter.getView(i, null, null);

@@ -50,7 +50,7 @@ import cmput301w15t07.TravelTracker.R;
  */
 public class ClaimAdapter extends ArrayAdapter<Claim> {
 	
-	private Collection<Claim> claims;
+    private Collection<Claim> claims;
 	private Collection<Item> items;
 	private Collection<User> users;
 	private User user;

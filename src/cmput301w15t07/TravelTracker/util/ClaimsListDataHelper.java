@@ -72,7 +72,9 @@ public class ClaimsListDataHelper {
 		mc.ready();
 	}
 	
-	private InitialData buildInitialData(SparseArray<Object> array, UserRole role){
+    // We know the return results are the right type, so unchecked casts shouldn't be problematic.
+	@SuppressWarnings("unchecked")
+    private InitialData buildInitialData(SparseArray<Object> array, UserRole role){
 		InitialData data = new InitialData();
 		data.setUser((User)array.get(USER_ID));
 		data.setClaims(getClaimsForUser((Collection<Claim>)array.get(CLAIMS_ID), data.getUser(), role));

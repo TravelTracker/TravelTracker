@@ -120,6 +120,6 @@ public class DataSourceUtils extends AndroidTestCase{
 	}
 	
 	private static UserData getUserData(String name, UserRole role){
-		return new UserData(UUID.randomUUID(), "name", role);
+		return new UserData(UUID.randomUUID(), name, role);
 	}
 }

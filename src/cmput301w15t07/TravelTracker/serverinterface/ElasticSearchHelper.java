@@ -131,6 +131,15 @@ public class ElasticSearchHelper implements ServerHelper{
 		runSearch(search, User.class).toArray(out);
 		return out[0];
 	}
+	
+	@Override
+	public User getUser(UUID user) throws Exception {
+		String query = getQueryString("docID", user.toString());
+		Search search = getSearch(query, Constants.Type.USER);
+		User [] out = new User[1];
+		runSearch(search, User.class).toArray(out);
+		return out[0];
+	}
 
 	@Override
 	public <T extends Document> void saveDocuments(Collection<T> documents) throws Exception {

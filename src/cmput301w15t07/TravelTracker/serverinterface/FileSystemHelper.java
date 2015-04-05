@@ -236,4 +236,10 @@ public class FileSystemHelper implements ServerHelper {
 		Log.e("FileSystemHelper", msg);
 		Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
 	}
+
+	@Override
+	public User getUser(UUID user) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

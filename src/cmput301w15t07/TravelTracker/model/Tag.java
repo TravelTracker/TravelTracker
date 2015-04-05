@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,16 +19,17 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
-import java.util.UUID;
+package cmput301w15t07.TravelTracker.model;
 
-import com.google.gson.annotations.Expose;
+import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /**
  * Model object for Claim Tags for Claimant use.
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class Tag extends Document {
@@ -42,9 +41,12 @@ public class Tag extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	Tag(UUID docID) {
+	Tag(UUID docID, UUID userID) {
 		super(docID);
 		setType(Type.TAG);
+		
+		user = userID;
+		title = "";
 	}
 	
 	/**
@@ -52,7 +54,7 @@ public class Tag extends Document {
 	 */
 	@SuppressWarnings("unused")
 	private Tag() {
-		this(UUID.randomUUID());
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**

@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,12 +19,15 @@ package cmput301w15t07.TravelTracker.model;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
 import android.content.Context;
+import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
+import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ServerHelper;
 import cmput301w15t07.TravelTracker.util.Observable;
@@ -66,7 +67,8 @@ public class CacheDataSource extends Observable<DataSource> implements
 	
 	private Context appContext;
 	
-	private ServerHelper server;
+	private ServerHelper mainHelper;
+	private ServerHelper backupHelper;
 	
 	// inUse* attributes are maps containing the Documents requested by the app's Views.
 	private HashMap<UUID, Claim> inUseClaims;
@@ -76,11 +78,19 @@ public class CacheDataSource extends Observable<DataSource> implements
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
-	 * @param server The interface for remote server or test stubs.
 	 */
-	public CacheDataSource(Context appContext, ServerHelper server) {
+	public CacheDataSource(Context appContext) {
+		this(appContext, new ElasticSearchHelper(), new FileSystemHelper(appContext));
+	}
+	
+	/**
+	 * @param appContext May be null. Application context for displaying errors.
+	 * @param main The interface for remote server or test stubs.
+	 * @param backup The interface for data persistence when main fails.
+	 */
+	public CacheDataSource(Context appContext, ServerHelper main, ServerHelper backup) {
 		this.appContext = appContext;
-		this.server = server;
+		this.mainHelper = main;
 		
 		inUseClaims = new HashMap<UUID, Claim>();
 		inUseUsers = new HashMap<UUID, User>();

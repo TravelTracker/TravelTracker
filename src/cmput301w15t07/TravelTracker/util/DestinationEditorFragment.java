@@ -1,23 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Geolocation;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -38,6 +18,26 @@ import android.widget.EditText;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.util;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Geolocation;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 /**
  * A fragment for editing a destination.

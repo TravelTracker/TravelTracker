@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,7 +19,12 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.activity;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,12 +40,14 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Geolocation;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
+import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
@@ -70,6 +75,12 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	/** Data about the logged-in user. */
 	private UserData userData;
 	
+	/** Tags UUIDs selected for filtering. */
+	private HashSet<UUID> filterTags;
+	
+	/** Whether the filter is enabled. */
+	private boolean filterEnabled = false;
+	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.claims_list_menu, menu);
@@ -93,7 +104,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
     	case R.id.claims_list_filter_by_tag:
-    	    //TODO milestone 5
+    	    launchFilterByTag();
     	    return true;
     	    
     	case R.id.claims_list_manage_tags:
@@ -246,7 +257,23 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title);
     	fragment.show(getFragmentManager(), "selectLocation");
     }
-    
+    /**
+     * Launch the filter by tag fragment.
+     */
+    private void launchFilterByTag() {
+		SelectTagFilterFragment filterFragment = new SelectTagFilterFragment(data.getTags(), filterEnabled,
+		        filterTags, new SelectTagFilterFragment.ResultCallback() {
+            @Override
+            public void onSelectTagFilterFragmentResult(HashSet<UUID> selected,
+                    boolean filterEnabled) {
+                filterByTags(selected, filterEnabled);
+            }
+
+            @Override
+            public void onSelectTagFilterFragmentCancelled() { }
+		});
+    	filterFragment.show(getFragmentManager(), "filterByTag");
+    }
 	/**
 	 * launch the claimInfo activity for a new claim
 	 * @param user The current user that will be assigned to the claim 
@@ -269,14 +296,55 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 		Geolocation geoloc = new Geolocation(location.latitude, location.longitude);
 		data.getUser().setHomeLocation(geoloc);
 	}
-	
+	/**
+	 * Filter the claims by tag UUIDs.
+	 * @param tagIDs The list of tag IDs. Only claims with at least one of these tags will be displayed.
+	 * @param filterEnabled Whether the filter is enabled.
+	 */
+	private void filterByTags(HashSet<UUID> tagIDs, boolean filterEnabled) {
+		filterTags = tagIDs;
+		this.filterEnabled = filterEnabled;
+		
+		rebuildList();
+	}
+	/**
+	 * Rebuild the ListView.
+	 */
+	private void rebuildList() {
+	    // Only pass tags if filter is enabled
+	    HashSet<UUID> tags = null;
+	    if (filterEnabled) {
+	        tags = filterTags;
+	    }
+	    
+		adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers(), data.getUser(), tags);
+	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{
 		@Override
 		public void onResult(InitialData result) {
-	        adapter.rebuildList(result.getClaims(), result.getItems(), result.getUsers());
-	        data = result;
-		    onGetInitialData();
+			// Populate the list of tags
+			if (filterTags == null) {
+				filterTags = new HashSet<UUID>();
+				
+				for (Tag tag : result.getTags()) {
+					filterTags.add(tag.getUUID());
+				}
+				
+			// Turn on new tags by default
+			} else {
+				Collection<Tag> oldTags = data.getTags();
+				
+				for (Tag tag : result.getTags()) {
+					if (!oldTags.contains(tag)) {
+						filterTags.add(tag.getUUID());
+					}
+				}
+			}
+			
+			data = result;
+			filterByTags(filterTags, filterEnabled); // Will automatically rebuild list
+            onGetInitialData();
 		}
 
 		@Override

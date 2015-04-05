@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.test.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,10 +19,8 @@ package cmput301w15t07.TravelTracker.test.activity;
  *  limitations under the License.
  */
 
-import java.util.ArrayList;
+package cmput301w15t07.TravelTracker.test.activity;
 
-import cmput301w15t07.TravelTracker.DataSourceSingleton;
-import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ManageTagsActivity;
 import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.DataSource;

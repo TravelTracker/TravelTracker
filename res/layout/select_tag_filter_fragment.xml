@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/select_tag_filter_enable_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_tag_filter_fragment_enable_filter" />
+
+	<View style="@style/ThickHorizontalDivider"
+	    android:layout_margin="0dp" />
+    
+	<ListView
+	    android:id="@+id/select_tag_filter_listview"
+	    android:layout_width="match_parent"
+	    android:layout_height="fill_parent" />
+
+</LinearLayout>

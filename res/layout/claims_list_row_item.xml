@@ -6,32 +6,43 @@
     android:padding="5dp"
     android:background="@layout/background_activated">
     
-    
 	    <LinearLayout
 	        android:id="@+id/claimsListRowItemInfo"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="vertical">
 
-	        <TextView 
+	        <TextView
 		        android:id="@+id/claimsListRowItemName"
 		        android:layout_width="wrap_content"
 		       	android:layout_height="wrap_content"
 		       	android:textSize="20sp"
 		       	android:textStyle="bold"/>
 	        
-	        <TextView 
+	        <TextView
 	            android:id="@+id/claimsListRowItemDate"
 	            android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"/>
 	        
+            <TextView
+                android:id="@+id/claimsListRowItemDistanceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/claims_list_row_item_distance_header"/>
+            
+            <TextView
+                android:id="@+id/claimsListRowItemDistanceLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            
 	        <LinearLayout
-	        android:id="@+id/claimsListDestinationContainer" 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        android:paddingTop="10dp"
-	        android:paddingBottom="10dp"/>
+    	        android:id="@+id/claimsListDestinationContainer" 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:paddingTop="10dp"
+	            android:paddingBottom="10dp"/>
 	        
 	    </LinearLayout>
 	    
@@ -59,12 +70,12 @@
 		        android:textSize="20sp"
 		        android:gravity="start"/>
 	        
-	        <LinearLayout 
-	        android:id="@+id/claimsListTotalContainer" 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
-	        android:gravity="end"/>
+	        <LinearLayout
+	            android:id="@+id/claimsListTotalContainer" 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical"
+	            android:gravity="end"/>
 	        
 	    </LinearLayout>
 	    

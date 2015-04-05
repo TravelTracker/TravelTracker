@@ -1,7 +1,3 @@
-package cmput301w15t07.TravelTracker.serverinterface;
-
-import android.util.SparseArray;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -22,6 +18,10 @@ import android.util.SparseArray;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.serverinterface;
+
+import android.util.SparseArray;
 
 /**
  * Allows several ResultCallbacks to return their data through a single

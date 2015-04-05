@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.test.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,6 +19,7 @@ package cmput301w15t07.TravelTracker.test.activity;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.test.activity;
 
 import java.util.UUID;
 

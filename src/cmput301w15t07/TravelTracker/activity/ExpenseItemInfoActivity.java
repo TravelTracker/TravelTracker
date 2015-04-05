@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,13 +19,13 @@ package cmput301w15t07.TravelTracker.activity;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.activity;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
-
-import com.google.common.collect.BiMap;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -204,15 +202,31 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	public void onBackPressed() {
 	    // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
 	    if (fromClaimInfo) {
-	        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
-	        intent.putExtra(USER_DATA, userData);
-	        intent.putExtra(CLAIM_UUID, claimID);
-	        startActivity(intent);
+	        launchExpenseItemsList();
 	    }
         
 	    super.onBackPressed();
 	}
+
+    /**
+     * Launches the ExpenseItemsList activity.
+     */
+    private void launchExpenseItemsList() {
+        Intent intent = new Intent(this, ExpenseItemsListActivity.class);
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, userData);
+        intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
+        startActivity(intent);
+    }
 	
+    /**
+     * Launches the ReceiptImageView activity.
+     */
+    private void launchReceiptImageView(){
+        Intent intent = new Intent(this, ReceiptImageViewActivity.class);
+        intent.putExtra(ReceiptImageViewActivity.URI_DATA, item.getReceipt().getUri());
+        startActivity(intent);
+    }
+    
 	/**
 	 * Fill buttons/spinners/editText with data from item, set listeners, hide or
 	 * disable things according to user's role and claim's status
@@ -392,7 +406,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					launchVeiwReceipt();
+					launchReceiptImageView();
 					
 				}
 			})
@@ -409,16 +423,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		lastAlertDialog.show();
 	}
 	
-	private void launchVeiwReceipt(){
-		Intent intent = new Intent(this, ReceiptImageViewActivity.class);
-		intent.putExtra("Uri", item.getReceipt().getUri());
-		startActivity(intent);
-	}
-	
-		/**
-		 * prompt for creating a new receipt image 
-		 */
-	
+	/**
+	 * Prompt for creating a new receipt image.
+	 */
 	public void promptTakePhoto(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.expense_item_info_capture_receipt_message)

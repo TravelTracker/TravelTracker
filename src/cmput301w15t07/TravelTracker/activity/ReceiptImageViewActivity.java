@@ -1,22 +1,3 @@
-package cmput301w15t07.TravelTracker.activity;
-
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.UUID;
-
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.SparseArray;
-import android.widget.ImageView;
-import android.widget.Toast;
-import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.model.Item;
-import cmput301w15t07.TravelTracker.serverinterface.MultiCallback;
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -38,24 +19,31 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *  limitations under the License.
  */
 
-public class ReceiptImageViewActivity extends TravelTrackerActivity {
+package cmput301w15t07.TravelTracker.activity;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.Toast;
+import cmput301w15t07.TravelTracker.R;
+
+public class ReceiptImageViewActivity extends TravelTrackerActivity {
+    /** String used to retrieve URI reference from intent */
+    public static final String URI_DATA = "cmput301w15t07.TravelTracker.uriData";
 	
-	/** UUID of the item */
+	/** Immutable URI reference of the image. */
 	private Uri imageUri;
-	
-	@Override
-	public void updateActivity() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.receipt_image_view);
 		Bundle bundle = getIntent().getExtras();
-		 imageUri = (Uri) bundle.getSerializable("Uri");
+		 imageUri = (Uri) bundle.getSerializable(URI_DATA);
 		 //Toast.makeText(this, imageUri.toString(), Toast.LENGTH_LONG).show();
 		 try {
 			loadImage(imageUri);
@@ -67,6 +55,15 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 			e.printStackTrace();
 		}
 	}
+	
+    /**
+     * There is no dataset in LoginActivity.
+     * Called in onResume() and update(DataSource observable).
+     */
+    @Override
+    public void updateActivity() {
+        // Do nothing
+    }
 	
 	protected void loadImage(Uri uri) throws FileNotFoundException, IOException{
 		ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);

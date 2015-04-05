@@ -1,5 +1,3 @@
-package cmput301w15t07.TravelTracker.util;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -21,11 +19,14 @@ package cmput301w15t07.TravelTracker.util;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.util;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import cmput301w15t07.TravelTracker.model.Item;
 
@@ -42,7 +43,7 @@ public class ClaimUtilities {
 	 * @return date string
 	 */
 	public static String formatDate(Date date){
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.CANADA);
 		return sdf.format(date);
 	}
 	

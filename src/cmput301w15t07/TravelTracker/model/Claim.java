@@ -1,13 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
-
-import com.google.gson.annotations.Expose;
-
-import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -28,6 +18,14 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /**
  * Model object for Claim made by Users acting as Claimants.
@@ -52,15 +50,18 @@ public class Claim extends Document {
 	 * 
 	 * @param docID UUID document identifier
 	 */
-	Claim(UUID docID) {
+	Claim(UUID docID, UUID userID) {
 		super(docID);
+        setType(Type.CLAIM);
+        
+        user = userID;
+        approver = null; // As a claim won't have an approver to begin with, there's no better default than null unfortunately.
+        status = Status.IN_PROGRESS;
+        startDate = new Date();
+        endDate = new Date();
 		destinations = new ArrayList<Destination>();
 		comments = new ArrayList<ApproverComment>();
 		tags = new ArrayList<UUID>();
-		startDate = new Date();
-		endDate = new Date();
-		status = Status.IN_PROGRESS;
-		setType(Type.CLAIM);
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class Claim extends Document {
 	 */
 	@SuppressWarnings("unused")
 	private Claim() {
-		this(UUID.randomUUID());
+		this(UUID.randomUUID(), null);
 	}
 	
 	/**

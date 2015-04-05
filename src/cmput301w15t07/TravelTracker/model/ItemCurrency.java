@@ -1,11 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.ArrayList;
-import java.util.Currency;
-
-import cmput301w15t07.TravelTracker.R;
-import android.content.Context;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -26,6 +18,14 @@ import android.content.Context;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Currency;
+
+import cmput301w15t07.TravelTracker.R;
+import android.content.Context;
 
 /**
  * Model enum for Expense Item Currency.

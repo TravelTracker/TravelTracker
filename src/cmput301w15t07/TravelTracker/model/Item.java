@@ -1,12 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.Date;
-import java.util.UUID;
-
-import com.google.gson.annotations.Expose;
-
-import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -27,6 +18,13 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.Date;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 
 /**
  * Model object for individual expense Items made by Users acting as Claimants.
@@ -56,26 +54,17 @@ public class Item extends Document {
 	 */
 	Item(UUID docID, UUID claimID) {
 		super(docID);
+        setType(Type.ITEM);
 		
 		claim = claimID;
-		
-		// Empty description
 		description = "";
-		
 		category = ItemCategory.NO_CATEGORY;
-		
 		date = new Date();
-		
-		// Start at 0 of unknown currency
 		amount = 0.f;
 		currency = ItemCurrency.CAD;
-		
 		receipt = new Receipt();
-		
+		geolocation = null; // As geolocation is optional, there's no better default than null unfortunately.
 		isComplete = true;
-		
-		setType(Type.ITEM);
-		
 	}
 	
 	/**

@@ -1,11 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.Calendar;
-import java.util.Random;
-import java.util.UUID;
-
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -26,6 +18,15 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Random;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 
 /**
  * Mock data source extending InMemoryDataSource that creates data upon User creation.
@@ -52,10 +53,9 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		
 		// Add ten random tags
 		for (int i = 0; i < 10; ++i) {
-		    Tag t = new Tag(UUID.randomUUID());
+		    Tag t = new Tag(UUID.randomUUID(), user.getUUID());
 		    
 		    // Set data
-		    t.setUser(user.getUUID());
 		    t.setTitle(getRandomString(r, 5, 10));
 		    
 		    internalAddTag(t);
@@ -64,8 +64,7 @@ public class GeneratedDataSource extends InMemoryDataSource {
 		// Want 10 random claims
 		for (int i = 0; i < 10; ++i) {
 			// Create claim and set data
-			Claim claim = new Claim(UUID.randomUUID());
-			claim.setUser(user.getUUID());
+			Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
 			
 			// Random start time (up to 10 days ago)
 			Calendar calendar = Calendar.getInstance();
@@ -85,7 +84,19 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				claim.setApprover(user.getUUID());
 			}
 			
-			// Could set tags here
+			// Set tags
+			ArrayList<UUID> tagIDs = new ArrayList<UUID>(tags.keySet());
+		    int tagCount = r.nextInt(5);
+		    if (tagCount > 0) {
+		        ArrayList<UUID> tags = new ArrayList<UUID>();
+		        
+    		    for (int j = 0; j < tagCount; ++j) {
+    		        int tagIndex = r.nextInt(tagIDs.size());
+    		        tags.add(tagIDs.get(tagIndex));
+    		    }
+    		    
+    		    claim.setTags(tags);
+		    }
 			
 			internalAddClaim(claim);
 			
@@ -126,8 +137,11 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			}
 			
 			//Add some destinations
-			for (int k = 0; k < (new Random()).nextInt(5); k++){
-				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), null, "A test Reason"));
+			for (int k = 0; k < r.nextInt(5); k++){
+			    double lat = (double) (r.nextInt(181) - 91);
+			    double lng = (double) (r.nextInt(360) - 180);
+			    Geolocation loc = new Geolocation(lat, lng);
+				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), loc, "A test Reason"));
 			}
 			
 			// Add some comments (from the same user for simplicity's sake, though this is impossible)

@@ -1,11 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import java.util.Collection;
-import java.util.UUID;
-
-import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
-import cmput301w15t07.TravelTracker.util.Observer;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -26,6 +18,14 @@ import cmput301w15t07.TravelTracker.util.Observer;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+package cmput301w15t07.TravelTracker.model;
+
+import java.util.Collection;
+import java.util.UUID;
+
+import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
+import cmput301w15t07.TravelTracker.util.Observer;
 
 /**
  * Interface for serving model Documents from any persistent storage class.

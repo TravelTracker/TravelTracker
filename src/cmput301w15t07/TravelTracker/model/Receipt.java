@@ -1,8 +1,3 @@
-package cmput301w15t07.TravelTracker.model;
-
-import android.graphics.Bitmap;
-import android.net.Uri;
-
 /*
  *   Copyright 2015 Kirby Banman,
  *                  Stuart Bildfell,
@@ -24,6 +19,11 @@ import android.net.Uri;
  *  limitations under the License.
  */
 
+package cmput301w15t07.TravelTracker.model;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 /**
  * Model object for expense Item Receipt data.  (i.e. image)
  * 
@@ -40,6 +40,7 @@ public class Receipt {
 	
 	public Receipt(Bitmap photo, Uri uri) {
 		this.photo = photo;
+		this.imageUri = uri;
 	}
 	
 	public Receipt() {

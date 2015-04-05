@@ -75,5 +75,10 @@
             android:label="@string/select_location_label">
         </activity>
         
+        <activity
+            android:name=".activity.ReceiptImageViewActivity"
+            android:label="@string/receipt_image_view_label" >            
+        </activity>
+        
     </application>
 </manifest>

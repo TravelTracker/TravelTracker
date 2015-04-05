@@ -392,7 +392,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					//view the receipt image
+					launchVeiwReceipt();
 					
 				}
 			})
@@ -408,6 +408,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		lastAlertDialog = builder.create();
 		lastAlertDialog.show();
 	}
+	
+	private void launchVeiwReceipt(){
+		Intent intent = new Intent(this, ReceiptImageViewActivity.class);
+		intent.putExtra("Uri", item.getReceipt().getUri());
+		startActivity(intent);
+	}
+	
 		/**
 		 * prompt for creating a new receipt image 
 		 */

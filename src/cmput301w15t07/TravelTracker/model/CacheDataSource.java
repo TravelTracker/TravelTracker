@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import android.content.Context;
@@ -102,6 +103,20 @@ public class CacheDataSource extends InMemoryDataSource {
 		this.mainHelper = main;
 		
 		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
+		
+		new syncDocumentsTask(new ResultCallback<Boolean>() {
+
+			@Override
+			public void onResult(Boolean result) {
+				warn("Data imported from server");
+			}
+
+			@Override
+			public void onError(String message) {
+				warn(message);
+			}
+			
+		}).execute();
 	}
 
 	/*
@@ -353,11 +368,12 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 			performPendingDeletions(pendingDeletions);
 			
-			// TODO merge every remaining received document into inmemory
-			// TODO if merge caused changes, update observers (on gui thread!) (merge not cause update())
-			CacheDataSource.this.updateObservers(CacheDataSource.this); 
-			// TODO ^this^ should be conditional, be sure to catch new additions from add*() methods,
-			//      and remember that getAll callbacks detect changes made with a boolean callback.
+			// merge every remaining received document into inmemory
+			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);
+			changesMade |= this.<Claim>mergeRetrieved(retrievedClaims, claims);
+			changesMade |= this.<Item>mergeRetrieved(retrievedItems, items);
+			changesMade |= this.<Tag>mergeRetrieved(retrievedTags, tags);
+			
 			
 			// dump post-merge in memory stuff to cache
 			if (!dumpToBackup()) {
@@ -366,13 +382,28 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 			// push in memory to server
 			if (!pushToMain()) {
-				// set all documents to clean if successful
-				setDirtyToClean(getDirtyUsers());
-				setDirtyToClean(getDirtyClaims());
-				setDirtyToClean(getDirtyItems());
-				setDirtyToClean(getDirtyTags());
+				Log.w("CacheDataSource", "push to main failed - maintaining dirty status");
+				return null; // normal behaviour - no erron massage.
 			}
+			// set all documents to clean if successful
+			setDirtyToClean(getDirtyUsers());
+			setDirtyToClean(getDirtyClaims());
+			setDirtyToClean(getDirtyItems());
+			setDirtyToClean(getDirtyTags());
 			return null;
+		}
+
+		private <T extends Document> boolean mergeRetrieved(Collection<T> retrieved, Map<UUID, T> local) {
+			boolean changes = false;
+			for (T toMerge : retrieved) {
+				if (local.containsKey(toMerge.getUUID())) {
+					changes |= local.get(toMerge.getUUID()).mergeAttributesFrom(toMerge);
+				} else {
+					changes |= true;
+					local.put(toMerge.getUUID(), toMerge);
+				}
+			}
+			return changes;
 		}
 
 		private void setDirtyToClean(Collection<? extends Document> dirty) {
@@ -381,6 +412,9 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 		}
 
+		/**
+		 * @return false if push fails, true if success
+		 */
 		private boolean pushToMain() {
 			Log.i("CacheDataSource", "Dumping to main storage (remote)");
 			// save all in memory documents
@@ -480,7 +514,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		}
 
 		/**
-		 * @return false if retrieval fails, true if success
+		 * @return false if save fails, true if success
 		 */
 		private boolean dumpToBackup() {
 			Log.i("CacheDataSource", "Dumping to local cache");

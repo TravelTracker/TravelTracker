@@ -277,8 +277,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         
         ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
         
+        final boolean editable = isEditable(claim.getStatus(), userData.getRole());
+        
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
-            if (isEditable(claim.getStatus(), userData.getRole())) {
+            if (editable) {
                 // Attach view Listener for ItemStatus CheckedTextView
                 itemStatus.setOnClickListener(new View.OnClickListener() {
                     
@@ -375,36 +377,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     public void onNothingSelected(AdapterView<?> arg0){}
                 });
                 
-                // Callback to get geolocation from map fragment
-                final SelectLocationFragment.ResultCallback geoCallback = new SelectLocationFragment.ResultCallback() {
-                    @Override
-                    public void onSelectLocationResult(LatLng location) {
-                        Geolocation geolocation = new Geolocation(location.latitude, location.longitude);
-                        updateGeolocationCheckbox(geolocation);
-                        item.setGeolocation(geolocation);
-                    }
-                    
-                    @Override
-                    public void onSelectLocationCancelled() {}
-                };
-                
-                // Set listener to change item's geolocation
-                geoLocButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String title = getString(R.string.select_location_fragment_default_title);
-                        SelectLocationFragment geoLocFragment;
-                        Geolocation geolocation = item.getGeolocation();
-                        
-                        if (geolocation == null)
-                            geoLocFragment = new SelectLocationFragment(geoCallback, null, title);
-                        else
-                            geoLocFragment = new SelectLocationFragment(geoCallback, geolocation.getLatLng(), title);
-                        
-                        geoLocFragment.show(getFragmentManager(), "selectLocation");
-                    }
-                });
-                
                 // Set listener on button to remove geolocation from item
                 geoLocRemoveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -422,7 +394,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 disableView(itemAmount);
                 disableView(currencySpinner);
                 disableView(categorySpinner);
-                disableView(geoLocButton);
                 disableView(geoLocRemoveButton);
             }
             
@@ -439,7 +410,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             
             // Views an approver doesn't need to see or have access to
             itemStatus.setVisibility(View.GONE);
-            geoLocButton.setVisibility(View.GONE);
             geoLocRemoveButton.setVisibility(View.GONE);
             geoLocCheckBox.setVisibility(View.GONE);
             
@@ -455,6 +425,36 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 			});
             
         }
+        
+        // Callback to get geolocation from map fragment
+        final SelectLocationFragment.ResultCallback geoCallback = new SelectLocationFragment.ResultCallback() {
+            @Override
+            public void onSelectLocationResult(LatLng location) {
+                Geolocation geolocation = new Geolocation(location.latitude, location.longitude);
+                updateGeolocationCheckbox(geolocation);
+                item.setGeolocation(geolocation);
+            }
+            
+            @Override
+            public void onSelectLocationCancelled() {}
+        };
+        
+        // Set listener to change item's geolocation
+        geoLocButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = getString(R.string.select_location_fragment_default_title);
+                SelectLocationFragment geoLocFragment;
+                Geolocation geolocation = item.getGeolocation();
+                
+                if (geolocation == null)
+                    geoLocFragment = new SelectLocationFragment(geoCallback, null, title, editable);
+                else
+                    geoLocFragment = new SelectLocationFragment(geoCallback, geolocation.getLatLng(), title, editable);
+                
+                geoLocFragment.show(getFragmentManager(), "selectLocation");
+            }
+        });
         
         onLoaded();
 	}

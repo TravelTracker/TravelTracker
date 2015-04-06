@@ -101,10 +101,11 @@ public class CacheDataSource extends InMemoryDataSource {
 		
 		this.appContext = appContext;
 		this.mainHelper = main;
+		this.backupHelper = backup;
 		
 		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
 		
-		new syncDocumentsTask(new ResultCallback<Boolean>() {
+		new SyncDocumentsTask(new ResultCallback<Boolean>() {
 
 			@Override
 			public void onResult(Boolean result) {
@@ -174,7 +175,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			super.getUser(id, callback);
 		} else {
 			// after sync, try again.  callback.error if still not there
-			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 				@Override
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getUser(id, callback);
@@ -189,7 +190,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			super.getClaim(id, callback);
 		} else {
 			// after sync, try again.  callback.error if still not there
-			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 				@Override
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getClaim(id, callback);
@@ -204,7 +205,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			super.getItem(id, callback);
 		} else {
 			// after sync, try again.  callback.error if still not there
-			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 				@Override
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getItem(id, callback);
@@ -219,7 +220,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			super.getTag(id, callback);
 		} else {
 			// after sync, try again.  callback.error if still not there
-			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 				@Override
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getTag(id, callback);
@@ -232,7 +233,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void getAllUsers(final ResultCallback<Collection<User>> callback) {
 		super.getAllUsers(callback);
 		// after sync, try again.  callback.error if still not there
-		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 			@Override
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllUsers(callback);
@@ -244,7 +245,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void getAllClaims(final ResultCallback<Collection<Claim>> callback) {
 		super.getAllClaims(callback);
 		// after sync, try again.  callback.error if still not there
-		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 			@Override
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllClaims(callback);
@@ -256,7 +257,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void getAllItems(final ResultCallback<Collection<Item>> callback) {
 		super.getAllItems(callback);
 		// after sync, try again.  callback.error if still not there
-		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 			@Override
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllItems(callback);
@@ -269,7 +270,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void getAllTags(final ResultCallback<Collection<Tag>> callback) {
 		super.getAllTags(callback);
 		// after sync, try again.  callback.error if still not there
-		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
 			@Override
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllTags(callback);
@@ -283,11 +284,11 @@ public class CacheDataSource extends InMemoryDataSource {
 		Toast.makeText(appContext, msg, Toast.LENGTH_LONG).show();
 	}
 	
-	private abstract class syncWrappedResultCallback implements ResultCallback<Boolean> {
+	private abstract class SyncWrappedResultCallback implements ResultCallback<Boolean> {
 
 		ResultCallback<?> errCallback;
 		
-		public syncWrappedResultCallback(ResultCallback<?> callback) {
+		public SyncWrappedResultCallback(ResultCallback<?> callback) {
 			this.errCallback = callback;
 		}
 
@@ -302,7 +303,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	 * @author kdbanman
 	 *
 	 */
-	private class syncDocumentsTask extends AsyncTask<Void, Void, String> {
+	private class SyncDocumentsTask extends AsyncTask<Void, Void, String> {
 
 		private ResultCallback<Boolean> callback;
 
@@ -317,7 +318,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		 * 
 		 * @param callback sync result callback, or null for no action.
 		 */
-		public syncDocumentsTask(ResultCallback<Boolean> callback) {
+		public SyncDocumentsTask(ResultCallback<Boolean> callback) {
 			this.callback = callback;
 		}
 		
@@ -325,7 +326,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		 * 
 		 * @param callback sync result callback, or null for no action.
 		 */
-		public syncDocumentsTask() {
+		public SyncDocumentsTask() {
 			this(null);
 		}
 
@@ -377,7 +378,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 			// dump post-merge in memory stuff to cache
 			if (!dumpToBackup()) {
-				return "Error saving to backup cache!";
+				return "Error saving to backup cache after merge!";
 			}
 			
 			// push in memory to server

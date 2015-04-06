@@ -252,6 +252,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
         
+        ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+        
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
             if (isEditable(claim.getStatus(), userData.getRole())) {
                 // Attach view Listener for ItemStatus CheckedTextView
@@ -269,8 +271,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     }
                 });
                 
-                //Attach view Listener for receipt Image View
-                ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+                //Attach view Listener for receipt Image View                
                 receiptImage.setOnClickListener(new View.OnClickListener() {
                     
                     @Override
@@ -384,10 +385,24 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             
             // Views an approver doesn't need to see or have access to
             itemStatus.setVisibility(View.GONE);
+            
+            //set listener for receipt imagae to load view activity
+            receiptImage.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					if (item.getReceipt().getPhoto() != null){
+						launchReceiptImageView();
+					}
+				}
+			});
+            
         }
         
         onLoaded();
 	}
+	
+	
 	
 	/**
 	 * Prompt for changing, viewing, or deleting a receipt image
@@ -517,7 +532,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 				item.setReceipt(new Receipt(imageBitmap));
 		}
 		//if result is from chooseImageFromGallery()
-		//refrenced viralpirate.net/blocks/pick-image-from-galary-android-app
+		//refrenced viralpatel.net/blogs/pick-image-from-galary-android-app/
 		//i know this url is misspelled, but thats what the site is ^^
 		else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
 			imageUri = data.getData();

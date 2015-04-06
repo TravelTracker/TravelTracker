@@ -443,7 +443,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         geoLocButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = getString(R.string.select_location_fragment_default_title);
+                String title = (editable) ? getString(R.string.select_location_fragment_default_title)
+                                          : getString(R.string.select_location_fragment_default_no_edit_title);
                 SelectLocationFragment geoLocFragment;
                 Geolocation geolocation = item.getGeolocation();
                 

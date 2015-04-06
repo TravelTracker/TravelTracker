@@ -135,7 +135,7 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
     }
     
     public void colorViewEnabled(View view) {
-        view.setBackgroundColor(Color.rgb(220, 220, 220));
+        view.setBackgroundColor(Color.rgb(210, 210, 210));
     }
     
     public void colorViewDisabled(View view) {

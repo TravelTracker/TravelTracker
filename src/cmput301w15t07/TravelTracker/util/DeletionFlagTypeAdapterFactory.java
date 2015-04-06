@@ -65,15 +65,33 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
                 in.nextNull();
                 return null;
             }
+
+            // Pre-declare variables
+            long time = 0;
+            Type type = null;
+            E element = null;
             
-            // Read actual JSON
+            // Read the actual Json
             in.beginObject();
-            long time = in.nextLong();
-            Type t = (Type) typeAdapter.read(in);
-            E d = (E) elementAdapter.read(in);
+            while (in.hasNext()) {
+              String name = in.nextName();
+              if (name.equals("date")) {
+                  time = in.nextLong();
+              } else if (name.equals("type")) {
+                  type = (Type) typeAdapter.read(in);
+              } else if (name.equals("toDelete")) {
+                  element = (E) elementAdapter.read(in);
+              } else {
+                in.skipValue();
+              }
+            }
             in.endObject();
             
-            DeletionFlag<E> flag = new DeletionFlag<E>(new Date(time), d, t);
+            if (time == 0 || type == null || element == null) {
+                throw new RuntimeException("Malformed DeletionFlag in JSON. Missing a field.");
+            }
+            
+            DeletionFlag<E> flag = new DeletionFlag<E>(new Date(time), element, type);
             return flag;
         }
 

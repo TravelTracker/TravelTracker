@@ -3,7 +3,6 @@ package cmput301w15t07.TravelTracker.util;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Date;
 
 import android.util.Log;
@@ -32,12 +31,13 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
         if (!DeletionFlag.class.isAssignableFrom(type.getRawType())) {
             return null;
         }
+        
         Log.d("TypeAdapter", "Good type: " + type.getRawType().getCanonicalName());
-        for (Type param : ((ParameterizedType) type).getActualTypeArguments()) {
+        for (Type param : ((ParameterizedType) type.getType()).getActualTypeArguments()) {
             Log.d("TypeAdapter", "Parameter type: " + param.toString());
         }
         
-        Type elementType = ((ParameterizedType) type).getActualTypeArguments()[0];
+        Type elementType = ((ParameterizedType) type.getType()).getActualTypeArguments()[0];
         TypeAdapter<?> documentAdapter = gson.getAdapter(TypeToken.get(elementType));
         TypeAdapter<Type> typeAdapter = gson.getAdapter(Type.class);
         return (TypeAdapter<T>) new DeletionFlagAdapter<Document>((TypeAdapter<Document>) documentAdapter, typeAdapter);

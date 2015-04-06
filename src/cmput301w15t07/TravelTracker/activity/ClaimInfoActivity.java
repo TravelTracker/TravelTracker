@@ -482,19 +482,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             }
         }
         
-        // Create a comma-separated list of all the tags on this claim.
-        String tagString = "";
-        for (int i = 0; i < claimTags.size(); i++) {
-            if (i == 0) {
-                tagString = claimTags.get(i).getTitle();
-            } else {
-                tagString = tagString + ", " + claimTags.get(i).getTitle();
-            }
-        }
-        
-        // Set the tag string.
-        TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
-        tagsTextView.setText(tagString);
+        setTagTextViewFromSelection(claimTags);
         
         if (userData.getRole().equals(UserRole.APPROVER)) {
         	// Claimant name
@@ -561,7 +549,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         SelectTagFragment tagFragment = new SelectTagFragment(userTags, claimTagIDs, new SelectTagFragment.ResultCallback() {
             @Override
             public void onSelectTagFragmentResult(HashSet<UUID> selected) {
-                claim.setTags(new ArrayList<UUID>(selected));
+                claimTagIDs = new ArrayList<UUID>(selected);
+                claimTags = getTagsFromUUIDs(claimTagIDs, userTags);
+                setTagTextViewFromSelection(claimTags);
+                claim.setTags(claimTagIDs);
             }
             
             @Override
@@ -569,6 +560,50 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         });
         
         tagFragment.show(getFragmentManager(), "selectTags");
+    }
+    
+    /**
+     * Given a list of Tag objects, turn it into one string that is a comma-separated
+     * list of all the tags (empty string if no tags). Set this string to the TextView
+     * that is supposed to hold the tags.
+     * @param claimTags The list of tags to set as a string to the TextView.
+     */
+    private void setTagTextViewFromSelection(ArrayList<Tag> claimTags) {
+        // Create a comma-separated list of all the tags on this claim.
+        String tagString = "";
+        for (int i = 0; i < claimTags.size(); i++) {
+            if (i == 0) {
+                tagString = claimTags.get(i).getTitle();
+            } else {
+                tagString = tagString + ", " + claimTags.get(i).getTitle();
+            }
+        }
+        
+        // Set the tag string.
+        TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
+        tagsTextView.setText(tagString);
+    }
+    
+    /**
+     * Given a list of Tag UUIDs for the claim and a list of Tags for the user, return
+     * the list of Tags for the claim.
+     * @param claimTagIDs The list of Tag UUID objects associated with this claim.
+     * @param userTags The list of Tag objects belonging to the current user.
+     * @return The list of Tag objects associated with this claim.
+     */
+    private ArrayList<Tag> getTagsFromUUIDs(ArrayList<UUID> claimTagIDs, ArrayList<Tag> userTags) {
+        ArrayList<Tag> claimTags = new ArrayList<Tag>();
+        
+        for (UUID id : claimTagIDs) {
+            for (Tag tag : userTags) {
+                if (tag.getUUID().equals(id)) {
+                    claimTags.add(tag);
+                    break;
+                }
+            }
+        }
+        
+        return claimTags;
     }
 
     /**

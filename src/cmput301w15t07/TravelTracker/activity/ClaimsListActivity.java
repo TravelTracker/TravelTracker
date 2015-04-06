@@ -339,7 +339,9 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 				filterTags = new HashSet<UUID>();
 				
 				for (Tag tag : result.getTags()) {
-					filterTags.add(tag.getUUID());
+				    if (tag.getUser() == userData.getUUID()) {
+				        filterTags.add(tag.getUUID());
+				    }
 				}
 				
 			// Turn on new tags by default

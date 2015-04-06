@@ -21,14 +21,28 @@
 
 package cmput301w15t07.TravelTracker.util;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 
 import cmput301w15t07.TravelTracker.model.Document;
 
-public class DeletionFlag {
+public class DeletionFlag<T extends Document> {
 	
 	private Date date;
-	private Document toDelete;
+	private T toDelete;
+	private Type wrappedClass;
+
+	public DeletionFlag(Date date, T toDelete, Type wrappedClass) {
+		this.date = new Date();
+		this.toDelete = toDelete;
+		this.wrappedClass = wrappedClass;
+	}
+	
+	public DeletionFlag(T toDelete, Type wrappedClass) {
+		this(new Date(), toDelete, wrappedClass);
+	}
 	
 	/**
 	 * @return the date
@@ -40,25 +54,8 @@ public class DeletionFlag {
 	/**
 	 * @return the document to be deleted.  may not be a reference, but will satisfy .equals()
 	 */
-	public Document getToDelete() {
+	public T getToDelete() {
 		return toDelete;
-	}
-
-	public DeletionFlag(Date date, Document toDelete) {
-		this.date = new Date();
-		this.toDelete = toDelete;
-	}
-	
-	public DeletionFlag(Document toDelete) {
-		this(new Date(), toDelete);
-	}
-	
-	/**
-	 * Private no-args constructor to please GSON
-	 */
-	@SuppressWarnings("unused")
-    private DeletionFlag() {
-		this(null, null);
 	}
 
 	@Override
@@ -79,7 +76,7 @@ public class DeletionFlag {
 			return false;
 		if (!(obj instanceof DeletionFlag))
 			return false;
-		DeletionFlag other = (DeletionFlag) obj;
+		DeletionFlag<T> other = (DeletionFlag<T>) obj;
 		if (date == null) {
 			if (other.date != null)
 				return false;
@@ -91,6 +88,29 @@ public class DeletionFlag {
 		} else if (!toDelete.equals(other.toDelete))
 			return false;
 		return true;
+	}
+	
+	/*
+	 * Three methods below are courtesy of
+	 * 	http://pastebin.com/PV6cP9jc
+	 * on 4 April 2015
+	 */
+	public class DeletionFlagType implements ParameterizedType {
+		
+		@Override
+		public Type[] getActualTypeArguments() {
+			return new Type[] {wrappedClass};
+		}
+	
+		@Override
+		public Type getOwnerType() {
+			return null;
+		}
+	
+		@Override
+		public Type getRawType() {
+			return DeletionFlag.class;
+		}
 	}
 
 }

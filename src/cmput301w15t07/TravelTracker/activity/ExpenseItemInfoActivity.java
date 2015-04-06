@@ -484,12 +484,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		startActivityForResult(intent, RESULT_LOAD_IMAGE);
 	}
 	
-	/**\
+	/**
 	 * creates an image file with a unique name to be used by camera activity 
-	 * @return	image file with unique name
+	 * @return image file with unique name
 	 * @throws IOException if the file could not be created
 	 */
-	//Referenced devleoper.android.com/training/camera/photobasics.html
+	//Referenced developer.android.com/training/camera/photobasics.html
 	private File createImageFile() throws IOException{
 		File storageDir = Environment.getExternalStoragePublicDirectory(
 				Environment.DIRECTORY_PICTURES);
@@ -529,8 +529,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
-		  ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
-		  //if Result is from takePhoto()
+		
+		//if Result is from takePhoto()
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
 				
 				Bitmap imageBitmap = null;

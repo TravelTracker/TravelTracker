@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,11 +46,11 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.util.ClaimAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper;
-import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
 import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
+import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
 
 import com.google.android.gms.maps.model.LatLng;
 

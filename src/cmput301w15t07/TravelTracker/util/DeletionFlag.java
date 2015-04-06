@@ -56,7 +56,8 @@ public class DeletionFlag {
 	/**
 	 * Private no-args constructor to please GSON
 	 */
-	private DeletionFlag() {
+	@SuppressWarnings("unused")
+    private DeletionFlag() {
 		this(null, null);
 	}
 

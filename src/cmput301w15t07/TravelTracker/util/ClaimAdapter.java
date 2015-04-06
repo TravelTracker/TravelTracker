@@ -49,8 +49,6 @@ import cmput301w15t07.TravelTracker.R;
  *
  */
 public class ClaimAdapter extends ArrayAdapter<Claim> {
-	
-    private Collection<Claim> claims;
 	private Collection<Item> items;
 	private Collection<User> users;
 	private User user;
@@ -72,7 +70,6 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 	 */
 	public void rebuildList(Collection<Claim> claims, Collection<Item> items,
 			Collection<User> users, User user, Collection<UUID> tagIDs){
-		this.claims = claims;
 		this.items = items;
 		this.users = users;
 		this.user = user;

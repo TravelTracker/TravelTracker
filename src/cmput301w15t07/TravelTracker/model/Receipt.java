@@ -22,7 +22,6 @@
 package cmput301w15t07.TravelTracker.model;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 /**
  * Model object for expense Item Receipt data.  (i.e. image)

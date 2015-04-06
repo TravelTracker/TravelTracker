@@ -4,20 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
-    android:background="@layout/background_activated"
-    android:orientation="horizontal"
-    android:visibility="visible" >
+    android:descendantFocusability="blocksDescendants"
+    android:background="@layout/background_activated" >
 
     <TextView
         android:id="@+id/expenseItemsListItemViewDateTextView"
         android:layout_width="fill_parent"
         android:layout_toEndOf="@+id/expenseItemsListItemViewStatusTextView"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_marginStart="40dp"
         android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
-        android:layout_alignParentTop="true"
-        android:gravity="center"
-        android:text="@string/expense_items_list_info_error" />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/expenseItemsListItemViewStatusTextView"
@@ -25,8 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_gravity="center"
-        android:gravity="center"
         android:text="@string/expense_items_list_incomplete"
         android:textColor="#FF0000"
         android:visibility="visible" />
@@ -44,29 +39,46 @@
         android:id="@+id/expenseItemsListItemViewCategoryTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
         android:layout_alignParentStart="true"
-        android:layout_gravity="center"
         android:layout_below="@+id/expenseItemsListItemViewDateTextView"
-        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
-        android:text="@string/expense_items_list_info_error" />
-
-    <TextView
-        android:id="@+id/expenseItemsListItemViewDescriptionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/expenseItemsListItemViewCostTextView"
-        android:layout_gravity="center"
-        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
-        android:text="@string/expense_items_list_info_error" />
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView" />
 
     <TextView
         android:id="@+id/expenseItemsListItemViewCostTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemsListItemViewCategoryTextView"
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView" />
+
+    <!--
+        Last two lines taken on April 3, 2015 from:
+        http://stackoverflow.com/questions/3156781/how-to-show-android-checkbox-at-right-side
+    -->
+    <CheckBox
+        android:id="@+id/expenseItemsListItemViewGeolocationCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="@string/geolocation_checkbox"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemsListItemViewCostTextView"
         android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
-        android:text="@string/expense_items_list_info_error" />
-   
+        android:button="@null"
+        android:drawableEnd="?android:attr/listChoiceIndicatorMultiple" />
+    
+    <TextView
+        android:id="@+id/expenseItemsListItemViewDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemsListItemViewGeolocationCheckBox"
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView" />
+
 </RelativeLayout>

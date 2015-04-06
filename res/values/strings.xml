@@ -6,6 +6,8 @@
         <!-- Used in layouts -->
         <string name="date_format">mm/dd/yyyy</string>
         <string name="content_description_receipt_image">Receipt Image</string>
+        <string name="geolocation_checkbox">Has Location</string>
+        <string name="geolocation_view_button">View Location</string>
         <string name="edit_text_hint_text">Enter text</string>
         <string name="edit_text_hint_name">Name</string>
         <string name="error_no_name">Please enter a name</string>
@@ -80,8 +82,6 @@
         <string name="claim_info_end_date_error">End date must not come before start date</string>
         <string name="claim_info_destination_edit_title">Destination Editor</string>
         <string name="claim_info_destination_edit_location">Name:</string>
-        <string name="claim_info_destination_edit_view_button">View Location</string>
-        <string name="claim_info_destination_edit_checkbox">Has Location</string>
         <string name="claim_info_destination_edit_fragment_title">Set Location</string>
         <string name="claim_info_destination_edit_reason">Reason:</string>
         <string name="claim_info_destination_error_geolocation">Destinations must have a location</string>
@@ -106,33 +106,33 @@
      
     <!-- Strings used in ExpenseItemsListItemView -->
         <!-- Used in layout -->
-        <string name="expense_items_list_info_error">FIELD NOT FILLED</string>
         <string name="expense_items_list_incomplete">Incomplete</string>
         
     <!-- Strings used in ExpenseItemInfoActivity -->
         <string name="expense_item_info_label">Expense Item Info</string>
         
         <!-- Used in layout -->
-        <string name= "expense_item_info_is_complete">Complete</string>
-        <string name= "expense_item_info_date">Expense Date</string>
-        <string name= "expense_item_info_amount">Amount</string>
-        <string name= "expense_item_info_amount_hint">Enter amount</string>
-        <string name= "expense_item_info_category">Category</string>
-        <string name= "expense_item_info_description">Description</string>
-        <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>
-        <string name= "expense_item_info_change_receipt_message">Change, delete or view current receipt image</string>
-        <string name= "expense_item_info_failed_to_get_image">Failed to get receipt image</string>
-        <string name= "expense_item_info_take_photo">Take photo</string>
-        <string name= "expense_item_info_choose_from_gallery">Choose from gallery</string>
-        <string name= "expense_item_info_delete_image">Delete image</string>
-        <string name= "expense_item_info_view_image">View image</string>
-        <string name= "expense_item_info_change_image">Change image</string>
+        <string name="expense_item_info_is_complete">Complete</string>
+        <string name="expense_item_info_date">Expense Date</string>
+        <string name="expense_item_info_amount">Amount</string>
+        <string name="expense_item_info_amount_hint">Enter amount</string>
+        <string name="expense_item_info_category">Category</string>
+        <string name="expense_item_info_description">Description</string>
+        <string name="expense_item_info_remove_geolocation">Remove Location</string>
+        <string name="expense_item_info_capture_receipt_message">Add a new receipt image?</string>
+        <string name="expense_item_info_change_receipt_message">Change, delete or view current receipt image</string>
+        <string name="expense_item_info_failed_to_get_image">Failed to get receipt image</string>
+        <string name="expense_item_info_take_photo">Take photo</string>
+        <string name="expense_item_info_choose_from_gallery">Choose from gallery</string>
+        <string name="expense_item_info_delete_image">Delete image</string>
+        <string name="expense_item_info_view_image">View image</string>
+        <string name="expense_item_info_change_image">Change image</string>
         
         <!-- Used in menu -->
         <string name="expense_item_info_delete_item">Delete Expense Item</string>
         
     <!-- Strings used in RecieptImageVeiwAcivity -->
-    	<string name= "receipt_image_view_label">View Receipt Image</string>  
+    	<string name="receipt_image_view_label">View Receipt Image</string>  
     	
     <!-- Strings used in SelectLocationActivity -->
     	<string name="select_location_label">Select Location</string>

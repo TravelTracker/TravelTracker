@@ -18,7 +18,7 @@
         android:id="@+id/expenseItemInfoExpenseDateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/expenseItemInfoStatusCheckedTextView"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemInfoStatusCheckedTextView"
         android:text="@string/expense_item_info_date"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -27,7 +27,7 @@
         android:id="@+id/expenseItemInfoDateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/expenseItemInfoExpenseDateTextView"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemInfoExpenseDateTextView"
         android:text="@string/date_format" />
 
@@ -47,14 +47,13 @@
         android:id="@+id/expenseItemInfoAmountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/expenseItemInfoDateButton"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemInfoDateButton"
         android:layout_marginTop="27dp"
         android:text="@string/expense_item_info_amount" />
 
     <Spinner
         android:id="@+id/expenseItemInfoCurrencySpinner"
-        style="?android:attr/spinnerStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_alignStart="@+id/expenseItemInfoReceiptImageView"
@@ -65,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/expenseItemInfoCurrencySpinner"
-        android:layout_toEndOf="@+id/expenseItemInfoExpenseDateTextView"
+        android:layout_toEndOf="@+id/expenseItemInfoCategoryTextView"
         android:layout_toStartOf="@+id/expenseItemInfoCurrencySpinner"
         android:ems="10"
         android:hint="@string/expense_item_info_amount_hint"
@@ -73,7 +72,6 @@
 
     <Spinner
         android:id="@+id/expenseItemInfoCategorySpinner"
-        style="?android:attr/spinnerStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_alignStart="@+id/expenseItemInfoAmountEditText"
@@ -83,30 +81,63 @@
         android:id="@+id/expenseItemInfoCategoryTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/expenseItemInfoAmountTextView"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemInfoAmountEditText"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="5dp"
         android:text="@string/expense_item_info_category" />
-
-    <EditText
-        android:id="@+id/expenseItemInfoDescriptionEditText"
+    
+    <Button
+        android:id="@+id/expenseItemInfoGeolocationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/expenseItemInfoDescriptionTextView"
-        android:layout_alignEnd="@+id/expenseItemInfoCategorySpinner"
-        android:layout_below="@+id/expenseItemInfoDescriptionTextView"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemInfoCategorySpinner"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/edit_text_hint_text"
-        android:inputType="textMultiLine" />
+        android:text="@string/geolocation_view_button" />
 
+    <Button
+        android:id="@+id/expenseItemInfoGeolocationRemoveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemInfoGeolocationButton"
+        android:text="@string/expense_item_info_remove_geolocation" />
+
+    <!--
+        Last two lines taken on April 3, 2015 from:
+        http://stackoverflow.com/questions/3156781/how-to-show-android-checkbox-at-right-side
+    -->
+    <CheckBox
+        android:id="@+id/expenseItemInfoGeolocationCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/expenseItemInfoGeolocationButton"
+        android:layout_alignBaseline="@+id/expenseItemInfoGeolocationButton"
+        android:clickable="false"
+        android:longClickable="false"
+        android:text="@string/geolocation_checkbox"
+        android:textColor="?android:attr/textColorTertiary"
+        android:button="@null"
+        android:drawableEnd="?android:attr/listChoiceIndicatorMultiple" />
+    
     <TextView
         android:id="@+id/expenseItemInfoDescriptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/expenseItemInfoCategoryTextView"
-        android:layout_below="@+id/expenseItemInfoCategorySpinner"
-        android:layout_marginTop="39dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemInfoGeolocationRemoveButton"
+        android:layout_marginTop="16dp"
         android:text="@string/expense_item_info_description" />
+    
+    <EditText
+        android:id="@+id/expenseItemInfoDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/expenseItemInfoDescriptionTextView"
+        android:layout_marginTop="10dp"
+        android:hint="@string/edit_text_hint_text"
+        android:inputType="textMultiLine" />
 
 </RelativeLayout>

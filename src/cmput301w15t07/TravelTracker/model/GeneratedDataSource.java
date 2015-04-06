@@ -112,6 +112,8 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				
 				// Set category
 				item.setCategory(ItemCategory.values()[r.nextInt(ItemCategory.values().length)]);
+				
+				// Don't worry about setting item geolocations
 
 				// Random time (10 days before today to 10 after)
 				calendar = Calendar.getInstance();

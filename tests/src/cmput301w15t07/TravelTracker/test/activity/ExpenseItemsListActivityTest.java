@@ -42,6 +42,7 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
+import android.os.Handler;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
@@ -98,7 +99,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 				startActivityAsClaimant();
 		
 		// Get ListView and adapter
-		ListView lv = (ListView) activity.findViewById(
+		final ListView lv = (ListView) activity.findViewById(
 				R.id.expenseItemsListListView);
 		ExpenseItemsListAdapter adapter =
 				(ExpenseItemsListAdapter) lv.getAdapter();
@@ -119,6 +120,10 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 		assertEquals("First element was not the item added.", i,
 				adapter.getItem(0));
         
+		Thread.sleep(3000);
+		Log.d(LOG_TAG, "Child count: " + lv.getChildCount() + ", count: " + lv.getCount() +
+		        ", adapter count:" + adapter.getCount());
+		Log.d(LOG_TAG, "Child " + lv.getChildAt(0));
 		/* This code should work since the lv is visible and rendered but
          * for some reason lv.getChildAt(0) is returning null and
          * get last visible index is -1 indicating the listview isn't
@@ -243,8 +248,20 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
                 ud.getRole());   
 	}
 	
-	public void testDeleteExpenseItem() {
-		
+	public void testDeleteExpenseItem() throws InterruptedException {
+        ExpenseItemsListActivity activity =
+                startActivityAsClaimant();
+
+        // Get ListView and adapter
+        ListView lv = (ListView) activity.findViewById(
+                R.id.expenseItemsListListView);
+        ExpenseItemsListAdapter adapter =
+                (ExpenseItemsListAdapter) lv.getAdapter();
+        
+        // Makes an item attached to this claim, tested in testViewList
+        Item item = DataSourceUtils.addEmptyItem(claim, dataSource);
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
 	}
 	
     //////////////////////

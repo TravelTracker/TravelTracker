@@ -120,6 +120,7 @@
         <string name= "expense_item_info_description">Description</string>
         <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>
         <string name= "expense_item_info_change_receipt_message">Change, delete or view current receipt image</string>
+        <string name= "expense_item_info_failed_to_get_image">Failed to get receipt image</string>
         <string name= "take_photo">Take photo</string>
         <string name= "choose_from_gallery">Choose from gallery</string>
         <string name= "delete_image">Delete image</string>

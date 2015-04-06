@@ -312,14 +312,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 itemDescription.addTextChangedListener(new TextWatcher() {
                     
                     @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        //do nothing
-                    }
+                    public void onTextChanged(CharSequence s, int start, int before, int count) { }
                     
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        // TODO Auto-generated method stub
-                    }
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
                     
                     @Override
                     public void afterTextChanged(Editable s) {
@@ -332,14 +328,10 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 itemAmount.addTextChangedListener(new TextWatcher() {
                     
                     @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                       //do nothing
-                    }
+                    public void onTextChanged(CharSequence s, int start, int before, int count) { }
                     
                     @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        // TODO Auto-generated method stub
-                    }
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
                     
                     @Override
                     public void afterTextChanged(Editable s) {
@@ -532,18 +524,15 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		
 		//if Result is from takePhoto()
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
-				
-				Bitmap imageBitmap = null;
-				try {
-					imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				item.setReceipt(new Receipt(imageBitmap));
+			Bitmap imageBitmap = null;
+			try {
+				imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+			} catch (FileNotFoundException e) {
+				Toast.makeText(this, getString(R.string.expense_item_info_failed_to_get_image), Toast.LENGTH_SHORT).show();
+			} catch (IOException e) {
+                Toast.makeText(this, getString(R.string.expense_item_info_failed_to_get_image), Toast.LENGTH_SHORT).show();
+			}
+			item.setReceipt(new Receipt(imageBitmap));
 		}
 		//if result is from chooseImageFromGallery()
 		//refrenced viralpatel.net/blogs/pick-image-from-galary-android-app/

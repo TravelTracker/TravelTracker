@@ -295,9 +295,7 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 		try{
 			datasource.addClaim(user, new createNewClaimCallback());
 		} catch (NullPointerException e) {
-			// This probably means we are working offline
-			//TODO figure out what to do here
-			Log.d("ERROR", "The user in Initial Data is null");
+			Log.d("ClaimsListActivity", "Failed to add a new claim");
 		}
 	}
 	
@@ -382,9 +380,7 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 	/** Callback for deleting a claim */
 	class deleteClaimCallback implements ResultCallback<Void>{
 		@Override
-		public void onResult(Void result) {
-			// TODO Auto-generated method stub
-		}
+		public void onResult(Void result) { }
 
 		@Override
 		public void onError(String message) {

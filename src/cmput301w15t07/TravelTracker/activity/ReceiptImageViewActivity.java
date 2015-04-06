@@ -74,8 +74,8 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.receipt_image_view);
         Bundle bundle = getIntent().getExtras();
-         itemID = (UUID) bundle.getSerializable(ITEM_UUID);
-         datasource.getItem(itemID, new ResultCallback<Item>() {
+        itemID = (UUID) bundle.getSerializable(ITEM_UUID);
+        datasource.getItem(itemID, new ResultCallback<Item>() {
             
             @Override
             public void onResult(Item result) {
@@ -85,11 +85,10 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
             
             @Override
             public void onError(String message) {
-                // TODO Auto-generated method stub
-                
+                String msg = getString(R.string.expense_item_info_failed_to_get_image);
+                Toast.makeText(ReceiptImageViewActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
         });
-         
     }
     
 	// There is no dataset in ReceiptImageViewActivity, this needs no implementation.

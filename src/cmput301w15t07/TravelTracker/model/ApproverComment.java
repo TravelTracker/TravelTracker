@@ -31,64 +31,64 @@ import java.util.Date;
  * and cache dirtying.
  * 
  * @author ryant26,
- * 		   colp
+ *            colp
  *
  */
 public class ApproverComment {
-	private String comment;
-	private Date date;
-	
-	public ApproverComment(String comment, Date date) {
-		this.comment = comment;
-		this.date = date;
-	}
+    private String comment;
+    private Date date;
+    
+    public ApproverComment(String comment, Date date) {
+        this.comment = comment;
+        this.date = date;
+    }
 
-	/**
-	 * Get the comment string.
-	 * @return The comment string.
-	 */
-	public String getComment() {
-		return comment;
-	}
+    /**
+     * Get the comment string.
+     * @return The comment string.
+     */
+    public String getComment() {
+        return comment;
+    }
 
-	/**
-	 * Get the date on which the comment was made.
-	 * @return The comment date.
-	 */
-	public Date getDate() {
-		return date;
-	}
+    /**
+     * Get the date on which the comment was made.
+     * @return The comment date.
+     */
+    public Date getDate() {
+        return date;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof ApproverComment))
-			return false;
-		ApproverComment other = (ApproverComment) obj;
-		if (comment == null) {
-			if (other.comment != null)
-				return false;
-		} else if (!comment.equals(other.comment))
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ApproverComment))
+            return false;
+        ApproverComment other = (ApproverComment) obj;
+        if (comment == null) {
+            if (other.comment != null)
+                return false;
+        } else if (!comment.equals(other.comment))
+            return false;
+        if (date == null) {
+            if (other.date != null)
+                return false;
+        } else if (!date.equals(other.date))
+            return false;
+        return true;
+    }
 
-	
+    
 }

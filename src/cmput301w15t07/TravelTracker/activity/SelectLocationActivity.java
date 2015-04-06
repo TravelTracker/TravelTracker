@@ -60,13 +60,13 @@ public class SelectLocationActivity extends TravelTrackerActivity {
     /** Default zoom level when a position is passed in the intent */
     private static final float zoomLevel = 5.f;
     
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.select_location_menu, menu);
         
         return true;
-	}
-	
+    }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -94,12 +94,12 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         GoogleMap map = getMap();
         map.setOnMapClickListener(new LocationSelectedListener());
         map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-		        String msg = getString(R.string.tap_to_select_location);
-		        Toast.makeText(SelectLocationActivity.this, msg, Toast.LENGTH_LONG).show();
-			}
-		});
+            @Override
+            public void onMapLoaded() {
+                String msg = getString(R.string.tap_to_select_location);
+                Toast.makeText(SelectLocationActivity.this, msg, Toast.LENGTH_LONG).show();
+            }
+        });
         
         UiSettings settings = map.getUiSettings();
         settings.setMapToolbarEnabled(false);
@@ -111,17 +111,17 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         Bundle bundle = getIntent().getExtras();
         
         if (bundle != null) {
-	        Double startLat = bundle.getDouble(START_LAT, Double.NaN);
-	        Double startLng = bundle.getDouble(START_LNG, Double.NaN);
-	        
-	        // Zoom in to and mark the current position
-	        if (!startLat.isNaN() && !startLng.isNaN()) {
-	        	LatLng position = new LatLng(startLat, startLng);
-	        	
-	        	map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoomLevel));
-	        	map.addMarker(new MarkerOptions()
-	        			.position(position));
-	        }
+            Double startLat = bundle.getDouble(START_LAT, Double.NaN);
+            Double startLng = bundle.getDouble(START_LNG, Double.NaN);
+            
+            // Zoom in to and mark the current position
+            if (!startLat.isNaN() && !startLng.isNaN()) {
+                LatLng position = new LatLng(startLat, startLng);
+                
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoomLevel));
+                map.addMarker(new MarkerOptions()
+                        .position(position));
+            }
         }
     }
     
@@ -131,9 +131,9 @@ public class SelectLocationActivity extends TravelTrackerActivity {
 
     @Override
     public void onBackPressed() {
-    	setResult(RESULT_CANCELED);
-    	
-    	super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        
+        super.onBackPressed();
     }
     
     /**
@@ -141,7 +141,7 @@ public class SelectLocationActivity extends TravelTrackerActivity {
      * @return The GoogleMap in the select_location_activity_map fragment.
      */
     GoogleMap getMap() {
-    	FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getFragmentManager();
         MapFragment fragment = (MapFragment) fm.findFragmentById(R.id.select_location_activity_map);
         GoogleMap map = fragment.getMap();
         
@@ -152,15 +152,15 @@ public class SelectLocationActivity extends TravelTrackerActivity {
      * Listener class for when a location is selected by the user.
      */
     class LocationSelectedListener implements OnMapClickListener {
-		@Override
+        @Override
         public void onMapClick(LatLng location) {
-			// Return the selected location
-			Intent intent = new Intent();
-			intent.putExtra(RESULT_LAT, location.latitude);
-			intent.putExtra(RESULT_LNG, location.longitude);
-			
-			setResult(RESULT_OK, intent);
-			finish();
+            // Return the selected location
+            Intent intent = new Intent();
+            intent.putExtra(RESULT_LAT, location.latitude);
+            intent.putExtra(RESULT_LNG, location.longitude);
+            
+            setResult(RESULT_OK, intent);
+            finish();
         }
     }
 }

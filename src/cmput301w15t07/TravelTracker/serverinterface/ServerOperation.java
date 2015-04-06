@@ -31,11 +31,11 @@ import android.os.AsyncTask;
  * @param <T>
  */
 public class ServerOperation <T> extends AsyncTask<Collection<T>, Integer, Collection<T>> {
-	
-	@Override
-	protected Collection<T> doInBackground(Collection<T>... params) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+    @Override
+    protected Collection<T> doInBackground(Collection<T>... params) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

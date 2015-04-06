@@ -33,92 +33,92 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class Tag extends Document {
-	private UUID user;
-	private String title;
-	
-	/**
-	 * Package protected constructor, intended for use only by DataSource.
-	 * 
-	 * @param docID UUID document identifier
-	 */
-	Tag(UUID docID, UUID userID) {
-		super(docID);
-		setType(Type.TAG);
-		
-		user = userID;
-		title = "";
-	}
-	
-	/**
-	 * Private no-args constructor for GSON.
-	 */
-	@SuppressWarnings("unused")
-	private Tag() {
-		this(UUID.randomUUID(), null);
-	}
-	
-	/**
-	 * Get the user to which this belongs.
-	 * @return The user's UUID.
-	 */
-	public UUID getUser() {
-		return this.user;
-	}
-	
-	/**
-	 * Set the user to which this belongs.
-	 * @param user The user's UUID.
-	 */
-	public void setUser(UUID user) {
-		this.user = user;
-		this.<Tag>hasChanged(this);
-	}
-	
-	/**
-	 * Get the tag's title.
-	 * @return The title.
-	 */
-	public String getTitle() {
-		return title;
-	}
-	
-	/**
-	 * Set the tag's title.
-	 * @param title The title.
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-		this.<Tag>hasChanged(this);
-	}
+    private UUID user;
+    private String title;
+    
+    /**
+     * Package protected constructor, intended for use only by DataSource.
+     * 
+     * @param docID UUID document identifier
+     */
+    Tag(UUID docID, UUID userID) {
+        super(docID);
+        setType(Type.TAG);
+        
+        user = userID;
+        title = "";
+    }
+    
+    /**
+     * Private no-args constructor for GSON.
+     */
+    @SuppressWarnings("unused")
+    private Tag() {
+        this(UUID.randomUUID(), null);
+    }
+    
+    /**
+     * Get the user to which this belongs.
+     * @return The user's UUID.
+     */
+    public UUID getUser() {
+        return this.user;
+    }
+    
+    /**
+     * Set the user to which this belongs.
+     * @param user The user's UUID.
+     */
+    public void setUser(UUID user) {
+        this.user = user;
+        this.<Tag>hasChanged(this);
+    }
+    
+    /**
+     * Get the tag's title.
+     * @return The title.
+     */
+    public String getTitle() {
+        return title;
+    }
+    
+    /**
+     * Set the tag's title.
+     * @param title The title.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+        this.<Tag>hasChanged(this);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (!(obj instanceof Tag))
-			return false;
-		Tag other = (Tag) obj;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof Tag))
+            return false;
+        Tag other = (Tag) obj;
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
+        return true;
+    }
 }

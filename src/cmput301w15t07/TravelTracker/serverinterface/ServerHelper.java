@@ -36,85 +36,85 @@ import cmput301w15t07.TravelTracker.model.User;
  * @author ryant26
  */
 public interface ServerHelper {
-	
-	/**
-	 * This method deletes all passed documents from the ES cluster.
-	 * When finished or on error will use the callback. 
-	 * @param documents
-	 */
-	public <T extends Document> void deleteDocuments(Collection<T> documents) throws Exception;
-	
-	/**
-	 * This method returns all claims from the server
-	 * @return all claims in the server
-	 * @throws Exception
-	 */
-	public Collection<Claim> getAllClaims() throws Exception;
-	
-	/**
-	 * This method returns all items from the server
-	 * @return all items in server
-	 * @throws Exception
-	 */
-	public Collection<Item> getAllItems() throws Exception;
-	
-	/**
-	 * This method gets all tags from the server
-	 * @return all tags in server
-	 * @throws Exception
-	 */
-	public Collection<Tag> getAllTags() throws Exception;
-	
-	/**
-	 * This method gets all users from the server
-	 * @return	all users in server
-	 * @throws Exception
-	 */
-	public Collection<User> getAllUsers() throws Exception;
-	
-	/**
-	 * Gets all claims for the passed user from the server asynchronously, returns it via 
-	 * ResultCallback
-	 * @param user
-	 * @return collection of claims
-	 */
-	public Collection<Claim> getClaims(UUID user) throws Exception;
-	
-	/**
-	 * Gets all expense items for the passed claim from the server asynchronously, returns it
-	 * via ResultCallback
-	 * @param claim
-	 * @return collection of expense Items
-	 */
-	public Collection<Item> getExpenses(UUID claim) throws Exception;
-	/**
-	 * Gets all tags for the passed user from the server asynchronously, returns it
-	 * via ResultCallback
-	 * @param user
-	 * @return collection of Tags
-	 */
-	public Collection<Tag> getTags(UUID user) throws Exception;
-	
-	/**
-	 * Gets gets user for passed name from the server asynchronously, returns it
-	 * via ResultCallback
-	 * @param name
-	 * @return user
-	 */
-	public User getUser(String name) throws Exception;
-	
-	/**
-	 * Gets the user for the passed UUID from the server synchronously
-	 * @param user UUID for the user to be retrieved
-	 * @return user for passed UUID
-	 * @throws Exception
-	 */
-	public User getUser(UUID user) throws Exception;
-	
-	/**
-	 * Saves passed documents to the server asynchronously, returns the documents that
-	 * were successfully saved via callback 
-	 * @param documents
-	 */
-	public <T extends Document> void saveDocuments(Collection<T> documents) throws Exception;
+    
+    /**
+     * This method deletes all passed documents from the ES cluster.
+     * When finished or on error will use the callback. 
+     * @param documents
+     */
+    public <T extends Document> void deleteDocuments(Collection<T> documents) throws Exception;
+    
+    /**
+     * This method returns all claims from the server
+     * @return all claims in the server
+     * @throws Exception
+     */
+    public Collection<Claim> getAllClaims() throws Exception;
+    
+    /**
+     * This method returns all items from the server
+     * @return all items in server
+     * @throws Exception
+     */
+    public Collection<Item> getAllItems() throws Exception;
+    
+    /**
+     * This method gets all tags from the server
+     * @return all tags in server
+     * @throws Exception
+     */
+    public Collection<Tag> getAllTags() throws Exception;
+    
+    /**
+     * This method gets all users from the server
+     * @return    all users in server
+     * @throws Exception
+     */
+    public Collection<User> getAllUsers() throws Exception;
+    
+    /**
+     * Gets all claims for the passed user from the server asynchronously, returns it via 
+     * ResultCallback
+     * @param user
+     * @return collection of claims
+     */
+    public Collection<Claim> getClaims(UUID user) throws Exception;
+    
+    /**
+     * Gets all expense items for the passed claim from the server asynchronously, returns it
+     * via ResultCallback
+     * @param claim
+     * @return collection of expense Items
+     */
+    public Collection<Item> getExpenses(UUID claim) throws Exception;
+    /**
+     * Gets all tags for the passed user from the server asynchronously, returns it
+     * via ResultCallback
+     * @param user
+     * @return collection of Tags
+     */
+    public Collection<Tag> getTags(UUID user) throws Exception;
+    
+    /**
+     * Gets gets user for passed name from the server asynchronously, returns it
+     * via ResultCallback
+     * @param name
+     * @return user
+     */
+    public User getUser(String name) throws Exception;
+    
+    /**
+     * Gets the user for the passed UUID from the server synchronously
+     * @param user UUID for the user to be retrieved
+     * @return user for passed UUID
+     * @throws Exception
+     */
+    public User getUser(UUID user) throws Exception;
+    
+    /**
+     * Saves passed documents to the server asynchronously, returns the documents that
+     * were successfully saved via callback 
+     * @param documents
+     */
+    public <T extends Document> void saveDocuments(Collection<T> documents) throws Exception;
 }

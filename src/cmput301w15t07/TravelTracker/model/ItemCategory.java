@@ -35,28 +35,28 @@ import cmput301w15t07.TravelTracker.R;
  */
 public enum ItemCategory implements ContextStringable {
     NO_CATEGORY(R.string.enum_item_category_no_category),
-	ACCOMMODATION(R.string.enum_item_category_accommodation),
-	AIR_FARE(R.string.enum_item_category_air_fare),
-	FUEL(R.string.enum_item_category_fuel),
-	GROUND_TRANSPORT(R.string.enum_item_category_ground_transport),
-	MEAL(R.string.enum_item_category_meal),
-	MISC(R.string.enum_item_category_miscellaneous),
-	PARKING(R.string.enum_item_category_parking),
-	PRIVATE_AUTOMOBILE(R.string.enum_item_category_private_automobile),
-	REGISTRATION(R.string.enum_item_category_registration),
-	SUPPLIES(R.string.enum_item_category_supplies),
-	VEHICLE_RENTAL(R.string.enum_item_category_vehicle_rental);
-	
-	private final int id;
-	
-	private ItemCategory(int id) {
-		this.id = id;
-	}
-	
-	public String getString(Context context) {
-	    return context.getString(id);
-	}
-	
+    ACCOMMODATION(R.string.enum_item_category_accommodation),
+    AIR_FARE(R.string.enum_item_category_air_fare),
+    FUEL(R.string.enum_item_category_fuel),
+    GROUND_TRANSPORT(R.string.enum_item_category_ground_transport),
+    MEAL(R.string.enum_item_category_meal),
+    MISC(R.string.enum_item_category_miscellaneous),
+    PARKING(R.string.enum_item_category_parking),
+    PRIVATE_AUTOMOBILE(R.string.enum_item_category_private_automobile),
+    REGISTRATION(R.string.enum_item_category_registration),
+    SUPPLIES(R.string.enum_item_category_supplies),
+    VEHICLE_RENTAL(R.string.enum_item_category_vehicle_rental);
+    
+    private final int id;
+    
+    private ItemCategory(int id) {
+        this.id = id;
+    }
+    
+    public String getString(Context context) {
+        return context.getString(id);
+    }
+    
     /**
      * This method returns the String array for all the ItemCategory String values.
      * @param context The Android context in which this is operating.
@@ -76,21 +76,21 @@ public enum ItemCategory implements ContextStringable {
         return stringArray;
     }
     
-	/**
-	 * This method returns the ItemCategory instance corresponding to the passed string.
-	 * @param text The text to search for.
-	 * @param context The Android context in which this is operating.
-	 * @return The matching ItemCategory.
-	 */
-	public static ItemCategory fromString(String text, Context context) {
-	    if (text != null) {
-	    	for (ItemCategory i : ItemCategory.values()) {
-	    		if (text.equalsIgnoreCase(i.getString(context))) {
-    				return i;
-	    		}
-	    	}
-	    }
-	    return null;
-	}
-	
+    /**
+     * This method returns the ItemCategory instance corresponding to the passed string.
+     * @param text The text to search for.
+     * @param context The Android context in which this is operating.
+     * @return The matching ItemCategory.
+     */
+    public static ItemCategory fromString(String text, Context context) {
+        if (text != null) {
+            for (ItemCategory i : ItemCategory.values()) {
+                if (text.equalsIgnoreCase(i.getString(context))) {
+                    return i;
+                }
+            }
+        }
+        return null;
+    }
+    
 }

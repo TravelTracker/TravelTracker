@@ -37,136 +37,136 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  *
  */
 public class GeneratedDataSource extends InMemoryDataSource {
-	
-	/** 
-	 * Overrides addUser to generate starting data for a new User.
-	 * @see cmput301w15t07.TravelTracker.model.InMemoryDataSource#addUser(cmput301w15t07.TravelTracker.serverinterface.ResultCallback)
-	 */
-	@Override
-	public void addUser(ResultCallback<User> callback) {
+    
+    /** 
+     * Overrides addUser to generate starting data for a new User.
+     * @see cmput301w15t07.TravelTracker.model.InMemoryDataSource#addUser(cmput301w15t07.TravelTracker.serverinterface.ResultCallback)
+     */
+    @Override
+    public void addUser(ResultCallback<User> callback) {
 
-		Random r = new Random();
+        Random r = new Random();
 
-		User user = new User(UUID.randomUUID());
-		user.addObserver(this);
-		internalAddUser(user);
-		
-		// Add ten random tags
-		for (int i = 0; i < 10; ++i) {
-		    Tag t = new Tag(UUID.randomUUID(), user.getUUID());
-		    
-		    // Set data
-		    t.setTitle(getRandomString(r, 5, 10));
-		    
-		    internalAddTag(t);
-		}
-		
-		// Want 10 random claims
-		for (int i = 0; i < 10; ++i) {
-			// Create claim and set data
-			Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
-			
-			// Random start time (up to 10 days ago)
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DAY_OF_MONTH, -r.nextInt(10));
-			claim.setStartDate(calendar.getTime());
-			
-			// Random end time (up to 10 days from now)
-			calendar = Calendar.getInstance();
-			calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(10));
-			claim.setEndDate(calendar.getTime());
-			
-			// Set status
-			claim.setStatus(Status.values()[r.nextInt(Status.values().length)]);
-			
-			// Set approver if status is not in progress
-			if (claim.getStatus() != Status.IN_PROGRESS) {
-				claim.setApprover(user.getUUID());
-			}
-			
-			// Set tags
-			ArrayList<UUID> tagIDs = new ArrayList<UUID>(tags.keySet());
-		    int tagCount = r.nextInt(5);
-		    if (tagCount > 0) {
-		        ArrayList<UUID> tags = new ArrayList<UUID>();
-		        
-    		    for (int j = 0; j < tagCount; ++j) {
-    		        int tagIndex = r.nextInt(tagIDs.size());
-    		        tags.add(tagIDs.get(tagIndex));
-    		    }
-    		    
-    		    claim.setTags(tags);
-		    }
-			
-			internalAddClaim(claim);
-			
-			// With 10 items each
-			for (int j = 0; j < 10; ++j) {
-				
-				Item item = new Item(UUID.randomUUID(), claim.getUUID());
-				
-				item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
-				
-				// Set currency
-				item.setCurrency(ItemCurrency.values()[r.nextInt(ItemCurrency.values().length)]);
-				
-				// Set category
-				item.setCategory(ItemCategory.values()[r.nextInt(ItemCategory.values().length)]);
+        User user = new User(UUID.randomUUID());
+        user.addObserver(this);
+        internalAddUser(user);
+        
+        // Add ten random tags
+        for (int i = 0; i < 10; ++i) {
+            Tag t = new Tag(UUID.randomUUID(), user.getUUID());
+            
+            // Set data
+            t.setTitle(getRandomString(r, 5, 10));
+            
+            internalAddTag(t);
+        }
+        
+        // Want 10 random claims
+        for (int i = 0; i < 10; ++i) {
+            // Create claim and set data
+            Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
+            
+            // Random start time (up to 10 days ago)
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, -r.nextInt(10));
+            claim.setStartDate(calendar.getTime());
+            
+            // Random end time (up to 10 days from now)
+            calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(10));
+            claim.setEndDate(calendar.getTime());
+            
+            // Set status
+            claim.setStatus(Status.values()[r.nextInt(Status.values().length)]);
+            
+            // Set approver if status is not in progress
+            if (claim.getStatus() != Status.IN_PROGRESS) {
+                claim.setApprover(user.getUUID());
+            }
+            
+            // Set tags
+            ArrayList<UUID> tagIDs = new ArrayList<UUID>(tags.keySet());
+            int tagCount = r.nextInt(5);
+            if (tagCount > 0) {
+                ArrayList<UUID> tags = new ArrayList<UUID>();
+                
+                for (int j = 0; j < tagCount; ++j) {
+                    int tagIndex = r.nextInt(tagIDs.size());
+                    tags.add(tagIDs.get(tagIndex));
+                }
+                
+                claim.setTags(tags);
+            }
+            
+            internalAddClaim(claim);
+            
+            // With 10 items each
+            for (int j = 0; j < 10; ++j) {
+                
+                Item item = new Item(UUID.randomUUID(), claim.getUUID());
+                
+                item.setAmount(r.nextFloat()*(10+r.nextInt(6))*r.nextInt(4)); // Set amount
+                
+                // Set currency
+                item.setCurrency(ItemCurrency.values()[r.nextInt(ItemCurrency.values().length)]);
+                
+                // Set category
+                item.setCategory(ItemCategory.values()[r.nextInt(ItemCategory.values().length)]);
 
-				// Random time (10 days before today to 10 after)
-				calendar = Calendar.getInstance();
-				calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
-				
-				item.setDate(calendar.getTime());
-				item.setDescription(getRandomString(r, 20, 76)); // Description 20-75
-	            
-	            switch(r.nextInt(2)) {
-	            case 0:
-	                item.setComplete(true);
-	                break;
-	            case 1:
-	                item.setComplete(false);
-	                break;
-	            default:
-	                item.setComplete(true);
-	            }
-				
-				// Set receipt, can't generate a receipt right now
-				//item.setReceipt(receipt);
-				internalAddItem(item);
-			}
-			
-			//Add some destinations
-			for (int k = 0; k < r.nextInt(5); k++){
-			    double lat = (double) (r.nextInt(181) - 91);
-			    double lng = (double) (r.nextInt(360) - 180);
-			    Geolocation loc = new Geolocation(lat, lng);
-				claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), loc, "A test Reason"));
-			}
-			
-			// Add some comments (from the same user for simplicity's sake, though this is impossible)
-			for (int l = 0; l < 5; l++) {
-				calendar = Calendar.getInstance();
-				calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
-				claim.getComments().add(new ApproverComment(getRandomString(r, 50, 200), calendar.getTime()));
-			}
-		}
-		
-		callback.onResult(user);
-	}
+                // Random time (10 days before today to 10 after)
+                calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
+                
+                item.setDate(calendar.getTime());
+                item.setDescription(getRandomString(r, 20, 76)); // Description 20-75
+                
+                switch(r.nextInt(2)) {
+                case 0:
+                    item.setComplete(true);
+                    break;
+                case 1:
+                    item.setComplete(false);
+                    break;
+                default:
+                    item.setComplete(true);
+                }
+                
+                // Set receipt, can't generate a receipt right now
+                //item.setReceipt(receipt);
+                internalAddItem(item);
+            }
+            
+            //Add some destinations
+            for (int k = 0; k < r.nextInt(5); k++){
+                double lat = (double) (r.nextInt(181) - 91);
+                double lng = (double) (r.nextInt(360) - 180);
+                Geolocation loc = new Geolocation(lat, lng);
+                claim.getDestinations().add(new Destination(getRandomString(new Random(), 5, 10), loc, "A test Reason"));
+            }
+            
+            // Add some comments (from the same user for simplicity's sake, though this is impossible)
+            for (int l = 0; l < 5; l++) {
+                calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_MONTH, r.nextInt(20) - 10);
+                claim.getComments().add(new ApproverComment(getRandomString(r, 50, 200), calendar.getTime()));
+            }
+        }
+        
+        callback.onResult(user);
+    }
 
-	
-	/**
-	 * Generate a random string of chars A-Z,a-z,0-9
-	 * 
-	 * http://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
-	 * 
-	 * @param minLength Min length of the string generated.
-	 * @param maxLength Max length of the string generated
-	 * @return Random string of length [minLength, maxLength)
-	 */
-	private String getRandomString(Random r, int minLength, int maxLength) {
-		// Start chars. Two spaces for more probability of spaces. Does it matter really? No.
+    
+    /**
+     * Generate a random string of chars A-Z,a-z,0-9
+     * 
+     * http://stackoverflow.com/questions/20536566/creating-a-random-string-with-a-z-and-0-9-in-java
+     * 
+     * @param minLength Min length of the string generated.
+     * @param maxLength Max length of the string generated
+     * @return Random string of length [minLength, maxLength)
+     */
+    private String getRandomString(Random r, int minLength, int maxLength) {
+        // Start chars. Two spaces for more probability of spaces. Does it matter really? No.
         final String CHARS = "  ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
         StringBuilder str = new StringBuilder();
         int length = minLength + r.nextInt(maxLength-minLength);

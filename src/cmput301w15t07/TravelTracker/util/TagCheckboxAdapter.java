@@ -41,66 +41,66 @@ import cmput301w15t07.TravelTracker.model.Tag;
  */
 
 public class TagCheckboxAdapter extends ArrayAdapter<Tag> {
-	private HashSet<UUID> selected;
-	private boolean enabled = true;
-	
-	/**
-	 * Constructor
-	 * @param context The Android context in which to create the adapter.
-	 * @param selected The UUIDs of selected tags.
-	 */
-	public TagCheckboxAdapter(Context context, Collection<UUID> selected) {
-	    super(context, R.layout.select_tag_fragment_item, R.id.select_tag_fragment_item_checkbox);
-	    
-	    this.selected = new HashSet<UUID>(selected);
+    private HashSet<UUID> selected;
+    private boolean enabled = true;
+    
+    /**
+     * Constructor
+     * @param context The Android context in which to create the adapter.
+     * @param selected The UUIDs of selected tags.
+     */
+    public TagCheckboxAdapter(Context context, Collection<UUID> selected) {
+        super(context, R.layout.select_tag_fragment_item, R.id.select_tag_fragment_item_checkbox);
+        
+        this.selected = new HashSet<UUID>(selected);
     }
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-	    View view = super.getView(position, convertView, parent);
-	    Tag tag = getItem(position);
-	    final UUID uuid = tag.getUUID();
-	    
-	    final CheckBox checkBox = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
-	    checkBox.setText(tag.getTitle());
-	    
-	    // Check box if already selected
-	    if (selected.contains(uuid)) {
-	    	checkBox.setChecked(true);
-	    } else {
-	    	checkBox.setChecked(false);
-	    }
-	    
-	    checkBox.setOnClickListener(new OnClickListener() {
-			@Override
+    
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = super.getView(position, convertView, parent);
+        Tag tag = getItem(position);
+        final UUID uuid = tag.getUUID();
+        
+        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.select_tag_fragment_item_checkbox);
+        checkBox.setText(tag.getTitle());
+        
+        // Check box if already selected
+        if (selected.contains(uuid)) {
+            checkBox.setChecked(true);
+        } else {
+            checkBox.setChecked(false);
+        }
+        
+        checkBox.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
-				if (checkBox.isChecked()) {
-					selected.add(uuid);
-				} else {
-					selected.remove(uuid);
-				}
+                if (checkBox.isChecked()) {
+                    selected.add(uuid);
+                } else {
+                    selected.remove(uuid);
+                }
             }
-		});
-	    
-	    if (!enabled) {
-	        checkBox.setEnabled(false);
-	    }
-	    
-	    return view;
-	}
-	
-	/**
-	 * Get the UUIDs of selected tags.
-	 * @return The set of selected tag UUIDs.
-	 */
-	public HashSet<UUID> getSelected() {
-		return selected;
-	}
-	
-	/**
-	 * Set whether the checkbox should be enabled.
-	 */
-	public void setEnabled(boolean enabled) {
-	    this.enabled = enabled;
-	}
+        });
+        
+        if (!enabled) {
+            checkBox.setEnabled(false);
+        }
+        
+        return view;
+    }
+    
+    /**
+     * Get the UUIDs of selected tags.
+     * @return The set of selected tag UUIDs.
+     */
+    public HashSet<UUID> getSelected() {
+        return selected;
+    }
+    
+    /**
+     * Set whether the checkbox should be enabled.
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

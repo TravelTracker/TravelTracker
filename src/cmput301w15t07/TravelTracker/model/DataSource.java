@@ -35,118 +35,118 @@ import cmput301w15t07.TravelTracker.util.Observer;
  *
  */
 public interface DataSource {
-	
-	/*
-	 * Duplicate observable method signatures for cast-free dependency injection.
-	 */
+    
+    /*
+     * Duplicate observable method signatures for cast-free dependency injection.
+     */
     public void addObserver(Observer<DataSource> obs);
     public void removeObserver(Observer<DataSource> obs);
     public void updateObservers(DataSource self);
 
-	/**
-	 * Add a user.
-	 * @param callback The result callback. On success, the result is the User.
-	 */
-	public void addUser(ResultCallback<User> callback);
+    /**
+     * Add a user.
+     * @param callback The result callback. On success, the result is the User.
+     */
+    public void addUser(ResultCallback<User> callback);
 
-	/**
-	 * Add a claim.
-	 * @param user The user to which the claim belongs. 
-	 * @param callback The result callback. On success, the result is the Claim.
-	 */
-	public void addClaim(User user, ResultCallback<Claim> callback);
+    /**
+     * Add a claim.
+     * @param user The user to which the claim belongs. 
+     * @param callback The result callback. On success, the result is the Claim.
+     */
+    public void addClaim(User user, ResultCallback<Claim> callback);
 
-	/**
-	 * Add an expense item.
-	 * @param claim The claim to which the item belongs. 
-	 * @param callback The result callback. On success, the result is the Item.
-	 */
-	public void addItem(Claim claim, ResultCallback<Item> callback);
+    /**
+     * Add an expense item.
+     * @param claim The claim to which the item belongs. 
+     * @param callback The result callback. On success, the result is the Item.
+     */
+    public void addItem(Claim claim, ResultCallback<Item> callback);
 
-	/**
-	 * Add a tag.
-	 * @param user The user to which the tag belongs. 
-	 * @param callback The result callback. On success, the result is the Tag.
-	 */
-	public void addTag(User user, ResultCallback<Tag> callback);
+    /**
+     * Add a tag.
+     * @param user The user to which the tag belongs. 
+     * @param callback The result callback. On success, the result is the Tag.
+     */
+    public void addTag(User user, ResultCallback<Tag> callback);
 
-	/**
-	 * Delete a user.
-	 * @param id The user's ID.
-	 * @param callback The result callback. On success, the result is null.
-	 */
-	public void deleteUser(UUID id, ResultCallback<Void> callback);
+    /**
+     * Delete a user.
+     * @param id The user's ID.
+     * @param callback The result callback. On success, the result is null.
+     */
+    public void deleteUser(UUID id, ResultCallback<Void> callback);
 
-	/**
-	 * Delete a claim.
-	 * @param id The claim's ID.
-	 * @param callback The result callback. On success, the result is null.
-	 */
-	public void deleteClaim(UUID id, ResultCallback<Void> callback);
+    /**
+     * Delete a claim.
+     * @param id The claim's ID.
+     * @param callback The result callback. On success, the result is null.
+     */
+    public void deleteClaim(UUID id, ResultCallback<Void> callback);
 
-	/**
-	 * Delete an item.
-	 * @param id The item's ID.
-	 * @param callback The result callback. On success, the result is null.
-	 */
-	public void deleteItem(UUID id, ResultCallback<Void> callback);
+    /**
+     * Delete an item.
+     * @param id The item's ID.
+     * @param callback The result callback. On success, the result is null.
+     */
+    public void deleteItem(UUID id, ResultCallback<Void> callback);
 
-	/**
-	 * Delete a tag.
-	 * @param id The tag's ID.
-	 * @param callback The result callback. On success, the result is null.
-	 */
-	public void deleteTag(UUID id, ResultCallback<Void> callback);
+    /**
+     * Delete a tag.
+     * @param id The tag's ID.
+     * @param callback The result callback. On success, the result is null.
+     */
+    public void deleteTag(UUID id, ResultCallback<Void> callback);
 
-	/**
-	 * Get a user.
-	 * @param id The user's ID.
-	 * @param callback The result callback. On success, the result is the User.
-	 */
-	public void getUser(UUID id, ResultCallback<User> callback);
+    /**
+     * Get a user.
+     * @param id The user's ID.
+     * @param callback The result callback. On success, the result is the User.
+     */
+    public void getUser(UUID id, ResultCallback<User> callback);
 
-	/**
-	 * Get a claim.
-	 * @param id The claim's ID.
-	 * @param callback The result callback. On success, the result is the Claim.
-	 */
-	public void getClaim(UUID id, ResultCallback<Claim> callback);
+    /**
+     * Get a claim.
+     * @param id The claim's ID.
+     * @param callback The result callback. On success, the result is the Claim.
+     */
+    public void getClaim(UUID id, ResultCallback<Claim> callback);
 
-	/**
-	 * Get an item.
-	 * @param id The item's ID.
-	 * @param callback The result callback. On success, the result is the Item.
-	 */
-	public void getItem(UUID id, ResultCallback<Item> callback);
+    /**
+     * Get an item.
+     * @param id The item's ID.
+     * @param callback The result callback. On success, the result is the Item.
+     */
+    public void getItem(UUID id, ResultCallback<Item> callback);
 
-	/**
-	 * Get a tag.
-	 * @param id The tag's ID.
-	 * @param callback The result callback. On success, the result is the Tag.
-	 */
-	public void getTag(UUID id, ResultCallback<Tag> callback);
+    /**
+     * Get a tag.
+     * @param id The tag's ID.
+     * @param callback The result callback. On success, the result is the Tag.
+     */
+    public void getTag(UUID id, ResultCallback<Tag> callback);
 
-	/**
-	 * Get the collection of all users.
-	 * @param callback The result callback. On success, the result is the collection of Users.
-	 */
-	public void getAllUsers(ResultCallback<Collection<User>> callback);
+    /**
+     * Get the collection of all users.
+     * @param callback The result callback. On success, the result is the collection of Users.
+     */
+    public void getAllUsers(ResultCallback<Collection<User>> callback);
 
-	/**
-	 * Get the collection of all claims.
-	 * @param callback The result callback. On success, the result is the collection of Claims.
-	 */
-	public void getAllClaims(ResultCallback<Collection<Claim>> callback);
+    /**
+     * Get the collection of all claims.
+     * @param callback The result callback. On success, the result is the collection of Claims.
+     */
+    public void getAllClaims(ResultCallback<Collection<Claim>> callback);
 
-	/**
-	 * Get the collection of all items.
-	 * @param callback The result callback. On success, the result is the collection of Items.
-	 */
-	public void getAllItems(ResultCallback<Collection<Item>> callback);
+    /**
+     * Get the collection of all items.
+     * @param callback The result callback. On success, the result is the collection of Items.
+     */
+    public void getAllItems(ResultCallback<Collection<Item>> callback);
 
-	/**
-	 * Get the collection of all tags.
-	 * @param callback The result callback. On success, the result is the collection of Tags.
-	 */
-	public void getAllTags(ResultCallback<Collection<Tag>> callback);
+    /**
+     * Get the collection of all tags.
+     * @param callback The result callback. On success, the result is the collection of Tags.
+     */
+    public void getAllTags(ResultCallback<Collection<Tag>> callback);
 }

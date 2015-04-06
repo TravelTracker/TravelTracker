@@ -109,7 +109,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.expense_items_list_add_item:
-        	launchExpenseInfoNewExpense(claim);
+            launchExpenseInfoNewExpense(claim);
             return true;
             
         case R.id.expense_items_list_sign_out:
@@ -117,8 +117,8 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
             return true;
             
         case android.R.id.home:
-        	onBackPressed();
-        	return true;
+            onBackPressed();
+            return true;
             
         default:
             return false;
@@ -204,12 +204,12 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
 
         // Set onClick listener, send the Item to the Item Info Activity
         itemsList.setOnItemClickListener(new OnItemClickListener() {
-        	@Override
-        	public void onItemClick(AdapterView<?> parent, View view,
-        			int position, long id) {
-        		// Launch edit expense item info with this item
-        		launchExpenseItemInfo(adapter.getItem(position));
-        	}
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                // Launch edit expense item info with this item
+                launchExpenseItemInfo(adapter.getItem(position));
+            }
         });
         
         onLoaded();
@@ -259,15 +259,15 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
      * Callback for when a new item is added.
      */
     class CreateNewItemCallback implements ResultCallback<Item> {
-    	@Override
-    	public void onResult(Item result){
-    		launchExpenseItemInfo(result);
-    	}
-    	@Override
-    	public void onError(String message){
-    		Toast.makeText(ExpenseItemsListActivity.this,
-    		        message, Toast.LENGTH_SHORT).show();
-    	}
+        @Override
+        public void onResult(Item result){
+            launchExpenseItemInfo(result);
+        }
+        @Override
+        public void onError(String message){
+            Toast.makeText(ExpenseItemsListActivity.this,
+                    message, Toast.LENGTH_SHORT).show();
+        }
     }
     
     /**

@@ -39,44 +39,44 @@ import cmput301w15t07.TravelTracker.model.User;
  *
  */
 public class AllCallbacks extends AndroidTestCase{
-	public SynchronizedResultCallback<User> userCallback = new SynchronizedResultCallback<User>();
-	public SynchronizedResultCallback<Collection<Claim>> claimCallback = new SynchronizedResultCallback<Collection<Claim>>();
-	public SynchronizedResultCallback<Collection<Item>> itemCallback = new SynchronizedResultCallback<Collection<Item>>();
-	public SynchronizedResultCallback<Collection<User>> usersCallback = new SynchronizedResultCallback<Collection<User>>();
-	public SynchronizedResultCallback<Collection<Tag>> tagCallback = new SynchronizedResultCallback<Collection<Tag>>();
-	
-	/**
-	 *  Constructor for this class 
-	 * @param ds - The datasource you want to use
-	 */
-	public AllCallbacks(DataSource ds){
-		ds.getAllClaims(claimCallback);
-		ds.getAllItems(itemCallback);
-		ds.addUser(userCallback);
-		ds.getAllTags(tagCallback);
-		ds.getAllUsers(usersCallback);
-	}
-	
-	
-	public User getUser(){
-		return DataSourceUtils.getData(userCallback);
-	}
-	
-	public Collection<User> getUsers(){
-		return DataSourceUtils.getData(usersCallback);
-	}
-	
-	public Collection<Claim> getClaims(){
-		return DataSourceUtils.getData(claimCallback);
-	}
-	
-	public Collection<Item> getItems(){
-		return DataSourceUtils.getData(itemCallback);
-	}
-	
-	public Collection<Tag> getTags(){
-		return DataSourceUtils.getData(tagCallback);
-	}
-	
+    public SynchronizedResultCallback<User> userCallback = new SynchronizedResultCallback<User>();
+    public SynchronizedResultCallback<Collection<Claim>> claimCallback = new SynchronizedResultCallback<Collection<Claim>>();
+    public SynchronizedResultCallback<Collection<Item>> itemCallback = new SynchronizedResultCallback<Collection<Item>>();
+    public SynchronizedResultCallback<Collection<User>> usersCallback = new SynchronizedResultCallback<Collection<User>>();
+    public SynchronizedResultCallback<Collection<Tag>> tagCallback = new SynchronizedResultCallback<Collection<Tag>>();
+    
+    /**
+     *  Constructor for this class 
+     * @param ds - The datasource you want to use
+     */
+    public AllCallbacks(DataSource ds){
+        ds.getAllClaims(claimCallback);
+        ds.getAllItems(itemCallback);
+        ds.addUser(userCallback);
+        ds.getAllTags(tagCallback);
+        ds.getAllUsers(usersCallback);
+    }
+    
+    
+    public User getUser(){
+        return DataSourceUtils.getData(userCallback);
+    }
+    
+    public Collection<User> getUsers(){
+        return DataSourceUtils.getData(usersCallback);
+    }
+    
+    public Collection<Claim> getClaims(){
+        return DataSourceUtils.getData(claimCallback);
+    }
+    
+    public Collection<Item> getItems(){
+        return DataSourceUtils.getData(itemCallback);
+    }
+    
+    public Collection<Tag> getTags(){
+        return DataSourceUtils.getData(tagCallback);
+    }
+    
 }
 

@@ -163,7 +163,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             return true;
             
         case android.R.id.home:
-        	onBackPressed();
+            onBackPressed();
             return true;
             
         default:
@@ -213,7 +213,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * @return The last dialog, or null if there isn't one.
      */
     public AlertDialog getLastAlertDialog() {
-    	return lastAlertDialog;
+        return lastAlertDialog;
     }
     
     /**
@@ -221,7 +221,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * hide buttons/views according to user role
      * @param items Collection of a claims expense items
      * @param claimant User that created the claim
-     * @param approver	user that approved the claim (if exsists)
+     * @param approver    user that approved the claim (if exsists)
      */
     public void onGetAllData(final Collection<Item> items, User claimant, User approver, Collection<Tag> tags) {
         if (!loading) {
@@ -230,8 +230,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         }
         
         loading = false;
-    	setContentView(R.layout.claim_info_activity);
-    	
+        setContentView(R.layout.claim_info_activity);
+        
         populateClaimInfo(claim, items, claimant, approver, tags);
         
         if (menu != null) {
@@ -268,46 +268,46 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
                 launchExpenseItemsList();
             }
         });
-    	
+        
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
-        	if (isEditable(claim.getStatus(), userData.getRole())) {
-        	    // Color the LinearLayout to visually cue the user that it can be edited.
-        	    colorViewEnabled(destinationsList);
-        	    
-	            // Attach edit date listener to start date button
-	            startDateButton.setOnClickListener(new View.OnClickListener() {
-	                @Override
-	                public void onClick(View v) {
-	                    startDatePressed();
-	                }
-	            });
-	            
-	            // Attach edit date listener to end date button
-	            endDateButton.setOnClickListener(new View.OnClickListener() {
-	                @Override
-	                public void onClick(View v) {
-	                   endDatePressed();
-	                }
-	            });
-	            
-	            // Attach submit claim listener to submit claim button
-	            submitClaimButton.setOnClickListener(new View.OnClickListener() {
-	                @Override
-	                public void onClick(View v) {
-	                    submitClaim();
-	                }
-	            });
-        	} else {
-        	    // These views should do nothing if the claim isn't editable
-        	    colorViewDisabled(destinationsList);
-        	    disableView(startDateButton);
-        	    disableView(endDateButton);
-        	    disableView(submitClaimButton);
-        	}
-        	
-        	// Add listener to view tags button. User should be able to manage claim's tags
-        	// whether the claim is editable or not.
-        	viewTagsButton.setOnClickListener(new View.OnClickListener() {
+            if (isEditable(claim.getStatus(), userData.getRole())) {
+                // Color the LinearLayout to visually cue the user that it can be edited.
+                colorViewEnabled(destinationsList);
+                
+                // Attach edit date listener to start date button
+                startDateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startDatePressed();
+                    }
+                });
+                
+                // Attach edit date listener to end date button
+                endDateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       endDatePressed();
+                    }
+                });
+                
+                // Attach submit claim listener to submit claim button
+                submitClaimButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        submitClaim();
+                    }
+                });
+            } else {
+                // These views should do nothing if the claim isn't editable
+                colorViewDisabled(destinationsList);
+                disableView(startDateButton);
+                disableView(endDateButton);
+                disableView(submitClaimButton);
+            }
+            
+            // Add listener to view tags button. User should be able to manage claim's tags
+            // whether the claim is editable or not.
+            viewTagsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     launchTagSelect();
@@ -351,8 +351,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             
             // No last approver
             if (approver == null) {
-            	TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
-            	lastApproverTextView.setVisibility(View.GONE);
+                TextView lastApproverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
+                lastApproverTextView.setVisibility(View.GONE);
             }
         }
         
@@ -399,23 +399,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * Prompt for deleting the claim.
      */
     public void promptDeleteClaim() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.claim_info_delete_message)
-			   .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						deleteClaim();
-					}
-			   })
-			   .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// Do nothing
-					}
-			   });
-		
-		lastAlertDialog = builder.create();
-		lastAlertDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.claim_info_delete_message)
+               .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteClaim();
+                    }
+               })
+               .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                    }
+               });
+        
+        lastAlertDialog = builder.create();
+        lastAlertDialog.show();
     }
 
     /**
@@ -445,9 +445,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         // Get list of claim items
         ArrayList<Item> claimItems = new ArrayList<Item>();
         for (Item item : items) {
-        	if (item.getClaim().equals(claim.getUUID())) {
-        		claimItems.add(item);
-        	}
+            if (item.getClaim().equals(claim.getUUID())) {
+                claimItems.add(item);
+            }
         }
         
         // Format string for view items button
@@ -497,50 +497,50 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         tagsTextView.setText(tagString);
         
         if (userData.getRole().equals(UserRole.APPROVER)) {
-        	// Claimant name
-        	TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
-        	claimantNameTextView.setText(claimant.getUserName());
+            // Claimant name
+            TextView claimantNameTextView = (TextView) findViewById(R.id.claimInfoClaimantNameTextView);
+            claimantNameTextView.setText(claimant.getUserName());
         } else if (userData.getRole().equals(UserRole.CLAIMANT)) {
             LinearLayout claimantNameLinearLayout = (LinearLayout) findViewById(R.id.claimInfoClaimantNameLinearLayout);
             claimantNameLinearLayout.setVisibility(View.GONE);
         }
-    	
-    	// Approver name (if there is one)
-    	if (approver != null) {
+        
+        // Approver name (if there is one)
+        if (approver != null) {
             TextView approverTextView = (TextView) findViewById(R.id.claimInfoApproverTextView);
-        	approverTextView.setText(approver.getUserName());
-    	} else {
-    	    LinearLayout approverLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverLinearLayout);
-    	    approverLinearLayout.setVisibility(View.GONE);
-    	}
+            approverTextView.setText(approver.getUserName());
+        } else {
+            LinearLayout approverLinearLayout = (LinearLayout) findViewById(R.id.claimInfoApproverLinearLayout);
+            approverLinearLayout.setVisibility(View.GONE);
+        }
         
         // Show approver comments
         LinearLayout commentsList = (LinearLayout) findViewById(R.id.claimInfoCommentsLinearLayout);
         commentsListAdapter = new ApproverCommentAdapter(this, claim.getComments());
         
         for (int i = 0; i < commentsListAdapter.getCount(); i++) {
-        	View commentView = commentsListAdapter.getView(i, null, null);
-        	commentsList.addView(commentView);
+            View commentView = commentsListAdapter.getView(i, null, null);
+            commentsList.addView(commentView);
         }
-    	
-    	// Scroll to top now in case comment list has extended the layout
-    	// Referenced http://stackoverflow.com/a/4488149 on 12/03/15
-    	final ScrollView scrollView = (ScrollView) findViewById(R.id.claimInfoScrollView);
-    	
-    	scrollView.post(new Runnable() {
-			@Override public void run() {
-			    scrollView.fullScroll(ScrollView.FOCUS_UP);
-			}
-		});
+        
+        // Scroll to top now in case comment list has extended the layout
+        // Referenced http://stackoverflow.com/a/4488149 on 12/03/15
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.claimInfoScrollView);
+        
+        scrollView.post(new Runnable() {
+            @Override public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+            }
+        });
     }
     
     /**
      * spawns the datepicker fragment for startdate button
      */
     public void startDatePressed() {
-    	Date date = claim.getStartDate();
-    	
-    	DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
+        Date date = claim.getStartDate();
+        
+        DatePickerFragment datePicker = new DatePickerFragment(date, new StartDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
     
@@ -548,8 +548,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * spawns the datpicker fragment for the end date button
      */
     public void endDatePressed() {
-    	Date date = claim.getEndDate();
-    	
+        Date date = claim.getEndDate();
+        
         DatePickerFragment datePicker = new DatePickerFragment(date, new EndDateCallback());
         datePicker.show(getFragmentManager(), "datePicker");
     }
@@ -575,270 +575,270 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * Submits the selected claim and adds a comment if there exists one in the field.
      */
     public void submitClaim() {
-    	// Submit only if claim has at least one destination, a description, all items of
+        // Submit only if claim has at least one destination, a description, all items of
         // claim have a description, and all items of claim are flagged as complete.
-    	datasource.getAllItems(new ResultCallback<Collection<Item>>() {
+        datasource.getAllItems(new ResultCallback<Collection<Item>>() {
 
-			@Override
-			public void onResult(Collection<Item> items) {
-			    int dialogMessage = R.string.claim_info_submit_confirm;
-			    
-			    if (claim.getDestinations().isEmpty()) {
-			        dialogMessage = R.string.claim_info_submit_error_destination;
-			    } else {
-			        boolean descriptions = false;
-			        boolean indicators = false;
-			        
-	                for(Item item : items) {
-	                    // Only inspect items belonging to this claim.
-	                    if (item.getClaim().equals(claim.getUUID())) {
+            @Override
+            public void onResult(Collection<Item> items) {
+                int dialogMessage = R.string.claim_info_submit_confirm;
+                
+                if (claim.getDestinations().isEmpty()) {
+                    dialogMessage = R.string.claim_info_submit_error_destination;
+                } else {
+                    boolean descriptions = false;
+                    boolean indicators = false;
+                    
+                    for(Item item : items) {
+                        // Only inspect items belonging to this claim.
+                        if (item.getClaim().equals(claim.getUUID())) {
                             descriptions = (item.getDescription().isEmpty()) ? true : descriptions;
                             indicators = (!item.isComplete()) ? true : indicators;
-	                    }
-	                }
-	                
-	                if (descriptions && indicators)
-	                    dialogMessage = R.string.claim_info_submit_error_item;
-	                else if (descriptions)
+                        }
+                    }
+                    
+                    if (descriptions && indicators)
+                        dialogMessage = R.string.claim_info_submit_error_item;
+                    else if (descriptions)
                         dialogMessage = R.string.claim_info_submit_error_item_description;
-	                else if (indicators)
+                    else if (indicators)
                         dialogMessage = R.string.claim_info_submit_error_item_completeness;
-			    }
-			    
-				DialogInterface.OnClickListener submitDialogClickListener = new DialogInterface.OnClickListener() {
-				    @Override
-				    public void onClick(DialogInterface dialog, int which) {
-				        switch (which) {
-				        case DialogInterface.BUTTON_POSITIVE:
-				            claim.setStatus(Status.SUBMITTED);
-				            ClaimInfoActivity.this.finish();
-				            break;
+                }
+                
+                DialogInterface.OnClickListener submitDialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            claim.setStatus(Status.SUBMITTED);
+                            ClaimInfoActivity.this.finish();
+                            break;
 
-				        case DialogInterface.BUTTON_NEGATIVE:
-				        	Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_submitted, Toast.LENGTH_SHORT).show();
-				            break;
-				        }
-				    }
-				};
-				
-				AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-				lastAlertDialog =  builder.setMessage(dialogMessage)
-				       .setPositiveButton(android.R.string.yes, submitDialogClickListener)
-				       .setNegativeButton(android.R.string.no, submitDialogClickListener)
-				       .show();
-			}
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_submitted, Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                    }
+                };
+                
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
+                lastAlertDialog =  builder.setMessage(dialogMessage)
+                       .setPositiveButton(android.R.string.yes, submitDialogClickListener)
+                       .setNegativeButton(android.R.string.no, submitDialogClickListener)
+                       .show();
+            }
 
-			@Override
-			public void onError(String message) {
-				Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_SHORT).show();
-			}
-    		
-    	});
+            @Override
+            public void onError(String message) {
+                Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+            
+        });
     }
     /**
      * returns the selected claim and adds a comment if there exists one in the field
      */
     public void returnClaim() {
-    	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialog, int which) {
-		        switch (which){
-		        case DialogInterface.BUTTON_POSITIVE:
-		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
-		        	
-		        	// add approver comment if comment field is not empty
-		        	if (!commentText.trim().equals("")) {
-		        		claim.addComment(commentText);
-		        	}
-		        	
-		        	claim.setApprover(userData.getUUID());
-		        	claim.setStatus(Status.RETURNED);
-		        	ClaimInfoActivity.this.finish();
-		            break;
+        DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
+                    
+                    // add approver comment if comment field is not empty
+                    if (!commentText.trim().equals("")) {
+                        claim.addComment(commentText);
+                    }
+                    
+                    claim.setApprover(userData.getUUID());
+                    claim.setStatus(Status.RETURNED);
+                    ClaimInfoActivity.this.finish();
+                    break;
 
-		        case DialogInterface.BUTTON_NEGATIVE:
-		        	Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_returned, Toast.LENGTH_SHORT).show();
-		            break;
-		        }
-		    }
-		};
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-		lastAlertDialog = builder.setMessage(R.string.claim_info_return_confirm)
-		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
-		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
-		       .show();
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_returned, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+        };
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
+        lastAlertDialog = builder.setMessage(R.string.claim_info_return_confirm)
+               .setPositiveButton(android.R.string.yes, returnDialogClickListener)
+               .setNegativeButton(android.R.string.no, returnDialogClickListener)
+               .show();
     }
     /**
      * approves the selected claim and adds a comment if there exists one in the field
      */
     public void approveClaim() {
-    	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
-		    @Override
-		    public void onClick(DialogInterface dialog, int which) {
-		        switch (which){
-		        case DialogInterface.BUTTON_POSITIVE:
-		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
-		        	
-		        	// add approver comment if comment field is not empty
-		        	if (!commentText.trim().equals("")) {
-		        		claim.addComment(commentText);
-		        	}
-		        	
-		        	claim.setApprover(userData.getUUID());
-		        	claim.setStatus(Status.APPROVED);
-		        	ClaimInfoActivity.this.finish();
-		            break;
+        DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
+                    
+                    // add approver comment if comment field is not empty
+                    if (!commentText.trim().equals("")) {
+                        claim.addComment(commentText);
+                    }
+                    
+                    claim.setApprover(userData.getUUID());
+                    claim.setStatus(Status.APPROVED);
+                    ClaimInfoActivity.this.finish();
+                    break;
 
-		        case DialogInterface.BUTTON_NEGATIVE:
-		        	Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_approved, Toast.LENGTH_SHORT).show();
-		            break;
-		        }
-		    }
-		};
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
-		lastAlertDialog = builder.setMessage(R.string.claim_info_approve_confirm)
-		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
-		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
-		       .show();
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(ClaimInfoActivity.this, R.string.claim_info_not_approved, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            }
+        };
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(ClaimInfoActivity.this);
+        lastAlertDialog = builder.setMessage(R.string.claim_info_approve_confirm)
+               .setPositiveButton(android.R.string.yes, returnDialogClickListener)
+               .setNegativeButton(android.R.string.no, returnDialogClickListener)
+               .show();
     }
     /**
      * Set the date in the date button after 
-	 * datePicker fragment is spawned and 
-	 * interacted with by the user
+     * datePicker fragment is spawned and 
+     * interacted with by the user
      * @param dateButton The button to be set
      * @param date Date to set the button to
      */
     private void setButtonDate(Button dateButton, Date date) {
-    	java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
-    	String dateString = dateFormat.format(date);
-		dateButton.setText(dateString);
+        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
+        String dateString = dateFormat.format(date);
+        dateButton.setText(dateString);
     }
     
     /**
      * Callback for claim data.
      */
     class ClaimCallback implements ResultCallback<Claim> {
-		@Override
-		public void onResult(Claim claim) {
-			ClaimInfoActivity.this.claim = claim;
+        @Override
+        public void onResult(Claim claim) {
+            ClaimInfoActivity.this.claim = claim;
 
-	        // Prep the adapter for claim destinations
-	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations());
-			
-	        // Retrieve data
-	        MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());
-	        
-	        // Create callbacks for MultiCallback
-	        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
-	        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
-	        datasource.getAllTags(multi.<Collection<Tag>>createCallback(MULTI_TAGS_ID));
-	        
-	        UUID approverID = claim.getApprover();
-	        if (approverID != null) {
-	        	datasource.getUser(approverID, multi.<User>createCallback(MULTI_APPROVER_ID));
-	        }
-	        
-	        multi.ready();
-		}
-		
-		@Override
-		public void onError(String message) {
-			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-		}
-	}
+            // Prep the adapter for claim destinations
+            ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations());
+            
+            // Retrieve data
+            MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());
+            
+            // Create callbacks for MultiCallback
+            datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
+            datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
+            datasource.getAllTags(multi.<Collection<Tag>>createCallback(MULTI_TAGS_ID));
+            
+            UUID approverID = claim.getApprover();
+            if (approverID != null) {
+                datasource.getUser(approverID, multi.<User>createCallback(MULTI_APPROVER_ID));
+            }
+            
+            multi.ready();
+        }
+        
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
     
     /**
      * Callback for multiple types of claim data.
      */
     class ClaimDataMultiCallback implements ResultCallback<SparseArray<Object>> {
-		@Override
-		public void onResult(SparseArray<Object> result) {
-			User claimant = (User) result.get(MULTI_CLAIMANT_ID);
-			
-			User approver = null;
-			if (claim.getApprover() != null) {
-				approver = (User) result.get(MULTI_APPROVER_ID);
-			}
-			
-			// We know the return results are the right type, so unchecked casts shouldn't be problematic.
-			@SuppressWarnings("unchecked")
+        @Override
+        public void onResult(SparseArray<Object> result) {
+            User claimant = (User) result.get(MULTI_CLAIMANT_ID);
+            
+            User approver = null;
+            if (claim.getApprover() != null) {
+                approver = (User) result.get(MULTI_APPROVER_ID);
+            }
+            
+            // We know the return results are the right type, so unchecked casts shouldn't be problematic.
+            @SuppressWarnings("unchecked")
             Collection<Item> items = (Collection<Item>) result.get(MULTI_ITEMS_ID);
             @SuppressWarnings("unchecked")
-			Collection<Tag> tags = (Collection<Tag>) result.get(MULTI_TAGS_ID);
-			
-			onGetAllData(items, claimant, approver, tags);
-		}
-		
-		@Override
-		public void onError(String message) {
-			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-		}
-	}
+            Collection<Tag> tags = (Collection<Tag>) result.get(MULTI_TAGS_ID);
+            
+            onGetAllData(items, claimant, approver, tags);
+        }
+        
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
     
     /**
      * Callback for claim deletion.
      */
     class DeleteCallback implements ResultCallback<Void> {
-		@Override
-		public void onResult(Void result) {
-			finish();
-		}
-		
-		@Override
-		public void onError(String message) {
-			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
-		}
-	}
+        @Override
+        public void onResult(Void result) {
+            finish();
+        }
+        
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
     
     /**
      * Callback for when a new start date is selected.
      */
     class StartDateCallback implements DatePickerFragment.ResultCallback {
-		@Override
-		public void onDatePickerFragmentResult(Date result) {
-			// Error if invalid date
-			if (result.after(claim.getEndDate())) {
-				String error = getString(R.string.claim_info_start_date_error);
-				Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+        @Override
+        public void onDatePickerFragmentResult(Date result) {
+            // Error if invalid date
+            if (result.after(claim.getEndDate())) {
+                String error = getString(R.string.claim_info_start_date_error);
+                Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
 
-        	// Update date button and date
-			} else {
-				claim.setStartDate(result);
-				
-				Button button = (Button) findViewById(R.id.claimInfoStartDateButton);
-				setButtonDate(button, result);
-			}
-		}
-		
-		@Override
-		public void onDatePickerFragmentCancelled() {}
-	}
+            // Update date button and date
+            } else {
+                claim.setStartDate(result);
+                
+                Button button = (Button) findViewById(R.id.claimInfoStartDateButton);
+                setButtonDate(button, result);
+            }
+        }
+        
+        @Override
+        public void onDatePickerFragmentCancelled() {}
+    }
     
     /**
      * Callback for when a new end date is selected.
      */
     class EndDateCallback implements DatePickerFragment.ResultCallback {
-		@Override
-		public void onDatePickerFragmentResult(Date result) {
-			// Error if invalid date
-			if (result.before(claim.getStartDate())) {
-				String error = getString(R.string.claim_info_end_date_error);
-				Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
+        @Override
+        public void onDatePickerFragmentResult(Date result) {
+            // Error if invalid date
+            if (result.before(claim.getStartDate())) {
+                String error = getString(R.string.claim_info_end_date_error);
+                Toast.makeText(ClaimInfoActivity.this, error, Toast.LENGTH_LONG).show();
 
-        	// Update date button and calendar
-			} else {
-				claim.setEndDate(result);
-				
-				Button button = (Button) findViewById(R.id.claimInfoEndDateButton);
-				setButtonDate(button, result);
-			}
-		}
-		
-		@Override
-		public void onDatePickerFragmentCancelled() {}
-	}
+            // Update date button and calendar
+            } else {
+                claim.setEndDate(result);
+                
+                Button button = (Button) findViewById(R.id.claimInfoEndDateButton);
+                setButtonDate(button, result);
+            }
+        }
+        
+        @Override
+        public void onDatePickerFragmentCancelled() {}
+    }
     
     /**
      * Callback for when a new item is added.

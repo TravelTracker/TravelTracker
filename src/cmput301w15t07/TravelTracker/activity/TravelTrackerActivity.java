@@ -57,52 +57,52 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
     public static final String FROM_CLAIM_INFO = "cmput301w15t07.TravelTracker.fromClaimInfo";
     
     /** Latch which is counted down when the activity loads its data */
-	private CountDownLatch loadedLatch = new CountDownLatch(1);
-	
-	/** The data source (from DataSourceSingleton) */
-	protected DataSource datasource;
-	
-	/** Whether the activity is currently loading. */
-	protected boolean loading;
-	
-	/**
-	 * Call this when the activity has populated all the fields.
-	 * This will notify threads waiting for waitUntilLoaded().
-	 */
-	public void onLoaded() {
-		loadedLatch.countDown();
-	}
-	
-	/**
-	 * Blocks the thread until the activity is loaded.
-	 * @throws InterruptedException
-	 */
-	public void waitUntilLoaded() throws InterruptedException {
-		loadedLatch.await();
-	}
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    
+    private CountDownLatch loadedLatch = new CountDownLatch(1);
+    
+    /** The data source (from DataSourceSingleton) */
+    protected DataSource datasource;
+    
+    /** Whether the activity is currently loading. */
+    protected boolean loading;
+    
+    /**
+     * Call this when the activity has populated all the fields.
+     * This will notify threads waiting for waitUntilLoaded().
+     */
+    public void onLoaded() {
+        loadedLatch.countDown();
+    }
+    
+    /**
+     * Blocks the thread until the activity is loaded.
+     * @throws InterruptedException
+     */
+    public void waitUntilLoaded() throws InterruptedException {
+        loadedLatch.await();
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
         datasource = DataSourceSingleton.getDataSource(getApplicationContext());
-	}
-	
-	// Activities can override this if they need to do more.
-	@Override
-	public void update(DataSource observable) {
+    }
+    
+    // Activities can override this if they need to do more.
+    @Override
+    public void update(DataSource observable) {
         updateActivity();
-	}
-	
+    }
+    
     /**
      * Update the activity when the dataset changes.
      * Called in onResume() and update(DataSource observable).
      */
-	abstract public void updateActivity();
-	
-	/**
-	 * Sign out of the app, clears the activity stack, and exits to login activity.
-	 */
+    abstract public void updateActivity();
+    
+    /**
+     * Sign out of the app, clears the activity stack, and exits to login activity.
+     */
     public void signOut() {
         // adapted from 
         //    http://stackoverflow.com/questions/6298275/how-to-finish-every-activity-on-the-stack-except-the-first-in-android

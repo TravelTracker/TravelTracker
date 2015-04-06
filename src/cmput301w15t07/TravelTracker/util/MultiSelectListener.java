@@ -30,53 +30,53 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 
 public class MultiSelectListener implements MultiChoiceModeListener{
 
-	private multiSelectMenuListener listener;
-	ArrayList<Integer> selectedItems = new ArrayList<Integer>();
-	int menu;
-	
-	
-	public MultiSelectListener(multiSelectMenuListener listener, int menu) {
-		this.menu = menu;
-		this.listener = listener;
-	}
-	
-	@Override
-	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-		mode.getMenuInflater().inflate(this.menu, menu);
-		return true;
-	}
+    private multiSelectMenuListener listener;
+    ArrayList<Integer> selectedItems = new ArrayList<Integer>();
+    int menu;
+    
+    
+    public MultiSelectListener(multiSelectMenuListener listener, int menu) {
+        this.menu = menu;
+        this.listener = listener;
+    }
+    
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(this.menu, menu);
+        return true;
+    }
 
-	@Override
-	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-		listener.menuButtonClicked(selectedItems, item);
-		mode.finish();
-		return false;
-	}
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        listener.menuButtonClicked(selectedItems, item);
+        mode.finish();
+        return false;
+    }
 
-	@Override
-	public void onDestroyActionMode(ActionMode mode) {
-		selectedItems = new ArrayList<Integer>();
-	}
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        selectedItems = new ArrayList<Integer>();
+    }
 
-	@Override
-	public void onItemCheckedStateChanged(ActionMode mode, int position,
-			long id, boolean checked) {
-		if (checked){
-			selectedItems.add(position);
-		}else {
-			selectedItems.remove(selectedItems.indexOf(position));
-		}
-	}
-	
-	public interface multiSelectMenuListener {
-		
-		public void menuButtonClicked(ArrayList<Integer> selectedItems, MenuItem item);
-	}
-	
+    @Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position,
+            long id, boolean checked) {
+        if (checked){
+            selectedItems.add(position);
+        }else {
+            selectedItems.remove(selectedItems.indexOf(position));
+        }
+    }
+    
+    public interface multiSelectMenuListener {
+        
+        public void menuButtonClicked(ArrayList<Integer> selectedItems, MenuItem item);
+    }
+    
 }

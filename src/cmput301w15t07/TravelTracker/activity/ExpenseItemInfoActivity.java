@@ -83,7 +83,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     public static final int MULTI_ITEM_KEY = 1;
     
     /** Data about the logged-in user. */
-	private UserData userData;
+    private UserData userData;
 
     /** UUID of the claim. */
     private UUID claimID;
@@ -115,18 +115,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     private static final int CAMERA_REQUEST = 100;
     private static final int RESULT_LOAD_IMAGE = 999; 
     
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.expense_item_info_menu, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.expense_item_info_menu, menu);
         this.menu = menu;
         
         if (claim != null) {
             hideMenuItems(menu, claim);
         }
         
-		return true;
-	}
-	
+        return true;
+    }
+    
     private void hideMenuItems(Menu menu, Claim claim) {
         // Menu items
         MenuItem deleteItemMenuItem = menu.findItem(R.id.expense_item_info_delete_item);
@@ -136,38 +136,38 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             deleteItemMenuItem.setEnabled(false).setVisible(false);
         }
     }
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    case R.id.expense_item_info_delete_item:
-	        promptDeleteExpenseItem();
-	        return true;
-	        
-	    case R.id.expense_item_info_sign_out:
-	        signOut();
-	        return true;
-	        
-	    case android.R.id.home:
-	    	onBackPressed();
-	    	return true;
-	        
-	    default:
-	        return false;
-	    }
-	}
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.expense_item_info_delete_item:
+            promptDeleteExpenseItem();
+            return true;
+            
+        case R.id.expense_item_info_sign_out:
+            signOut();
+            return true;
+            
+        case android.R.id.home:
+            onBackPressed();
+            return true;
+            
+        default:
+            return false;
+        }
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		//user info from bundles
-		Bundle bundle = getIntent().getExtras();
-		userData = (UserData) bundle.getSerializable(USER_DATA);
+        
+        //user info from bundles
+        Bundle bundle = getIntent().getExtras();
+        userData = (UserData) bundle.getSerializable(USER_DATA);
         appendNameToTitle(userData.getName());
-		
+        
         // Get claim info
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
@@ -177,8 +177,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         // Get whether we came from ClaimInfoActivity or not
         fromClaimInfo = (Boolean) bundle.getSerializable(FROM_CLAIM_INFO);
         
-		datasource.addObserver(this);
-	}
+        datasource.addObserver(this);
+    }
 
     @Override
     protected void onResume() {
@@ -208,15 +208,15 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         multi.ready();
     }
     
-	@Override
-	public void onBackPressed() {
-	    // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
-	    if (fromClaimInfo) {
-	        launchExpenseItemsList();
-	    }
+    @Override
+    public void onBackPressed() {
+        // If we came here from ClaimInfoActivity, ExpenseItemsListActivity won't have been started
+        if (fromClaimInfo) {
+            launchExpenseItemsList();
+        }
         
-	    super.onBackPressed();
-	}
+        super.onBackPressed();
+    }
 
     /**
      * Launches the ExpenseItemsList activity.
@@ -227,7 +227,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claimID);
         startActivity(intent);
     }
-	
+    
     /**
      * Launches the ReceiptImageView activity.
      */
@@ -237,12 +237,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         startActivity(intent);
     }
     
-	/**
-	 * Fill buttons/spinners/editText with data from item, set listeners, hide or
-	 * disable things according to user's role and claim's status
-	 * @param item The current expense item
-	 */
-	private void onGetAllData(final Item item) {
+    /**
+     * Fill buttons/spinners/editText with data from item, set listeners, hide or
+     * disable things according to user's role and claim's status
+     * @param item The current expense item
+     */
+    private void onGetAllData(final Item item) {
         if (!loading) {
             onLoaded();
             return;
@@ -250,7 +250,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         
         loading = false;
         setContentView(R.layout.expense_info_activity); 
-		
+        
         populateItemInfo(item);
         
         if (menu != null) {
@@ -290,12 +290,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void onClick(View v) {
-                    	if (item.getReceipt().getPhoto() == null) {
-                    		promptTakePhoto();
-                    	}else {
-                    		promptChangePhoto();
-                    	}
-                    	
+                        if (item.getReceipt().getPhoto() == null) {
+                            promptTakePhoto();
+                        }else {
+                            promptChangePhoto();
+                        }
+                        
                     }
                 });
                 
@@ -323,8 +323,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void afterTextChanged(Editable s) {
-                    	item.setDescription(s.toString());   
-                    	itemDescription.requestFocus();
+                        item.setDescription(s.toString());   
+                        itemDescription.requestFocus();
                     }
                 });
                 
@@ -343,12 +343,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     
                     @Override
                     public void afterTextChanged(Editable s) {
-                    	try {
+                        try {
                             item.setAmount(Float.parseFloat(s.toString()));
                         } catch (NumberFormatException e) {
                             //Dont do anything, the string is empty
                         }
-                    	itemAmount.requestFocus();
+                        itemAmount.requestFocus();
                     }
                 });
                 
@@ -402,173 +402,173 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             
             //set listener for receipt imagae to load view activity
             receiptImage.setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					if (item.getReceipt().getPhoto() != null){
-						launchReceiptImageView();
-					}
-				}
-			});
+                
+                @Override
+                public void onClick(View v) {
+                    if (item.getReceipt().getPhoto() != null){
+                        launchReceiptImageView();
+                    }
+                }
+            });
             
         }
         
         onLoaded();
-	}
-	
-	
-	
-	/**
-	 * Prompt for changing, viewing, or deleting a receipt image
-	 * will only be spawned if a receipt image exists for the current item
-	 */
-	public void promptChangePhoto(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.expense_item_info_change_receipt_message)
-			.setPositiveButton(R.string.change_image, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					promptTakePhoto();
-					
-				}
-			})
-			.setNeutralButton(R.string.view_image, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					launchReceiptImageView();
-					
-				}
-			})
-			.setNegativeButton(R.string.delete_image, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					//set the receipt to a new one to delete photo 
-					item.setReceipt(new Receipt());
-					
-				}
-			});
-		lastAlertDialog = builder.create();
-		lastAlertDialog.show();
-	}
-	
-	/**
-	 * Prompt for creating a new receipt image.
-	 */
-	public void promptTakePhoto(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.expense_item_info_capture_receipt_message)
-			.setPositiveButton(R.string.take_photo, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					takePhoto();					
-				}
-			})
-			.setNegativeButton(R.string.choose_from_gallery, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					chooseImageFromGallery();
-				}
-			});
-		lastAlertDialog = builder.create();
-		lastAlertDialog.show();
-	}
-	
-	public void chooseImageFromGallery(){
-		Intent intent = new Intent(	Intent.ACTION_PICK, 
-				MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		startActivityForResult(intent, RESULT_LOAD_IMAGE);
-	}
-	
-	/**\
-	 * creates an image file with a unique name to be used by camera activity 
-	 * @return	image file with unique name
-	 * @throws IOException if the file could not be created
-	 */
-	//Referenced devleoper.android.com/training/camera/photobasics.html
-	private File createImageFile() throws IOException{
-		File storageDir = Environment.getExternalStoragePublicDirectory(
-				Environment.DIRECTORY_PICTURES);
-		String imageFileName = "JPEG_" 
-				+ String.valueOf(System.currentTimeMillis()) + "_";
-		File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-		currentPhotoPath = "file:" + image.getAbsolutePath();
-		return image;
-	}
-	
-	/**
-	 * launch the camera activity and take a photo
-	 */
-	public void takePhoto(){		
-		Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    }
+    
+    
+    
+    /**
+     * Prompt for changing, viewing, or deleting a receipt image
+     * will only be spawned if a receipt image exists for the current item
+     */
+    public void promptChangePhoto(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.expense_item_info_change_receipt_message)
+            .setPositiveButton(R.string.change_image, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    promptTakePhoto();
+                    
+                }
+            })
+            .setNeutralButton(R.string.view_image, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    launchReceiptImageView();
+                    
+                }
+            })
+            .setNegativeButton(R.string.delete_image, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //set the receipt to a new one to delete photo 
+                    item.setReceipt(new Receipt());
+                    
+                }
+            });
+        lastAlertDialog = builder.create();
+        lastAlertDialog.show();
+    }
+    
+    /**
+     * Prompt for creating a new receipt image.
+     */
+    public void promptTakePhoto(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.expense_item_info_capture_receipt_message)
+            .setPositiveButton(R.string.take_photo, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    takePhoto();                    
+                }
+            })
+            .setNegativeButton(R.string.choose_from_gallery, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    chooseImageFromGallery();
+                }
+            });
+        lastAlertDialog = builder.create();
+        lastAlertDialog.show();
+    }
+    
+    public void chooseImageFromGallery(){
+        Intent intent = new Intent(    Intent.ACTION_PICK, 
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, RESULT_LOAD_IMAGE);
+    }
+    
+    /**\
+     * creates an image file with a unique name to be used by camera activity 
+     * @return    image file with unique name
+     * @throws IOException if the file could not be created
+     */
+    //Referenced devleoper.android.com/training/camera/photobasics.html
+    private File createImageFile() throws IOException{
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        String imageFileName = "JPEG_" 
+                + String.valueOf(System.currentTimeMillis()) + "_";
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        currentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+    
+    /**
+     * launch the camera activity and take a photo
+     */
+    public void takePhoto(){        
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //check if there is an app that can handle the intent
         if (cameraIntent.resolveActivity(getPackageManager()) != null){
-        	//create the file where the image should go
-        	File imageFile = null;
-        	try{
-        		imageFile = createImageFile();
-        	}catch (IOException exception){
-        		//error occured when creating the file
-        		Toast.makeText(ExpenseItemInfoActivity.this, "image could not be created",
-        			Toast.LENGTH_LONG).show();
-        	}
-        	//only continue if the file was succesfully created
-        	if (imageFile != null){
-        		imageUri = Uri.fromFile(imageFile);
-        		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        	}
+            //create the file where the image should go
+            File imageFile = null;
+            try{
+                imageFile = createImageFile();
+            }catch (IOException exception){
+                //error occured when creating the file
+                Toast.makeText(ExpenseItemInfoActivity.this, "image could not be created",
+                    Toast.LENGTH_LONG).show();
+            }
+            //only continue if the file was succesfully created
+            if (imageFile != null){
+                imageUri = Uri.fromFile(imageFile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            }
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
         }
-	}
-	
-	//get the bmp thumbnail for the image 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		super.onActivityResult(requestCode, resultCode, data);
-		  ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
-		  //if Result is from takePhoto()
-		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
-				
-				Bitmap imageBitmap = null;
-				try {
-					imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				item.setReceipt(new Receipt(imageBitmap));
-		}
-		//if result is from chooseImageFromGallery()
-		//refrenced viralpatel.net/blogs/pick-image-from-galary-android-app/
-		//i know this url is misspelled, but thats what the site is ^^
-		else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
-			imageUri = data.getData();
-			String[] filePathColumn = { MediaStore.Images.Media.DATA };
-			Cursor cursor = getContentResolver().query(imageUri, 
-					filePathColumn, null, null, null);
-			cursor.moveToFirst();
-			
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-			
-			item.setReceipt(new Receipt(BitmapFactory.decodeFile(picturePath)));
-			
-		}
-	}
-	/**
-	 * Populate the fields with data.
-	 * @param item The item being viewed.
-	 */
-	public void populateItemInfo(Item item) {
-	    // Set the date.
+    }
+    
+    //get the bmp thumbnail for the image 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+          ImageView imageButton = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+          //if Result is from takePhoto()
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
+                
+                Bitmap imageBitmap = null;
+                try {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                item.setReceipt(new Receipt(imageBitmap));
+        }
+        //if result is from chooseImageFromGallery()
+        //refrenced viralpatel.net/blogs/pick-image-from-galary-android-app/
+        //i know this url is misspelled, but thats what the site is ^^
+        else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
+            imageUri = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(imageUri, 
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            
+            item.setReceipt(new Receipt(BitmapFactory.decodeFile(picturePath)));
+            
+        }
+    }
+    /**
+     * Populate the fields with data.
+     * @param item The item being viewed.
+     */
+    public void populateItemInfo(Item item) {
+        // Set the date.
         Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
         setButtonDate(itemDateButton, item.getDate());
         
@@ -576,15 +576,15 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         // TODO This should not have to worry about null values, Receipt should handle that.
         ImageView receiptImageView = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
         try {
-        	if (item.getReceipt().getPhoto() == null) {
-        		receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets()
-        				.open("receipt.png")));
-        	} else {
-        		receiptImageView.setImageBitmap(item.getReceipt().getPhoto());
-        	}
-		} catch (IOException e1) {
-			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
-		}
+            if (item.getReceipt().getPhoto() == null) {
+                receiptImageView.setImageBitmap(BitmapFactory.decodeStream(getAssets()
+                        .open("receipt.png")));
+            } else {
+                receiptImageView.setImageBitmap(item.getReceipt().getPhoto());
+            }
+        } catch (IOException e1) {
+            Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
+        }
       
         // Set the amount.
         String amount = Float.toString(item.getAmount());
@@ -594,13 +594,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         // Set currency spinner with strings from ItemCurrency.
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout
-        		.simple_spinner_item, ItemCurrency.getStringArray(this)));
+                .simple_spinner_item, ItemCurrency.getStringArray(this)));
         currencySpinner.setSelection(item.getCurrency().ordinal(), true);
         
         // Set category spinner with strings from ItemCategory.
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
         categorySpinner.setAdapter(new ArrayAdapter<String>(this, android.R
-        		.layout.simple_spinner_item, ItemCategory.getStringArray(this)));
+                .layout.simple_spinner_item, ItemCategory.getStringArray(this)));
         categorySpinner.setSelection(item.getCategory().ordinal(), true);
         
         // Set the description.
@@ -608,71 +608,71 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         itemDescription.setText(item.getDescription());
         
         CheckedTextView itemStatus = (CheckedTextView)
-        		findViewById(R.id.expenseItemInfoStatusCheckedTextView);
+                findViewById(R.id.expenseItemInfoStatusCheckedTextView);
         itemStatus.setChecked(item.isComplete());
-	}
-	
+    }
+    
 
-	/**
-	 * Set the date in the date button after 
-	 * datePicker fragment is spawned and 
-	 * interacted with by the user
-	 * @param dateButton The button to be set
-	 * @param date Date to set the button to
-	 */
-	private void setButtonDate(Button dateButton, Date date) {
-		java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
-    	String dateString = dateFormat.format(date);
-		dateButton.setText(dateString);
-	}
-	
-	/**
+    /**
+     * Set the date in the date button after 
+     * datePicker fragment is spawned and 
+     * interacted with by the user
+     * @param dateButton The button to be set
+     * @param date Date to set the button to
+     */
+    private void setButtonDate(Button dateButton, Date date) {
+        java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(this);
+        String dateString = dateFormat.format(date);
+        dateButton.setText(dateString);
+    }
+    
+    /**
      * Prompt for deleting the claim.
      */
     public void promptDeleteExpenseItem() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.claim_info_delete_message)
-			   .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						deleteExpenseItem();
-					}
-			   })
-			   .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// Do nothing
-					}
-			   });
-		lastAlertDialog = builder.create();
-		
-		lastAlertDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.claim_info_delete_message)
+               .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteExpenseItem();
+                    }
+               })
+               .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing
+                    }
+               });
+        lastAlertDialog = builder.create();
+        
+        lastAlertDialog.show();
     }
-	
+    
     /**
      * Get the last created AlertDialog.
      * @return The last dialog, or null if there isn't one.
      */
     public AlertDialog getLastAlertDialog() {
-    	return lastAlertDialog;
+        return lastAlertDialog;
     }
     
-	public void deleteExpenseItem() {
-		datasource.deleteItem(itemID, new DeleteCallback());
-		
-	}
-	
-	
-	/**
-	 * spawn a datepicker fragment when dateButton is pressed
-	 * @param date
-	 */
-	public void datePressed(View date){
-		Date itemDate = item.getDate();
-		DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
-		datePicker.show(getFragmentManager(), "datePicker");
-	}
-	
+    public void deleteExpenseItem() {
+        datasource.deleteItem(itemID, new DeleteCallback());
+        
+    }
+    
+    
+    /**
+     * spawn a datepicker fragment when dateButton is pressed
+     * @param date
+     */
+    public void datePressed(View date){
+        Date itemDate = item.getDate();
+        DatePickerFragment datePicker = new  DatePickerFragment(itemDate, new DateCallback());
+        datePicker.show(getFragmentManager(), "datePicker");
+    }
+    
     /**
      * Multicallback meant to get all data required from the datasource that
      * this activity needs on update or resume.
@@ -696,39 +696,39 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         }
     }
     
-	/**
+    /**
      * Callback for Item deletion.
      */
     class DeleteCallback implements ResultCallback<Void> {
-		@Override
-		public void onResult(Void result) {
-			finish();
-		}
-		
-		@Override
-		public void onError(String message) {
-			Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
-		}
-	}
+        @Override
+        public void onResult(Void result) {
+            finish();
+        }
+        
+        @Override
+        public void onError(String message) {
+            Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    }
     
-	/**
-	 * callback for the datepicker fragment
-	 */
-	class DateCallback implements DatePickerFragment.ResultCallback{
-		@Override
-		public void onDatePickerFragmentResult(Date result) {
-			
-			
-				item.setDate(result);
-				
-				Button button = (Button) findViewById(R.id.expenseItemInfoDateButton);
-				setButtonDate(button, result);
-			
-		}
-		
-		@Override
-		public void onDatePickerFragmentCancelled() {
-			// Do nothing
-		}
-	}
+    /**
+     * callback for the datepicker fragment
+     */
+    class DateCallback implements DatePickerFragment.ResultCallback{
+        @Override
+        public void onDatePickerFragmentResult(Date result) {
+            
+            
+                item.setDate(result);
+                
+                Button button = (Button) findViewById(R.id.expenseItemInfoDateButton);
+                setButtonDate(button, result);
+            
+        }
+        
+        @Override
+        public void onDatePickerFragmentCancelled() {
+            // Do nothing
+        }
+    }
 }

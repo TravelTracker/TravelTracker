@@ -56,128 +56,128 @@ import android.widget.ListView;
  */
 public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<ManageTagsActivity> {
 
-	DataSource ds;
-	User user;
-	ManageTagsActivity activity;
-	
-	public ManageTagsActivityTest() {
-		super(ManageTagsActivity.class);
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		ds = new InMemoryDataSource();
-		DataSourceSingleton.setDataSource(ds);
-		user = DataSourceUtils.addUser("Bob", ds);
-	}
-	
-	public void testCreateTag() throws Throwable {
-		int numberOfTags = 10;
-		final String tagName = "NewTag";		
-		startWithTags(numberOfTags);
-		
-		ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
-		
-		final EditText tagBox = (EditText) activity.findViewById(R.id.manageTagsNewTagEditText);
-		final Button addButton = (Button) activity.findViewById(R.id.manageTagsAddButton);
-		
-		runTestOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				tagBox.setText(tagName);
-				addButton.performClick();
-			}
-		});
-		
-		getInstrumentation().waitForIdleSync();
-		ListAdapter adapter = listView.getAdapter();
-		assertEquals(numberOfTags + 1, adapter.getCount());
-		
-		for (int i = 0; i < listView.getCount(); i++){
-			Tag tag = (Tag) adapter.getItem(i);
-			if (tag.getTitle().equals(tagName)){
-				return;
-			}
-		}
-		
-		fail("Did not find a tag that matched the added tag");
-	}
-	
-	public void testEditTag() throws Throwable {
-		int numberOfTags = 10;
-		final String tagName = "MyNewTag";
-		startWithTags(numberOfTags);
-		
-		final int position = 0;
-		final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
-		final ListAdapter adapter = listView.getAdapter();
-		
-		runTestOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
-				AlertDialog dialog = (AlertDialog) activity.getLastDialog();
-				((EditText)dialog.findViewById(activity.getTaskId())).setText(tagName);
-				dialog.getButton(Dialog.BUTTON_POSITIVE).performClick();
-			}
-		});
-		
-		getInstrumentation().waitForIdleSync();
-		
-		for (int i = 0; i < adapter.getCount(); i++){
-			if (((Tag)adapter.getItem(i)).getTitle().equals(tagName)){
-				return;
-			}
-		}
-		fail("Edited Tag does not exist");
-	}
-	
-	public void testDeleteTag() throws Throwable {
-		//As far as I can tell we cannot long press a listview item programmatically and obtain a reference to the context menu view
-		// If we are really concerned about this, we can store a reference to it in the activity and then get it that way.
-		int numberOfTags = 10;
-		final String tagName = "MyNewTag";
-		startWithTags(numberOfTags);
-		
-		final int position = 0;
-		final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
-		final ListAdapter adapter = listView.getAdapter();
-		
-		
-		DataSourceUtils.deleteTag(((Tag)adapter.getItem(position)), ds);
-		getInstrumentation().waitForIdleSync();
-		assertEquals(numberOfTags -1, adapter.getCount());
-	}
-	
-	private void startWithTags(int number) throws InterruptedException{
-		ArrayList<Tag> tags = addEmptyTags(number);
-		startActivity();
-		
-		assertEquals(number, ((ListView)activity.findViewById(R.id.manageTagsTagListView)).getAdapter().getCount());
-	}
-	
-	private void startActivity() throws InterruptedException{
-		// Create the intent
-	Intent intent = new Intent();
-	intent.putExtra(TravelTrackerActivity.USER_DATA,
-					new UserData(user.getUUID(), user.getUserName(), UserRole.CLAIMANT));
-	
-	// Start the activity
-	setActivityIntent(intent);
-	activity = getActivity();
-	activity.waitUntilLoaded();
-	}
-	
-	private ArrayList<Tag> addEmptyTags(int number){
-		ArrayList<Tag> out = new ArrayList<Tag>();
-		for (int i=0; i < number; i++){
-			Tag tag = DataSourceUtils.addEmptyTag(user, ds);
-			tag.setTitle("Tag" + i);
-		}
-		return out;
-	}
+    DataSource ds;
+    User user;
+    ManageTagsActivity activity;
+    
+    public ManageTagsActivityTest() {
+        super(ManageTagsActivity.class);
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        ds = new InMemoryDataSource();
+        DataSourceSingleton.setDataSource(ds);
+        user = DataSourceUtils.addUser("Bob", ds);
+    }
+    
+    public void testCreateTag() throws Throwable {
+        int numberOfTags = 10;
+        final String tagName = "NewTag";        
+        startWithTags(numberOfTags);
+        
+        ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+        
+        final EditText tagBox = (EditText) activity.findViewById(R.id.manageTagsNewTagEditText);
+        final Button addButton = (Button) activity.findViewById(R.id.manageTagsAddButton);
+        
+        runTestOnUiThread(new Runnable() {
+            
+            @Override
+            public void run() {
+                tagBox.setText(tagName);
+                addButton.performClick();
+            }
+        });
+        
+        getInstrumentation().waitForIdleSync();
+        ListAdapter adapter = listView.getAdapter();
+        assertEquals(numberOfTags + 1, adapter.getCount());
+        
+        for (int i = 0; i < listView.getCount(); i++){
+            Tag tag = (Tag) adapter.getItem(i);
+            if (tag.getTitle().equals(tagName)){
+                return;
+            }
+        }
+        
+        fail("Did not find a tag that matched the added tag");
+    }
+    
+    public void testEditTag() throws Throwable {
+        int numberOfTags = 10;
+        final String tagName = "MyNewTag";
+        startWithTags(numberOfTags);
+        
+        final int position = 0;
+        final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+        final ListAdapter adapter = listView.getAdapter();
+        
+        runTestOnUiThread(new Runnable() {
+            
+            @Override
+            public void run() {
+                listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
+                AlertDialog dialog = (AlertDialog) activity.getLastDialog();
+                ((EditText)dialog.findViewById(activity.getTaskId())).setText(tagName);
+                dialog.getButton(Dialog.BUTTON_POSITIVE).performClick();
+            }
+        });
+        
+        getInstrumentation().waitForIdleSync();
+        
+        for (int i = 0; i < adapter.getCount(); i++){
+            if (((Tag)adapter.getItem(i)).getTitle().equals(tagName)){
+                return;
+            }
+        }
+        fail("Edited Tag does not exist");
+    }
+    
+    public void testDeleteTag() throws Throwable {
+        //As far as I can tell we cannot long press a listview item programmatically and obtain a reference to the context menu view
+        // If we are really concerned about this, we can store a reference to it in the activity and then get it that way.
+        int numberOfTags = 10;
+        final String tagName = "MyNewTag";
+        startWithTags(numberOfTags);
+        
+        final int position = 0;
+        final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+        final ListAdapter adapter = listView.getAdapter();
+        
+        
+        DataSourceUtils.deleteTag(((Tag)adapter.getItem(position)), ds);
+        getInstrumentation().waitForIdleSync();
+        assertEquals(numberOfTags -1, adapter.getCount());
+    }
+    
+    private void startWithTags(int number) throws InterruptedException{
+        ArrayList<Tag> tags = addEmptyTags(number);
+        startActivity();
+        
+        assertEquals(number, ((ListView)activity.findViewById(R.id.manageTagsTagListView)).getAdapter().getCount());
+    }
+    
+    private void startActivity() throws InterruptedException{
+        // Create the intent
+    Intent intent = new Intent();
+    intent.putExtra(TravelTrackerActivity.USER_DATA,
+                    new UserData(user.getUUID(), user.getUserName(), UserRole.CLAIMANT));
+    
+    // Start the activity
+    setActivityIntent(intent);
+    activity = getActivity();
+    activity.waitUntilLoaded();
+    }
+    
+    private ArrayList<Tag> addEmptyTags(int number){
+        ArrayList<Tag> out = new ArrayList<Tag>();
+        for (int i=0; i < number; i++){
+            Tag tag = DataSourceUtils.addEmptyTag(user, ds);
+            tag.setTitle("Tag" + i);
+        }
+        return out;
+    }
 
 }

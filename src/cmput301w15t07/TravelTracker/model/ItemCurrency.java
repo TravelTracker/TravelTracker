@@ -77,17 +77,17 @@ public enum ItemCurrency implements ContextStringable {
     
     /**
      * This method returns the ItemCurrency instance corresponding to the passed string.
-	 * @param text The text to search for.
-	 * @param context The Android context in which this is operating.
-	 * @return The matching ItemCurrency.
+     * @param text The text to search for.
+     * @param context The Android context in which this is operating.
+     * @return The matching ItemCurrency.
      */
     public static ItemCurrency fromString(String text, Context context) {
         if (text != null) {
-        	for (ItemCurrency i : ItemCurrency.values()) {
-        		if (text.equalsIgnoreCase(i.getString(context))) {
-        			return i;
-        		}
-        	}
+            for (ItemCurrency i : ItemCurrency.values()) {
+                if (text.equalsIgnoreCase(i.getString(context))) {
+                    return i;
+                }
+            }
         }
         return null;
     }

@@ -55,96 +55,96 @@ public class LoginActivity extends TravelTrackerActivity {
     
     private static final String LOGIN_FILENAME = "cached_login.json";
     
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login_activity);
-		
-		// Attempt to find last login.
-		UserData userData = loadUserData();
-		
-		// If not null, load was successful and a last login was found.
-		if (userData != null) {
-		    // Set user's name from last login.
-	        EditText nameEditText = (EditText) findViewById(R.id.loginNameEditText);
-	        nameEditText.setText(userData.getName());
-	        
-	        // Set user's role from last login.
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login_activity);
+        
+        // Attempt to find last login.
+        UserData userData = loadUserData();
+        
+        // If not null, load was successful and a last login was found.
+        if (userData != null) {
+            // Set user's name from last login.
+            EditText nameEditText = (EditText) findViewById(R.id.loginNameEditText);
+            nameEditText.setText(userData.getName());
+            
+            // Set user's role from last login.
             UserRole role = userData.getRole();
-	        if (role.equals(UserRole.CLAIMANT)) {
+            if (role.equals(UserRole.CLAIMANT)) {
                 RadioButton button = (RadioButton) findViewById(R.id.loginClaimantRadioButton);
                 button.setChecked(true);
-	        } else if (role.equals(UserRole.APPROVER)) {
+            } else if (role.equals(UserRole.APPROVER)) {
                 RadioButton button = (RadioButton) findViewById(R.id.loginApproverRadioButton);
                 button.setChecked(true);
-	        }
-		}
+            }
+        }
 
-		// Attach login listener to login button
-		Button loginButton = (Button) findViewById(R.id.loginLoginButton);
-		loginButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				loginPressed();
-			}
-		});
-	}
+        // Attach login listener to login button
+        Button loginButton = (Button) findViewById(R.id.loginLoginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginPressed();
+            }
+        });
+    }
 
     // There is no dataset in LoginActivity, this needs no implementation.
     @Override
     public void updateActivity() {}
 
-	/**
-	 * Attempt to log in to the application using information from the name and role views.
-	 */
-	public void loginPressed() {
-		// Determine user
-		EditText nameEditText = (EditText) findViewById(R.id.loginNameEditText);
-		String userName = nameEditText.getText().toString();
-		
-		// Invalid user name
-		if (userName.isEmpty()) {
-			nameEditText.setError(getString(R.string.error_no_name));
-			return;
-		}
-		
-		// Determine role
-		RadioGroup group = (RadioGroup) findViewById(R.id.loginRoleRadioGroup);
-		UserRole role;
-		
-		switch (group.getCheckedRadioButtonId()) {
-		case R.id.loginApproverRadioButton:
-			role = UserRole.APPROVER;
-			break;
-			
-		case R.id.loginClaimantRadioButton:
-			role = UserRole.CLAIMANT;
-			break;
-			
-		default:
-			throw new RuntimeException("Somehow, no role was selected");
-		}
-		
-		// Try to get the user's ID to login
-		datasource.getAllUsers(new LoginResultCallback(userName, role));
-	}
-	
-	/**
-	 * Proceed to the next activity when user data has been retrieved.
-	 */
-	public void loginWithUserData(UserData userData) {
-		// Start next activity
-		Intent intent = new Intent(this, ClaimsListActivity.class);
-		saveUserData(userData); // Save this login to file.
-		intent.putExtra(ClaimsListActivity.USER_DATA, userData);
-		startActivity(intent);
-	}
+    /**
+     * Attempt to log in to the application using information from the name and role views.
+     */
+    public void loginPressed() {
+        // Determine user
+        EditText nameEditText = (EditText) findViewById(R.id.loginNameEditText);
+        String userName = nameEditText.getText().toString();
+        
+        // Invalid user name
+        if (userName.isEmpty()) {
+            nameEditText.setError(getString(R.string.error_no_name));
+            return;
+        }
+        
+        // Determine role
+        RadioGroup group = (RadioGroup) findViewById(R.id.loginRoleRadioGroup);
+        UserRole role;
+        
+        switch (group.getCheckedRadioButtonId()) {
+        case R.id.loginApproverRadioButton:
+            role = UserRole.APPROVER;
+            break;
+            
+        case R.id.loginClaimantRadioButton:
+            role = UserRole.CLAIMANT;
+            break;
+            
+        default:
+            throw new RuntimeException("Somehow, no role was selected");
+        }
+        
+        // Try to get the user's ID to login
+        datasource.getAllUsers(new LoginResultCallback(userName, role));
+    }
+    
+    /**
+     * Proceed to the next activity when user data has been retrieved.
+     */
+    public void loginWithUserData(UserData userData) {
+        // Start next activity
+        Intent intent = new Intent(this, ClaimsListActivity.class);
+        saveUserData(userData); // Save this login to file.
+        intent.putExtra(ClaimsListActivity.USER_DATA, userData);
+        startActivity(intent);
+    }
 
-	/**
-	 * Attempt to load the UserData object from a predetermined file.
-	 * @return The UserData object from the file, or null if an error occurs or no file is found.
-	 */
-	private UserData loadUserData() {
+    /**
+     * Attempt to load the UserData object from a predetermined file.
+     * @return The UserData object from the file, or null if an error occurs or no file is found.
+     */
+    private UserData loadUserData() {
         GsonIOManager gson = new GsonIOManager(this);
         try {
             return gson.<UserData>load(LOGIN_FILENAME, (new TypeToken<UserData>() {}).getType());
@@ -155,68 +155,68 @@ public class LoginActivity extends TravelTrackerActivity {
         }
         return null;
     }
-	
-	/**
-	 * Save a UserData object to a predetermined file.
-	 * @param userData UserData to save.
-	 */
-	private void saveUserData(UserData userData) {
+    
+    /**
+     * Save a UserData object to a predetermined file.
+     * @param userData UserData to save.
+     */
+    private void saveUserData(UserData userData) {
         GsonIOManager gson = new GsonIOManager(this);
         gson.save(userData, LOGIN_FILENAME, (new TypeToken<UserData>() {}).getType());
-	}
+    }
     
     private void warn(String message) {
         Log.e("LoginActivity", message);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
-	
-	/**
-	 * Callback for getAllUsers which attempts to get the user ID and log in.
-	 */
-	private class LoginResultCallback implements ResultCallback<Collection<User>> {
-		String userName;
-		UserRole userRole;
-		
-		public LoginResultCallback(String userName, UserRole userRole) {
-	        this.userName = userName;
-	        this.userRole = userRole;
+    
+    /**
+     * Callback for getAllUsers which attempts to get the user ID and log in.
+     */
+    private class LoginResultCallback implements ResultCallback<Collection<User>> {
+        String userName;
+        UserRole userRole;
+        
+        public LoginResultCallback(String userName, UserRole userRole) {
+            this.userName = userName;
+            this.userRole = userRole;
         }
-		
-		@Override
+        
+        @Override
         public void onResult(Collection<User> result) {
-			// Try to find the user
-			for (User user : result) {
-				
-				// There is an existing user with this name
-				if (user.getUserName().equals(userName)) {
-					UserData userData = new UserData(user.getUUID(), userName, userRole);
-					LoginActivity.this.loginWithUserData(userData);
-					
-					return;
-				}
-			}
-			
-			// No user found; create a new one
-			datasource.addUser(new ResultCallback<User>() {
-				@Override
-				public void onResult(User result) {
-					result.setUserName(userName);
-					
-					// Log in with the new user data.
-					UserData userData = new UserData(result.getUUID(), userName, userRole);
-					LoginActivity.this.loginWithUserData(userData);
-				}
-				
-				@Override
-				public void onError(String message) {
-					Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
-				}
-			});
+            // Try to find the user
+            for (User user : result) {
+                
+                // There is an existing user with this name
+                if (user.getUserName().equals(userName)) {
+                    UserData userData = new UserData(user.getUUID(), userName, userRole);
+                    LoginActivity.this.loginWithUserData(userData);
+                    
+                    return;
+                }
+            }
+            
+            // No user found; create a new one
+            datasource.addUser(new ResultCallback<User>() {
+                @Override
+                public void onResult(User result) {
+                    result.setUserName(userName);
+                    
+                    // Log in with the new user data.
+                    UserData userData = new UserData(result.getUUID(), userName, userRole);
+                    LoginActivity.this.loginWithUserData(userData);
+                }
+                
+                @Override
+                public void onError(String message) {
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
-		@Override
+        @Override
         public void onError(String message) {
-	        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
         }
-	}
+    }
 }

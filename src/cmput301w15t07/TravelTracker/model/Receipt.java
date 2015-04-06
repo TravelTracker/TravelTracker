@@ -35,23 +35,23 @@ import android.net.Uri;
  *
  */
 public class Receipt {
-	private Bitmap photo;
-	
-	public Receipt(Bitmap photo) {
-		this.photo = photo;
-		
-	}
-	
-	public Receipt() {
-		this(null);  //TODO add a default Bitmap somehow
-	}
+    private Bitmap photo;
+    
+    public Receipt(Bitmap photo) {
+        this.photo = photo;
+        
+    }
+    
+    public Receipt() {
+        this(null);  //TODO add a default Bitmap somehow
+    }
 
-	/**
-	 * Get the photo of the receipt.
-	 * @return The photo.
-	 */
-	public Bitmap getPhoto() {
-		return photo;
-	}
+    /**
+     * Get the photo of the receipt.
+     * @return The photo.
+     */
+    public Bitmap getPhoto() {
+        return photo;
+    }
 
 }

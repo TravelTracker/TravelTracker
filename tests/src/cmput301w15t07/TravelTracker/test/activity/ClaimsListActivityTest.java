@@ -254,7 +254,7 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		ListView listview = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 		
 		//Original count
-		assertEquals(4, listview.getChildCount());
+		assertEquals(4, listview.getCount());
 		
 		boolean success = getInstrumentation().invokeMenuActionSync(activity, R.id.claims_list_filter_by_tag, 0);
 		assertTrue("Filter by tag was not successfully pressed", success);
@@ -276,7 +276,7 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		getInstrumentation().waitForIdleSync();
 		
 		//Tests both: filter "OR-ing" and that filters out claims that don't match tags
-		assertEquals("Should only be two claims that are tagged", 2, listview.getChildCount());
+		assertEquals("Should only be two claims that are tagged", 2, listview.getCount());
 		
 	}
 	

@@ -52,6 +52,7 @@ public abstract class Document extends Observable<Document> {
 	 */
 	Document(UUID docID) {
 		this.docID = docID;
+		this.lastChanged = new Date();
 	}
 	
 	/**
@@ -124,6 +125,25 @@ public abstract class Document extends Observable<Document> {
 	public void setType(Type type) {
 		this.type = type;
 	}
+	
+	/**
+	 * @param sourceDoc the document whose attributes should be adopted
+	 * @return whether or not changes were made to attributes that equality or hashcode depend upon.
+	 */
+	public boolean mergeAttributesFrom(Document sourceDoc) {
+		if (!this.docID.equals(sourceDoc.getUUID()) || !this.type.equals(sourceDoc.getType()))
+			return false;
+		if (this.lastChanged.after(sourceDoc.getLastChanged()))
+			return false;
+		this.lastChanged = sourceDoc.getLastChanged();
+		return mergeFrom(sourceDoc);
+	}
+	
+	/**
+	 * @param sourceDoc the document whose attributes should be adopted
+	 * @return whether or not changes were made.
+	 */
+	protected abstract boolean mergeFrom(Document sourceDoc);
 
 	@Override
 	public int hashCode() {

@@ -123,4 +123,40 @@ public class User extends Document {
 			return false;
 		return true;
 	}
+
+	@Override
+	protected boolean mergeFrom(Document sourceDoc) {
+		if (!(sourceDoc instanceof User))
+			return false;
+		User sourceUser = (User) sourceDoc;
+		boolean changed = false;
+		
+		if (this.homeLocation != null) {
+			if (!this.homeLocation.equals(sourceUser.getHomeLocation())) {
+				changed |= true;
+				this.homeLocation = sourceUser.getHomeLocation();
+			}
+		} else {
+			// attribute is null, if soruce is not null then set it
+			if (!(sourceUser.getHomeLocation() == null)) {
+				changed |= true;
+				this.homeLocation = sourceUser.getHomeLocation();
+			}
+		}
+		
+		if (this.userName != null) {
+			if (!this.userName.equals(sourceUser.getUserName())) {
+				changed |= true;
+				this.userName = sourceUser.getUserName();
+			}
+		} else {
+			// attribute is null, if soruce is not null then set it
+			if (!(sourceUser.getUserName() == null)) {
+				changed |= true;
+				this.userName = sourceUser.getUserName();
+			}
+		}
+		
+		return changed;
+	}
 }

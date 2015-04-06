@@ -59,6 +59,8 @@ public class PersistentListTest  extends InstrumentationTestCase {
 		
 		ds = new InMemoryDataSource();
 		ctx = getInstrumentation().getTargetContext().getApplicationContext();
+		ctx.deleteFile(TEST_FILENAME);
+		
 		fs = new FileSystemHelper(ctx);
 		fs.purgeFileSystem();
 		

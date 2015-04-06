@@ -96,7 +96,7 @@ public class SelectLocationActivity extends TravelTrackerActivity {
         map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 			@Override
 			public void onMapLoaded() {
-		        String msg = getString(R.string.tap_to_select_location);
+		        String msg = getString(R.string.select_location_tap_to_select_location);
 		        Toast.makeText(SelectLocationActivity.this, msg, Toast.LENGTH_LONG).show();
 			}
 		});

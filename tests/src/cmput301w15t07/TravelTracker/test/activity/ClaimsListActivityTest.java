@@ -253,6 +253,7 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		final ClaimsListActivity activity = startActivity(new UserData(user1.getUUID(), user1.getUserName(), UserRole.CLAIMANT));
 		ListView listview = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 		
+		getInstrumentation().waitForIdleSync();
 		//Original count
 		assertEquals(4, listview.getChildCount());
 		

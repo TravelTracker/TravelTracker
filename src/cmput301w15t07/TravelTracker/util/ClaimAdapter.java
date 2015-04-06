@@ -234,11 +234,10 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 	private void setStatus(TextView display, Claim claim){
 		String statusStr = claim.getStatus().getString(getContext());
 		if (role.equals(UserRole.APPROVER)){
-			try{
-				statusStr += " (last returned by " + findUser(claim.getApprover()) + ")";
-			} catch (NullPointerException e){
-				// No approver exists
-				Log.d("DEBUG", "No approver exists for this claim");
+			UUID approverID = claim.getApprover();
+			
+			if (approverID != null) {
+				statusStr += " (last returned by " + findUser(approverID) + ")";
 			}
 		}
 		

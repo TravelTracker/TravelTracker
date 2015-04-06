@@ -61,7 +61,7 @@ public class GsonIOManager {
 		this.ctx = ctx;
 		gson = new GsonBuilder()
 		.registerTypeHierarchyAdapter(Date.class, new DateAdapter())
-		.registerTypeAdapter(cmput301w15t07.TravelTracker.model.Tag.class, new TagTypeAdapter())
+		//.registerTypeAdapter(cmput301w15t07.TravelTracker.model.Tag.class, new TagTypeAdapter())
 		.serializeNulls()
 		.create();
 	}

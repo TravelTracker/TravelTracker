@@ -76,7 +76,7 @@ public class DeletionFlag<T extends Document> {
 			return false;
 		if (!(obj instanceof DeletionFlag))
 			return false;
-		DeletionFlag<T> other = (DeletionFlag<T>) obj;
+		DeletionFlag other = (DeletionFlag) obj;
 		if (date == null) {
 			if (other.date != null)
 				return false;

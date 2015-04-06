@@ -295,17 +295,17 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 	}
     
     private void addTags(Claim claim, LinearLayout tagsLayout) {
-        Collection<UUID> claimTags = claim.getTags();
+        Collection<UUID> claimTagIDs = claim.getTags();
         
         // If no tags just hide
-        if (claimTags.size() == 0) {
+        if (claimTagIDs.size() == 0) {
             tagsLayout.setVisibility(View.GONE);
             return;
         }
 
         // There is no String.join until Java 8 or with libs.
         String tagsStr = "";
-        for (UUID tagid : claimTags) {
+        for (UUID tagid : claimTagIDs) {
             // Complexity be damned
             for (Tag tag : tags) {
                 if (tag.getUUID().equals(tagid)) {

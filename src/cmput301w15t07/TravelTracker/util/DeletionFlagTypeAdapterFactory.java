@@ -83,6 +83,7 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
             out.name("date").value(flag.getDate().getTime());
             out.name("type");
             typeAdapter.write(out, flag.getWrappedClass());
+            out.name("toDelete");
             elementAdapter.write(out, flag.getToDelete());
             out.endObject();
         }

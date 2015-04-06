@@ -30,20 +30,23 @@ import java.util.UUID;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.serverinterface.MergeResult;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ServerHelper;
 import cmput301w15t07.TravelTracker.util.DeletionFlag;
-import cmput301w15t07.TravelTracker.util.Observable;
-import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.PersistentList;
 
 /**
  * DataSource that caches Document model objects with local persistence iff ServerHelper reports an error
  * saving said objects.
+ * 
  * This is the final DataSource for the deployed app.
+ * 
+ * In order to keep latency low, observers of this datasource are updated optimistically with changes, and are
+ * only updated after network activity is complete *if* there is a change to local data.
  * 
  * The caching datasource will have a bunch of HashMap<UUID, Document subclass>, just like the in memory data 
  * source. Those hash maps are for the Document objects that the Views and Controllers refer to.
@@ -98,9 +101,6 @@ public class CacheDataSource extends InMemoryDataSource {
 		this.appContext = appContext;
 		this.mainHelper = main;
 		
-		// TODO load existing documents from backup if they exist
-		
-		
 		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
 	}
 
@@ -154,46 +154,128 @@ public class CacheDataSource extends InMemoryDataSource {
 	}
 
 	@Override
-	public void getUser(UUID id, ResultCallback<User> callback) {
-		// TODO: write below for User, then abstract into wrapped asynctask.
+	public void getUser(final UUID id, final ResultCallback<User> callback) {
+		if (users.get(id) != null) {
+			super.getUser(id, callback);
+		} else {
+			// after sync, try again.  callback.error if still not there
+			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Void result) {
+					CacheDataSource.super.getUser(id, callback);
+				}
+			});
+		}
+	}
+
+	@Override
+	public void getClaim(final UUID id, final ResultCallback<Claim> callback) {
+		if (claims.get(id) != null) {
+			super.getClaim(id, callback);
+		} else {
+			// after sync, try again.  callback.error if still not there
+			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Void result) {
+					CacheDataSource.super.getClaim(id, callback);
+				}
+			});
+		}
+	}
+
+	@Override
+	public void getItem(final UUID id, final ResultCallback<Item> callback) {
+		if (items.get(id) != null) {
+			super.getItem(id, callback);
+		} else {
+			// after sync, try again.  callback.error if still not there
+			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Void result) {
+					CacheDataSource.super.getItem(id, callback);
+				}
+			});
+		}
+	}
+
+	@Override
+	public void getTag(final UUID id, final ResultCallback<Tag> callback) {
+		if (tags.get(id) != null) {
+			super.getTag(id, callback);
+		} else {
+			// after sync, try again.  callback.error if still not there
+			new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Void result) {
+					CacheDataSource.super.getTag(id, callback);
+				}
+			});
+		}
+	}
+
+	@Override
+	public void getAllUsers(final ResultCallback<Collection<User>> callback) {
+		// after sync, try again.  callback.error if still not there
+		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Void result) {
+				CacheDataSource.super.getAllUsers(callback);
+			}
+		});
+	}
+
+	@Override
+	public void getAllClaims(final ResultCallback<Collection<Claim>> callback) {
+		// after sync, try again.  callback.error if still not there
+		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Void result) {
+				CacheDataSource.super.getAllClaims(callback);
+			}
+		});
+	}
+
+	@Override
+	public void getAllItems(final ResultCallback<Collection<Item>> callback) {
+		// after sync, try again.  callback.error if still not there
+		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Void result) {
+				CacheDataSource.super.getAllItems(callback);
+			}
+		});
+
+	}
+
+	@Override
+	public void getAllTags(final ResultCallback<Collection<Tag>> callback) {
+		// after sync, try again.  callback.error if still not there
+		new syncDocumentsTask(new syncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Void result) {
+				CacheDataSource.super.getAllTags(callback);
+			}
+		});
 		
-		// check main, if fail check backup.
-		// if found in either
-			// merge with inmemory.
-			// call inmemory.getUser(id, callback) because it will be there now
-			// (or if it isn't there it wasn't on the server or backup either)
-		// else user not found
 	}
 
-	@Override
-	public void getClaim(UUID id, ResultCallback<Claim> callback) {
+	private void warn(String msg) {
+		Log.w("CacheDataSource", msg);
+		Toast.makeText(appContext, msg, Toast.LENGTH_LONG).show();
 	}
+	
+	private abstract class syncWrappedResultCallback implements ResultCallback<Void> {
 
-	@Override
-	public void getItem(UUID id, ResultCallback<Item> callback) {
-
-	}
-
-	@Override
-	public void getTag(UUID id, ResultCallback<Tag> callback) {
-	}
-
-	@Override
-	public void getAllUsers(ResultCallback<Collection<User>> callback) {
-	}
-
-	@Override
-	public void getAllClaims(ResultCallback<Collection<Claim>> callback) {
-	}
-
-	@Override
-	public void getAllItems(ResultCallback<Collection<Item>> callback) {
-
-	}
-
-	@Override
-	public void getAllTags(ResultCallback<Collection<Tag>> callback) {
+		ResultCallback<?> errCallback;
 		
+		public syncWrappedResultCallback(ResultCallback<?> callback) {
+			this.errCallback = callback;
+		}
+
+		@Override
+		public void onError(String message) {
+			errCallback.onError(message);
+		}
 	}
 	
 	/**
@@ -203,15 +285,47 @@ public class CacheDataSource extends InMemoryDataSource {
 	 */
 	private class syncDocumentsTask extends AsyncTask<Void, Void, String> {
 
-		private ResultCallback callback;
+		private ResultCallback<Void> callback;
 
 		private Collection<User> retrievedUsers;
 		private Collection<Claim> retrievedClaims;
 		private Collection<Item> retrievedItems;
 		private Collection<Tag> retrievedTags;
-		
-		public syncDocumentsTask(ResultCallback<?> callback) {
+
+		/**
+		 * 
+		 * @param callback sync result callback, or null for no action.
+		 */
+		public syncDocumentsTask(ResultCallback<Void> callback) {
 			this.callback = callback;
+		}
+		
+		/**
+		 * 
+		 * @param callback sync result callback, or null for no action.
+		 */
+		public syncDocumentsTask() {
+			this(null);
+		}
+
+		/**
+		 * back on UI thread, do callback stuff, update observers.
+		 * 
+		 * @param errMsg  The error message if an error was encountered.  Null otherwise (hacky!).
+		 */
+		@Override
+		protected void onPostExecute(String errMsg) {
+			// if null errmsg assume success.
+			
+			// sync documents callback may be null, or it may wrap a get*() callback.
+			// if not null, call the callback.
+			if (callback != null) {
+				if (errMsg == null) {
+					callback.onResult(null);
+				} else {
+					callback.onError(errMsg);
+				}
+			}
 		}
 
 		@Override
@@ -233,13 +347,48 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 			performPendingDeletions(pendingDeletions);
 			
-			// merge every remaining received document into inmemory
-			// update observers (on gui thread!) (merge not cause update())
+			// TODO merge every remaining received document into inmemory
+			// TODO if merge caused changes, update observers (on gui thread!) (merge not cause update())
+			CacheDataSource.this.updateObservers(CacheDataSource.this); // TODO this should be conditional
+			
+			// dump post-merge in memory stuff to cache
+			if (!dumpToBackup()) {
+				return "Error saving to backup cache!";
+			}
 			
 			// push in memory to server
-				// set all documents to clean and purge backup if successful
-				// push all to backup if fail
+			if (!pushToMain()) {
+				// set all documents to clean if successful
+				setDirtyToClean(getDirtyUsers());
+				setDirtyToClean(getDirtyClaims());
+				setDirtyToClean(getDirtyItems());
+				setDirtyToClean(getDirtyTags());
+			}
 			return null;
+		}
+
+		private void setDirtyToClean(Collection<? extends Document> dirty) {
+			for (Document doc : dirty) {
+				doc.setClean();
+			}
+		}
+
+		private boolean pushToMain() {
+			Log.i("CacheDataSource", "Dumping to main storage (remote)");
+			// save all in memory documents
+			try {
+				mainHelper.saveDocuments(getUsers());
+				mainHelper.saveDocuments(getClaims());
+				mainHelper.saveDocuments(getItems());
+				mainHelper.saveDocuments(getTags());
+				return true;
+			} catch (IOException e) {
+				Log.i("CacheDataSource", "Could not save to main (connection err).");
+			} catch (Exception e) {
+				Log.e("CacheDataSource", "UNKNOWN ERROR FROM BACKUP HELPER");
+			}
+			return false;
+			
 		}
 
 		private void performPendingDeletions(ArrayList<Document> pendingDeletions) {
@@ -273,17 +422,6 @@ public class CacheDataSource extends InMemoryDataSource {
 				}
 			}
 			deletions.removeAll(flagsToClear);
-		}
-
-		/**
-		 * back on UI thread, do callback stuff, update observers.
-		 * 
-		 * @param errMsg  The error message if an error was encountered.  Null otherwise (hacky!).
-		 */
-		@Override
-		protected void onPostExecute(String errMsg) {
-			// if not null errmsg assume success
-			
 		}
 		
 		/**

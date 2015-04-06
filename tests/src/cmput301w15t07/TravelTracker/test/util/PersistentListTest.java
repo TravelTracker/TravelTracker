@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
+import com.google.gson.reflect.TypeToken;
+
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 import cmput301w15t07.TravelTracker.model.Claim;
@@ -18,6 +20,7 @@ import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
+import cmput301w15t07.TravelTracker.util.DeletionFlag;
 import cmput301w15t07.TravelTracker.util.PersistentList;
 
 public class PersistentListTest  extends InstrumentationTestCase {
@@ -129,6 +132,51 @@ public class PersistentListTest  extends InstrumentationTestCase {
 		assertEquals(2, list.size());
 		assertEquals(2, copy.size());
 		assertEquals(list, copy);
+		
+		copy.clear();
+		assertEquals(0, copy.size());
+		
+	}
+	
+	public void testClaims() {
+		PersistentList<Claim> list = new PersistentList<Claim>(TEST_FILENAME, ctx, Claim.class);
+		list.add(c1);
+		list.add(c2);
+		
+		PersistentList<Claim> copy = new PersistentList<Claim>(TEST_FILENAME, ctx, (new TypeToken<Claim>(){}).getType());
+		assertEquals(2, list.size());
+		assertEquals(2, copy.size());
+		assertEquals(list, copy);
+		
+		copy.clear();
+		assertEquals(0, copy.size());
+		
+	}
+	
+	public void testArrayList() {
+		PersistentList<ArrayList<Claim>> list = new PersistentList<ArrayList<Claim>>(TEST_FILENAME, ctx, (new TypeToken<ArrayList<Claim>>(){}).getType());
+		list.add(claims);
+		list.add(claim2);
+		
+		PersistentList<ArrayList<Claim>> copy = new PersistentList<ArrayList<Claim>>(TEST_FILENAME, ctx, (new TypeToken<ArrayList<Claim>>(){}).getType());
+		assertEquals(2, list.size());
+		assertEquals(2, copy.size());
+		assertTrue(list.equals(copy));
+		
+		copy.clear();
+		assertEquals(0, copy.size());
+		
+	}
+	
+	public void testDeletionFlag() {
+		PersistentList<DeletionFlag<Claim>> list = new PersistentList<DeletionFlag<Claim>>(TEST_FILENAME, ctx, (new TypeToken<DeletionFlag<Claim>>(){}).getType());
+		list.add(new DeletionFlag<Claim>(c1, Claim.class));
+		list.add(new DeletionFlag<Claim>(c2, Claim.class));
+		
+		PersistentList<DeletionFlag<Claim>> copy = new PersistentList<DeletionFlag<Claim>>(TEST_FILENAME, ctx, (new TypeToken<DeletionFlag<Claim>>(){}).getType());
+		assertEquals(2, list.size());
+		assertEquals(2, copy.size());
+		assertTrue(list.equals(copy));
 		
 		copy.clear();
 		assertEquals(0, copy.size());

@@ -61,33 +61,53 @@ public class GsonIOManager {
 	
 	public <T> T load(String filename, Type type) throws FileNotFoundException {
 		T ret;
+
+		FileInputStream fis = null;
+		InputStreamReader reader = null;
 		try {
-			FileInputStream fis = ctx.openFileInput(filename);
-			InputStreamReader reader = new InputStreamReader(fis);
+			fis = ctx.openFileInput(filename);
+			reader = new InputStreamReader(fis);
 			
 			ret = gson.fromJson(reader, type);
-			
-			fis.close();
 		} catch (FileNotFoundException e) {
 			throw e;
-		} catch (IOException e) {
+		} catch (@SuppressWarnings("hiding") IOException e) {
 			Log.e("GSONIOManager", "file read failed");
 			Log.e("GSONIOManager", e.getMessage());
 			ret = null;
+		} finally {
+			try {
+			if (reader != null)
+					reader.close();
+			} catch (IOException e) {
+				Log.e("GSONIOManager", "file read failed super hard");
+				Log.e("GSONIOManager", e.getMessage());
+			}
 		}
 		return ret;
 	}
 	
 	public void save(Object toSave, String filename, Type type) {
+
+		FileOutputStream fos = null;
+		OutputStreamWriter writer = null;
 		try {
-			FileOutputStream fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-			OutputStreamWriter writer = new OutputStreamWriter(fos);
+			fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+			writer = new OutputStreamWriter(fos);
 			gson.toJson(toSave, type, writer);
-			writer.flush();
-			fos.close();
 		} catch (IOException e) {
-			Log.e("GSONIOManager", "file read failed");
+			Log.e("GSONIOManager", "file write failed");
 			Log.e("GSONIOManager", e.getMessage());
+		} finally {
+			try {
+				if (writer != null) 
+					writer.flush();
+				if (fos != null)
+					fos.close();
+			} catch (IOException e) {
+				Log.e("GSONIOManager", "file write failed super hard");
+				Log.e("GSONIOManager", e.getMessage());
+			}
 		}
 	}
 	

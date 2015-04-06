@@ -73,8 +73,11 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 	/** Data about the logged-in user. */
 	private UserData userData;
 	
-	/** Tags UUIDs selected for filtering. */
+	/** Tag UUIDs selected for filtering. */
 	private HashSet<UUID> filterTags;
+    
+    /** Tags belonging to this user. */
+    private HashSet<Tag> userTags;
 	
 	/** Whether the filter is enabled. */
 	private boolean filterEnabled = false;
@@ -274,7 +277,7 @@ public class ClaimsListActivity extends TravelTrackerActivity {
      * Launch the filter by tag fragment.
      */
     private void launchFilterByTag() {
-		SelectTagFilterFragment filterFragment = new SelectTagFilterFragment(data.getTags(), filterEnabled,
+		SelectTagFilterFragment filterFragment = new SelectTagFilterFragment(userTags, filterEnabled,
 		        filterTags, new SelectTagFilterFragment.ResultCallback() {
             @Override
             public void onSelectTagFilterFragmentResult(HashSet<UUID> selected,
@@ -334,14 +337,22 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 	class initalDataCallback implements ResultCallback<InitialData>{
 		@Override
 		public void onResult(InitialData result) {
+		    if (userTags == null) {
+		        userTags = new HashSet<Tag>();
+                
+                for (Tag tag : result.getTags()) {
+                    if (tag.getUser().equals(userData.getUUID())) {
+                        userTags.add(tag);
+                    }
+                }
+		    }
+		    
 			// Populate the list of tags
 			if (filterTags == null) {
 				filterTags = new HashSet<UUID>();
 				
 				for (Tag tag : result.getTags()) {
-				    if (tag.getUser() == userData.getUUID()) {
-				        filterTags.add(tag.getUUID());
-				    }
+			        filterTags.add(tag.getUUID());
 				}
 				
 			// Turn on new tags by default

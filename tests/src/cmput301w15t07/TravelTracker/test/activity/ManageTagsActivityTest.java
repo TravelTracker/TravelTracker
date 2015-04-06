@@ -34,8 +34,12 @@ import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
+import android.R.integer;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,12 +105,51 @@ public class ManageTagsActivityTest extends ActivityInstrumentationTestCase2<Man
 		fail("Did not find a tag that matched the added tag");
 	}
 	
-	public void testEditTag() {
+	public void testEditTag() throws Throwable {
+		int numberOfTags = 10;
+		final String tagName = "MyNewTag";
+		startWithTags(numberOfTags);
 		
+		final int position = 0;
+		final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+		final ListAdapter adapter = listView.getAdapter();
+		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				listView.performItemClick(adapter.getView(position, null, null), position, adapter.getItemId(position));
+				AlertDialog dialog = (AlertDialog) activity.getLastDialog();
+				((EditText)dialog.findViewById(activity.getTaskId())).setText(tagName);
+				dialog.getButton(Dialog.BUTTON_POSITIVE).performClick();
+			}
+		});
+		
+		getInstrumentation().waitForIdleSync();
+		
+		for (int i = 0; i < adapter.getCount(); i++){
+			if (((Tag)adapter.getItem(i)).getTitle().equals(tagName)){
+				return;
+			}
+		}
+		fail("Edited Tag does not exist");
 	}
 	
-	public void testDeleteTag() {
+	public void testDeleteTag() throws Throwable {
+		//As far as I can tell we cannot long press a listview item programmatically and obtain a reference to the context menu view
+		// If we are really concerned about this, we can store a reference to it in the activity and then get it that way.
+		int numberOfTags = 10;
+		final String tagName = "MyNewTag";
+		startWithTags(numberOfTags);
 		
+		final int position = 0;
+		final ListView listView = (ListView) activity.findViewById(R.id.manageTagsTagListView);
+		final ListAdapter adapter = listView.getAdapter();
+		
+		
+		DataSourceUtils.deleteTag(((Tag)adapter.getItem(position)), ds);
+		getInstrumentation().waitForIdleSync();
+		assertEquals(numberOfTags -1, adapter.getCount());
 	}
 	
 	private void startWithTags(int number) throws InterruptedException{

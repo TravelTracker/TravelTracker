@@ -5,8 +5,9 @@
     
         <!-- Used in layouts -->
         <string name="date_format">mm/dd/yyyy</string>
-        <string name="input_text">Input text</string>
         <string name="content_description_receipt_image">Receipt Image</string>
+        <string name="edit_text_hint_text">Enter text</string>
+        <string name="edit_text_hint_name">Name</string>
         <string name="error_no_name">Please enter a name</string>
     
         <!-- Used in menus -->
@@ -15,7 +16,6 @@
 
     <!-- Strings used in LoginActivity -->
         <!-- Used in layout -->
-        <string name="login_name">Name</string>
         <string name="login_login">Login</string>
         <string name="login_claimant">Claimant</string>
         <string name="login_approver">Approver</string>
@@ -65,6 +65,7 @@
         <string name="claim_info_claim_status">Claim Status:</string>
         <string name="claim_info_destinations">Destinations:</string>
         <string name="claim_info_tags">Tags:</string>
+        <string name="claim_info_view_tags">+</string>
         <string name="claim_info_currency_totals">Totals:</string>
         <string name="claim_info_view_items">View Expense Items (%1$d Total)</string>
         <string name="claim_info_approver">Approver:</string>
@@ -114,6 +115,7 @@
         <string name= "expense_item_info_is_complete">Complete</string>
         <string name= "expense_item_info_date">Expense Date</string>
         <string name= "expense_item_info_amount">Amount</string>
+        <string name= "expense_item_info_amount_hint">Enter amount</string>
         <string name= "expense_item_info_category">Category</string>
         <string name= "expense_item_info_description">Description</string>
         <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>
@@ -138,16 +140,16 @@
     <!-- Strings used in SelectLocationFragment -->
     	<string name="select_location_fragment_select_location">Select location on map</string>
     	<string name="select_location_fragment_current_location">Set to current location</string>
-    	<string name="select_location_fragment_default_title">Select location</string>
+    	<string name="select_location_fragment_default_title">Select Location</string>
     	<string name="select_location_fragment_failed_to_get_location">Failed to get current location</string>
     	<string name="select_location_fragment_not_connected">Not connected to Google Play</string>
     	
     <!-- Strings used in SelectTagFragment -->
-    	<string name="select_tag_title">Select tags</string>
+    	<string name="select_tag_title">Select Tags</string>
     	
     <!-- Strings used in SelectTagFilterFragment -->
     	<string name="select_tag_filter_fragment_enable_filter">Enable filter</string>
-    	<string name="select_tag_filter_title">Tag filter settings</string>
+    	<string name="select_tag_filter_title">Tag Filter Settings</string>
 
     <!-- Strings used in enum ItemCategory -->
         <string name="enum_item_category_no_category">No Category</string>

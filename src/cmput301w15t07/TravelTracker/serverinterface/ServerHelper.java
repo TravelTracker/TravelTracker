@@ -104,6 +104,14 @@ public interface ServerHelper {
 	public User getUser(String name) throws Exception;
 	
 	/**
+	 * Gets the user for the passed UUID from the server synchronously
+	 * @param user UUID for the user to be retrieved
+	 * @return user for passed UUID
+	 * @throws Exception
+	 */
+	public User getUser(UUID user) throws Exception;
+	
+	/**
 	 * Saves passed documents to the server asynchronously, returns the documents that
 	 * were successfully saved via callback 
 	 * @param documents

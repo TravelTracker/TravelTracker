@@ -96,6 +96,12 @@ public class DataSourceUtils extends AndroidTestCase{
 		ds.deleteClaim(claim.getUUID(), claimCB);
 	}
 	
+	
+	public static void deleteTag(Tag tag, DataSource ds){
+		SynchronizedResultCallback<Void> tagCB = new SynchronizedResultCallback<Void>();
+		ds.deleteTag(tag.getUUID(), tagCB);
+	}
+	
 	/**
 	 * Convenience method to get the data out of a synchronized Result callback. Asserts
 	 * that waiting for result was successful. Handles the interrupted exception (Will fail the test).
@@ -114,6 +120,6 @@ public class DataSourceUtils extends AndroidTestCase{
 	}
 	
 	private static UserData getUserData(String name, UserRole role){
-		return new UserData(UUID.randomUUID(), "name", role);
+		return new UserData(UUID.randomUUID(), name, role);
 	}
 }

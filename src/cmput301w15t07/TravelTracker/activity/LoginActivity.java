@@ -90,14 +90,9 @@ public class LoginActivity extends TravelTrackerActivity {
 		});
 	}
 
-    /**
-     * There is no dataset in LoginActivity.
-     * Called in onResume() and update(DataSource observable).
-     */
+    // There is no dataset in LoginActivity, this needs no implementation.
     @Override
-    public void updateActivity() {
-        // Do nothing
-    }
+    public void updateActivity() {}
 
 	/**
 	 * Attempt to log in to the application using information from the name and role views.

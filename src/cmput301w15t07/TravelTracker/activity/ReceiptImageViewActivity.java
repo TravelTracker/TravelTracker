@@ -50,29 +50,6 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	/** The menu for the Activity */ 
 	private Menu menu = null;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.receipt_image_view);
-		Bundle bundle = getIntent().getExtras();
-		 itemID = (UUID) bundle.getSerializable(ITEM_UUID);
-		 datasource.getItem(itemID, new ResultCallback<Item>() {
-			
-			@Override
-			public void onResult(Item result) {
-				item = result;
-				loadImage(item.getReceipt().getPhoto());
-			}
-			
-			@Override
-			public void onError(String message) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		 
-	}
-	
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.receipt_image_view_menu, menu);
 		this.menu = menu;
@@ -82,7 +59,7 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()){
-		case R.id.expense_item_info_sign_out:
+		case R.id.receipt_image_view_sign_out:
 	        signOut();
 	        return true;
 	        
@@ -95,12 +72,32 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 		}
 	}
 	
-	
-	
     @Override
-    public void updateActivity() {
-        // Do nothing
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.receipt_image_view);
+        Bundle bundle = getIntent().getExtras();
+         itemID = (UUID) bundle.getSerializable(ITEM_UUID);
+         datasource.getItem(itemID, new ResultCallback<Item>() {
+            
+            @Override
+            public void onResult(Item result) {
+                item = result;
+                loadImage(item.getReceipt().getPhoto());
+            }
+            
+            @Override
+            public void onError(String message) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+         
     }
+    
+	// There is no dataset in ReceiptImageViewActivity, this needs no implementation.
+    @Override
+    public void updateActivity() {}
 	
     /**
      * Load the image into the imageveiw

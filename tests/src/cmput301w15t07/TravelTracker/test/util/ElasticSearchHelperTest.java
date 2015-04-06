@@ -34,6 +34,7 @@ import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.Suppress;
+import android.widget.EditText;
 
 public class ElasticSearchHelperTest extends AndroidTestCase{
 	ElasticSearchHelper es;
@@ -160,6 +161,19 @@ public class ElasticSearchHelperTest extends AndroidTestCase{
 		
 		cleanUp(users);
 		assertEquals(0, es.getAllUsers().size());
+	}
+	
+	@Suppress
+	public void testGetUserByID() throws Exception {
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(user1);
+		
+		
+		es.saveDocuments(users);
+		Thread.sleep(1000);
+		assertTrue(user1.getUUID().equals(es.getUser(user1.getUUID()).getUUID()));
+		
+		cleanUp(users);
 	}
 	
 	private <T extends Document> void cleanUp(ArrayList<T> models) throws Exception{

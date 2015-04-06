@@ -252,6 +252,8 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
         
+        ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+        
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
             if (isEditable(claim.getStatus(), userData.getRole())) {
                 // Attach view Listener for ItemStatus CheckedTextView
@@ -269,8 +271,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     }
                 });
                 
-                //Attach view Listener for receipt Image View
-                ImageView receiptImage = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
+                //Attach view Listener for receipt Image View                
                 receiptImage.setOnClickListener(new View.OnClickListener() {
                     
                     @Override
@@ -384,10 +385,24 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             
             // Views an approver doesn't need to see or have access to
             itemStatus.setVisibility(View.GONE);
+            
+            //set listener for receipt imagae to load view activity
+            receiptImage.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					if (item.getReceipt().getPhoto() != null){
+						launchReceiptImageView();
+					}
+				}
+			});
+            
         }
         
         onLoaded();
 	}
+	
+	
 	
 	/**
 	 * Prompt for changing, viewing, or deleting a receipt image
@@ -517,7 +532,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 				item.setReceipt(new Receipt(imageBitmap));
 		}
 		//if result is from chooseImageFromGallery()
-		//refrenced viralpirate.net/blocks/pick-image-from-galary-android-app
+		//refrenced viralpatel.net/blogs/pick-image-from-galary-android-app/
 		//i know this url is misspelled, but thats what the site is ^^
 		else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
 			imageUri = data.getData();
@@ -539,15 +554,12 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	 * @param item The item being viewed.
 	 */
 	public void populateItemInfo(Item item) {
-        //TODO:catch null pointer exceptions for empty claims/fields
+	    // Set the date.
         Button itemDateButton = (Button) findViewById(R.id.expenseItemInfoDateButton);
-        try {
-            setButtonDate(itemDateButton, item.getDate());
-        } catch (NullPointerException e){
-            //the field is empty, so dont load anything
-        }
+        setButtonDate(itemDateButton, item.getDate());
         
-        // populate receipt image
+        // Populate receipt image.
+        // TODO This should not have to worry about null values, Receipt should handle that.
         ImageView receiptImageView = (ImageView) findViewById(R.id.expenseItemInfoReceiptImageView);
         try {
         	if (item.getReceipt().getPhoto() == null) {
@@ -560,33 +572,26 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 			Toast.makeText(ExpenseItemInfoActivity.this, e1.getMessage(), Toast.LENGTH_LONG).show();
 		}
       
-        
+        // Set the amount.
         String amount = Float.toString(item.getAmount());
         EditText itemAmount = (EditText) findViewById(R.id.expenseItemInfoAmountEditText);
-        try {
-            itemAmount.setText(amount);
-        } catch (NullPointerException e) {
-            // the Field is empty, so dont load anything
-        }
+        itemAmount.setText(amount);
         
-        // Set currency spinner with strings from ItemCurrency
+        // Set currency spinner with strings from ItemCurrency.
         Spinner currencySpinner = (Spinner) findViewById(R.id.expenseItemInfoCurrencySpinner);
         currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout
         		.simple_spinner_item, ItemCurrency.getStringArray(this)));
         currencySpinner.setSelection(item.getCurrency().ordinal(), true);
         
-        // Set category spinner with strings from ItemCategory
+        // Set category spinner with strings from ItemCategory.
         Spinner categorySpinner = (Spinner) findViewById(R.id.expenseItemInfoCategorySpinner);
         categorySpinner.setAdapter(new ArrayAdapter<String>(this, android.R
         		.layout.simple_spinner_item, ItemCategory.getStringArray(this)));
         categorySpinner.setSelection(item.getCategory().ordinal(), true);
         
+        // Set the description.
         EditText itemDescription = (EditText) findViewById(R.id.expenseItemInfoDescriptionEditText);
-        try {
-            itemDescription.setText(item.getDescription());
-        } catch (NullPointerException e) {
-            // the field is empty, so dont load anything
-        }
+        itemDescription.setText(item.getDescription());
         
         CheckedTextView itemStatus = (CheckedTextView)
         		findViewById(R.id.expenseItemInfoStatusCheckedTextView);

@@ -36,7 +36,7 @@
             android:id="@+id/claimInfoDestinationsListEditPromptGeolocationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/claim_info_destination_edit_view_button" />
+            android:text="@string/geolocation_view_button" />
 
         <!--
             Last two lines taken on April 3, 2015 from:

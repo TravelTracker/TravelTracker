@@ -80,7 +80,6 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 	/** Whether the filter is enabled. */
 	private boolean filterEnabled = false;
 	
-	private ProgressDialog progressDialog;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -201,7 +200,6 @@ public class ClaimsListActivity extends TravelTrackerActivity {
             }
         });
         
-        progressDialog.dismiss();
         onLoaded();
         
     }

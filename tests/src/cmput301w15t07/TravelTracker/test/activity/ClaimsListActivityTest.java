@@ -40,15 +40,8 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
-import android.R.bool;
 import android.app.Activity;
-<<<<<<< HEAD
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Instrumentation;
-=======
->>>>>>> 1f258779cf31387871edf60b09607abaf43d0e35
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.os.Bundle;

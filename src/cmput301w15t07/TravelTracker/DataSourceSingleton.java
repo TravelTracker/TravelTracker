@@ -50,7 +50,6 @@ public class DataSourceSingleton {
     	if (ds == null) {
     		//ds = new InMemoryDataSource();
     		ds = new GeneratedDataSource();
-    		//ds = new CacheDataSource(appContext, new NoConnectionServerHelper());
     		//ds = new CacheDataSource(appContext);
     	}
     	

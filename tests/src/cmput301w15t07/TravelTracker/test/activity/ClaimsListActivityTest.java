@@ -35,7 +35,6 @@ import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,7 +47,8 @@ import android.widget.ListView;
  * 
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
- * @author kdbanman
+ * @author kdbanman,
+ *         therabidsquirel
  *
  */
 public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<ClaimsListActivity> {
@@ -188,17 +188,19 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	
 	public void testDeleteExpenseClaim() throws Throwable {
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
-		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 		assertEquals(1, listView.getCount());
+		
 		runTestOnUiThread(new Runnable() {
-			
 			@Override
 			public void run() {
 				DataSourceUtils.deleteClaim(claim5, ds);
 				getInstrumentation().callActivityOnResume(activity);
 			}
 		});
+		
 		getInstrumentation().waitForIdleSync();
+		listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
 		assertEquals(0, listView.getCount());
 	}
 	
@@ -249,13 +251,14 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		intent.putExtra(ClaimsListActivity.USER_DATA, data);
 		setActivityIntent(intent);
 		ClaimsListActivity activity = getActivity();
-		//TODO uncomment when activity supports loading screen
-//		try{
-//			activity.waitUntilLoaded();
-//		} catch (InterruptedException e){
-//			fail("Could not load activity!");
-//		}
-		//getInstrumentation().waitForIdleSync();
+		
+		try {
+			activity.waitUntilLoaded();
+		} catch (InterruptedException e){
+			fail("Could not load activity!");
+		}
+		
+		getInstrumentation().waitForIdleSync();
 		
 		return activity;
 	}

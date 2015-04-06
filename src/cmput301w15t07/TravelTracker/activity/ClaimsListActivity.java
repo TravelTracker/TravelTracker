@@ -147,10 +147,18 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         adapter = new ClaimAdapter(this, userData.getRole());
         
         datasource.addObserver(this);
-        
-        // TODO Remove this without things breaking
-        setContentView(R.layout.claims_list_activity);
 	}
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // Show loading circle
+        setContentView(R.layout.loading_indeterminate);
+        loading = true;
+        
+        updateActivity();
+    }
 	
     /**
      * Update the activity when the dataset changes.
@@ -158,10 +166,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      */
     @Override
     public void updateActivity() {
-        // Show loading circle
-        // TODO Uncomment this without things breaking
-//        setContentView(R.layout.loading_indeterminate);
-        
         new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
     }
     
@@ -169,8 +173,13 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Change to the activity's layout and set it up its views accordingly.
      */
     private void onGetInitialData() {
-        // TODO Uncomment this without things breaking
-//        setContentView(R.layout.claims_list_activity);
+        if (!loading) {
+            onLoaded();
+            return;
+        }
+        
+        loading = false;
+        setContentView(R.layout.claims_list_activity);
         
         claimsList = (ListView) findViewById(R.id.claimsListClaimListView);
         claimsList.setAdapter(adapter);

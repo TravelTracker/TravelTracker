@@ -162,7 +162,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
     private void setName(TextView display, Claim claim){
 		String nameStr = "";
 		if (role.equals(UserRole.APPROVER)){
-			nameStr += ":" + findUser(claim.getUser());
+			nameStr += findUser(claim.getUser());
 		} else {
 			String sDate = ClaimUtilities.formatDate(claim.getStartDate());
 			String eDate = ClaimUtilities.formatDate(claim.getEndDate());
@@ -235,7 +235,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 		String statusStr = claim.getStatus().getString(getContext());
 		if (role.equals(UserRole.APPROVER)){
 			try{
-				statusStr += " :" + findUser(claim.getApprover());
+				statusStr += " (last returned by " + findUser(claim.getApprover()) + ")";
 			} catch (NullPointerException e){
 				// No approver exists
 				Log.d("DEBUG", "No approver exists for this claim");

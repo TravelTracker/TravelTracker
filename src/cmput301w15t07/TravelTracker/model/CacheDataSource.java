@@ -25,8 +25,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.google.gson.reflect.TypeToken;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -74,15 +77,21 @@ import cmput301w15t07.TravelTracker.util.PersistentList;
  * @author kdbanman
  */
 public class CacheDataSource extends InMemoryDataSource {
-	
-	private static final String TODELETE_FILENAME = "cached_deletions.json";
+
+	private static final String DELETE_USERS = "user_deletions.json";
+	private static final String DELETE_CLAIMS = "claim_deletions.json";
+	private static final String DELETE_ITEMS = "item_deletions.json";
+	private static final String DELETE_TAGS = "tag_deletions.json";
 	
 	private Context appContext;
 	
 	private ServerHelper mainHelper;
 	private ServerHelper backupHelper;
-	
-	private PersistentList<DeletionFlag> deletions;
+
+	private PersistentList<DeletionFlag<User>> userDeletions;
+	private PersistentList<DeletionFlag<Claim>> claimDeletions;
+	private PersistentList<DeletionFlag<Item>> itemDeletions;
+	private PersistentList<DeletionFlag<Tag>> tagDeletions;
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
@@ -103,7 +112,10 @@ public class CacheDataSource extends InMemoryDataSource {
 		this.mainHelper = main;
 		this.backupHelper = backup;
 		
-		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
+		this.userDeletions = new PersistentList<DeletionFlag<User>>(DELETE_USERS, appContext, (new TypeToken<DeletionFlag<User>>(){}).getType());
+		this.claimDeletions = new PersistentList<DeletionFlag<Claim>>(DELETE_CLAIMS, appContext, (new TypeToken<DeletionFlag<Claim>>(){}).getType());
+		this.itemDeletions = new PersistentList<DeletionFlag<Item>>(DELETE_ITEMS, appContext, (new TypeToken<DeletionFlag<Item>>(){}).getType());
+		this.tagDeletions = new PersistentList<DeletionFlag<Tag>>(DELETE_TAGS, appContext, (new TypeToken<DeletionFlag<Tag>>(){}).getType());
 		
 		new SyncDocumentsTask(new ResultCallback<Boolean>() {
 
@@ -133,7 +145,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteUser(UUID id, ResultCallback<Void> callback) {
 		if (users.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(users.get(id)));
+			userDeletions.add(new DeletionFlag<User>(users.get(id), User.class));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
 		}
@@ -143,7 +155,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
 		if (claims.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(claims.get(id)));
+			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id), (new TypeToken<Claim>(){}).getType()));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
 		}
@@ -153,7 +165,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
 		if (items.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(items.get(id)));
+			itemDeletions.add(new DeletionFlag<Item>(items.get(id), Item.class));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
 		}
@@ -163,7 +175,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
 		if (tags.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(tags.get(id)));
+			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id), Tag.class));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
 		}
@@ -361,13 +373,10 @@ public class CacheDataSource extends InMemoryDataSource {
 				return null; // normal execution - saved to backup, no error.
 			}
 
-			ArrayList<Document> pendingDeletions = new ArrayList<Document>();
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedUsers));
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedClaims));
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedItems));
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedTags));
-			
-			performPendingDeletions(pendingDeletions);
+			this.<User>performPendingDeletions(this.<User>filterNonStaleDeletions(retrievedUsers, userDeletions), userDeletions);
+			this.<Claim>performPendingDeletions(this.<Claim>filterNonStaleDeletions(retrievedClaims, claimDeletions), claimDeletions);
+			this.<Item>performPendingDeletions(this.<Item>filterNonStaleDeletions(retrievedItems, itemDeletions), itemDeletions);
+			this.<Tag>performPendingDeletions(this.<Tag>filterNonStaleDeletions(retrievedTags, tagDeletions), tagDeletions);
 			
 			// merge every remaining received document into inmemory
 			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);
@@ -434,7 +443,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 		}
 
-		private void performPendingDeletions(ArrayList<Document> pendingDeletions) {
+		private <T extends Document> void performPendingDeletions(ArrayList<Document> pendingDeletions, List<DeletionFlag<T>> deletions) {
 			// remove above pending from remote and local in batch using .deletDocuments()
 			
 			try {
@@ -457,9 +466,9 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 			
 			// remove pending deletions from deletion list since they were successful
-			ArrayList<DeletionFlag> flagsToClear = new ArrayList<DeletionFlag>();
+			ArrayList<DeletionFlag<T>> flagsToClear = new ArrayList<DeletionFlag<T>>();
 			for (Document deleted : pendingDeletions) {
-				for (DeletionFlag flag: deletions) {
+				for (DeletionFlag<T> flag: deletions) {
 					if (flag.getToDelete().equals(deleted))
 						flagsToClear.add(flag);
 				}
@@ -474,10 +483,10 @@ public class CacheDataSource extends InMemoryDataSource {
 		 * @return 
 		 * @return the deletions that were performed on retrieved (passed) documents.
 		 */
-		private ArrayList<Document> filterNonStaleDeletions(Collection<? extends Document> retrieved) {
+		private <T extends Document> ArrayList<Document> filterNonStaleDeletions(Collection<T> retrieved, List<DeletionFlag<T>> deletions) {
 			ArrayList<Document> pendingDeletions = new ArrayList<Document>();
-			ArrayList<DeletionFlag> overriddenDeletions = new ArrayList<DeletionFlag>();
-			for (DeletionFlag deletion : deletions) {
+			ArrayList<DeletionFlag<T>> overriddenDeletions = new ArrayList<DeletionFlag<T>>();
+			for (DeletionFlag<T> deletion : deletions) {
 				switch (mergeDeletion(deletion, retrieved)) {
 				case CHANGED:
 					pendingDeletions.add(deletion.getToDelete());

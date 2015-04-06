@@ -44,7 +44,7 @@ public class PersistentList<T> implements List<T> {
 	
 	private ArrayList<T> list;
 	private String filename;
-	private Class<T> wrappedClass;
+	private Type wrappedClass;
 	
 	private Context ctx;
 	
@@ -55,7 +55,7 @@ public class PersistentList<T> implements List<T> {
 	 * @param filename
 	 * @param ctx
 	 */
-	public PersistentList(String filename, Context ctx, Class<T> clazz) {
+	public PersistentList(String filename, Context ctx, Type clazz) {
 		this.filename = filename;
 		this.ctx = ctx;
 		this.wrappedClass = clazz;

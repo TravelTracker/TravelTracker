@@ -254,8 +254,7 @@ public class PersistentList<T> implements List<T> {
 		if (wrappedClass == null) {
 			if (other.wrappedClass != null)
 				return false;
-		} else if (!(wrappedClass == other.wrappedClass))
-			return false;
+		} // testing type equality is risky, wrappedClass goes unchecked.
 		return true;
 	}
 

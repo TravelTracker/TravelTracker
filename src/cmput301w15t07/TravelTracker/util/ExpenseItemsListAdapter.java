@@ -196,7 +196,7 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
                 (TextView) rowView.findViewById(
                 		R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete() || userRole.equals(UserRole.APPROVER)) {
-            incompleteView.setVisibility(View.INVISIBLE);
+            incompleteView.setVisibility(View.GONE);
         }
         else {
             incompleteView.setVisibility(View.VISIBLE);

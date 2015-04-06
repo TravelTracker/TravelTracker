@@ -4,16 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
-    android:background="@layout/background_activated" >
+    android:background="@layout/background_activated"
+    android:orientation="horizontal"
+    android:visibility="visible" >
 
     <TextView
         android:id="@+id/expenseItemsListItemViewDateTextView"
         android:layout_width="fill_parent"
         android:layout_toEndOf="@+id/expenseItemsListItemViewStatusTextView"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+        android:layout_gravity="center"
         android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/expenseItemsListItemViewStatusTextView"
@@ -21,6 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="@string/expense_items_list_incomplete"
         android:textColor="#FF0000"
         android:visibility="visible" />
@@ -40,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:layout_alignParentStart="true"
+        android:layout_gravity="center"
         android:layout_below="@+id/expenseItemsListItemViewDateTextView"
         android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView" />
 
@@ -64,12 +70,12 @@
         android:clickable="false"
         android:longClickable="false"
         android:text="@string/geolocation_checkbox"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:attr/textColorTertiary"
+        android:button="@null"
+        android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemsListItemViewCostTextView"
-        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView"
-        android:button="@null"
-        android:drawableEnd="?android:attr/listChoiceIndicatorMultiple" />
+        android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView" />
     
     <TextView
         android:id="@+id/expenseItemsListItemViewDescriptionTextView"
@@ -78,6 +84,7 @@
         android:layout_marginTop="3dp"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/expenseItemsListItemViewGeolocationCheckBox"
+        android:layout_gravity="center"
         android:layout_toStartOf="@+id/expenseItemsListItemViewReceiptImageView" />
 
 </RelativeLayout>

@@ -47,6 +47,7 @@
     <!-- Strings used in ClaimsListRowItem -->
         <!-- Used in layout -->
         <string name="claims_list_row_item_total">Total:</string>
+        <string name="claims_list_row_item_tags">Tags:</string>
         <string name="claims_list_row_item_distance_header">Distance from home location:</string>
         <string name="claims_list_row_item_distance_no_home">No home location set</string>
         <string name="claims_list_row_item_distance_no_dest">No destinations in claim</string>
@@ -121,22 +122,23 @@
         <string name= "expense_item_info_capture_receipt_message">Add a new receipt image?</string>
         <string name= "expense_item_info_change_receipt_message">Change, delete or view current receipt image</string>
         <string name= "expense_item_info_failed_to_get_image">Failed to get receipt image</string>
-        <string name= "take_photo">Take photo</string>
-        <string name= "choose_from_gallery">Choose from gallery</string>
-        <string name= "delete_image">Delete image</string>
-        <string name= "view_image">View image</string>
-        <string name= "change_image">Change image</string>
+        <string name= "expense_item_info_take_photo">Take photo</string>
+        <string name= "expense_item_info_choose_from_gallery">Choose from gallery</string>
+        <string name= "expense_item_info_delete_image">Delete image</string>
+        <string name= "expense_item_info_view_image">View image</string>
+        <string name= "expense_item_info_change_image">Change image</string>
+        
+        <!-- Used in menu -->
+        <string name="expense_item_info_delete_item">Delete Expense Item</string>
         
     <!-- Strings used in RecieptImageVeiwAcivity -->
-    	<string name= "receipt_image_view_label">Veiw Receipt Image</string>  
+    	<string name= "receipt_image_view_label">View Receipt Image</string>  
     	
     <!-- Strings used in SelectLocationActivity -->
     	<string name="select_location_label">Select Location</string>
-    	<string name="tap_to_select_location">Tap to select a location</string>
-    	<string name="location_selected">Location selected</string>
+    	<string name="select_location_tap_to_select_location">Tap to select a location</string>
+    	<string name="select_location_location_selected">Location selected</string>
     
-        <!-- Used in menu -->
-        <string name="expense_item_info_delete_item">Delete Expense Item</string>
         
     <!-- Strings used in SelectLocationFragment -->
     	<string name="select_location_fragment_select_location">Select location on map</string>

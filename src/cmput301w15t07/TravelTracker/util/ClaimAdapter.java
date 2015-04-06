@@ -38,6 +38,7 @@ import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.R;
@@ -51,6 +52,7 @@ import cmput301w15t07.TravelTracker.R;
 public class ClaimAdapter extends ArrayAdapter<Claim> {
 	private Collection<Item> items;
 	private Collection<User> users;
+    private Collection<Tag> tags;
 	private User user;
 	private UserRole role;
 	
@@ -65,19 +67,22 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 	 * @param claims The claims to display.
 	 * @param items The user's expense items (used to find totals).
 	 * @param users The list of users (to get user names).
+	 * @param tags The list of tags (to get tag titles).
 	 * @param user The user (to find home location info).
-	 * @param tagIDs The list of tag UUIDs to filter by, or null for no filter. Only claims tagged with at least one of these tags will be displayed.
+	 * @param filterTagIDs The list of tag UUIDs to filter by, or null for no filter. Only claims tagged with at least one of these tags will be displayed.
 	 */
 	public void rebuildList(Collection<Claim> claims, Collection<Item> items,
-			Collection<User> users, User user, Collection<UUID> tagIDs){
+			Collection<User> users, Collection<Tag> tags, User user,
+			Collection<UUID> filterTagIDs){
 		this.items = items;
 		this.users = users;
+		this.tags = tags;
 		this.user = user;
 
 		//possible performance bottleneck
 		clear();
 		
-		if (tagIDs == null) {
+		if (filterTagIDs == null) {
 			addAll(claims);
 		} else {
 			// Add claims one at a time
@@ -86,7 +91,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 				
 				// Only add if tagged correctly
 				for (UUID uuid : claimTags) {
-					if (tagIDs.contains(uuid)) {
+					if (filterTagIDs.contains(uuid)) {
 						add(claim);
 						break;
 					}
@@ -127,6 +132,7 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 		TextView distLevel = (TextView) workingView.findViewById(R.id.claimsListRowItemDistanceLevel);
 		LinearLayout destinationContainer = (LinearLayout) workingView.findViewById(R.id.claimsListDestinationContainer);
 		LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
+        LinearLayout tagsLayout = (LinearLayout) workingView.findViewById(R.id.claimsListRowItemTagsLayout);
 		Claim claim = getItem(position);
 		
 		setName(name, claim);
@@ -135,9 +141,11 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 			date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
 			distHeader.setVisibility(View.GONE);
 			distLevel.setVisibility(View.GONE);
+            tagsLayout.setVisibility(View.GONE); // Hide tags here
 		} else if (role.equals(UserRole.CLAIMANT)) {
 		    date.setVisibility(View.GONE);
 		    setDistance(distLevel, claim);
+            addTags(claim, tagsLayout); // Add tags here
 		}
 
 		setStatus(status, claim);
@@ -147,13 +155,11 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 		
 		addTotals(claim, totalsContainer);
 		addDestinations(claim, destinationContainer);
-		//TODO add tags
 		
 		return workingView;
 	}
-	
-	
-	private void setName(TextView display, Claim claim){
+
+    private void setName(TextView display, Claim claim){
 		String nameStr = "";
 		if (role.equals(UserRole.APPROVER)){
 			nameStr += ":" + findUser(claim.getUser());
@@ -287,4 +293,50 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
 		dynamicDestination.setText(dest.getLocation());
 		parent.addView(dynamicDestination);
 	}
+    
+    private void addTags(Claim claim, LinearLayout tagsLayout) {
+        Collection<UUID> claimTags = claim.getTags();
+        
+        // If no tags just hide
+        if (claimTags.size() == 0) {
+            tagsLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        // There is no String.join until Java 8 or with libs.
+        String tagsStr = "";
+        for (UUID tagid : claimTags) {
+            Tag tag = null;
+            
+            // Complexity be damned
+            for (Tag t : tags) {
+                if (t.getUUID().equals(tagid)) {
+                    tag = t;
+                    break;
+                }
+            }
+            
+            if (tag == null) {
+                // We didn't find a tag matching the UUID, skip it
+                // TODO This might be a runtime error instead
+                continue;
+            }
+            
+            // Add tag title
+            tagsStr += tag.getTitle() + ", ";
+        }
+        
+        // Remove trailing ", "
+        if (tagsStr.endsWith(", ")) {
+            tagsStr = tagsStr.substring(0, tagsStr.lastIndexOf(", "));
+        }
+
+        // Make sure the layout is visible
+        tagsLayout.setVisibility(View.VISIBLE);
+        
+        // Set text
+        TextView tagstv = (TextView) tagsLayout.findViewById(
+                R.id.claimsListRowItemTagsTextView);
+        tagstv.setText(tagsStr);
+    }
 }

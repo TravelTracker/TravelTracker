@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +9,8 @@
 	        android:id="@+id/claimsListRowItemInfo"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:orientation="vertical">
+	        android:orientation="vertical"
+            android:paddingBottom="10dp">
 
 	        <TextView
 		        android:id="@+id/claimsListRowItemName"
@@ -50,18 +50,30 @@
             android:id="@+id/claimsListRowItemStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:gravity="bottom"/>
+     
+        <TextView
+            android:id="@+id/claimsListRowItemTags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/claimsListRowItemTotalLayout"
             android:layout_below="@+id/claimsListRowItemInfo"
-            android:layout_alignParentBottom="true"/>
-		    
-	    
-	    <LinearLayout 
+            android:layout_above="@+id/claimsListRowItemStatus"
+            android:gravity="bottom"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone" />
+     
+	    <LinearLayout
+	        android:id="@+id/claimsListRowItemTotalLayout"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:orientation="vertical"
 	        android:layout_alignParentEnd="true"
+	        android:orientation="vertical"
 	        android:paddingEnd="3dp"
-	        android:paddingStart="3dp">
+	        android:paddingStart="3dp" >
 		   	
 	        <TextView 
 		        android:layout_width="wrap_content"

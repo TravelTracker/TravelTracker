@@ -52,6 +52,7 @@ public abstract class Document extends Observable<Document> {
 	 */
 	Document(UUID docID) {
 		this.docID = docID;
+		this.lastChanged = new Date();
 	}
 	
 	/**

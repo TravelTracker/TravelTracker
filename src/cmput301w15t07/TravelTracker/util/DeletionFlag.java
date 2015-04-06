@@ -34,7 +34,7 @@ public class DeletionFlag<T extends Document> {
 	private T toDelete;
 	private Type wrappedClass;
 
-	public DeletionFlag(Date date, T toDelete, Type wrappedClass) {
+    public DeletionFlag(Date date, T toDelete, Type wrappedClass) {
 		this.date = new Date();
 		this.toDelete = toDelete;
 		this.wrappedClass = wrappedClass;
@@ -57,6 +57,13 @@ public class DeletionFlag<T extends Document> {
 	public T getToDelete() {
 		return toDelete;
 	}
+
+    /**
+     * @return the wrapped class
+     */
+    public Type getWrappedClass() {
+        return wrappedClass;
+    }
 
 	@Override
 	public int hashCode() {

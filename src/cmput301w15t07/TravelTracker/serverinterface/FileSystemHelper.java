@@ -239,7 +239,7 @@ public class FileSystemHelper implements ServerHelper {
 	}
 	
 	private void warn(String msg) {
-		Log.e("FileSystemHelper", msg);
+		Log.w("FileSystemHelper", msg);
 		Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
 	}
 }

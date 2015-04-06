@@ -107,24 +107,12 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         
         Item itemData = getItem(position);
         
-        // Incomplete view
         setIncompleteView(itemData, rowView);
-        
-        // Description view
         setDescriptionField(itemData, rowView);
-        
-        // Date view
         setDateView(itemData, rowView);
-        
-        // Category view
         setCategoryField(itemData, rowView);
-        
-        // Cost View
         setCostView(itemData, rowView);
-        
         setGeolocationView(itemData, rowView);
-        
-        // Receipt view
         setReceiptView(itemData, rowView);
         
         return rowView;

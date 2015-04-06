@@ -33,6 +33,7 @@ import java.util.Date;
 
 import android.content.Context;
 import android.util.Log;
+import cmput301w15t07.TravelTracker.model.DeletionFlagTypeAdapterFactory;
 import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.TagTypeAdapter;
 
@@ -64,6 +65,8 @@ public class GsonIOManager {
 		this.ctx = ctx;
 		gson = new GsonBuilder()
 		.registerTypeHierarchyAdapter(Date.class, new DateAdapter())
+//		.registerTypeHierarchyAdapter(Tag.class, new TagTypeAdapter())
+		.registerTypeAdapterFactory(new DeletionFlagTypeAdapterFactory())
 		.serializeNulls()
 		.create();
 	}

@@ -22,23 +22,29 @@
 package cmput301w15t07.TravelTracker.test.activity;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.activity.ExpenseItemInfoActivity;
 import cmput301w15t07.TravelTracker.activity.ExpenseItemsListActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.User;
+import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import cmput301w15t07.TravelTracker.util.ExpenseItemsListAdapter;
+import android.app.Activity;
 import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 
 /**
@@ -87,10 +93,11 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         claim = DataSourceUtils.addEmptyClaim(claimant, dataSource);
 	}
 
-	public void testListExpenseItems() throws InterruptedException {
+	public void testViewListExpenseItems() throws InterruptedException {
 		ExpenseItemsListActivity activity =
 				startActivityAsClaimant();
 		
+		// Get ListView and adapter
 		ListView lv = (ListView) activity.findViewById(
 				R.id.expenseItemsListListView);
 		ExpenseItemsListAdapter adapter =
@@ -102,6 +109,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 		// Causes main thread activity
 		Item i = DataSourceUtils.addEmptyItem(claim, dataSource);
 		
+		// Wait for main thread to be idle (i.e. update done)
 		instrumentation.waitForIdleSync();
 		Thread.sleep(300);
 		
@@ -110,18 +118,129 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 				1, adapter.getCount());
 		assertEquals("First element was not the item added.", i,
 				adapter.getItem(0));
+        
+		/* This code should work since the lv is visible and rendered but
+         * for some reason lv.getChildAt(0) is returning null and
+         * get last visible index is -1 indicating the listview isn't
+         * rendered...
+        */
+		/*
+    		// Get the first child view of the list view
+            View itemView = lv.getChildAt(0);
+            
+            // Assert it has one and is visible (the list view must have drawn if
+            // this exists)
+            assertNotNull("Child view was null.", itemView);
+            assertEquals("View wasn't visible", View.VISIBLE, itemView.getVisibility());
+		*/
 	}
 	
-	public void testCreateExpenseItem() {
-		
+	public void testCreateExpenseItem() throws InterruptedException {
+        ExpenseItemsListActivity activity =
+                startActivityAsClaimant();
+        
+        // Create monitor listening for child activity
+        ActivityMonitor monitor = instrumentation.addMonitor(
+                ExpenseItemInfoActivity.class.getName(), null, false);
+        
+        // Hit add item menu button
+        instrumentation.invokeMenuActionSync(activity,
+                R.id.expense_items_list_add_item, 0);
+
+        // Wait for child activity and make sure it's not null
+        final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+        assertNotNull("ExpenseItemInfoActivity didn't start.", newActivity);
+        
+        Intent intent = newActivity.getIntent();
+        
+        // Wait to finish
+        newActivity.finish();
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
+        // Assert correct claim sent
+        UUID claimID = (UUID) intent.getSerializableExtra(
+                ExpenseItemInfoActivity.CLAIM_UUID);
+        assertEquals("Intent claim UUID wasn't correct.",
+                claim.getUUID(), claimID);
+        
+        // Assert correct from claim info sent
+        assertFalse("From claim info was true.",
+                intent.getBooleanExtra(ExpenseItemInfoActivity.FROM_CLAIM_INFO,
+                        true));
+        
+        // Assert correct UserData sent
+        UserData ud = (UserData) intent.getSerializableExtra(
+                ExpenseItemInfoActivity.USER_DATA);
+        assertEquals("UserData UUID wasn't equal.", claimant.getUUID(),
+                ud.getUUID());
+        assertEquals("UserData username wasn't equal.", claimant.getUserName(),
+                ud.getName());
+        assertEquals("UserData role wasn't equal.", UserRole.CLAIMANT,
+                ud.getRole());
+        
+        // Note, can't check whether Item UUID is equal because it's created as
+        // a result of this test
 	}
 	
-	public void testViewExpenseItem() {
-		
-	}
-	
-	public void testEditExpenseItem() {
-		
+	public void testViewExpenseItem() throws InterruptedException {
+        ExpenseItemsListActivity activity =
+                startActivityAsClaimant();
+
+        // Get ListView and adapter
+        ListView lv = (ListView) activity.findViewById(
+                R.id.expenseItemsListListView);
+        ExpenseItemsListAdapter adapter =
+                (ExpenseItemsListAdapter) lv.getAdapter();
+        
+        // Wait for child activity and make sure it's not null
+        ActivityMonitor monitor = instrumentation.addMonitor(
+                ExpenseItemInfoActivity.class.getName(), null, false);
+        
+        // Makes an item attached to this claim, tested in testViewList
+        Item item = DataSourceUtils.addEmptyItem(claim, dataSource);
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
+        View itemView = adapter.getView(0, null, null);
+        assertNotNull("Item view was null", itemView);
+        lv.performItemClick(itemView, 0, adapter.getItemId(0));
+
+        final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+        assertNotNull("ExpenseItemInfoActivity didn't start.", newActivity);
+        
+        Intent intent = newActivity.getIntent();
+        
+        // Wait to finish
+        newActivity.finish();
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
+        // Assert correct item sent
+        UUID itemID = (UUID) intent.getSerializableExtra(
+                ExpenseItemInfoActivity.ITEM_UUID);
+        assertEquals("Intent item UUID wasn't correct", item.getUUID(), itemID);
+        
+        // Assert correct claim sent
+        UUID claimID = (UUID) intent.getSerializableExtra(
+                ExpenseItemInfoActivity.CLAIM_UUID);
+        assertEquals("Intent claim UUID wasn't correct.",
+                claim.getUUID(), claimID);
+        
+        // Assert correct from claim info sent
+        assertFalse("From claim info was true.",
+                intent.getBooleanExtra(ExpenseItemInfoActivity.FROM_CLAIM_INFO,
+                        true));
+        
+        // Assert correct UserData sent
+        UserData ud = (UserData) intent.getSerializableExtra(
+                ExpenseItemInfoActivity.USER_DATA);
+        assertEquals("UserData UUID wasn't equal.", claimant.getUUID(),
+                ud.getUUID());
+        assertEquals("UserData username wasn't equal.", claimant.getUserName(),
+                ud.getName());
+        assertEquals("UserData role wasn't equal.", UserRole.CLAIMANT,
+                ud.getRole());   
 	}
 	
 	public void testDeleteExpenseItem() {
@@ -139,8 +258,9 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         Intent intent = new Intent(instrumentation.getTargetContext(),
         		ExpenseItemsListActivity.class);
         
-        intent.putExtra(ExpenseItemsListActivity.USER_DATA, 
-        		DataSourceUtils.getUserDataClaimant(CLAIMANT_USER_NAME));
+        UserData ud = new UserData(claimant.getUUID(), CLAIMANT_USER_NAME,
+                UserRole.CLAIMANT);
+        intent.putExtra(ExpenseItemsListActivity.USER_DATA, ud);
         
         intent.putExtra(ExpenseItemsListActivity.CLAIM_UUID, claim.getUUID());
         setActivityIntent(intent);

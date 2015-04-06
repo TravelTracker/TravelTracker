@@ -21,6 +21,10 @@
 
 package cmput301w15t07.TravelTracker.test.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.activity.ClaimInfoActivity;
@@ -30,17 +34,24 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.InMemoryDataSource;
 import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
+import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
+import android.R.bool;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Instrumentation;
 import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 /**
@@ -233,7 +244,40 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		assertEquals("Count should not have changed", 1, listView.getCount());
 	}
 	
-	public void testFilterClaimsByTag() {
+	public void testFilterClaimsByTag() throws Throwable {
+		ArrayList<Tag> tags = DataSourceUtils.addTags(10, "Tag", user1, ds);
+		ArrayList<UUID> ids1 = getTagUUID(tags.subList(0, 3));
+		ArrayList<UUID> ids2 = getTagUUID(tags.subList(4, 7));
+		
+		claim1.setTags(ids1);
+		claim2.setTags(ids2);
+		final ClaimsListActivity activity = startActivity(new UserData(user1.getUUID(), user1.getUserName(), UserRole.CLAIMANT));
+		ListView listview = (ListView) activity.findViewById(R.id.claimsListClaimListView);
+		
+		//Original count
+		assertEquals(4, listview.getChildCount());
+		
+		boolean success = getInstrumentation().invokeMenuActionSync(activity, R.id.claims_list_filter_by_tag, 0);
+		assertTrue("Filter by tag was not successfully pressed", success);
+		getInstrumentation().waitForIdleSync();
+		
+		runTestOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				SelectTagFilterFragment fragment = (SelectTagFilterFragment) activity.getFragmentManager().findFragmentByTag("filterByTag");
+				ListView listview = (ListView)fragment.getDialog().findViewById(R.id.select_tag_filter_listview);
+				CheckBox enable = (CheckBox) fragment.getDialog().findViewById(R.id.select_tag_filter_enable_checkbox);
+				enable.performClick();
+				AlertDialog dialog = (AlertDialog) fragment.getDialog();
+				dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+			}
+		});
+		
+		getInstrumentation().waitForIdleSync();
+		
+		//Tests both: filter "OR-ing" and that filters out claims that don't match tags
+		assertEquals("Should only be two claims that are tagged", 2, listview.getChildCount());
 		
 	}
 	
@@ -250,14 +294,22 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		setActivityIntent(intent);
 		ClaimsListActivity activity = getActivity();
 		//TODO uncomment when activity supports loading screen
-//		try{
-//			activity.waitUntilLoaded();
-//		} catch (InterruptedException e){
-//			fail("Could not load activity!");
-//		}
-		//getInstrumentation().waitForIdleSync();
+		try{
+			activity.waitUntilLoaded();
+		} catch (InterruptedException e){
+			fail("Could not load activity!");
+		}
+		getInstrumentation().waitForIdleSync();
 		
 		return activity;
+	}
+	
+	private ArrayList<UUID> getTagUUID(List<Tag> tags){
+		ArrayList<UUID> out = new ArrayList<UUID>();
+		for (Tag t : tags){
+			out.add(t.getUUID());
+		}
+		return out;
 	}
 
 }

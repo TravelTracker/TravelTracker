@@ -21,6 +21,7 @@
 
 package cmput301w15t07.TravelTracker.testutils;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import android.test.AndroidTestCase;
@@ -89,6 +90,16 @@ public class DataSourceUtils extends AndroidTestCase{
 		SynchronizedResultCallback<Tag> tagCB = new SynchronizedResultCallback<Tag>();
 		ds.addTag(user, tagCB);
 		return getData(tagCB);
+	}
+	
+	public static  ArrayList<Tag> addTags(int number, String rootName, User user, DataSource ds){
+		ArrayList<Tag> out = new ArrayList<Tag>();
+		for (int i = 0; i < number; i++){
+			Tag tag = DataSourceUtils.addEmptyTag(user, ds);
+			tag.setTitle(rootName + i);
+			out.add(tag);
+		}
+		return out;
 	}
 	
 	public static void deleteClaim(Claim claim, DataSource ds){

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +52,6 @@ import cmput301w15t07.TravelTracker.util.SelectTagFilterFragment;
 import cmput301w15t07.TravelTracker.util.ClaimsListDataHelper.InitialData;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener;
 import cmput301w15t07.TravelTracker.util.MultiSelectListener.multiSelectMenuListener;
-import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.SelectLocationFragment;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -65,7 +65,7 @@ import com.google.android.gms.maps.model.LatLng;
  *         therabidsquirel
  *
  */
-public class ClaimsListActivity extends TravelTrackerActivity implements Observer<DataSource> {
+public class ClaimsListActivity extends TravelTrackerActivity {
 	//Class Fields
     private ListView claimsList;
 	private ClaimAdapter adapter;
@@ -80,6 +80,8 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
 	
 	/** Whether the filter is enabled. */
 	private boolean filterEnabled = false;
+	
+	private ProgressDialog progressDialog;
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,6 +137,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    setContentView(R.layout.claims_list_activity);
 	    
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
@@ -148,8 +151,7 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
         
         datasource.addObserver(this);
         
-        // TODO Remove this without things breaking
-        setContentView(R.layout.claims_list_activity);
+       
 	}
 	
     /**
@@ -159,9 +161,8 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
     @Override
     public void updateActivity() {
         // Show loading circle
-        // TODO Uncomment this without things breaking
-//        setContentView(R.layout.loading_indeterminate);
-        
+        progressDialog = new ProgressDialog(this);
+        progressDialog.show();
         new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
     }
     
@@ -169,8 +170,6 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
      * Change to the activity's layout and set it up its views accordingly.
      */
     private void onGetInitialData() {
-        // TODO Uncomment this without things breaking
-//        setContentView(R.layout.claims_list_activity);
         
         claimsList = (ListView) findViewById(R.id.claimsListClaimListView);
         claimsList.setAdapter(adapter);
@@ -187,7 +186,9 @@ public class ClaimsListActivity extends TravelTrackerActivity implements Observe
             }
         });
         
+        progressDialog.dismiss();
         onLoaded();
+        
     }
     
 	/**

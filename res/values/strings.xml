@@ -65,6 +65,7 @@
         <string name="claim_info_claim_status">Claim Status:</string>
         <string name="claim_info_destinations">Destinations:</string>
         <string name="claim_info_tags">Tags:</string>
+        <string name="claim_info_view_tags">+</string>
         <string name="claim_info_currency_totals">Totals:</string>
         <string name="claim_info_view_items">View Expense Items (%1$d Total)</string>
         <string name="claim_info_approver">Approver:</string>

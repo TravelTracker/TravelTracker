@@ -24,6 +24,7 @@ package cmput301w15t07.TravelTracker.activity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.UUID;
 
 import android.app.AlertDialog;
@@ -47,6 +48,7 @@ import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
+import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
 import cmput301w15t07.TravelTracker.model.UserData;
 import cmput301w15t07.TravelTracker.model.UserRole;
@@ -57,7 +59,7 @@ import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.DestinationAdapter;
 import cmput301w15t07.TravelTracker.util.Observer;
-import cmput301w15t07.TravelTracker.util.TagAdapter;
+import cmput301w15t07.TravelTracker.util.SelectTagFragment;
 
 /**
  * Activity for managing an individual Claim.  Possible as a Claimant or
@@ -79,6 +81,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     /** ID used to retrieve last approver from MutliCallback. */
     public static final int MULTI_APPROVER_ID = 2;
     
+    /** ID used to retrieve tags from MultiCallback. */
+    public static final int MULTI_TAGS_ID = 3;
+    
     /** Data about the logged-in user. */
     private UserData userData;
     
@@ -87,6 +92,15 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     
     /** The current claim. */
     Claim claim = null;
+    
+    /** The list of all the tags this user has. */
+    ArrayList<Tag> userTags;
+    
+    /** The list of all the tags on this claim. */
+    ArrayList<Tag> claimTags;
+    
+    /** The list of all the tag UUIDs on this claim. */
+    ArrayList<UUID> claimTagIDs;
     
     /** The menu for the activity. */
     private Menu menu = null;
@@ -97,9 +111,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     /** The custom adapter for claim comments. */    
     ApproverCommentAdapter commentsListAdapter;
     
-    /** The custom adapter for claim tags. */
-    TagAdapter tagAdapter;
-
     /** The last alert dialog. */
     AlertDialog lastAlertDialog = null;
     
@@ -204,10 +215,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * @param claimant User that created the claim
      * @param approver	user that approved the claim (if exsists)
      */
-    public void onGetAllData(final Collection<Item> items, User claimant, User approver) {
+    public void onGetAllData(final Collection<Item> items, User claimant, User approver, Collection<Tag> tags) {
     	setContentView(R.layout.claim_info_activity);
     	
-        populateClaimInfo(claim, items, claimant, approver);
+        populateClaimInfo(claim, items, claimant, approver, tags);
         
         if (menu != null) {
             hideMenuItems(menu, claim);
@@ -224,9 +235,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
         
         // Tags list
-        TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
         View tagsThickHorizontalDivider = (View) findViewById(R.id.claimInfoTagsThickHorizontalDivider);
+        Button viewTagsButton = (Button) findViewById(R.id.claimInfoViewTagsButton);
 
         // Claimant claim modifiers
         Button submitClaimButton = (Button) findViewById(R.id.claimInfoClaimSubmitButton);
@@ -279,6 +290,15 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         	    disableView(endDateButton);
         	    disableView(submitClaimButton);
         	}
+        	
+        	// Add listener to view tags button. User should be able to manage claim's tags
+        	// whether the claim is editable or not.
+        	viewTagsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchTagSelect();
+                }
+            });
             
             // Views a claimant doesn't need to see or have access to
             approverButtonsLinearLayout.setVisibility(View.GONE);
@@ -311,7 +331,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             
             // Views an approver doesn't need to see or have access to
             statusLinearLayout.setVisibility(View.GONE);
-            tagsTextView.setVisibility(View.GONE);
             tagsLinearLayout.setVisibility(View.GONE);
             tagsThickHorizontalDivider.setVisibility(View.GONE);
             submitClaimButton.setVisibility(View.GONE);
@@ -399,7 +418,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * @param claimant The claimant, or null if the current user is the claimant.
      * @param approver The last approver, or null if there isn't one.
      */
-    public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant, User approver) {
+    public void populateClaimInfo(Claim claim, Collection<Item> items, User claimant, User approver, Collection<Tag> tags) {
         Button startDateButton = (Button) findViewById(R.id.claimInfoStartDateButton);
         setButtonDate(startDateButton, claim.getStartDate());
         
@@ -433,6 +452,35 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         // Show destinations
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
         destinationAdapter.createList(this, userData, destinationsList, getFragmentManager());
+        
+        userTags = new ArrayList<Tag>();
+        claimTags = new ArrayList<Tag>();
+        claimTagIDs = new ArrayList<UUID>();
+        
+        // From the list of all tags, fill the various tag lists for the claim.
+        for (Tag tag : tags) {
+            if (claim.getUser().equals(tag.getUser())) {
+                userTags.add(tag);
+                if (claim.getTags().contains(tag.getUUID())) {
+                    claimTags.add(tag);
+                    claimTagIDs.add(tag.getUUID());
+                }
+            }
+        }
+        
+        // Create a comma-separated list of all the tags on this claim.
+        String tagString = "";
+        for (int i = 0; i < claimTags.size(); i++) {
+            if (i == 0) {
+                tagString = claimTags.get(i).getTitle();
+            } else {
+                tagString = tagString + ", " + claimTags.get(i).getTitle();
+            }
+        }
+        
+        // Set the tag string.
+        TextView tagsTextView = (TextView) findViewById(R.id.claimInfoTagsTextView);
+        tagsTextView.setText(tagString);
         
         if (userData.getRole().equals(UserRole.APPROVER)) {
         	// Claimant name
@@ -492,6 +540,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         datePicker.show(getFragmentManager(), "datePicker");
     }
     
+    /**
+     * Launch the fragment for selecting tags for this claim.
+     */
+    private void launchTagSelect() {
+        SelectTagFragment tagFragment = new SelectTagFragment(userTags, claimTagIDs, new SelectTagFragment.ResultCallback() {
+            @Override
+            public void onSelectTagFragmentResult(HashSet<UUID> selected) {
+                claim.setTags(new ArrayList<UUID>(selected));
+            }
+            
+            @Override
+            public void onSelectTagFragmentCancelled() {}
+        });
+        
+        tagFragment.show(getFragmentManager(), "selectTags");
+    }
+
     /**
      * Submits the selected claim and adds a comment if there exists one in the field.
      */
@@ -654,6 +719,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 	        // Create callbacks for MultiCallback
 	        datasource.getAllItems(multi.<Collection<Item>>createCallback(MULTI_ITEMS_ID));
 	        datasource.getUser(claim.getUser(), multi.<User>createCallback(MULTI_CLAIMANT_ID));
+	        datasource.getAllTags(multi.<Collection<Tag>>createCallback(MULTI_TAGS_ID));
 	        
 	        UUID approverID = claim.getApprover();
 	        if (approverID != null) {
@@ -682,12 +748,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 				approver = (User) result.get(MULTI_APPROVER_ID);
 			}
 			
-			// We know the return result is the right type, so an unchecked
-			// cast shouldn't be problematic 
+			// We know the return results are the right type, so unchecked casts shouldn't be problematic.
 			@SuppressWarnings("unchecked")
             Collection<Item> items = (Collection<Item>) result.get(MULTI_ITEMS_ID);
+            @SuppressWarnings("unchecked")
+			Collection<Tag> tags = (Collection<Tag>) result.get(MULTI_TAGS_ID);
 			
-			onGetAllData(items, claimant, approver);
+			onGetAllData(items, claimant, approver, tags);
 		}
 		
 		@Override

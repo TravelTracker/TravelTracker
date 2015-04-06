@@ -54,6 +54,9 @@ public class DestinationAdapter {
     private ArrayList<Destination> destinations;
     private LinearLayout linearLayout;
     
+    /** Whether list elements should be editable. */
+    private boolean editable;
+    
     /** The currently open destination editor fragment. */
     private DestinationEditorFragment destinationEditor = null;
     
@@ -114,28 +117,25 @@ public class DestinationAdapter {
         View view = inflater.inflate(LIST_VIEW_ID, linearLayout, false);
         setDestination(view, destination);
         
-        if (TravelTrackerActivity.isEditable(claim.getStatus(), userData.getRole())) {
-            view.setOnClickListener(new View.OnClickListener() {
-                
-                @Override
-                public void onClick(View v) {
-                    v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
-                    newDestination = false;
-                    promptEditDestination(v, manager);
-                }
-            });
+        view.setOnClickListener(new View.OnClickListener() {
             
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                
-                @Override
-                public boolean onLongClick(View v) {
-                    v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
-                    promptDeleteDestination(v, manager);
-                    return false;
-                }
-            });
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
+                newDestination = false;
+                promptEditDestination(v, manager);
+            }
+        });
+        
+        view.setOnLongClickListener(new View.OnLongClickListener() {
             
-        }
+            @Override
+            public boolean onLongClick(View v) {
+                v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
+                promptDeleteDestination(v, manager);
+                return false;
+            }
+        });
         
         updateReasonVisibilty(view, destination.getReason());
         
@@ -174,7 +174,7 @@ public class DestinationAdapter {
                                                           destination.getLocation(),
                                                           destination.getGeolocation(),
                                                           destination.getReason(),
-                                                          manager);
+                                                          editable);
         destinationEditor.show(manager, "destinationEditor");
     }
     
@@ -243,6 +243,24 @@ public class DestinationAdapter {
         destinationDeleter = null;
     }
     
+    /**
+     * Check whether elements are editable.
+     * 
+     * @return Whether the elements are currently editable.
+     */
+    public boolean isEditable() {
+        return editable;
+    }
+
+    /**
+     * Set whether elements should be editable.
+     * 
+     * @param editable Whether elements should be editable.
+     */
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
     /**
      * Callback for when new destination fields are approved.
      */

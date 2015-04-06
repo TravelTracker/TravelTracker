@@ -247,6 +247,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Destinations list
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        colorViewEnabled(destinationsList);
         
         // Tags list
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
@@ -272,7 +273,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
         	if (isEditable(claim.getStatus(), userData.getRole())) {
         	    // Color the LinearLayout to visually cue the user that it can be edited.
-        	    colorViewEnabled(destinationsList);
+                destinationAdapter.setEditable(true);
         	    
 	            // Attach edit date listener to start date button
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
@@ -298,8 +299,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 	                }
 	            });
         	} else {
+                destinationAdapter.setEditable(false);
+        	    
         	    // These views should do nothing if the claim isn't editable
-        	    colorViewDisabled(destinationsList);
         	    disableView(startDateButton);
         	    disableView(endDateButton);
         	    disableView(submitClaimButton);
@@ -338,8 +340,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
                 }
             });
             
+            destinationAdapter.setEditable(false);
+            
             // The approver should see these views, but cannot use them.
-            colorViewDisabled(destinationsList);
             disableView(startDateButton);
             disableView(endDateButton);
             

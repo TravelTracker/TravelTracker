@@ -677,18 +677,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * returns the selected claim and adds a comment if there exists one in the field
      */
     public void returnClaim() {
+        final String commentText = checkForComment();
+        if (commentText == null) {
+            return;
+        }
+            
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
 		    public void onClick(DialogInterface dialog, int which) {
 		        switch (which){
 		        case DialogInterface.BUTTON_POSITIVE:
-		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
 		        	
-		        	// add approver comment if comment field is not empty
-		        	if (!commentText.trim().equals("")) {
-		        		claim.addComment(commentText);
-		        	}
-		        	
+	        		claim.addComment(commentText);
 		        	claim.setApprover(userData.getUUID());
 		        	claim.setStatus(Status.RETURNED);
 		        	ClaimInfoActivity.this.finish();
@@ -711,18 +711,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * approves the selected claim and adds a comment if there exists one in the field
      */
     public void approveClaim() {
+        final String commentText = checkForComment();
+        if (commentText == null) {
+            return;
+        }
+        
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
 		    public void onClick(DialogInterface dialog, int which) {
 		        switch (which){
 		        case DialogInterface.BUTTON_POSITIVE:
-		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
-		        	
-		        	// add approver comment if comment field is not empty
-		        	if (!commentText.trim().equals("")) {
-		        		claim.addComment(commentText);
-		        	}
-		        	
+	        		claim.addComment(commentText);
 		        	claim.setApprover(userData.getUUID());
 		        	claim.setStatus(Status.APPROVED);
 		        	ClaimInfoActivity.this.finish();
@@ -740,6 +739,21 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
+    }
+    /**
+     * Make sure the approver left a comment. Set an error otherwise.
+     * @return The comment if there was one, else null.
+     */
+    private String checkForComment() {
+        EditText commentEditText = (EditText) findViewById(R.id.claimInfoCommentEditText);
+        final String commentText = commentEditText.getText().toString();
+        
+        if (commentText.trim().equals("")) {
+            commentEditText.setError(getString(R.string.claim_info_no_comment_error));
+            return null;
+        }
+
+        return commentText;
     }
     /**
      * Set the date in the date button after 

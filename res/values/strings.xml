@@ -96,6 +96,7 @@
         <string name="claim_info_not_returned">Claim not returned to claimant!</string>
         <string name="claim_info_approve_confirm">Approve claim?</string>
         <string name="claim_info_not_approved">Claim not approved!</string>
+        <string name="claim_info_no_comment_error">Comment is required</string>
         
         <!-- Used in menu -->
         <string name="claim_info_add_destination">Add Destination</string>

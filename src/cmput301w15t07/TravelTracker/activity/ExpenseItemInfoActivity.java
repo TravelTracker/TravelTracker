@@ -320,7 +320,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                     @Override
                     public void afterTextChanged(Editable s) {
                     	item.setDescription(s.toString());   
-                    	itemDescription.requestFocus();
                     }
                 });
                 
@@ -340,7 +339,6 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                         } catch (NumberFormatException e) {
                             //Dont do anything, the string is empty
                         }
-                    	itemAmount.requestFocus();
                     }
                 });
                 
@@ -417,7 +415,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	public void promptChangePhoto(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.expense_item_info_change_receipt_message)
-			.setPositiveButton(R.string.change_image, new DialogInterface.OnClickListener() {
+			.setPositiveButton(R.string.expense_item_info_change_image, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -425,7 +423,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 					
 				}
 			})
-			.setNeutralButton(R.string.view_image, new DialogInterface.OnClickListener() {
+			.setNeutralButton(R.string.expense_item_info_view_image, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -433,7 +431,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 					
 				}
 			})
-			.setNegativeButton(R.string.delete_image, new DialogInterface.OnClickListener() {
+			.setNegativeButton(R.string.expense_item_info_delete_image, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -452,14 +450,14 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 	public void promptTakePhoto(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.expense_item_info_capture_receipt_message)
-			.setPositiveButton(R.string.take_photo, new DialogInterface.OnClickListener() {
+			.setPositiveButton(R.string.expense_item_info_take_photo, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					takePhoto();					
 				}
 			})
-			.setNegativeButton(R.string.choose_from_gallery, new DialogInterface.OnClickListener() {
+			.setNegativeButton(R.string.expense_item_info_choose_from_gallery, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -505,8 +503,9 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         		imageFile = createImageFile();
         	}catch (IOException exception){
         		//error occured when creating the file
-        		Toast.makeText(ExpenseItemInfoActivity.this, "image could not be created",
-        			Toast.LENGTH_LONG).show();
+        		Toast.makeText(ExpenseItemInfoActivity.this,
+        		        getString(R.string.expense_item_info_failed_to_get_image),
+        		        Toast.LENGTH_LONG).show();
         	}
         	//only continue if the file was succesfully created
         	if (imageFile != null){

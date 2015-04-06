@@ -205,8 +205,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         // Set onClick listener, send the Item to the Item Info Activity
         itemsList.setOnItemClickListener(new OnItemClickListener() {
         	@Override
-        	public void onItemClick(AdapterView<?> parent, View view,
-        			int position, long id) {
+        	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		// Launch edit expense item info with this item
         		launchExpenseItemInfo(adapter.getItem(position));
         	}

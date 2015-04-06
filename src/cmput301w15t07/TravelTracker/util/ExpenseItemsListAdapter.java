@@ -124,22 +124,22 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
      * @param itemData The data to use.
      * @param rowView The parent view containing the cost view.
      */
-	private void setGeolocationView(Item itemData, View rowView) {
+    private void setGeolocationView(Item itemData, final View rowView) {
         CheckBox geoLocCheckBox = (CheckBox) rowView.findViewById(R.id.expenseItemsListItemViewGeolocationCheckBox);
-	    if (userRole.equals(UserRole.APPROVER)) {
-	        geoLocCheckBox.setVisibility(View.GONE);
-	    } else {
+        if (userRole.equals(UserRole.APPROVER)) {
+            geoLocCheckBox.setVisibility(View.GONE);
+        } else {
             geoLocCheckBox.setVisibility(View.VISIBLE);
-	        geoLocCheckBox.setChecked(itemData.getGeolocation() != null);
-	    }
+            geoLocCheckBox.setChecked(itemData.getGeolocation() != null);
+        }
     }
 
-	/**
-	 * Sets up the receipt image view with given item data. Does not need to show
-	 * if there is no attached photo receipt.
+    /**
+     * Sets up the receipt image view with given item data. Does not need to show
+     * if there is no attached photo receipt.
      * @param itemData The data to use.
      * @param rowView The parent view containing the cost view.
-	 */
+     */
     private void setReceiptView(Item itemData, View rowView) {
 		ImageView receiptView =
                 (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
@@ -196,7 +196,7 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
                 (TextView) rowView.findViewById(
                 		R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete() || userRole.equals(UserRole.APPROVER)) {
-            incompleteView.setVisibility(View.GONE);
+            incompleteView.setVisibility(View.INVISIBLE);
         }
         else {
             incompleteView.setVisibility(View.VISIBLE);

@@ -21,14 +21,18 @@
 
 package cmput301w15t07.TravelTracker.model;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.serverinterface.FileSystemHelper;
+import cmput301w15t07.TravelTracker.serverinterface.MergeResult;
 import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 import cmput301w15t07.TravelTracker.serverinterface.ServerHelper;
 import cmput301w15t07.TravelTracker.util.DeletionFlag;
@@ -93,6 +97,9 @@ public class CacheDataSource extends InMemoryDataSource {
 		
 		this.appContext = appContext;
 		this.mainHelper = main;
+		
+		// TODO load existing documents from backup if they exist
+		
 		
 		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
 	}
@@ -197,6 +204,11 @@ public class CacheDataSource extends InMemoryDataSource {
 	private class syncDocumentsTask extends AsyncTask<Void, Void, String> {
 
 		private ResultCallback callback;
+
+		private Collection<User> retrievedUsers;
+		private Collection<Claim> retrievedClaims;
+		private Collection<Item> retrievedItems;
+		private Collection<Tag> retrievedTags;
 		
 		public syncDocumentsTask(ResultCallback<?> callback) {
 			this.callback = callback;
@@ -204,10 +216,22 @@ public class CacheDataSource extends InMemoryDataSource {
 
 		@Override
 		protected String doInBackground(Void... params) {
-			// attempt to pull all data from main (push all to backup and return if fail)
-			// do deletions that are not out-of-date on received
-			// do same on remote using helper calls
-				// clear deletion list if successful
+			// attempt to pull all data from main
+			// (push all to backup and return if fail)
+			if (!retrieveFromMain()) {
+				if (!dumpToBackup()) {
+					return "Error saving to backup cache!";
+				}
+				return null; // normal execution - saved to backup, no error.
+			}
+
+			ArrayList<Document> pendingDeletions = new ArrayList<Document>();
+			pendingDeletions.addAll(filterNonStaleDeletions(retrievedUsers));
+			pendingDeletions.addAll(filterNonStaleDeletions(retrievedClaims));
+			pendingDeletions.addAll(filterNonStaleDeletions(retrievedItems));
+			pendingDeletions.addAll(filterNonStaleDeletions(retrievedTags));
+			
+			performPendingDeletions(pendingDeletions);
 			
 			// merge every remaining received document into inmemory
 			// update observers (on gui thread!) (merge not cause update())
@@ -217,7 +241,40 @@ public class CacheDataSource extends InMemoryDataSource {
 				// push all to backup if fail
 			return null;
 		}
-		
+
+		private void performPendingDeletions(ArrayList<Document> pendingDeletions) {
+			// remove above pending from remote and local in batch using .deletDocuments()
+			
+			try {
+				mainHelper.deleteDocuments(pendingDeletions);
+			} catch (IOException e) {
+				Log.i("CacheDataSource", "Deletions from main unsuccessful, not clearing deletions list.");
+				return;
+			} catch (Exception e) {
+				Log.e("CacheDataSource", "UNKNOWN ERROR WHILE PERFOMING DELETIONS ON MAIN");
+				return;
+			}
+			try {
+				backupHelper.deleteDocuments(pendingDeletions);
+			} catch (IOException e) {
+				Log.w("CacheDataSource", "Failed to delete from backup helper!");
+				return;
+			} catch (Exception e) {
+				Log.e("CacheDataSource", "UNKNOWN ERROR WHILE PERFOMING DELETIONS ON BACKUP");
+				return;
+			}
+			
+			// remove pending deletions from deletion list since they were successful
+			ArrayList<DeletionFlag> flagsToClear = new ArrayList<DeletionFlag>();
+			for (Document deleted : pendingDeletions) {
+				for (DeletionFlag flag: deletions) {
+					if (flag.getToDelete().equals(deleted))
+						flagsToClear.add(flag);
+				}
+			}
+			deletions.removeAll(flagsToClear);
+		}
+
 		/**
 		 * back on UI thread, do callback stuff, update observers.
 		 * 
@@ -227,6 +284,92 @@ public class CacheDataSource extends InMemoryDataSource {
 		protected void onPostExecute(String errMsg) {
 			// if not null errmsg assume success
 			
+		}
+		
+		/**
+		 * do deletions that are not out-of-date on received.
+		 * 
+		 * @param retrieved the retrieved documents to filter on
+		 * @return 
+		 * @return the deletions that were performed on retrieved (passed) documents.
+		 */
+		private ArrayList<Document> filterNonStaleDeletions(Collection<? extends Document> retrieved) {
+			ArrayList<Document> pendingDeletions = new ArrayList<Document>();
+			ArrayList<DeletionFlag> overriddenDeletions = new ArrayList<DeletionFlag>();
+			for (DeletionFlag deletion : deletions) {
+				switch (mergeDeletion(deletion, retrieved)) {
+				case CHANGED:
+					pendingDeletions.add(deletion.getToDelete());
+					break;
+				case OVERRIDDEN:
+					overriddenDeletions.add(deletion);
+					break;
+				case NOT_FOUND:
+					break;
+				default:
+					break;
+				}
+			}
+			// remove overridden deletions from deletion list
+			deletions.removeAll(overriddenDeletions);
+			return pendingDeletions;
+		}
+		
+		private MergeResult mergeDeletion(DeletionFlag deletion,
+				Collection<? extends Document> retrievedDocuments) {
+			
+			for (Document doc : retrievedDocuments) {
+				if (deletion.getToDelete().equals(doc)) {
+					// perform delete if timestamp is newer than retrieved lastChanged,
+					// override deletion otherwise
+					if (deletion.getDate().after(doc.getLastChanged())) {
+						retrievedDocuments.remove(deletion.getToDelete());
+						return MergeResult.CHANGED;
+					} else {
+						return MergeResult.OVERRIDDEN;
+					}
+				}
+			}
+			return MergeResult.NOT_FOUND;
+		}
+
+		/**
+		 * @return false if retrieval fails, true if success
+		 */
+		private boolean dumpToBackup() {
+			Log.i("CacheDataSource", "Dumping to local cache");
+			// save all in memory documents
+			try {
+				backupHelper.saveDocuments(getUsers());
+				backupHelper.saveDocuments(getClaims());
+				backupHelper.saveDocuments(getItems());
+				backupHelper.saveDocuments(getTags());
+				return true;
+			} catch (IOException e) {
+				Log.e("CacheDataSource", "Could not save to backup!");
+			} catch (Exception e) {
+				Log.e("CacheDataSource", "UNKNOWN ERROR FROM BACKUP HELPER");
+			}
+			return false;
+			
+		}
+
+		/**
+		 * @return false if retrieval fails, true if success
+		 */
+		private boolean retrieveFromMain() {
+			try {
+				 retrievedUsers = mainHelper.getAllUsers();
+				 retrievedClaims = mainHelper.getAllClaims();
+				 retrievedItems = mainHelper.getAllItems();
+				 retrievedTags = mainHelper.getAllTags();
+				 return true;
+			} catch (IOException e) {
+				Log.i("CacheDataSource", "Connection error");
+			} catch (Exception e) {
+				Log.e("CacheDataSource", "UNKNOWN ERROR FROM SERVER HELPER");
+			}
+			return false;
 		}
 	}
 

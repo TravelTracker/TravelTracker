@@ -60,4 +60,36 @@ public class DeletionFlag {
 		this(null, null);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result
+				+ ((toDelete == null) ? 0 : toDelete.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof DeletionFlag))
+			return false;
+		DeletionFlag other = (DeletionFlag) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (toDelete == null) {
+			if (other.toDelete != null)
+				return false;
+		} else if (!toDelete.equals(other.toDelete))
+			return false;
+		return true;
+	}
+
 }

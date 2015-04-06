@@ -211,8 +211,52 @@ public class PersistentList<T> implements List<T> {
 	
 	private void saveList() {
 		GsonIOManager gson = new GsonIOManager(ctx);
-//		gson.save(list, filename, new ArrayListType());
-        gson.save(list, filename, new TypeToken<ArrayList<T>>() {}.getType());
+		gson.save(list, filename, new ArrayListType());
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((filename == null) ? 0 : filename.hashCode());
+		result = prime * result + ((list == null) ? 0 : list.hashCode());
+		result = prime * result
+				+ ((wrappedClass == null) ? 0 : wrappedClass.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof PersistentList))
+			return false;
+		PersistentList other = (PersistentList) obj;
+		if (filename == null) {
+			if (other.filename != null)
+				return false;
+		} else if (!filename.equals(other.filename))
+			return false;
+		if (list == null) {
+			if (other.list != null)
+				return false;
+		} else if (!list.equals(other.list))
+			return false;
+		if (wrappedClass == null) {
+			if (other.wrappedClass != null)
+				return false;
+		} else if (!(wrappedClass == other.wrappedClass))
+			return false;
+		return true;
 	}
 
 	/*

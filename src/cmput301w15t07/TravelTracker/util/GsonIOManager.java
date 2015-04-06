@@ -28,15 +28,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.Context;
 import android.util.Log;
-import cmput301w15t07.TravelTracker.model.DeletionFlagTypeAdapterFactory;
-import cmput301w15t07.TravelTracker.model.Tag;
-import cmput301w15t07.TravelTracker.model.TagTypeAdapter;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -46,9 +41,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Facade to wrap streams and GSON ugliness.

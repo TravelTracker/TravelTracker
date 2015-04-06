@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.google.gson.reflect.TypeToken;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -209,7 +211,8 @@ public class PersistentList<T> implements List<T> {
 	
 	private void saveList() {
 		GsonIOManager gson = new GsonIOManager(ctx);
-		gson.save(list, filename, new ArrayListType());
+//		gson.save(list, filename, new ArrayListType());
+        gson.save(list, filename, new TypeToken<ArrayList<T>>() {}.getType());
 	}
 
 	/*

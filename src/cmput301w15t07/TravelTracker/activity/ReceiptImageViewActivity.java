@@ -47,12 +47,9 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
 	/** the current expense item */
 	private Item item = null;
 	
-	/** The menu for the Activity */ 
-	private Menu menu = null;
-	
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.receipt_image_view_menu, menu);
-		this.menu = menu;
+		
 		return true; 
 	};
 	

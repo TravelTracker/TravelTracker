@@ -62,6 +62,9 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
 	/** The data source (from DataSourceSingleton) */
 	protected DataSource datasource;
 	
+	/** Whether the activity is currently loading. */
+	protected boolean loading;
+	
 	/**
 	 * Call this when the activity has populated all the fields.
 	 * This will notify threads waiting for waitUntilLoaded().
@@ -85,12 +88,7 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
         datasource = DataSourceSingleton.getDataSource(getApplicationContext());
 	}
 	
-	@Override
-	protected void onResume() {
-	    super.onResume();
-	    updateActivity();
-	}
-	
+	// Activities can override this if they need to do more.
 	@Override
 	public void update(DataSource observable) {
         updateActivity();

@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:longClickable="false"
-            android:text="@string/claim_info_destination_edit_checkbox"
+            android:text="@string/geolocation_checkbox"
             android:textColor="?android:attr/textColorTertiary"
             android:button="@null"
             android:drawableEnd="?android:attr/listChoiceIndicatorMultiple" />

@@ -29,12 +29,15 @@ import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.ItemCategory;
 import cmput301w15t07.TravelTracker.model.ItemCurrency;
+import cmput301w15t07.TravelTracker.model.UserData;
+import cmput301w15t07.TravelTracker.model.UserRole;
 import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,8 +55,12 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
     
     private Collection<Item> items;
     
-    public ExpenseItemsListAdapter(Context context) {
+    /** The current role of the user in the activity using this adapter. */
+    private UserRole userRole;
+    
+    public ExpenseItemsListAdapter(Context context, UserData userData) {
         super(context, LAYOUT_ID);
+        userRole = userData.getRole();
     }
     
     /**
@@ -115,15 +122,40 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
         // Cost View
         setCostView(itemData, rowView);
         
+        setGeolocationView(itemData, rowView);
+        
         // Receipt view
         setReceiptView(itemData, rowView);
         
         return rowView;
     }
 
-	private void setReceiptView(Item itemData, View rowView) {
+    /**
+     * Sets up the geolocation check box given item data. Does not need to
+     * show if the user is an approver.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the cost view.
+     */
+	private void setGeolocationView(Item itemData, View rowView) {
+        CheckBox geoLocCheckBox = (CheckBox) rowView.findViewById(R.id.expenseItemsListItemViewGeolocationCheckBox);
+	    if (userRole.equals(UserRole.APPROVER)) {
+	        geoLocCheckBox.setVisibility(View.GONE);
+	    } else {
+            geoLocCheckBox.setVisibility(View.VISIBLE);
+	        geoLocCheckBox.setChecked(itemData.getGeolocation() != null);
+	    }
+    }
+
+	/**
+	 * Sets up the receipt image view with given item data. Does not need to show
+	 * if there is no attached photo receipt.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the cost view.
+	 */
+    private void setReceiptView(Item itemData, View rowView) {
 		ImageView receiptView =
                 (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
+		// TODO Some of this null checking should be handled by Receipt.
         if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
             receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
             receiptView.setVisibility(View.VISIBLE);
@@ -165,7 +197,9 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
 	}
 	
 	/**
-	 * Sets the incomplete view to show r not given item data.
+	 * Sets the incomplete view to show the claimant's manually flagged
+	 * incompleteness indicator given item data. Does not need to show
+	 * if the item is flagged as complete or the user is an approver.
 	 * @param itemData The data to use.
 	 * @param rowView The parent view containing the incomplete view.
 	 */
@@ -173,7 +207,7 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
 		TextView incompleteView =
                 (TextView) rowView.findViewById(
                 		R.id.expenseItemsListItemViewStatusTextView);
-        if (itemData.isComplete()) {
+        if (itemData.isComplete() || userRole.equals(UserRole.APPROVER)) {
             incompleteView.setVisibility(View.GONE);
         }
         else {

@@ -6,6 +6,7 @@
         <!-- Used in layouts -->
         <string name="date_format">mm/dd/yyyy</string>
         <string name="content_description_receipt_image">Receipt Image</string>
+        <string name="geolocation_checkbox">Has Location</string>
         <string name="edit_text_hint_text">Enter text</string>
         <string name="edit_text_hint_name">Name</string>
         <string name="error_no_name">Please enter a name</string>
@@ -81,7 +82,6 @@
         <string name="claim_info_destination_edit_title">Destination Editor</string>
         <string name="claim_info_destination_edit_location">Name:</string>
         <string name="claim_info_destination_edit_view_button">View Location</string>
-        <string name="claim_info_destination_edit_checkbox">Has Location</string>
         <string name="claim_info_destination_edit_fragment_title">Set Location</string>
         <string name="claim_info_destination_edit_reason">Reason:</string>
         <string name="claim_info_destination_error_geolocation">Destinations must have a location</string>
@@ -106,7 +106,6 @@
      
     <!-- Strings used in ExpenseItemsListItemView -->
         <!-- Used in layout -->
-        <string name="expense_items_list_info_error">FIELD NOT FILLED</string>
         <string name="expense_items_list_incomplete">Incomplete</string>
         
     <!-- Strings used in ExpenseItemInfoActivity -->

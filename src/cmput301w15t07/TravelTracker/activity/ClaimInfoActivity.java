@@ -575,7 +575,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             if (i == 0) {
                 tagString = claimTags.get(i).getTitle();
             } else {
-                tagString = tagString + ", " + claimTags.get(i).getTitle();
+                tagString += ", " + claimTags.get(i).getTitle();
             }
         }
         

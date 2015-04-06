@@ -140,7 +140,7 @@ public class ExpenseItemsListActivity extends TravelTrackerActivity implements O
         claimID = (UUID) bundle.getSerializable(CLAIM_UUID);
         
         // Create adapter
-        adapter = new ExpenseItemsListAdapter(this);
+        adapter = new ExpenseItemsListAdapter(this, userData);
         
         datasource.addObserver(this);
     }

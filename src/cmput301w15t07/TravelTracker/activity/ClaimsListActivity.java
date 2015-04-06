@@ -331,7 +331,7 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 	        tags = filterTags;
 	    }
 	    
-		adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers(), data.getUser(), tags);
+		adapter.rebuildList(data.getClaims(), data.getItems(), data.getUsers(), data.getTags(), data.getUser(), tags);
 	}
 	/** Callback for the list data on load */
 	class initalDataCallback implements ResultCallback<InitialData>{

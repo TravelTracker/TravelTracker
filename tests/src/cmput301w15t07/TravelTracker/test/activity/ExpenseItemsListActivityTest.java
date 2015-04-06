@@ -121,10 +121,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 				1, adapter.getCount());
 		assertEquals("First element was not the item added.", i,
 				adapter.getItem(0));
-        
-		// TODO this is a hack, shouldn't need to get a new reference
-		lv = (ListView) activity.findViewById(
-                R.id.expenseItemsListListView);
+		
 		// Get the first child view of the list view
         View itemView = lv.getChildAt(0);
         
@@ -182,7 +179,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         // a result of this test
 	}
 	
-	public void testViewExpenseItem() throws Throwable {
+	public void testViewExpenseItem() throws InterruptedException {
         ExpenseItemsListActivity activity =
                 startActivityAsClaimant();
 
@@ -204,12 +201,15 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         final View itemView = adapter.getView(0, null, null);
         assertNotNull("Item view was null", itemView);
         
-        runTestOnUiThread(new Runnable() {
+        // Tap the item
+        instrumentation.runOnMainSync(new Runnable() {
             @Override
             public void run() {
-                lv.performItemClick(itemView, 0, adapter.getItemId(0));
+                lv.performItemClick(lv.getChildAt(0), 0, adapter.getItemId(0));
             }
         });
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
 
         final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
         assertNotNull("ExpenseItemInfoActivity didn't start.", newActivity);
@@ -248,23 +248,25 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
                 ud.getRole());   
 	}
 	
-	public void testDeleteExpenseItem() throws InterruptedException {
+	public void testDeleteExpenseItem() throws Throwable {
         final ExpenseItemsListActivity activity =
                 startActivityAsClaimant();
-
-        
-        // Makes an item attached to this claim, tested in testViewList
-        DataSourceUtils.addEmptyItem(claim, dataSource);
-        instrumentation.waitForIdleSync();
-        Thread.sleep(300);
         
         // Get ListView and adapter
         final ListView lv = (ListView) activity.findViewById(
                 R.id.expenseItemsListListView);
         ExpenseItemsListAdapter adapter =
                 (ExpenseItemsListAdapter) lv.getAdapter();
+
+        // Makes an item attached to this claim, tested in testViewList
+        DataSourceUtils.addEmptyItem(claim, dataSource);
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
         
-        instrumentation.runOnMainSync(new Runnable() {
+        // Use runTestOnUiThread here so that test failures inside actually
+        // publish to junit info rather than saying a thread crashed in
+        // runOnMainSync
+        runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // Mark the first item

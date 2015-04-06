@@ -51,20 +51,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_below="@+id/claimsListRowItemTagsLayout"
             android:layout_alignParentStart="true"
             android:gravity="bottom"/>
      
-        <TextView
-            android:id="@+id/claimsListRowItemTags"
+        <LinearLayout
+            android:id="@+id/claimsListRowItemTagsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_toStartOf="@+id/claimsListRowItemTotalLayout"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/claimsListRowItemInfo"
-            android:layout_above="@+id/claimsListRowItemStatus"
-            android:gravity="bottom"
             android:paddingBottom="10dp"
-            android:paddingRight="10dp"
-            android:visibility="gone" />
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+         
+            <TextView
+                android:id="@+id/claimsListRowItemTagHeaderTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:paddingEnd="5dp"
+                android:text="@string/claims_list_row_item_tags"
+                android:textStyle="bold" />
+         
+            <TextView
+                android:id="@+id/claimsListRowItemTagsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"/>
+            
+        </LinearLayout>
+        
      
 	    <LinearLayout
 	        android:id="@+id/claimsListRowItemTotalLayout"

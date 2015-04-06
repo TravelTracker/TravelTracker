@@ -388,11 +388,14 @@ public class ClaimInfoActivityTest extends ActivityInstrumentationTestCase2<Clai
 	private void claimActionHelper(int buttonId, Status expectedStatus) throws Throwable{
 		startWithClaim(UserRole.APPROVER);
 		final Button approveButton = (Button) activity.findViewById(buttonId);
+		final EditText commentEditText = (EditText) activity.findViewById(R.id.claimInfoCommentEditText);
 		
 		runTestOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
+		        commentEditText.setText("Comment");
+		        
 				approveButton.performClick();
 				activity.getLastAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 			}

@@ -28,6 +28,8 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        // TODO technically isAssignableFrom is deprecated and we should change
+        // it. Maybe some time in the future.
         if (!DeletionFlag.class.isAssignableFrom(type.getRawType())) {
             return null;
         }
@@ -37,9 +39,13 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
             Log.d("TypeAdapter", "Parameter type: " + param.toString());
         }
         
+        // Get the parameterizing type
         Type elementType = ((ParameterizedType) type.getType()).getActualTypeArguments()[0];
+        
+        // Get adapters specific to the object we need so that we can delegate
         TypeAdapter<?> documentAdapter = gson.getAdapter(TypeToken.get(elementType));
         TypeAdapter<Type> typeAdapter = gson.getAdapter(Type.class);
+        
         return (TypeAdapter<T>) new DeletionFlagAdapter<Document>((TypeAdapter<Document>) documentAdapter, typeAdapter);
     }
     
@@ -48,13 +54,11 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
         private TypeAdapter<E> elementAdapter;
         private TypeAdapter<Type> typeAdapter;
 
-        @SuppressWarnings("unused")
         public DeletionFlagAdapter(TypeAdapter<E> elementAdapter, TypeAdapter<Type> typeAdapter) {
             this.elementAdapter = elementAdapter;
             this.typeAdapter = typeAdapter;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public DeletionFlag<E> read(JsonReader in) throws IOException {
             if (in.peek() == JsonToken.NULL) {
@@ -62,6 +66,7 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
                 return null;
             }
             
+            // Read actual JSON
             in.beginObject();
             long time = in.nextLong();
             Type t = (Type) typeAdapter.read(in);
@@ -79,6 +84,7 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
               return;
             }
             
+            // Write actual JSON
             out.beginObject();
             out.name("date").value(flag.getDate().getTime());
             out.name("type");

@@ -240,12 +240,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         assertEquals("UserData username wasn't equal.", claimant.getUserName(),
                 ud.getName());
         assertEquals("UserData role wasn't equal.", UserRole.CLAIMANT,
-                ud.getRole());
-        
-	}
-	
-	public void testEditExpenseItem() {
-		
+                ud.getRole());   
 	}
 	
 	public void testDeleteExpenseItem() {

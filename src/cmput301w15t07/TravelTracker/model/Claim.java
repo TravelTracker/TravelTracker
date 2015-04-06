@@ -302,5 +302,119 @@ public class Claim extends Document {
 			return false;
 		return true;
 	}
+
+	@Override
+	protected boolean mergeFrom(Document sourceDoc) {
+		if (!(sourceDoc instanceof Claim))
+			return false;
+		Claim sourceClaim = (Claim) sourceDoc;
+		boolean changed = false;
+		
+		if (this.approver != null) {
+			if (!this.approver.equals(sourceClaim.approver)) {
+				changed |= true;
+				this.approver = sourceClaim.approver;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.approver == null)) {
+				changed |= true;
+				this.approver = sourceClaim.approver;
+			}
+		}
+		
+		if (this.comments != null) {
+			if (!this.comments.equals(sourceClaim.comments)) {
+				changed |= true;
+				this.comments = sourceClaim.comments;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.comments == null)) {
+				changed |= true;
+				this.comments = sourceClaim.comments;
+			}
+		}
+		
+		if (this.destinations != null) {
+			if (!this.destinations.equals(sourceClaim.destinations)) {
+				changed |= true;
+				this.destinations = sourceClaim.destinations;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.destinations == null)) {
+				changed |= true;
+				this.destinations = sourceClaim.destinations;
+			}
+		}
+		
+		if (this.endDate != null) {
+			if (!this.endDate.equals(sourceClaim.endDate)) {
+				changed |= true;
+				this.endDate = sourceClaim.endDate;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.endDate == null)) {
+				changed |= true;
+				this.endDate = sourceClaim.endDate;
+			}
+		}
+		
+		if (this.startDate != null) {
+			if (!this.startDate.equals(sourceClaim.startDate)) {
+				changed |= true;
+				this.startDate = sourceClaim.startDate;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.startDate == null)) {
+				changed |= true;
+				this.startDate = sourceClaim.startDate;
+			}
+		}
+		
+		if (this.status != null) {
+			if (!this.status.equals(sourceClaim.status)) {
+				changed |= true;
+				this.status = sourceClaim.status;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.status == null)) {
+				changed |= true;
+				this.status = sourceClaim.status;
+			}
+		}
+		
+		if (this.tags != null) {
+			if (!this.tags.equals(sourceClaim.tags)) {
+				changed |= true;
+				this.tags = sourceClaim.tags;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.tags == null)) {
+				changed |= true;
+				this.tags = sourceClaim.tags;
+			}
+		}
+		
+		if (this.user != null) {
+			if (!this.user.equals(sourceClaim.user)) {
+				changed |= true;
+				this.user = sourceClaim.user;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceClaim.user == null)) {
+				changed |= true;
+				this.user = sourceClaim.user;
+			}
+		}
+		
+		return changed;
+	}
 	
 }

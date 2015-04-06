@@ -293,4 +293,118 @@ public class Item extends Document {
 		}
 		return true;
 	}
+
+	@Override
+	protected boolean mergeFrom(Document sourceDoc) {
+		if (!(sourceDoc instanceof Item))
+			return false;
+		Item sourceItem = (Item) sourceDoc;
+		boolean changed = false;
+		
+		if (this.amount != null) {
+			if (!this.amount.equals(sourceItem.amount)) {
+				changed |= true;
+				this.amount = sourceItem.amount;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.amount == null)) {
+				changed |= true;
+				this.amount = sourceItem.amount;
+			}
+		}
+		
+		if (this.category != null) {
+			if (!this.category.equals(sourceItem.category)) {
+				changed |= true;
+				this.category = sourceItem.category;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.category == null)) {
+				changed |= true;
+				this.category = sourceItem.category;
+			}
+		}
+		
+		if (this.claim != null) {
+			if (!this.claim.equals(sourceItem.claim)) {
+				changed |= true;
+				this.claim = sourceItem.claim;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.claim == null)) {
+				changed |= true;
+				this.claim = sourceItem.claim;
+			}
+		}
+		
+		if (this.currency != null) {
+			if (!this.currency.equals(sourceItem.currency)) {
+				changed |= true;
+				this.currency = sourceItem.currency;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.currency == null)) {
+				changed |= true;
+				this.currency = sourceItem.currency;
+			}
+		}
+		
+		if (this.date != null) {
+			if (!this.date.equals(sourceItem.date)) {
+				changed |= true;
+				this.date = sourceItem.date;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.date == null)) {
+				changed |= true;
+				this.date = sourceItem.date;
+			}
+		}
+		
+		if (this.description != null) {
+			if (!this.description.equals(sourceItem.description)) {
+				changed |= true;
+				this.description = sourceItem.description;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.description == null)) {
+				changed |= true;
+				this.description = sourceItem.description;
+			}
+		}
+		
+		if (this.geolocation != null) {
+			if (!this.geolocation.equals(sourceItem.geolocation)) {
+				changed |= true;
+				this.geolocation = sourceItem.geolocation;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.geolocation == null)) {
+				changed |= true;
+				this.geolocation = sourceItem.geolocation;
+			}
+		}
+		
+		// boolean primitive does not support null or .equals
+		if (this.isComplete != sourceItem.isComplete) {
+			changed |= true;
+			this.isComplete = sourceItem.isComplete;
+		}
+		
+		// Bitmap doesn't support equals, so only set if null
+		if (this.receipt == null && sourceItem.receipt != null) {
+			// attribute is null, if source is not null then set it
+			changed |= true;
+			this.receipt = sourceItem.receipt;
+		}
+		
+		return changed;
+	}
 }

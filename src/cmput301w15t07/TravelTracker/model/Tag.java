@@ -121,4 +121,40 @@ public class Tag extends Document {
 			return false;
 		return true;
 	}
+
+	@Override
+	protected boolean mergeFrom(Document sourceDoc) {
+		if (!(sourceDoc instanceof Tag))
+			return false;
+		Tag sourceItem = (Tag) sourceDoc;
+		boolean changed = false;
+		
+		if (this.title != null) {
+			if (!this.title.equals(sourceItem.title)) {
+				changed |= true;
+				this.title = sourceItem.title;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.title == null)) {
+				changed |= true;
+				this.title = sourceItem.title;
+			}
+		}
+		
+		if (this.user != null) {
+			if (!this.user.equals(sourceItem.user)) {
+				changed |= true;
+				this.user = sourceItem.user;
+			}
+		} else {
+			// attribute is null, if source is not null then set it
+			if (!(sourceItem.user == null)) {
+				changed |= true;
+				this.user = sourceItem.user;
+			}
+		}
+		
+		return changed;
+	}
 }

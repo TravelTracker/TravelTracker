@@ -188,15 +188,23 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         datasource.addObserver(this);
     }
     
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // Show loading circle
+        setContentView(R.layout.loading_indeterminate);
+        loading = true;
+        
+        updateActivity();
+    }
+    
     /**
      * Update the activity when the dataset changes.
      * Called in onResume() and update(DataSource observable).
      */
     @Override
     public void updateActivity(){
-        // Show loading circle
-        setContentView(R.layout.loading_indeterminate);
-        
         datasource.getClaim(claimID, new ClaimCallback());
     }
     
@@ -216,6 +224,12 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * @param approver	user that approved the claim (if exsists)
      */
     public void onGetAllData(final Collection<Item> items, User claimant, User approver, Collection<Tag> tags) {
+        if (!loading) {
+            onLoaded();
+            return;
+        }
+        
+        loading = false;
     	setContentView(R.layout.claim_info_activity);
     	
         populateClaimInfo(claim, items, claimant, approver, tags);

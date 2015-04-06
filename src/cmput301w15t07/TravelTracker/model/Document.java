@@ -129,10 +129,7 @@ public abstract class Document extends Observable<Document> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (dirty ? 1231 : 1237);
 		result = prime * result + ((docID == null) ? 0 : docID.hashCode());
-		result = prime * result
-				+ ((lastChanged == null) ? 0 : lastChanged.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}

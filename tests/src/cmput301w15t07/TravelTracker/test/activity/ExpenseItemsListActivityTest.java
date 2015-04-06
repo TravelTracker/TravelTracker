@@ -53,7 +53,8 @@ import android.widget.ListView;
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman,
- *         braedy
+ *         braedy,
+ *         therabidsquirel
  *
  */
 public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCase2<ExpenseItemsListActivity> {
@@ -181,14 +182,14 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         // a result of this test
 	}
 	
-	public void testViewExpenseItem() throws InterruptedException {
+	public void testViewExpenseItem() throws Throwable {
         ExpenseItemsListActivity activity =
                 startActivityAsClaimant();
 
         // Get ListView and adapter
-        ListView lv = (ListView) activity.findViewById(
+        final ListView lv = (ListView) activity.findViewById(
                 R.id.expenseItemsListListView);
-        ExpenseItemsListAdapter adapter =
+        final ExpenseItemsListAdapter adapter =
                 (ExpenseItemsListAdapter) lv.getAdapter();
         
         // Wait for child activity and make sure it's not null
@@ -200,9 +201,15 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         instrumentation.waitForIdleSync();
         Thread.sleep(300);
         
-        View itemView = adapter.getView(0, null, null);
+        final View itemView = adapter.getView(0, null, null);
         assertNotNull("Item view was null", itemView);
-        lv.performItemClick(itemView, 0, adapter.getItemId(0));
+        
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lv.performItemClick(itemView, 0, adapter.getItemId(0));
+            }
+        });
 
         final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
         assertNotNull("ExpenseItemInfoActivity didn't start.", newActivity);

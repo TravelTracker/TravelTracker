@@ -53,7 +53,8 @@ import android.widget.ListView;
  * Each relevant Use Case UC.XxxYyy is tested with method testXxxYyy()
  * 
  * @author kdbanman,
- *         braedy
+ *         braedy,
+ *         therabidsquirel
  *
  */
 public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCase2<ExpenseItemsListActivity> {
@@ -97,6 +98,8 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 		ExpenseItemsListActivity activity =
 				startActivityAsClaimant();
 		
+		activity.waitUntilLoaded();
+		
 		// Get ListView and adapter
 		ListView lv = (ListView) activity.findViewById(
 				R.id.expenseItemsListListView);
@@ -114,25 +117,18 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 		Thread.sleep(300);
 		
 		// Assert 1 element
-		assertEquals("List view did not have 1 element: " + adapter.getCount(),
+		assertEquals("Adapter did not have 1 element: " + adapter.getCount(),
 				1, adapter.getCount());
 		assertEquals("First element was not the item added.", i,
 				adapter.getItem(0));
+		
+		// Get the first child view of the list view
+        View itemView = lv.getChildAt(0);
         
-		/* This code should work since the lv is visible and rendered but
-         * for some reason lv.getChildAt(0) is returning null and
-         * get last visible index is -1 indicating the listview isn't
-         * rendered...
-        */
-		/*
-    		// Get the first child view of the list view
-            View itemView = lv.getChildAt(0);
-            
-            // Assert it has one and is visible (the list view must have drawn if
-            // this exists)
-            assertNotNull("Child view was null.", itemView);
-            assertEquals("View wasn't visible", View.VISIBLE, itemView.getVisibility());
-		*/
+        // Assert it has one and is visible (the list view must have drawn if
+        // this exists)
+        assertNotNull("Child view was null.", itemView);
+        assertEquals("View wasn't visible", View.VISIBLE, itemView.getVisibility());
 	}
 	
 	public void testCreateExpenseItem() throws InterruptedException {
@@ -188,9 +184,9 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
                 startActivityAsClaimant();
 
         // Get ListView and adapter
-        ListView lv = (ListView) activity.findViewById(
+        final ListView lv = (ListView) activity.findViewById(
                 R.id.expenseItemsListListView);
-        ExpenseItemsListAdapter adapter =
+        final ExpenseItemsListAdapter adapter =
                 (ExpenseItemsListAdapter) lv.getAdapter();
         
         // Wait for child activity and make sure it's not null
@@ -202,9 +198,18 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         instrumentation.waitForIdleSync();
         Thread.sleep(300);
         
-        View itemView = adapter.getView(0, null, null);
+        final View itemView = adapter.getView(0, null, null);
         assertNotNull("Item view was null", itemView);
-        lv.performItemClick(itemView, 0, adapter.getItemId(0));
+        
+        // Tap the item
+        instrumentation.runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                lv.performItemClick(lv.getChildAt(0), 0, adapter.getItemId(0));
+            }
+        });
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
 
         final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
         assertNotNull("ExpenseItemInfoActivity didn't start.", newActivity);
@@ -243,8 +248,49 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
                 ud.getRole());   
 	}
 	
-	public void testDeleteExpenseItem() {
-		
+	public void testDeleteExpenseItem() throws Throwable {
+        final ExpenseItemsListActivity activity =
+                startActivityAsClaimant();
+        
+        // Get ListView and adapter
+        final ListView lv = (ListView) activity.findViewById(
+                R.id.expenseItemsListListView);
+        ExpenseItemsListAdapter adapter =
+                (ExpenseItemsListAdapter) lv.getAdapter();
+
+        // Makes an item attached to this claim, tested in testViewList
+        DataSourceUtils.addEmptyItem(claim, dataSource);
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
+        // Use runTestOnUiThread here so that test failures inside actually
+        // publish to junit info rather than saying a thread crashed in
+        // runOnMainSync
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Mark the first item
+                lv.setItemChecked(0, true);
+                
+                /* This is actually an ActionMenuItemView but that's a hidden
+                 * android internal, shhhh
+                 * This is a hacky solution to get out of using 
+                 * instrumentation.invokeContextMenuAction since that was
+                 * ignoring ids passed in.
+                 */
+                View del = activity.findViewById(
+                        R.id.items_list_context_delete);
+                assertNotNull("Context delete button was null.", del);
+                del.performClick();
+            }
+        });
+        
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
+        // Assert no elements
+        assertEquals("Adapter had elements: " + adapter.getCount(),
+                0, adapter.getCount());
 	}
 	
     //////////////////////

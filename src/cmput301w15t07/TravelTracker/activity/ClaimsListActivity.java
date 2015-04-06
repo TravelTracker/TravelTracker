@@ -39,7 +39,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
-import cmput301w15t07.TravelTracker.model.DataSource;
 import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.Tag;
 import cmput301w15t07.TravelTracker.model.User;
@@ -150,9 +149,18 @@ public class ClaimsListActivity extends TravelTrackerActivity {
         adapter = new ClaimAdapter(this, userData.getRole());
         
         datasource.addObserver(this);
-        
-       
 	}
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // Show loading circle
+        setContentView(R.layout.loading_indeterminate);
+        loading = true;
+        
+        updateActivity();
+    }
 	
     /**
      * Update the activity when the dataset changes.
@@ -160,9 +168,7 @@ public class ClaimsListActivity extends TravelTrackerActivity {
      */
     @Override
     public void updateActivity() {
-        // Show loading circle
-        progressDialog = new ProgressDialog(this);
-        progressDialog.show();
+
         new ClaimsListDataHelper().getInitialData(new initalDataCallback(), userData, datasource);
     }
     
@@ -170,6 +176,15 @@ public class ClaimsListActivity extends TravelTrackerActivity {
      * Change to the activity's layout and set it up its views accordingly.
      */
     private void onGetInitialData() {
+
+        if (!loading) {
+            onLoaded();
+            return;
+        }
+        
+        loading = false;
+        setContentView(R.layout.claims_list_activity);
+
         
         claimsList = (ListView) findViewById(R.id.claimsListClaimListView);
         claimsList.setAdapter(adapter);

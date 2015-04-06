@@ -98,6 +98,16 @@ public class FileSystemHelper implements ServerHelper {
 	}
 
 	@Override
+	public User getUser(UUID user) throws Exception {
+		Collection<User> users = getAllUsers();
+		for (User u : users) {
+			if (u.getUUID().equals(user))
+				return u;
+		}
+		return null;
+	}
+
+	@Override
 	public Collection<Claim> getClaims(UUID user) throws Exception {
 		Collection<Claim> claims = getAllClaims();
 		ArrayList<Claim> userClaims = new ArrayList<Claim>();
@@ -229,13 +239,7 @@ public class FileSystemHelper implements ServerHelper {
 	}
 	
 	private void warn(String msg) {
-		Log.e("FileSystemHelper", msg);
+		Log.w("FileSystemHelper", msg);
 		Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
-	}
-
-	@Override
-	public User getUser(UUID user) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

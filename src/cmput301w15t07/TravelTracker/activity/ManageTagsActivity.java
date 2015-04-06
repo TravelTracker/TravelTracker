@@ -21,7 +21,6 @@
 
 package cmput301w15t07.TravelTracker.activity;
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -134,15 +133,23 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         datasource.addObserver(this);
 	}
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        
+        // Show loading circle
+        setContentView(R.layout.loading_indeterminate);
+        loading = true;
+        
+        updateActivity();
+    }
+    
     /**
      * Update the activity when the dataset changes.
      * Called in onResume() and update(DataSource observable).
      */
     @Override
     public void updateActivity() {
-        // Show loading circle
-        setContentView(R.layout.loading_indeterminate);
-        
         // Multicallback to get tags and user, then update UI and adapter
         MultiCallback multi = new MultiCallback(new UpdateDataCallback());
         
@@ -159,6 +166,12 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
      * widgets of the UI.
      */
     public void updateUI() {
+        if (!loading) {
+            onLoaded();
+            return;
+        }
+        
+        loading = false;
         setContentView(R.layout.manage_tags_activity);
         
         titleEditText = (EditText) findViewById(R.id.manageTagsNewTagEditText);

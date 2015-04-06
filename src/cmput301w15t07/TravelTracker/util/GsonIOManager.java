@@ -34,7 +34,7 @@ import android.content.Context;
 import android.util.Log;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Tag;
-import cmput301w15t07.TravelTracker.model.TagAdapter;
+import cmput301w15t07.TravelTracker.model.TagTypeAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -61,7 +61,7 @@ public class GsonIOManager {
 		this.ctx = ctx;
 		gson = new GsonBuilder()
 		.registerTypeHierarchyAdapter(Date.class, new DateAdapter())
-		.registerTypeAdapter(cmput301w15t07.TravelTracker.model.Tag.class, new TagAdapter())
+		.registerTypeAdapter(cmput301w15t07.TravelTracker.model.Tag.class, new TagTypeAdapter())
 		.serializeNulls()
 		.create();
 	}

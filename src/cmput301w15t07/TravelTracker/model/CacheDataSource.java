@@ -145,7 +145,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteUser(UUID id, ResultCallback<Void> callback) {
 		if (users.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			userDeletions.add(new DeletionFlag<User>(users.get(id), User.class));
+			userDeletions.add(new DeletionFlag<User>(users.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
 		}
@@ -155,7 +155,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
 		if (claims.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id), (new TypeToken<Claim>(){}).getType()));
+			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
 		}
@@ -165,7 +165,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteItem(UUID id, ResultCallback<Void> callback) {
 		if (items.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			itemDeletions.add(new DeletionFlag<Item>(items.get(id), Item.class));
+			itemDeletions.add(new DeletionFlag<Item>(items.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
 		}
@@ -175,7 +175,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void deleteTag(UUID id, ResultCallback<Void> callback) {
 		if (tags.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id), Tag.class));
+			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
 		}

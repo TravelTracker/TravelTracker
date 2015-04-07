@@ -481,16 +481,6 @@ public class CacheDataSource extends InMemoryDataSource {
 			this(callback);
 			Log.i("CacheDataSource", "Sync requested from " + caller);
 		}
-		
-		@Override
-		protected void onPreExecute() {
-			if (updateRunning) {
-				Log.e("CacheDataSource", "Update currently running.  Serial Executor must have failed.");
-				Log.i("CacheDataSource", "SyncDocs id " + Long.toString(id) + " waiting.");
-			}
-
-			updateRunning = true;
-		}
 
 		/**
 		 * back on UI thread, do callback stuff, update observers.
@@ -519,6 +509,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		@Override
 		protected String doInBackground(Void... params) {
 
+			updateRunning = true;
 			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(id) + " running");
 			
 			// attempt to pull all data from main

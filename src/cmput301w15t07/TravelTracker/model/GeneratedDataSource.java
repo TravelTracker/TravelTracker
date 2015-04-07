@@ -80,9 +80,11 @@ public class GeneratedDataSource extends InMemoryDataSource {
 			claim.setStatus(Status.values()[r.nextInt(Status.values().length)]);
 			
 			// Set approver if status is not in progress
-			if (claim.getStatus() != Status.IN_PROGRESS) {
+			// Disabled because we don't have another user to set it to,
+			// and setting it to the same user means nobody can see it
+			/*if (claim.getStatus() != Status.IN_PROGRESS) {
 				claim.setApprover(user.getUUID());
-			}
+			}*/
 			
 			// Set tags
 			ArrayList<UUID> tagIDs = new ArrayList<UUID>(tags.keySet());
@@ -112,6 +114,8 @@ public class GeneratedDataSource extends InMemoryDataSource {
 				
 				// Set category
 				item.setCategory(ItemCategory.values()[r.nextInt(ItemCategory.values().length)]);
+				
+				// Don't worry about setting item geolocations
 
 				// Random time (10 days before today to 10 after)
 				calendar = Calendar.getInstance();

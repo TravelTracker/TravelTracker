@@ -59,6 +59,9 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
     /** Latch which is counted down when the activity loads its data */
 	private CountDownLatch loadedLatch = new CountDownLatch(1);
 	
+	/** Whether to ignore DataSource updates */
+	protected boolean ignoreUpdates = false;
+	
 	/** The data source (from DataSourceSingleton) */
 	protected DataSource datasource;
 	
@@ -91,7 +94,9 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
 	// Activities can override this if they need to do more.
 	@Override
 	public void update(DataSource observable) {
-        updateActivity();
+	    if (!ignoreUpdates) {
+	        updateActivity();
+	    }
 	}
 	
     /**
@@ -135,7 +140,7 @@ public abstract class TravelTrackerActivity extends Activity implements Observer
     }
     
     public void colorViewEnabled(View view) {
-        view.setBackgroundColor(Color.rgb(220, 220, 220));
+        view.setBackgroundColor(Color.rgb(210, 210, 210));
     }
     
     public void colorViewDisabled(View view) {

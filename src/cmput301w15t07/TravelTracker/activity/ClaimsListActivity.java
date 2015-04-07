@@ -270,7 +270,7 @@ public class ClaimsListActivity extends TravelTrackerActivity {
 			location = geolocation.getLatLng();
 		}
 		
-    	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title);
+    	SelectLocationFragment fragment = new SelectLocationFragment(callback, location, title, true);
     	fragment.show(getFragmentManager(), "selectLocation");
     }
     /**

@@ -87,6 +87,9 @@ public class SelectLocationFragment extends DialogFragment
 	/** Whether the GoogleApiClient has connected yet. */
 	private boolean connected = false;
 	
+	/** Whether this can be edited by the user. */
+	private boolean editable;
+	
 	/** The last location received from the location API */
 	private Location lastLocation;
 	
@@ -98,34 +101,17 @@ public class SelectLocationFragment extends DialogFragment
 	private GoogleApiClient googleApiClient;
 	
 	/**
-	 * Construct a fragment with no title or start location.
-	 * @param callback The class to call back with results.
-	 */
-	public SelectLocationFragment(ResultCallback callback) {
-		this.callback = callback;
-	}
-	
-	/**
-	 * Construct a fragment with a title.
-	 * @param callback The class to call back with results.
-	 * @param location The location to start at.
-	 */
-	public SelectLocationFragment(ResultCallback callback, LatLng location) {
-	    this(callback);
-	    
-    	setLocation(location);
-    }
-	
-	/**
 	 * Construct a fragment with a title and a start location.
 	 * @param callback The class to call back with results.
 	 * @param location The location to start at.
 	 * @param title The title of the dialog.
+	 * @param editable Whether the data should be editable (read-only if false).
 	 */
-	public SelectLocationFragment(ResultCallback callback, LatLng location, String title) {
-		this(callback, location);
-		
+	public SelectLocationFragment(ResultCallback callback, LatLng location, String title, boolean editable) {
+        this.callback = callback;
+        setLocation(location);
 		this.title = title;
+		this.editable = editable;
 	}
 	
 	public View onCreateView(android.view.LayoutInflater inflater,
@@ -161,7 +147,7 @@ public class SelectLocationFragment extends DialogFragment
 				dismiss();
 				
 				if (callback != null) {
-					if (location == null) {
+					if (location == null || !editable) {
 						callback.onSelectLocationCancelled();
 					} else {
 						callback.onSelectLocationResult(location);
@@ -171,59 +157,70 @@ public class SelectLocationFragment extends DialogFragment
 		});
 	    
 	    Button cancelButton = (Button) view.findViewById(R.id.select_location_fragment_cancel_button);
-	    cancelButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				
-				if (callback != null) {
-					callback.onSelectLocationCancelled();
-				}
-			}
-		});
-	    
-	    Button setToCurrentButton = (Button) view.findViewById(R.id.select_location_fragment_current_location_button);
-	    setToCurrentButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Activity activity = getActivity();
-				
-				// Not connected yet
-				if (connected == false) {
-		    		String msg = getString(R.string.select_location_fragment_not_connected);
-					Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-					
-					return;
-				}
-		    	
-				// No location
-		    	if (lastLocation == null) {
-		    		String msg = getString(R.string.select_location_fragment_failed_to_get_location);
-		    		Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-		    		
-	    		// Try connecting
-		    	} else {
-		    		setLocation(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
-		    	}
-			}
-		});
-	    
-	    Button setFromMapButton = (Button) view.findViewById(R.id.select_location_fragment_select_location_button);
-	    setFromMapButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				launchSelectLocationActivity();
-			}
-		});
-		
-	    // Connect to Google Play client
-		googleApiClient = new GoogleApiClient.Builder(getActivity())
-			.addConnectionCallbacks(this)
-			.addOnConnectionFailedListener(this)
-			.addApi(LocationServices.API)
-			.build();
-		
-		googleApiClient.connect();
+        Button setFromMapButton = (Button) view.findViewById(R.id.select_location_fragment_select_location_button);
+        Button setToCurrentButton = (Button) view.findViewById(R.id.select_location_fragment_current_location_button);
+        
+	    if (editable) {
+    	    cancelButton.setOnClickListener(new OnClickListener() {
+    			@Override
+    			public void onClick(View v) {
+    				dismiss();
+    				
+    				if (callback != null) {
+    					callback.onSelectLocationCancelled();
+    				}
+    			}
+    		});
+    	    
+    	    setToCurrentButton.setOnClickListener(new OnClickListener() {
+    			@Override
+    			public void onClick(View v) {
+    				Activity activity = getActivity();
+    				
+    				// Not connected yet
+    				if (connected == false) {
+    		    		String msg = getString(R.string.select_location_fragment_not_connected);
+    					Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+    					
+    					return;
+    				}
+    		    	
+    				// No location
+    		    	if (lastLocation == null) {
+    		    		String msg = getString(R.string.select_location_fragment_failed_to_get_location);
+    		    		Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+    		    		
+    	    		// Try connecting
+    		    	} else {
+    		    		setLocation(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+    		    	}
+    			}
+    		});
+    	    
+    	    setFromMapButton.setOnClickListener(new OnClickListener() {
+    			@Override
+    			public void onClick(View v) {
+    				launchSelectLocationActivity();
+    			}
+    		});
+    		
+    	    // Connect to Google Play client
+    		googleApiClient = new GoogleApiClient.Builder(getActivity())
+    			.addConnectionCallbacks(this)
+    			.addOnConnectionFailedListener(this)
+    			.addApi(LocationServices.API)
+    			.build();
+    		
+    		googleApiClient.connect();
+	    } else {
+            cancelButton.setVisibility(View.GONE);
+
+            setToCurrentButton.setVisibility(View.GONE);
+            setToCurrentButton.setEnabled(false);
+            
+	        setFromMapButton.setVisibility(View.GONE);
+	        setFromMapButton.setEnabled(false);
+	    }
 	    
 	    return view;
 	}
@@ -239,12 +236,14 @@ public class SelectLocationFragment extends DialogFragment
 		    UiSettings settings = map.getUiSettings();
 		    settings.setMapToolbarEnabled(false);
 		    
-		    map.setOnMapClickListener(new OnMapClickListener() {
-				@Override
-				public void onMapClick(LatLng arg0) {
-					launchSelectLocationActivity();
-				}
-			});
+		    if (editable) {
+    		    map.setOnMapClickListener(new OnMapClickListener() {
+    				@Override
+    				public void onMapClick(LatLng arg0) {
+    					launchSelectLocationActivity();
+    				}
+    			});
+		    }
 	    }
 	    
 	    updateMap();

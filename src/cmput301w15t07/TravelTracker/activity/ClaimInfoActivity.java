@@ -247,6 +247,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Destinations list
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        colorViewEnabled(destinationsList);
         
         // Tags list
         LinearLayout tagsLinearLayout = (LinearLayout) findViewById(R.id.claimInfoTagsLinearLayout);
@@ -272,7 +273,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
         	if (isEditable(claim.getStatus(), userData.getRole())) {
         	    // Color the LinearLayout to visually cue the user that it can be edited.
-        	    colorViewEnabled(destinationsList);
+                destinationAdapter.setEditable(true);
         	    
 	            // Attach edit date listener to start date button
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
@@ -298,8 +299,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 	                }
 	            });
         	} else {
+                destinationAdapter.setEditable(false);
+        	    
         	    // These views should do nothing if the claim isn't editable
-        	    colorViewDisabled(destinationsList);
         	    disableView(startDateButton);
         	    disableView(endDateButton);
         	    disableView(submitClaimButton);
@@ -338,8 +340,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
                 }
             });
             
+            destinationAdapter.setEditable(false);
+            
             // The approver should see these views, but cannot use them.
-            colorViewDisabled(destinationsList);
             disableView(startDateButton);
             disableView(endDateButton);
             
@@ -422,6 +425,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * Delete the claim and finish the activity.
      */
     public void deleteClaim() {
+        ignoreUpdates = true;
         datasource.deleteClaim(claimID, new DeleteCallback());
     }
 
@@ -575,7 +579,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
             if (i == 0) {
                 tagString = claimTags.get(i).getTitle();
             } else {
-                tagString = tagString + ", " + claimTags.get(i).getTitle();
+                tagString += ", " + claimTags.get(i).getTitle();
             }
         }
         
@@ -674,18 +678,18 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * returns the selected claim and adds a comment if there exists one in the field
      */
     public void returnClaim() {
+        final String commentText = checkForComment();
+        if (commentText == null) {
+            return;
+        }
+            
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
 		    public void onClick(DialogInterface dialog, int which) {
 		        switch (which){
 		        case DialogInterface.BUTTON_POSITIVE:
-		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
 		        	
-		        	// add approver comment if comment field is not empty
-		        	if (!commentText.trim().equals("")) {
-		        		claim.addComment(commentText);
-		        	}
-		        	
+	        		claim.addComment(commentText);
 		        	claim.setApprover(userData.getUUID());
 		        	claim.setStatus(Status.RETURNED);
 		        	ClaimInfoActivity.this.finish();
@@ -708,18 +712,17 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * approves the selected claim and adds a comment if there exists one in the field
      */
     public void approveClaim() {
+        final String commentText = checkForComment();
+        if (commentText == null) {
+            return;
+        }
+        
     	DialogInterface.OnClickListener returnDialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
 		    public void onClick(DialogInterface dialog, int which) {
 		        switch (which){
 		        case DialogInterface.BUTTON_POSITIVE:
-		        	String commentText = ((TextView) findViewById(R.id.claimInfoCommentEditText)).getText().toString();
-		        	
-		        	// add approver comment if comment field is not empty
-		        	if (!commentText.trim().equals("")) {
-		        		claim.addComment(commentText);
-		        	}
-		        	
+	        		claim.addComment(commentText);
 		        	claim.setApprover(userData.getUUID());
 		        	claim.setStatus(Status.APPROVED);
 		        	ClaimInfoActivity.this.finish();
@@ -737,6 +740,21 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		       .setPositiveButton(android.R.string.yes, returnDialogClickListener)
 		       .setNegativeButton(android.R.string.no, returnDialogClickListener)
 		       .show();
+    }
+    /**
+     * Make sure the approver left a comment. Set an error otherwise.
+     * @return The comment if there was one, else null.
+     */
+    private String checkForComment() {
+        EditText commentEditText = (EditText) findViewById(R.id.claimInfoCommentEditText);
+        final String commentText = commentEditText.getText().toString();
+        
+        if (commentText.trim().equals("")) {
+            commentEditText.setError(getString(R.string.claim_info_no_comment_error));
+            return null;
+        }
+
+        return commentText;
     }
     /**
      * Set the date in the date button after 
@@ -824,6 +842,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		@Override
 		public void onError(String message) {
 			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+			ignoreUpdates = false;
 		}
 	}
     

@@ -91,10 +91,12 @@ public class ClaimsListDataHelper {
 		
 		for (Claim c : claims){
 			if (role.equals(UserRole.APPROVER)) {
-				if (!c.getUser().equals(user.getUUID())){
-					if (c.getStatus().equals(Status.SUBMITTED)){
-						outClaims.add(c);
-					}
+			    boolean isMyClaim = c.getUser().equals(user.getUUID());
+			    boolean isSubmitted = c.getStatus().equals(Status.SUBMITTED);
+			    boolean isMineToApprove = (c.getApprover() == null || c.getApprover().equals(user.getUUID()));
+			    
+				if (!isMyClaim && isSubmitted && isMineToApprove) {
+					outClaims.add(c);
 				}
 			} else if (role.equals(UserRole.CLAIMANT)){
 				if (c.getUser().equals(user.getUUID())){

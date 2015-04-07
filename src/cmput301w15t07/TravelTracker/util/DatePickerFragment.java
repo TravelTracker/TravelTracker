@@ -92,23 +92,7 @@ public class DatePickerFragment extends DialogFragment {
 	    Context context = getActivity();
 		
 		// Create the dialog
-		DatePickerDialog dialog = new DatePickerDialog(context,
-			new DatePickerDialog.OnDateSetListener() {
-				@Override
-				public void onDateSet(DatePicker view, int year, int monthOfYear,
-				        int dayOfMonth) {
-					
-					// Dialog cancelled; return nothing
-					if (cancelled) {
-						callback.onDatePickerFragmentCancelled();
-						
-					// Dialog accepted; return date
-					} else {
-						calendar.set(year, monthOfYear, dayOfMonth);
-						callback.onDatePickerFragmentResult(calendar.getTime());
-					}
-				}
-			},
+		DatePickerDialog dialog = new DatePickerDialog(context, null,
 			calendar.get(Calendar.YEAR),
 			calendar.get(Calendar.MONTH),
 			calendar.get(Calendar.DAY_OF_MONTH));
@@ -121,7 +105,11 @@ public class DatePickerFragment extends DialogFragment {
 				new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					cancelled = false;
+				    DatePickerDialog dpd = (DatePickerDialog) dialog;
+				    DatePicker picker = dpd.getDatePicker();
+				    
+                    calendar.set(picker.getYear(), picker.getMonth(), picker.getDayOfMonth());
+                    callback.onDatePickerFragmentResult(calendar.getTime());
 				}
 			});
 		
@@ -129,7 +117,7 @@ public class DatePickerFragment extends DialogFragment {
 			new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					cancelled = true;
+                    callback.onDatePickerFragmentCancelled();
 				}
 			});
 		

@@ -47,6 +47,8 @@ import android.widget.Toast;
  *
  */
 public class DestinationEditorFragment extends DialogFragment {
+    private boolean editable;
+    
     /**
      * Callback interface for results from DestinationEditorFragment.
      */
@@ -79,9 +81,6 @@ public class DestinationEditorFragment extends DialogFragment {
     /** The reason of the destination. */
     String reason;
     
-    /** The fragment manager of the activity that called this fragment. */
-    FragmentManager manager;
-    
     /** The dialog that will let the user edit the destination. */
     AlertDialog dialog;
     
@@ -100,12 +99,22 @@ public class DestinationEditorFragment extends DialogFragment {
     private final static int GEOLOCATION_CHECKBOX_ID = R.id.claimInfoDestinationsListEditPromptGeolocationCheckBox;
     private final static int REASON_EDIT_ID = R.id.claimInfoDestinationsListEditPromptReasonEditText;
     
-    public DestinationEditorFragment(ResultCallback callback, String location, Geolocation geolocation, String reason, FragmentManager manager) {
+    /**
+     * Constructor
+     * @param callback Callback for fragment results
+     * @param location Location name
+     * @param geolocation Physical geolocation (or null if not set)
+     * @param reason Reason for travel to destination
+     * @param manager The fragment manager
+     * @param editable
+     */
+    public DestinationEditorFragment(ResultCallback callback, String location,
+            Geolocation geolocation, String reason, boolean editable) {
         this.callback = callback;
         this.location = location;
         this.geolocation = geolocation;
         this.reason = reason;
-        this.manager = manager;
+        this.editable = editable;
     }
 
     /**
@@ -124,6 +133,7 @@ public class DestinationEditorFragment extends DialogFragment {
         
         final EditText locationEditText = (EditText) promptView.findViewById(LOCATION_EDIT_ID);
         locationEditText.setText(location);
+        locationEditText.setEnabled(editable);
         
         final Button geolocationButton = (Button) promptView.findViewById(GEOLOCATION_BUTTON_ID);
         updateGeolocationCheckBox(promptView, geolocation);
@@ -146,16 +156,17 @@ public class DestinationEditorFragment extends DialogFragment {
                 String title = "\"" + location + "\"\n" + context.getString(R.string.claim_info_destination_edit_fragment_title);
                 
                 if (geolocation == null)
-                    geolocationFragment = new SelectLocationFragment(geoCallback, null, title);
+                    geolocationFragment = new SelectLocationFragment(geoCallback, null, title, editable);
                 else
-                    geolocationFragment = new SelectLocationFragment(geoCallback, geolocation.getLatLng(), title);
+                    geolocationFragment = new SelectLocationFragment(geoCallback, geolocation.getLatLng(), title, editable);
                 
-                geolocationFragment.show(manager, "selectLocation");
+                geolocationFragment.show(getFragmentManager(), "selectLocation");
             }
         });
         
         final EditText reasonEditText = (EditText) promptView.findViewById(REASON_EDIT_ID);
         reasonEditText.setText(reason);
+        reasonEditText.setEnabled(editable);
         
         // Taken on February 1, 2015 from:
         // http://stackoverflow.com/questions/6070805/prevent-enter-key-on-edittext-but-still-show-the-text-as-multi-line
@@ -167,12 +178,16 @@ public class DestinationEditorFragment extends DialogFragment {
             }
         });
         
-        dialog =  new AlertDialog.Builder(context)
+        AlertDialog.Builder builder =  new AlertDialog.Builder(context)
             .setView(promptView)
             .setTitle(context.getString(R.string.claim_info_destination_edit_title))
-            .setPositiveButton(context.getString(android.R.string.ok), null)
-            .setNegativeButton(context.getString(android.R.string.cancel), null)
-            .create();
+            .setPositiveButton(context.getString(android.R.string.ok), null);
+        
+        if (editable) {
+            builder.setNegativeButton(context.getString(android.R.string.cancel), null);
+        }
+        
+        dialog = builder.create();
         
         acceptEditListener = new AcceptEditListener(context, dialog, locationEditText, reasonEditText);
         return dialog;
@@ -202,7 +217,7 @@ public class DestinationEditorFragment extends DialogFragment {
         CheckBox checkBox = (CheckBox) view.findViewById(GEOLOCATION_CHECKBOX_ID);
         checkBox.setChecked(geolocation != null);
     }
-    
+
     /**
      * Listener for the positive (OK) button in the destination editor fragment. If errors
      * in editing are present, will notify the user without closing the fragment.
@@ -222,6 +237,11 @@ public class DestinationEditorFragment extends DialogFragment {
         
         @Override
         public void onClick(View v) {
+            if (!editable) {
+                cancelled = true;
+                dialog.dismiss();
+            }
+            
             location = locationEditText.getText().toString();
             
             // Empty location is invalid, don't close dialog.

@@ -479,33 +479,11 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
         destinationAdapter = new DestinationAdapter(isEditable(claim.getStatus(), userData.getRole()));
         destinationsList.removeAllViews();
-        final DestinationCallback callback = new DestinationCallback();
+        DestinationCallback callback = new DestinationCallback();
         
         for (Destination destination : claim.getDestinations()) {
             View view = destinationAdapter.createView(destination, this);
-            
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.setBackgroundColor(getResources().getColor(DestinationAdapter.COLOR_SELECTED));
-                    Destination destination = destinationAdapter.getDestinationFromView(v);
-                    boolean editable = destinationAdapter.isEditable();
-                    DestinationEditorFragment editor = new DestinationEditorFragment(callback, v, destination, editable);
-                    editor.show(getFragmentManager(), "destinationEditor");
-                }
-            });
-            
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    v.setBackgroundColor(getResources().getColor(DestinationAdapter.COLOR_SELECTED));
-                    Destination destination = destinationAdapter.getDestinationFromView(v);
-                    DestinationDeletionFragment deleter = new DestinationDeletionFragment(v, destination);
-                    deleter.show(getFragmentManager(), "");
-                    return false;
-                }
-            });
-            
+            view = setNewDestinationViewListeners(view, callback);
             destinationsList.addView(view);
         }
         
@@ -647,6 +625,39 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         return claimTags;
     }
+    
+    /**
+     * Set onClick and onLongClick listeners to the view for a destination. onClick is for editing
+     * the destination, onLongClick is for deleting the destination.
+     * @param view The view to set listeners on.
+     * @param callback The callback to use in the onClick listener.
+     * @return The view with both listeners set.
+     */
+    private View setNewDestinationViewListeners(View view, final DestinationCallback callback) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundColor(getResources().getColor(DestinationAdapter.COLOR_SELECTED));
+                Destination destination = destinationAdapter.getDestinationFromView(v);
+                boolean editable = destinationAdapter.isEditable();
+                DestinationEditorFragment editor = new DestinationEditorFragment(callback, v, destination, editable);
+                editor.show(getFragmentManager(), "destinationEditor");
+            }
+        });
+        
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                v.setBackgroundColor(getResources().getColor(DestinationAdapter.COLOR_SELECTED));
+                Destination destination = destinationAdapter.getDestinationFromView(v);
+                DestinationDeletionFragment deleter = new DestinationDeletionFragment(v, destination);
+                deleter.show(getFragmentManager(), "destinationDeleter");
+                return false;
+            }
+        });
+        
+        return view;
+    }
 
     /**
      * Given a view an edited destination belongs to, or null if the destination is new and
@@ -666,8 +677,10 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         // A null view means a new destination.
         if (view == null) {
             view = destinationAdapter.createView(destination, this);
+            view = setNewDestinationViewListeners(view, new DestinationCallback());
             linearLayout.addView(view);
             destinations.add(destination);
+            
         } else {
             int index = destinations.indexOf(destinationAdapter.getDestinationFromView(view));
             destinationAdapter.setDestinationOnView(view, destination);

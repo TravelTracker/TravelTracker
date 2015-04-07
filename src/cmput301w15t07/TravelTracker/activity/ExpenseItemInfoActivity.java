@@ -437,7 +437,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 				public void onClick(DialogInterface dialog, int which) {
 					//set the receipt to a new one to delete photo 
 					item.setReceipt(new Receipt());
-					
+					populateItemInfo(item);
 				}
 			});
 		lastAlertDialog = builder.create();

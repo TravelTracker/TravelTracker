@@ -96,6 +96,7 @@ public class CacheDataSource extends InMemoryDataSource {
 	private PersistentList<DeletionFlag<Tag>> tagDeletions;
 	
 	private boolean updateRunning = false;
+	private long syncNumber = 0;
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
@@ -144,7 +145,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				warn(message);
 			}
 			
-		}).execute();
+		}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		
 
 		Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -155,28 +156,28 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void addUser(final ResultCallback<User> callback) {
 		super.addUser(callback);
 		
-		new SyncUpdateTask("addUser").execute();
+		new SyncUpdateTask("addUser").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 	}
 	
 	@Override
 	public void addClaim(final User user, final ResultCallback<Claim> callback) {
 		super.addClaim(user, callback);
 		
-		new SyncUpdateTask("addClaim").execute();
+		new SyncUpdateTask("addClaim").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 	}
 
 	@Override
 	public void addItem(final Claim claim, final ResultCallback<Item> callback) {
 		super.addItem(claim, callback);
 		
-		new SyncUpdateTask("addItem").execute();
+		new SyncUpdateTask("addItem").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 	}
 
 	@Override
 	public void addTag(final User user, final ResultCallback<Tag> callback) {
 		super.addTag(user, callback);
 		
-		new SyncUpdateTask("addTag").execute();
+		new SyncUpdateTask("addTag").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 	}
 
 	@Override
@@ -187,7 +188,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
 			
-			new SyncUpdateTask("deleteUser").execute();
+			new SyncUpdateTask("deleteUser").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -199,7 +200,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
 			
-			new SyncUpdateTask("deleteClaim").execute();
+			new SyncUpdateTask("deleteClaim").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -211,7 +212,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
 			
-			new SyncUpdateTask("deleteItem").execute();
+			new SyncUpdateTask("deleteItem").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -223,7 +224,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
 			
-			new SyncUpdateTask("deleteTag").execute();
+			new SyncUpdateTask("deleteTag").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -238,7 +239,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getUser(id, callback);
 				}
-			}).execute();
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -253,7 +254,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getClaim(id, callback);
 				}
-			}).execute();
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -268,7 +269,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getItem(id, callback);
 				}
-			}).execute();
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -283,7 +284,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getTag(id, callback);
 				}
-			}).execute();
+			}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
 	}
 
@@ -296,7 +297,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllUsers(callback);
 			}
-		}).execute();
+		}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 	}
 
 	@Override
@@ -308,7 +309,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllClaims(callback);
 			}
-		}).execute();
+		}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 	}
 
 	@Override
@@ -320,7 +321,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllItems(callback);
 			}
-		}).execute();
+		}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 	}
 
@@ -333,7 +334,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllTags(callback);
 			}
-		}).execute();
+		}).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		
 	}
 	
@@ -412,7 +413,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		@Override
 		protected Void doInBackground(Void... params) {
 
-			new SyncDocumentsTask(new InfoReportingCallback(), caller).execute();
+			new SyncDocumentsTask(new InfoReportingCallback(), caller).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 			return null;
 		}
 		
@@ -435,7 +436,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		@Override
 		public void run() {
 			Log.i("CacheDataSource", "Executing server poll.");
-			new SyncUpdateTask("poll loop").execute();
+			new SyncUpdateTask("poll loop").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 
 			Log.i("CacheDataSource", "Registering new server poll.");
 			Handler uiHandler = new Handler(Looper.getMainLooper());
@@ -460,6 +461,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		private Collection<Tag> retrievedTags;
 		
 		private boolean changesMade = false;
+		private long id;
 
 		/**
 		 * 
@@ -467,6 +469,8 @@ public class CacheDataSource extends InMemoryDataSource {
 		 */
 		public SyncDocumentsTask(ResultCallback<Boolean> callback) {
 			this.callback = callback;
+			this.id = syncNumber++;
+			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " created");
 		}
 		
 		/**
@@ -477,6 +481,16 @@ public class CacheDataSource extends InMemoryDataSource {
 			this(callback);
 			Log.i("CacheDataSource", "Sync requested from " + caller);
 		}
+		
+		@Override
+		protected void onPreExecute() {
+			if (updateRunning) {
+				Log.e("CacheDataSource", "Update currently running.  Serial Executor must have failed.");
+				Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " waiting.");
+			}
+
+			updateRunning = true;
+		}
 
 		/**
 		 * back on UI thread, do callback stuff, update observers.
@@ -485,6 +499,8 @@ public class CacheDataSource extends InMemoryDataSource {
 		 */
 		@Override
 		protected void onPostExecute(String errMsg) {
+			updateRunning = false;
+			
 			// if null errmsg assume success.
 			
 			// sync documents callback may be null, or it may wrap a get*() callback.
@@ -496,16 +512,14 @@ public class CacheDataSource extends InMemoryDataSource {
 					callback.onError(errMsg);
 				}
 			}
+
+			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " completed.");
 		}
 
 		@Override
 		protected String doInBackground(Void... params) {
-			if (updateRunning) {
-				Log.i("CacheDataSource", "Update currently running - aborting requested one.");
-				return null;
-			}
-			
-			updateRunning = true;
+
+			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " running");
 			
 			// attempt to pull all data from main
 			// (push all in memory to backup and return if fail)
@@ -550,8 +564,6 @@ public class CacheDataSource extends InMemoryDataSource {
 			setDirtyToClean(getDirtyTags());
 			
 			Log.i("CacheDataSource", "Sync cycle completed.");
-			
-			updateRunning = false;
 			
 			return null;
 		}

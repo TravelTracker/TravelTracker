@@ -34,8 +34,6 @@
 	        android:inputType="text"
 	        android:lines="1"
 	        android:maxLines="1" >
-	
-	        <requestFocus />
 	    </EditText>
 
 	    <Button

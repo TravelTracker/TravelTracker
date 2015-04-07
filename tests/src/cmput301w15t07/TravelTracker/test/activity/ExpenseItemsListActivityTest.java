@@ -145,14 +145,12 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
 
         // Wait for child activity and make sure it's not null
         final Activity newActivity = monitor.waitForActivityWithTimeout(3000);
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
         assertNotNull("ExpenseItemInfoActivity didn't start.", newActivity);
         
         Intent intent = newActivity.getIntent();
-        
-        // Wait to finish
-        newActivity.finish();
-        instrumentation.waitForIdleSync();
-        Thread.sleep(300);
         
         // Assert correct claim sent
         UUID claimID = (UUID) intent.getSerializableExtra(
@@ -177,6 +175,11 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         
         // Note, can't check whether Item UUID is equal because it's created as
         // a result of this test
+        
+        // Wait to finish
+        newActivity.finish();
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
 	}
 	
 	public void testViewExpenseItem() throws InterruptedException {

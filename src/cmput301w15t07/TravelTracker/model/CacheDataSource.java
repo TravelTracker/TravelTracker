@@ -157,57 +157,28 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void addUser(final ResultCallback<User> callback) {
 		super.addUser(callback);
 		
-
-		// TODO replace this with SyncUpdateTask
-		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-			@Override
-			public void onResult(Boolean changesMade) {
-				if (changesMade) 
-			        updateHandler.post(updateRunnable);
-			}
-		}).execute();
+		new SyncUpdateTask().execute();
 	}
 	
 	@Override
 	public void addClaim(final User user, final ResultCallback<Claim> callback) {
 		super.addClaim(user, callback);
 		
-		// TODO replace this with SyncUpdateTask
-		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-			@Override
-			public void onResult(Boolean changesMade) {
-				if (changesMade) 
-			        updateHandler.post(updateRunnable);
-			}
-		}).execute();
+		new SyncUpdateTask().execute();
 	}
 
 	@Override
 	public void addItem(final Claim claim, final ResultCallback<Item> callback) {
 		super.addItem(claim, callback);
 		
-		// TODO replace this with SyncUpdateTask
-		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-			@Override
-			public void onResult(Boolean changesMade) {
-				if (changesMade) 
-			        updateHandler.post(updateRunnable);
-			}
-		}).execute();
+		new SyncUpdateTask().execute();
 	}
 
 	@Override
 	public void addTag(final User user, final ResultCallback<Tag> callback) {
 		super.addTag(user, callback);
-
-		// TODO replace this with SyncUpdateTask
-		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-			@Override
-			public void onResult(Boolean changesMade) {
-				if (changesMade) 
-			        updateHandler.post(updateRunnable);
-			}
-		}).execute();
+		
+		new SyncUpdateTask().execute();
 	}
 
 	@Override
@@ -218,15 +189,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
 			
-
-			// TODO replace this with SyncUpdateTask
-			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-				@Override
-				public void onResult(Boolean changesMade) {
-					if (changesMade) 
-				        updateHandler.post(updateRunnable);
-				}
-			}).execute();
+			new SyncUpdateTask().execute();
 		}
 	}
 
@@ -237,15 +200,8 @@ public class CacheDataSource extends InMemoryDataSource {
 			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
-
-			// TODO replace this with SyncUpdateTask
-			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-				@Override
-				public void onResult(Boolean changesMade) {
-					if (changesMade) 
-				        updateHandler.post(updateRunnable);
-				}
-			}).execute();
+			
+			new SyncUpdateTask().execute();
 		}
 	}
 
@@ -256,15 +212,8 @@ public class CacheDataSource extends InMemoryDataSource {
 			itemDeletions.add(new DeletionFlag<Item>(items.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
-
-			// TODO replace this with SyncUpdateTask
-			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-				@Override
-				public void onResult(Boolean changesMade) {
-					if (changesMade) 
-				        updateHandler.post(updateRunnable);
-				}
-			}).execute();
+			
+			new SyncUpdateTask().execute();
 		}
 	}
 
@@ -275,15 +224,8 @@ public class CacheDataSource extends InMemoryDataSource {
 			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
-
-			// TODO replace this with SyncUpdateTask
-			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
-				@Override
-				public void onResult(Boolean changesMade) {
-					if (changesMade) 
-				        updateHandler.post(updateRunnable);
-				}
-			}).execute();
+			
+			new SyncUpdateTask().execute();
 		}
 	}
 
@@ -408,6 +350,12 @@ public class CacheDataSource extends InMemoryDataSource {
 		Toast.makeText(appContext, msg, Toast.LENGTH_SHORT).show();
 	}
 	
+	/**
+	 * ResultCallback wrapper for mating the DataSource parameter callbacks to the SyncDocumentTask.
+	 * Leaves onResult unimplemented so results handling is flexible.
+	 * @author kdbanman
+	 *
+	 */
 	private abstract class SyncWrappedResultCallback implements ResultCallback<Boolean> {
 
 		ResultCallback<?> errCallback;
@@ -422,10 +370,24 @@ public class CacheDataSource extends InMemoryDataSource {
 		}
 	}
 
-	public class ErrReportingCallback implements ResultCallback<Boolean> {
+	/**
+	 * Callback that logs whether or not changes were made on a successful sync and updates
+	 * observers accordingly.
+	 * Logs and Toasts an error message if received.
+	 * 
+	 * @author kdbanman
+	 *
+	 */
+	public class InfoReportingCallback implements ResultCallback<Boolean> {
 
 		@Override
-		public void onResult(Boolean result) {
+		public void onResult(Boolean changesMade) {
+			if (changesMade) {
+		        updateHandler.post(updateRunnable);
+				Log.i("CacheDataSource", "New data retrieved from server.");
+			} else {
+				Log.i("CacheDataSource", "All data retrieved from server was known");
+			}
 			return;
 		}
 
@@ -436,23 +398,27 @@ public class CacheDataSource extends InMemoryDataSource {
 
 	}
 	
+	/**
+	 * Sensible wrapper for update tasks for use in the poll cycle. Reports results and updates observers.
+	 * @author kdbanman
+	 *
+	 */
 	private class SyncUpdateTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected Void doInBackground(Void... params) {
 
-			new SyncDocumentsTask(new SyncWrappedResultCallback(new ErrReportingCallback()) {
-				@Override
-				public void onResult(Boolean changesMade) {
-					if (changesMade) 
-				        updateHandler.post(updateRunnable);
-				}
-			}).execute();
+			new SyncDocumentsTask(new InfoReportingCallback()).execute();
 			return null;
 		}
 		
 	}
 	
+	/**
+	 * Runnable that runs an update task and then creates a delayed instance of itself on the main loop.
+	 * @author kdbanman
+	 *
+	 */
 	private class PollServerLoopTask implements Runnable {
 		long period;
 		
@@ -462,36 +428,17 @@ public class CacheDataSource extends InMemoryDataSource {
 
 		@Override
 		public void run() {
-			//new SyncDocumentsTask().execute();
-			
-			//DEBUG with warn()
-			new SyncDocumentsTask(new ResultCallback<Boolean>() {
-
-				@Override
-				public void onResult(Boolean result) {
-					if (result) {
-				        updateHandler.post(updateRunnable);
-						warn("New data imported from server.");
-					} else {
-						warn("Data imported from server - no changes.");
-					}
-				}
-
-				@Override
-				public void onError(String message) {
-					warn(message);
-				}
-				
-			}).execute();
+			new SyncUpdateTask().execute();
 			
 			Handler uiHandler = new Handler(Looper.getMainLooper());
-			uiHandler.postDelayed(new PollServerLoopTask(5000), 5000);
+			uiHandler.postDelayed(new PollServerLoopTask(period), period);
 		}
 		
 	}
 	
 	/**
-	 * 
+	 * Main sync operation - pulls from main helper and merges with local content.
+	 * Background task sets a booloan attribute to indicate changes were made during the merge. 
 	 * @author kdbanman
 	 *
 	 */
@@ -525,7 +472,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		/**
 		 * back on UI thread, do callback stuff, update observers.
 		 * 
-		 * @param errMsg  The error message if an error was encountered.  Null otherwise (hacky!).
+		 * @param errMsg  The error message if an error was encountered.  Null otherwise (hacky?).
 		 */
 		@Override
 		protected void onPostExecute(String errMsg) {
@@ -545,7 +492,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		@Override
 		protected String doInBackground(Void... params) {
 			// attempt to pull all data from main
-			// (push all to backup and return if fail)
+			// (push all in memory to backup and return if fail)
 			if (!retrieveFromMain()) {
 				if (!dumpToBackup()) {
 					return "Error saving to backup cache!";

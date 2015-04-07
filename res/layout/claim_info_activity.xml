@@ -252,7 +252,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/claim_info_comment_prompt"
-            android:inputType="textMultiLine" >
+            android:inputType="textMultiLine|textCapSentences" >
 
         </EditText>
 

@@ -51,7 +51,7 @@ public class DataSourceSingleton {
     	if (ds == null) {
     		//ds = new InMemoryDataSource();
     		//ds = new GeneratedDataSource();
-    		ds = new CacheDataSource(appContext);
+    		ds = new CacheDataSource(appContext, 5000);
     	}
     	
 		return ds;

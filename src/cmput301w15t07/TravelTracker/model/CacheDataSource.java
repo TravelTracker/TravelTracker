@@ -80,7 +80,7 @@ import cmput301w15t07.TravelTracker.util.PersistentList;
  */
 public class CacheDataSource extends InMemoryDataSource {
 
-	private static final long UPDATE_PERIOD = 3500;
+	private  long updatePeriod = 3500;
 	
 	private static final String DELETE_USERS = "user_deletions.json";
 	private static final String DELETE_CLAIMS = "claim_deletions.json";
@@ -100,8 +100,8 @@ public class CacheDataSource extends InMemoryDataSource {
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
 	 */
-	public CacheDataSource(Context appContext) {
-		this(appContext, new ElasticSearchHelper(), new FileSystemHelper(appContext));
+	public CacheDataSource(Context appContext, long updatePeriod) {
+		this(appContext, updatePeriod, new ElasticSearchHelper(), new FileSystemHelper(appContext));
 	}
 	
 	/**
@@ -109,8 +109,10 @@ public class CacheDataSource extends InMemoryDataSource {
 	 * @param main The interface for remote server or test stubs.
 	 * @param backup The interface for data persistence when main fails.
 	 */
-	public CacheDataSource(Context appContext, ServerHelper main, ServerHelper backup) {
+	public CacheDataSource(Context appContext, long updatePeriod, ServerHelper main, ServerHelper backup) {
 		super();
+		
+		this.updatePeriod = updatePeriod;
 		
 		this.appContext = appContext;
 		this.mainHelper = main;
@@ -148,7 +150,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		
 
 		Handler uiHandler = new Handler(Looper.getMainLooper());
-		uiHandler.postDelayed(new PollServerLoopTask(UPDATE_PERIOD), UPDATE_PERIOD);
+		uiHandler.postDelayed(new PollServerLoopTask(updatePeriod), updatePeriod);
 	}
 	
 	@Override

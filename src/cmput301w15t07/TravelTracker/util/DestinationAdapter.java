@@ -35,11 +35,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cmput301w15t07.TravelTracker.R;
-import cmput301w15t07.TravelTracker.activity.TravelTrackerActivity;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Geolocation;
-import cmput301w15t07.TravelTracker.model.UserData;
 
 /**
  * Custom adapter for dealing with displaying and editing destinations dynamically
@@ -52,25 +50,11 @@ public class DestinationAdapter {
     private Context context;
     private Claim claim;
     private ArrayList<Destination> destinations;
+    private FragmentManager manager;
     private LinearLayout linearLayout;
     
     /** Whether list elements should be editable. */
     private boolean editable;
-    
-    /** The currently open destination editor fragment. */
-    private DestinationEditorFragment destinationEditor = null;
-    
-    /** Whether the current view being used in the destination editor fragment is new or not. */
-    private boolean newDestination = false;
-    
-    /** The currently open destination deletion fragment. */
-    private DestinationDeletionFragment destinationDeleter = null;
-    
-    /** Used to store the location for a destination that is being prompted for deletion. */
-    private String deleteLocation;
-    
-    /** The current view being used in a destination fragment. */
-    private View editingView = null;
     
     private final static int LIST_VIEW_ID = R.layout.claim_info_destinations_list_item;
     private final static int LIST_LOCATION_ID = R.id.claimInfoDestinationsListItemLocationTextView;
@@ -79,19 +63,12 @@ public class DestinationAdapter {
     private final static int COLOR_SELECTED = android.R.color.holo_blue_light;
     private final static int COLOR_PLAIN = android.R.color.transparent;
     
-    public DestinationAdapter (Claim claim, ArrayList<Destination> destinations) {
+    public DestinationAdapter (Claim claim, ArrayList<Destination> destinations, FragmentManager manager) {
         this.claim = claim;
         this.destinations = destinations;
+        this.manager = manager;
     }
     
-    /**
-     * Get the currently displayed destination editor fragment.
-     * @return The DestinationEditorFragment, or null if there isn't one.
-     */
-    public DestinationEditorFragment getDestinationEditorFragment() {
-        return destinationEditor;
-    }
-
     /**
      * Set the destinations list on the adapter
      * @param destinations The new ArrayList.
@@ -100,152 +77,160 @@ public class DestinationAdapter {
         this.destinations = destinations;
     }
     
-    public void createList(Context context, UserData userData, LinearLayout linearLayout, FragmentManager manager) {
+    /**
+     * Given a LinearLayout, recreate all of the views within it from the list of
+     * destinations in this adapter.
+     * @param context The context of the activity containing the LinearLayout.
+     * @param linearLayout The LinearLayout the adapter will add views to.
+     */
+    public void createList(Context context, LinearLayout linearLayout) {
         this.context = context;
         this.linearLayout = linearLayout;
         
         linearLayout.removeAllViews();
         
         for (Destination destination : destinations) {
-            View view = createView(destination, userData, manager);
+            View view = createView(destination);
             linearLayout.addView(view);
         }
     }
     
-    private View createView(Destination destination, UserData userData, final FragmentManager manager) {
+    /**
+     * Given a destination, create a view populated with its information for display in
+     * a custom LinearLayout. Also add click and long-click listeners to the view for
+     * editing and deleting respectively.
+     * @param destination The destination to create a view for.
+     * @return The newly created view.
+     */
+    private View createView(Destination destination) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(LIST_VIEW_ID, linearLayout, false);
-        setDestination(view, destination);
+        setDestinationOnView(view, destination);
         
         view.setOnClickListener(new View.OnClickListener() {
-            
             @Override
             public void onClick(View v) {
                 v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
-                newDestination = false;
-                promptEditDestination(v, manager);
+                promptEditDestination(v, getDestinationFromView(v));
             }
         });
         
         view.setOnLongClickListener(new View.OnLongClickListener() {
-            
             @Override
             public boolean onLongClick(View v) {
                 v.setBackgroundColor(context.getResources().getColor(COLOR_SELECTED));
-                promptDeleteDestination(v, manager);
+                promptDeleteDestination(v);
                 return false;
             }
         });
-        
-        updateReasonVisibilty(view, destination.getReason());
         
         return view;
     }
     
     /**
-     * Starts a dialog with a new destination. If cancelled the destination is removed, otherwise
-     * it is added to the claim.
-     * 
+     * Starts an editing dialog with a new destination.
      * @param context The Context the dialog will run in.
-     * @param userData The UserData of the user invoking this.
-     * @param linearLayout The LinearLayout the new Destination's view will be added to.
-     * @param manager The FragmentManager of the activity calling this.
+     * @param linearLayout The LinearLayout the new destination's view will be added to.
      */
-    public void addDestination(Context context, UserData userData, LinearLayout linearLayout, FragmentManager manager) {
+    public void addDestination(Context context, LinearLayout linearLayout) {
         this.context = context;
         this.linearLayout = linearLayout;
         
         Destination destination = new Destination("", null, "");
-        destinations.add(destination);
-        View view = createView(destination, userData, manager);
-        
-        newDestination = true;
-        promptEditDestination(view, manager);
+        promptEditDestination(null, destination);
     }
     
     /**
-     * Prompt for editing a destination.
+     * Open the fragment for editing a destination.
+     * @param view The view the destination belongs to. Pass null if a new destination.
+     * @param destination The destination to be edited.
      */
-    private void promptEditDestination(View view, FragmentManager manager) {
-        Destination destination = (Destination) view.getTag();
-        
-        editingView = view;
-        destinationEditor = new DestinationEditorFragment(new DestinationCallback(),
-                                                          destination.getLocation(),
-                                                          destination.getGeolocation(),
-                                                          destination.getReason(),
-                                                          editable);
-        destinationEditor.show(manager, "destinationEditor");
+    private void promptEditDestination(View view, Destination destination) {
+        DestinationEditorFragment editor = new DestinationEditorFragment(new DestinationCallback(), view, destination, editable);
+        editor.show(manager, "destinationEditor");
     }
     
+    /**
+     * Given a view an edited destination belongs to, or null if the destination is new and
+     * does not belong to a view yet, create a new destination from the new attributes.
+     * Update the existing view or create and add a new one, and update the list of destinations
+     * in the claim.
+     * @param view The view of the destination to be edited or added. Will be null if a new destination.
+     * @param location The new location of the destination.
+     * @param geolocation The new geolocation of the destination.
+     * @param reason The new reason of the destination.
+     */
     private void editDestination(View view, String location, Geolocation geolocation, String reason) {
-        Destination destination = (Destination) view.getTag();
-        int index = destinations.indexOf(destination);
-        destinations.remove(destination);
+        Destination destination = new Destination(location, geolocation, reason);
         
-        destination = new Destination(location, geolocation, reason);
-        destinations.add(index, destination);
-        setDestination(view, destination);
-        
-        updateReasonVisibilty(view, destination.getReason());
+        // A null view means a new destination.
+        if (view == null) {
+            view = createView(destination);
+            linearLayout.addView(view);
+            destinations.add(destination);
+        } else {
+            int index = destinations.indexOf(getDestinationFromView(view));
+            setDestinationOnView(view, destination);
+            destinations.set(index, destination);
+        }
         
         claim.setDestinations(destinations);
     }
     
     /**
-     * Prompt for deleting a destination.
+     * Open the fragment for deleting a destination.
+     * @param view The view the destination belongs to.
      */
-    private void promptDeleteDestination(View view, FragmentManager manager) {
-        Destination destination = (Destination) view.getTag();
-        deleteLocation = destination.getLocation();
-        
-        editingView = view;
-        destinationDeleter = new DestinationDeletionFragment();
+    private void promptDeleteDestination(View view) {
+        DestinationDeletionFragment destinationDeleter = new DestinationDeletionFragment(view, getDestinationFromView(view));
         destinationDeleter.show(manager, "destinationDeleter");
     }
     
+    /**
+     * Given a view, delete its destination from this adapter and update the claim with the
+     * new destinations list. Then remove the view from the LinearLayout.
+     * @param view The view of the destination to be deleted.
+     */
     private void deleteDestination(View view) {
-        Destination destination = (Destination) view.getTag();
+        Destination destination = getDestinationFromView(view);
         destinations.remove(destination);
-        
         claim.setDestinations(destinations);
         linearLayout.removeView(view);
     }
     
-    private void setDestination(View view, Destination destination) {
+    /**
+     * Given a view, set it with all of the information from a destination. Also set the
+     * destination as a tag on the view, so it can be retrieved when needed.
+     * @param view The view to set.
+     * @param destination The destination to use.
+     */
+    private void setDestinationOnView(View view, Destination destination) {
         view.setTag(destination);
-        setText(view, LIST_LOCATION_ID, destination.getLocation());
-        setText(view, LIST_REASON_ID, destination.getReason());
-    }
-    
-    private void setText(View view, int id, String text) {
-        TextView t = (TextView) view.findViewById(id);
-        t.setText(text);
-    }
-    
-    private void updateReasonVisibilty(View view, String reason) {
-        TextView reasonTextView = (TextView) view.findViewById(LIST_REASON_ID);
         
+        TextView locationTextView = (TextView) view.findViewById(LIST_LOCATION_ID);
+        locationTextView.setText(destination.getLocation());
+        
+        TextView reasonTextView = (TextView) view.findViewById(LIST_REASON_ID);
+        String reason = destination.getReason();
         if (reason.isEmpty()) {
             reasonTextView.setVisibility(View.GONE);
         } else {
             reasonTextView.setVisibility(View.VISIBLE);
+            reasonTextView.setText(reason);
         }
     }
     
-    private void setFragmentDefaults() {
-        editingView.setBackgroundColor(context.getResources().getColor(COLOR_PLAIN));
-        editingView = null;
-        
-        destinationEditor = null;
-        newDestination = false;
-        
-        destinationDeleter = null;
+    /**
+     * Get the destination that is stored as a tag in the view.
+     * @param view The view to get the destination from.
+     * @return The destination retrieved from the view.
+     */
+    private Destination getDestinationFromView(View view) {
+        return (Destination) view.getTag();
     }
     
     /**
      * Check whether elements are editable.
-     * 
      * @return Whether the elements are currently editable.
      */
     public boolean isEditable() {
@@ -254,7 +239,6 @@ public class DestinationAdapter {
 
     /**
      * Set whether elements should be editable.
-     * 
      * @param editable Whether elements should be editable.
      */
     public void setEditable(boolean editable) {
@@ -266,21 +250,14 @@ public class DestinationAdapter {
      */
     class DestinationCallback implements DestinationEditorFragment.ResultCallback {
         @Override
-        public void onDestinationEditorFragmentResult(String location, Geolocation geolocation, String reason) {
-            if (newDestination)
-                linearLayout.addView(editingView);
-            
-            editDestination(editingView, location, geolocation, reason);
+        public void onDestinationEditorFragmentResult(View view, String location, Geolocation geolocation, String reason) {
+            editDestination(view, location, geolocation, reason);
         }
 
         @Override
-        public void onDestinationEditorFragmentDismissed(boolean cancelled) {
-            if (newDestination && cancelled) {
-                Destination destination = (Destination) editingView.getTag();
-                destinations.remove(destination);
-            }
-            
-            setFragmentDefaults();
+        public void onDestinationEditorFragmentDismissed(View view) {
+            if (view != null)
+                view.setBackgroundColor(context.getResources().getColor(COLOR_PLAIN));
         }
     }
     
@@ -288,30 +265,33 @@ public class DestinationAdapter {
      * Custom fragment for deleting a destination.
      */
     class DestinationDeletionFragment extends DialogFragment {
+        private View view;
+        private String location;
+        
+        public DestinationDeletionFragment(View view, Destination destination) {
+            this.view = view;
+            this.location = destination.getLocation();
+        }
+        
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = context.getString(R.string.claim_info_delete_destination) + "\n\n\"" + deleteLocation + "\"";
+            String message = context.getString(R.string.claim_info_delete_destination) + "\n\n\"" + location + "\"";
             
             return new AlertDialog.Builder(context)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteDestination(editingView);
+                        deleteDestination(view);
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing
-                    }
-                })
+                .setNegativeButton(android.R.string.no, null)
                 .create();
         }
         
         @Override
         public void onDismiss(DialogInterface dialog) {
-            setFragmentDefaults();
+            view.setBackgroundColor(context.getResources().getColor(COLOR_PLAIN));
             super.onDismiss(dialog);
         }
     }

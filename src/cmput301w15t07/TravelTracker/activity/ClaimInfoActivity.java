@@ -371,7 +371,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     
     public void addDestination() {
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
-        destinationAdapter.addDestination(this, userData, destinationsList, getFragmentManager());
+        destinationAdapter.addDestination(this, destinationsList);
     }
 
     /**
@@ -476,7 +476,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Show destinations
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
-        destinationAdapter.createList(this, userData, destinationsList, getFragmentManager());
+        destinationAdapter.createList(this, destinationsList);
         
         userTags = new ArrayList<Tag>();
         claimTags = new ArrayList<Tag>();
@@ -785,7 +785,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 			ClaimInfoActivity.this.claim = claim;
 
 	        // Prep the adapter for claim destinations
-	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations());
+	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations(), getFragmentManager());
 			
 	        // Retrieve data
 	        MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());

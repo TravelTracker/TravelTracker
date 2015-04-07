@@ -24,6 +24,7 @@ package cmput301w15t07.TravelTracker.util;
 import com.google.android.gms.maps.model.LatLng;
 
 import cmput301w15t07.TravelTracker.R;
+import cmput301w15t07.TravelTracker.model.Destination;
 import cmput301w15t07.TravelTracker.model.Geolocation;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -55,22 +56,25 @@ public class DestinationEditorFragment extends DialogFragment {
     public interface ResultCallback {
         /**
          * Called when the destination's changes are confirmed.
-         * 
+         * @param view The view of the destination that called this fragment.
          * @param location The location of the destination.
+         * @param geolocation The geolocation of the destination.
          * @param reason The reason for going to the destination.
          */
-        void onDestinationEditorFragmentResult(String location, Geolocation geolocation, String reason);
+        void onDestinationEditorFragmentResult(View view, String location, Geolocation geolocation, String reason);
         
         /**
          * Called when the dialog is dismissed.
-         * 
-         * @param cancelled True if the dialog was closed in any manner but the positive button.
+         * @param view The view of the destination that called this fragment.
          */
-        void onDestinationEditorFragmentDismissed(boolean cancelled);
+        void onDestinationEditorFragmentDismissed(View view);
     }
 
     /** The result listener. */
     private ResultCallback callback;
+    
+    /** The view of the destination that called this fragment. */
+    View view;
     
     /** The location of the destination. */
     String location;
@@ -90,9 +94,6 @@ public class DestinationEditorFragment extends DialogFragment {
     /** The fragment to edit and view the geolocation of the destination. */
     SelectLocationFragment geolocationFragment = null;
     
-    /** False if the dialog was closed via the positive button. */
-    private boolean cancelled = true;
-    
     private final static int VIEW_ID = R.layout.claim_info_destinations_list_edit_prompt;
     private final static int LOCATION_EDIT_ID = R.id.claimInfoDestinationsListEditPromptLocationEditText;
     private final static int GEOLOCATION_BUTTON_ID = R.id.claimInfoDestinationsListEditPromptGeolocationButton;
@@ -100,27 +101,24 @@ public class DestinationEditorFragment extends DialogFragment {
     private final static int REASON_EDIT_ID = R.id.claimInfoDestinationsListEditPromptReasonEditText;
     
     /**
-     * Constructor
-     * @param callback Callback for fragment results
-     * @param location Location name
-     * @param geolocation Physical geolocation (or null if not set)
-     * @param reason Reason for travel to destination
-     * @param manager The fragment manager
-     * @param editable
+     * Constructor.
+     * @param callback Callback for fragment results.
+     * @param view The view of the destination that called this fragment.
+     * @param destination The destination to display in this fragment.
+     * @param editable Whether the claim that called this is editable or not.
      */
-    public DestinationEditorFragment(ResultCallback callback, String location,
-            Geolocation geolocation, String reason, boolean editable) {
+    public DestinationEditorFragment(ResultCallback callback, View view, Destination destination, boolean editable) {
         this.callback = callback;
-        this.location = location;
-        this.geolocation = geolocation;
-        this.reason = reason;
+        this.view = view;
+        this.location = destination.getLocation();
+        this.geolocation = destination.getGeolocation();
+        this.reason = destination.getReason();
         this.editable = editable;
     }
 
     /**
      * Returns a dialog with the custom view for editing a destination, populated with
      * the fields from the destination.
-     * 
      * @param savedInstanceState
      * @return The custom dialog the user can interact with to edit a destination.
      */
@@ -195,8 +193,7 @@ public class DestinationEditorFragment extends DialogFragment {
     
     @Override
     public void onDismiss(DialogInterface dialog) {
-        callback.onDestinationEditorFragmentDismissed(cancelled);
-        cancelled = true;
+        callback.onDestinationEditorFragmentDismissed(view);
         super.onDismiss(dialog);
     }
     
@@ -238,7 +235,6 @@ public class DestinationEditorFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
             if (!editable) {
-                cancelled = true;
                 dialog.dismiss();
             }
             
@@ -258,8 +254,7 @@ public class DestinationEditorFragment extends DialogFragment {
             }
             
             reason = reasonEditText.getText().toString();
-            callback.onDestinationEditorFragmentResult(location, geolocation, reason);
-            cancelled = false;
+            callback.onDestinationEditorFragmentResult(view, location, geolocation, reason);
             dialog.dismiss();
         }
     }

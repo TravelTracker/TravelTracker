@@ -108,17 +108,17 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
             return true;
             
         case android.R.id.home:
-        	onBackPressed();
-        	return true;
+            onBackPressed();
+            return true;
             
         default:
             return false;
         }
     }
     
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
@@ -131,7 +131,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
         adapter = new ManageTagsListAdapter(this);
         
         datasource.addObserver(this);
-	}
+    }
 
     @Override
     protected void onResume() {
@@ -212,7 +212,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
     }
     
     public Dialog getLastDialog(){
-    	return lastDialog;
+        return lastDialog;
     }
     
     /**

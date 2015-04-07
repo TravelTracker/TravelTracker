@@ -26,63 +26,63 @@ import java.util.Date;
 import cmput301w15t07.TravelTracker.model.Document;
 
 public class DeletionFlag<T extends Document> {
-	
-	private Date date;
-	private T toDelete;
+    
+    private Date date;
+    private T toDelete;
 
     public DeletionFlag(Date date, T toDelete) {
-		this.date = date;
-		this.toDelete = toDelete;
-	}
-	
-	public DeletionFlag(T toDelete) {
-		this(new Date(), toDelete);
-	}
+        this.date = date;
+        this.toDelete = toDelete;
+    }
+    
+    public DeletionFlag(T toDelete) {
+        this(new Date(), toDelete);
+    }
 
-	/**
-	 * @return the date
-	 */
-	public Date getDate() {
-		return date;
-	}
+    /**
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
 
-	/**
-	 * @return the document to be deleted.  may not be a reference, but will satisfy .equals()
-	 */
-	public T getToDelete() {
-		return toDelete;
-	}
+    /**
+     * @return the document to be deleted.  may not be a reference, but will satisfy .equals()
+     */
+    public T getToDelete() {
+        return toDelete;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result
-				+ ((toDelete == null) ? 0 : toDelete.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result
+                + ((toDelete == null) ? 0 : toDelete.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof DeletionFlag))
-			return false;
-		DeletionFlag<?> other = (DeletionFlag<?>) obj;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (toDelete == null) {
-			if (other.toDelete != null)
-				return false;
-		} else if (!toDelete.equals(other.toDelete))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof DeletionFlag))
+            return false;
+        DeletionFlag<?> other = (DeletionFlag<?>) obj;
+        if (date == null) {
+            if (other.date != null)
+                return false;
+        } else if (!date.equals(other.date))
+            return false;
+        if (toDelete == null) {
+            if (other.toDelete != null)
+                return false;
+        } else if (!toDelete.equals(other.toDelete))
+            return false;
+        return true;
+    }
 
 }

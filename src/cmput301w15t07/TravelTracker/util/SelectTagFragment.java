@@ -42,87 +42,87 @@ import cmput301w15t07.TravelTracker.model.Tag;
  * @author colp
  */
 public class SelectTagFragment extends DialogFragment {
-	protected ListView listView;
+    protected ListView listView;
     protected ResultCallback callback;
     protected TagCheckboxAdapter listAdapter;
-	private HashSet<Tag> tags;
-	private HashSet<UUID> selected;
-	
-	/**
-	 * Callback interface for results from SelectTagFragment.
-	 */
-	public interface ResultCallback {
-		/**
-		 * Called when the tags are selected.
-		 * @param selected The selected tag UUIDs.
-		 */
-		void onSelectTagFragmentResult(HashSet<UUID> selected);
-		
-		/**
-		 * Called when the dialog is cancelled.
-		 */
-		void onSelectTagFragmentCancelled();
-	}
-	
-	/**
-	 * Construct the fragment with no tags selected.
-	 * 
-	 * @param tags The set of available tags.
-	 * @param callback The callback for when the user finishes entering data.
-	 */
-	public SelectTagFragment(Collection<Tag> tags, ResultCallback callback) {
-	    this.tags = new HashSet<Tag>(tags);
-	    this.selected = new HashSet<UUID>();
-	    this.callback = callback;
+    private HashSet<Tag> tags;
+    private HashSet<UUID> selected;
+    
+    /**
+     * Callback interface for results from SelectTagFragment.
+     */
+    public interface ResultCallback {
+        /**
+         * Called when the tags are selected.
+         * @param selected The selected tag UUIDs.
+         */
+        void onSelectTagFragmentResult(HashSet<UUID> selected);
+        
+        /**
+         * Called when the dialog is cancelled.
+         */
+        void onSelectTagFragmentCancelled();
     }
-	
-	/**
-	 * Construct the fragment
-	 * 
-	 * @param tags The set of available tags.
-	 * @param selected The set of tag UUIDs which are currently selected.
-	 * @param callback The callback for when the user finishes entering data.
-	 */
-	public SelectTagFragment(Collection<Tag> tags, Collection<UUID> selected, ResultCallback callback) {
-		this.tags = new HashSet<Tag>(tags);
-		this.selected = new HashSet<UUID>(selected);
-		this.callback = callback;
+    
+    /**
+     * Construct the fragment with no tags selected.
+     * 
+     * @param tags The set of available tags.
+     * @param callback The callback for when the user finishes entering data.
+     */
+    public SelectTagFragment(Collection<Tag> tags, ResultCallback callback) {
+        this.tags = new HashSet<Tag>(tags);
+        this.selected = new HashSet<UUID>();
+        this.callback = callback;
     }
-	
-	// For building a dialog we have to pass a null ViewGroup root to LayoutInflater.inflate()
-	@SuppressLint("InflateParams")
+    
+    /**
+     * Construct the fragment
+     * 
+     * @param tags The set of available tags.
+     * @param selected The set of tag UUIDs which are currently selected.
+     * @param callback The callback for when the user finishes entering data.
+     */
+    public SelectTagFragment(Collection<Tag> tags, Collection<UUID> selected, ResultCallback callback) {
+        this.tags = new HashSet<Tag>(tags);
+        this.selected = new HashSet<UUID>(selected);
+        this.callback = callback;
+    }
+    
+    // For building a dialog we have to pass a null ViewGroup root to LayoutInflater.inflate()
+    @SuppressLint("InflateParams")
     @Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		// Create alert dialog
-	    Builder builder = new Builder(getActivity())
-    	.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-		        HashSet<UUID> selected = listAdapter.getSelected();
-		        
-		        callback.onSelectTagFragmentResult(selected);
-			}
-		})
-		.setNegativeButton(android.R.string.cancel, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				callback.onSelectTagFragmentCancelled();
-			}
-		})
-		.setTitle(getString(R.string.select_tag_title));
-		
-	    // Inflate inner layout
-	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    listView = (ListView) inflater.inflate(R.layout.select_tag_fragment, null);
-	    builder.setView(listView);
-	    
-	    // Configure list view
-	    listAdapter = new TagCheckboxAdapter(getActivity(), selected);
-	    listView.setAdapter(listAdapter);
-		
-		listAdapter.clear();
-		listAdapter.addAll(tags);
-		
-	    return builder.create();
-	}
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Create alert dialog
+        Builder builder = new Builder(getActivity())
+        .setPositiveButton(android.R.string.ok, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                HashSet<UUID> selected = listAdapter.getSelected();
+                
+                callback.onSelectTagFragmentResult(selected);
+            }
+        })
+        .setNegativeButton(android.R.string.cancel, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                callback.onSelectTagFragmentCancelled();
+            }
+        })
+        .setTitle(getString(R.string.select_tag_title));
+        
+        // Inflate inner layout
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        listView = (ListView) inflater.inflate(R.layout.select_tag_fragment, null);
+        builder.setView(listView);
+        
+        // Configure list view
+        listAdapter = new TagCheckboxAdapter(getActivity(), selected);
+        listView.setAdapter(listAdapter);
+        
+        listAdapter.clear();
+        listAdapter.addAll(tags);
+        
+        return builder.create();
+    }
 }

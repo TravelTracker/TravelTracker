@@ -141,9 +141,9 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
      * @param rowView The parent view containing the cost view.
      */
     private void setReceiptView(Item itemData, View rowView) {
-		ImageView receiptView =
+        ImageView receiptView =
                 (ImageView) rowView.findViewById(R.id.expenseItemsListItemViewReceiptImageView);
-		// TODO Some of this null checking should be handled by Receipt.
+        // TODO Some of this null checking should be handled by Receipt.
         if (itemData.getReceipt() != null && itemData.getReceipt().getPhoto() != null) {
             receiptView.setImageBitmap(itemData.getReceipt().getPhoto());
             receiptView.setVisibility(View.VISIBLE);
@@ -154,76 +154,76 @@ public class ExpenseItemsListAdapter extends ArrayAdapter<Item> {
             receiptView.setImageResource(android.R.color.black);
             receiptView.setVisibility(View.GONE);
         }
-	}
+    }
 
-	/**
-	 * Sets up the cost view with given item data.
-	 * @param itemData The data to use.
-	 * @param rowView The parent view containing the cost view.
-	 */
-	private void setCostView(Item itemData, View rowView) {
-		TextView costView =
-        		(TextView) rowView.findViewById(
-        				R.id.expenseItemsListItemViewCostTextView);
+    /**
+     * Sets up the cost view with given item data.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the cost view.
+     */
+    private void setCostView(Item itemData, View rowView) {
+        TextView costView =
+                (TextView) rowView.findViewById(
+                        R.id.expenseItemsListItemViewCostTextView);
         ItemCurrency curr = itemData.getCurrency();
         String costString = String.valueOf(itemData.getAmount()) + " " + curr.getString(getContext());
         costView.setText(costString);
-	}
-	
-	/**
-	 * Sets up the date view with given item data.
-	 * @param itemData The data to use.
-	 * @param rowView The parent view containing the date view.
-	 */
-	private void setDateView(Item itemData, View rowView) {
-		TextView dateView =
+    }
+    
+    /**
+     * Sets up the date view with given item data.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the date view.
+     */
+    private void setDateView(Item itemData, View rowView) {
+        TextView dateView =
                 (TextView) rowView.findViewById(
-                		R.id.expenseItemsListItemViewDateTextView);
+                        R.id.expenseItemsListItemViewDateTextView);
         java.text.DateFormat dateFormat = DateFormat.getMediumDateFormat(getContext());
         String dateString = dateFormat.format(itemData.getDate());
         dateView.setText(dateString);
-	}
-	
-	/**
-	 * Sets the incomplete view to show the claimant's manually flagged
-	 * incompleteness indicator given item data. Does not need to show
-	 * if the item is flagged as complete or the user is an approver.
-	 * @param itemData The data to use.
-	 * @param rowView The parent view containing the incomplete view.
-	 */
-	private void setIncompleteView(Item itemData, View rowView) {
-		TextView incompleteView =
+    }
+    
+    /**
+     * Sets the incomplete view to show the claimant's manually flagged
+     * incompleteness indicator given item data. Does not need to show
+     * if the item is flagged as complete or the user is an approver.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the incomplete view.
+     */
+    private void setIncompleteView(Item itemData, View rowView) {
+        TextView incompleteView =
                 (TextView) rowView.findViewById(
-                		R.id.expenseItemsListItemViewStatusTextView);
+                        R.id.expenseItemsListItemViewStatusTextView);
         if (itemData.isComplete() || userRole.equals(UserRole.APPROVER)) {
             incompleteView.setVisibility(View.INVISIBLE);
         }
         else {
             incompleteView.setVisibility(View.VISIBLE);
         }
-	}
-	
-	/**
-	 * Sets up the description view with given item data.
-	 * @param itemData The data to use.
-	 * @param rowView The parent view containing the description view.
-	 */
-	private void setDescriptionField(Item itemData, View rowView) {
-		TextView descView =
+    }
+    
+    /**
+     * Sets up the description view with given item data.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the description view.
+     */
+    private void setDescriptionField(Item itemData, View rowView) {
+        TextView descView =
                 (TextView) rowView.findViewById(
-                		R.id.expenseItemsListItemViewDescriptionTextView);
+                        R.id.expenseItemsListItemViewDescriptionTextView);
         descView.setText(itemData.getDescription());
-	}
-	
-	/**
-	 * Sets up the category view with given item data.
-	 * @param itemData The data to use.
-	 * @param rowView The parent view containing the category view.
-	 */
+    }
+    
+    /**
+     * Sets up the category view with given item data.
+     * @param itemData The data to use.
+     * @param rowView The parent view containing the category view.
+     */
     private void setCategoryField(Item itemData, View rowView) {
         TextView categoryView = 
-        		(TextView) rowView.findViewById(
-        				R.id.expenseItemsListItemViewCategoryTextView);
+                (TextView) rowView.findViewById(
+                        R.id.expenseItemsListItemViewCategoryTextView);
         ItemCategory category = itemData.getCategory();
         String categoryString = "Category: " + category.getString(getContext());
         categoryView.setText(categoryString);

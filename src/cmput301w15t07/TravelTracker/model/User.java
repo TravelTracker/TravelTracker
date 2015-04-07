@@ -33,130 +33,130 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
  *
  */
 public class User extends Document {
-	private String userName;
-	private Geolocation homeLocation;
+    private String userName;
+    private Geolocation homeLocation;
 
-	/**
-	 * Package protected constructor, intended for use only by DataSource.
-	 * 
-	 * @param docID UUID document identifier
-	 */
-	User(UUID docID) {
-		super(docID);
-		setType(Type.USER);
-		
-		userName = "";
-		homeLocation = null; // As home location can be unset, there's no better default than null unfortunately.
-	}
-	
-	/**
-	 * Private no-args constructor for GSON.
-	 */
-	@SuppressWarnings("unused")
-	private User() {
-		this(UUID.randomUUID());
-	}
+    /**
+     * Package protected constructor, intended for use only by DataSource.
+     * 
+     * @param docID UUID document identifier
+     */
+    User(UUID docID) {
+        super(docID);
+        setType(Type.USER);
+        
+        userName = "";
+        homeLocation = null; // As home location can be unset, there's no better default than null unfortunately.
+    }
+    
+    /**
+     * Private no-args constructor for GSON.
+     */
+    @SuppressWarnings("unused")
+    private User() {
+        this(UUID.randomUUID());
+    }
 
-	/**
-	 * Get the user's name.
-	 * @return The user's name.
-	 */
-	public String getUserName() {
-		return userName;
-	}
+    /**
+     * Get the user's name.
+     * @return The user's name.
+     */
+    public String getUserName() {
+        return userName;
+    }
 
-	/**
-	 * Set the user's name.
-	 * @param userName The user's name.
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-		this.<User>hasChanged(this);
-	}
-	
-	/**
-	 * Get the user's home location.
-	 * @return The geolocation of the user's home location.
-	 */
-	public Geolocation getHomeLocation() {
-		return homeLocation;
-	}
+    /**
+     * Set the user's name.
+     * @param userName The user's name.
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+        this.<User>hasChanged(this);
+    }
+    
+    /**
+     * Get the user's home location.
+     * @return The geolocation of the user's home location.
+     */
+    public Geolocation getHomeLocation() {
+        return homeLocation;
+    }
 
-	/**
-	 * Set the user's home location.
-	 * @param homeLocation The new home location.
-	 */
-	public void setHomeLocation(Geolocation homeLocation) {
-		this.homeLocation = homeLocation;
-		this.<User>hasChanged(this);
-	}
+    /**
+     * Set the user's home location.
+     * @param homeLocation The new home location.
+     */
+    public void setHomeLocation(Geolocation homeLocation) {
+        this.homeLocation = homeLocation;
+        this.<User>hasChanged(this);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((homeLocation == null) ? 0 : homeLocation.hashCode());
-		result = prime * result
-				+ ((userName == null) ? 0 : userName.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((homeLocation == null) ? 0 : homeLocation.hashCode());
+        result = prime * result
+                + ((userName == null) ? 0 : userName.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof User))
-			return false;
-		User other = (User) obj;
-		if (homeLocation == null) {
-			if (other.homeLocation != null)
-				return false;
-		} else if (!homeLocation.equals(other.homeLocation))
-			return false;
-		if (userName == null) {
-			if (other.userName != null)
-				return false;
-		} else if (!userName.equals(other.userName))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof User))
+            return false;
+        User other = (User) obj;
+        if (homeLocation == null) {
+            if (other.homeLocation != null)
+                return false;
+        } else if (!homeLocation.equals(other.homeLocation))
+            return false;
+        if (userName == null) {
+            if (other.userName != null)
+                return false;
+        } else if (!userName.equals(other.userName))
+            return false;
+        return true;
+    }
 
-	@Override
-	protected boolean mergeFrom(Document sourceDoc) {
-		if (!(sourceDoc instanceof User))
-			return false;
-		User sourceUser = (User) sourceDoc;
-		boolean changed = false;
-		
-		if (this.homeLocation != null) {
-			if (!this.homeLocation.equals(sourceUser.getHomeLocation())) {
-				changed |= true;
-				this.homeLocation = sourceUser.getHomeLocation();
-			}
-		} else {
-			// attribute is null, if soruce is not null then set it
-			if (!(sourceUser.getHomeLocation() == null)) {
-				changed |= true;
-				this.homeLocation = sourceUser.getHomeLocation();
-			}
-		}
-		
-		if (this.userName != null) {
-			if (!this.userName.equals(sourceUser.getUserName())) {
-				changed |= true;
-				this.userName = sourceUser.getUserName();
-			}
-		} else {
-			// attribute is null, if soruce is not null then set it
-			if (!(sourceUser.getUserName() == null)) {
-				changed |= true;
-				this.userName = sourceUser.getUserName();
-			}
-		}
-		
-		return changed;
-	}
+    @Override
+    protected boolean mergeFrom(Document sourceDoc) {
+        if (!(sourceDoc instanceof User))
+            return false;
+        User sourceUser = (User) sourceDoc;
+        boolean changed = false;
+        
+        if (this.homeLocation != null) {
+            if (!this.homeLocation.equals(sourceUser.getHomeLocation())) {
+                changed |= true;
+                this.homeLocation = sourceUser.getHomeLocation();
+            }
+        } else {
+            // attribute is null, if soruce is not null then set it
+            if (!(sourceUser.getHomeLocation() == null)) {
+                changed |= true;
+                this.homeLocation = sourceUser.getHomeLocation();
+            }
+        }
+        
+        if (this.userName != null) {
+            if (!this.userName.equals(sourceUser.getUserName())) {
+                changed |= true;
+                this.userName = sourceUser.getUserName();
+            }
+        } else {
+            // attribute is null, if soruce is not null then set it
+            if (!(sourceUser.getUserName() == null)) {
+                changed |= true;
+                this.userName = sourceUser.getUserName();
+            }
+        }
+        
+        return changed;
+    }
 }

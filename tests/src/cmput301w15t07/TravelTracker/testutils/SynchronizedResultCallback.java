@@ -36,72 +36,72 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
  * @param <T> The result type.
  */
 public class SynchronizedResultCallback<T> implements ResultCallback<T> {
-	/** The returned result */
-	private T result = null;
-	
-	/** Whether a result has already been returned */
-	private boolean hasResult = false;
-	
-	/** Whether an error occurred */
-	private String error = null;
-	
-	/** How long to wait before giving up */
-	static private final int timeOut = 1000;
-	
-	@Override
+    /** The returned result */
+    private T result = null;
+    
+    /** Whether a result has already been returned */
+    private boolean hasResult = false;
+    
+    /** Whether an error occurred */
+    private String error = null;
+    
+    /** How long to wait before giving up */
+    static private final int timeOut = 1000;
+    
+    @Override
     public synchronized void onResult(T result) {
-		this.result = result;
-		hasResult = true;
-		notifyAll();
+        this.result = result;
+        hasResult = true;
+        notifyAll();
     }
 
-	@Override
+    @Override
     public synchronized void onError(String message) {
-	    error = "SynchronizedResultCallback failed";
-	    notifyAll();
+        error = "SynchronizedResultCallback failed";
+        notifyAll();
     }
-	
-	/**
-	 * Waits until the result is returned.
-	 * 
-	 * @return Whether a result was received
-	 * @throws InterruptedException 
-	 */
-	public synchronized boolean waitForResult() throws InterruptedException {
-		if (!hasResult && error == null) {
-			wait(timeOut);
-		}
-		
-		return hasResult;
-	}
+    
+    /**
+     * Waits until the result is returned.
+     * 
+     * @return Whether a result was received
+     * @throws InterruptedException 
+     */
+    public synchronized boolean waitForResult() throws InterruptedException {
+        if (!hasResult && error == null) {
+            wait(timeOut);
+        }
+        
+        return hasResult;
+    }
 
-	/**
-	 * Get the result which was returned. This should be called after waitForResult.
-	 * @return The result.
-	 */
-	public T getResult() {
-		assert hasResult : "getResult() must be called after waitForResult()";
-		
-		return result;
-	}
+    /**
+     * Get the result which was returned. This should be called after waitForResult.
+     * @return The result.
+     */
+    public T getResult() {
+        assert hasResult : "getResult() must be called after waitForResult()";
+        
+        return result;
+    }
 
-	/**
-	 * Check whether this has a result.
-	 * @return true if there is a result.
-	 */
-	public boolean getHasResult() {
-		return hasResult;
-	}
+    /**
+     * Check whether this has a result.
+     * @return true if there is a result.
+     */
+    public boolean getHasResult() {
+        return hasResult;
+    }
 
-	/**
-	 * Get the error which was returned. This should be called after waitForResult.
-	 * @return The error string.
-	 */
-	public String getError() {
-		assert hasResult : "getResult() must be called after waitForResult()";
-		
-		return error;
-	}
-	
-	
+    /**
+     * Get the error which was returned. This should be called after waitForResult.
+     * @return The error string.
+     */
+    public String getError() {
+        assert hasResult : "getResult() must be called after waitForResult()";
+        
+        return error;
+    }
+    
+    
 }

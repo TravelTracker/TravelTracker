@@ -27,17 +27,17 @@ package cmput301w15t07.TravelTracker.serverinterface;
  * @author kdbanman
  */
 public interface ResultCallback <T> {
-	/**
-	 * Called when the action succeeds.
-	 * 
-	 * @param result The data returned.
-	 */
-	public void onResult(T result);
-	
-	/**
-	 * Called when the action fails.
-	 * 
-	 * @param message The error message.
-	 */
-	public void onError(String message);
+    /**
+     * Called when the action succeeds.
+     * 
+     * @param result The data returned.
+     */
+    public void onResult(T result);
+    
+    /**
+     * Called when the action fails.
+     * 
+     * @param message The error message.
+     */
+    public void onError(String message);
 }

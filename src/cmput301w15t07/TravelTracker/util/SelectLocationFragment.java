@@ -61,292 +61,292 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * @author colp
  */
 public class SelectLocationFragment extends DialogFragment
-	implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
-	/**
-	 * Callback interface for results from SelectLocationFragment.
-	 */
-	public interface ResultCallback {
-		/**
-		 * Called when the location is picked.
-		 * @param location The new location picked.
-		 */
-		void onSelectLocationResult(LatLng location);
-		
-		/**
-		 * Called when the dialog is cancelled.
-		 */
-		void onSelectLocationCancelled();
-	}
-	
-	/** Request code for home location select */
-	private static final int SELECT_LOCATION_REQUEST = 1;
-	
-	/** The amount of zoom applied to the lite map. */
-	private static final float zoomLevel = 5.f;
-	
-	/** Whether the GoogleApiClient has connected yet. */
-	private boolean connected = false;
-	
-	/** Whether this can be edited by the user. */
-	private boolean editable;
-	
-	/** The last location received from the location API */
-	private Location lastLocation;
-	
-	private MapFragment mapFragment;
-	private GoogleMap map;
-	private String title;
-	private LatLng location;
-	private ResultCallback callback;
-	private GoogleApiClient googleApiClient;
-	
-	/**
-	 * Construct a fragment with a title and a start location.
-	 * @param callback The class to call back with results.
-	 * @param location The location to start at.
-	 * @param title The title of the dialog.
-	 * @param editable Whether the data should be editable (read-only if false).
-	 */
-	public SelectLocationFragment(ResultCallback callback, LatLng location, String title, boolean editable) {
+    implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+    /**
+     * Callback interface for results from SelectLocationFragment.
+     */
+    public interface ResultCallback {
+        /**
+         * Called when the location is picked.
+         * @param location The new location picked.
+         */
+        void onSelectLocationResult(LatLng location);
+        
+        /**
+         * Called when the dialog is cancelled.
+         */
+        void onSelectLocationCancelled();
+    }
+    
+    /** Request code for home location select */
+    private static final int SELECT_LOCATION_REQUEST = 1;
+    
+    /** The amount of zoom applied to the lite map. */
+    private static final float zoomLevel = 5.f;
+    
+    /** Whether the GoogleApiClient has connected yet. */
+    private boolean connected = false;
+    
+    /** Whether this can be edited by the user. */
+    private boolean editable;
+    
+    /** The last location received from the location API */
+    private Location lastLocation;
+    
+    private MapFragment mapFragment;
+    private GoogleMap map;
+    private String title;
+    private LatLng location;
+    private ResultCallback callback;
+    private GoogleApiClient googleApiClient;
+    
+    /**
+     * Construct a fragment with a title and a start location.
+     * @param callback The class to call back with results.
+     * @param location The location to start at.
+     * @param title The title of the dialog.
+     * @param editable Whether the data should be editable (read-only if false).
+     */
+    public SelectLocationFragment(ResultCallback callback, LatLng location, String title, boolean editable) {
         this.callback = callback;
         setLocation(location);
-		this.title = title;
-		this.editable = editable;
-	}
-	
-	public View onCreateView(android.view.LayoutInflater inflater,
-			android.view.ViewGroup container, Bundle savedInstanceState) {
-	    
-		// Determine title
-	    if (title == null) {
-	    	title = getString(R.string.select_location_fragment_default_title);
-	    }
-	    
-	    getDialog().setTitle(title);
-	    
-	    View view = inflater.inflate(R.layout.select_location_fragment, container);
-	    
-	    // Set up the map
-	    // Referenced
-	    // http://xperiment-andro.blogspot.ca/2013/02/nested-fragments.html
-	    // on 30/04/15
-	    GoogleMapOptions options = new GoogleMapOptions();
-	    options.liteMode(true);
-	    options.zOrderOnTop(true);
-	    mapFragment = MapFragment.newInstance(options);
-	    
-	    // Add the fragment
-	    FragmentTransaction trans = getChildFragmentManager().beginTransaction();
-	    trans.add(R.id.select_location_fragment_map, mapFragment).commit();
-	    
-	    // Attach listeners to buttons
-	    Button okButton = (Button) view.findViewById(R.id.select_location_fragment_ok_button);
-	    okButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dismiss();
-				
-				if (callback != null) {
-					if (location == null || !editable) {
-						callback.onSelectLocationCancelled();
-					} else {
-						callback.onSelectLocationResult(location);
-					}
-				}
-			}
-		});
-	    
-	    Button cancelButton = (Button) view.findViewById(R.id.select_location_fragment_cancel_button);
+        this.title = title;
+        this.editable = editable;
+    }
+    
+    public View onCreateView(android.view.LayoutInflater inflater,
+            android.view.ViewGroup container, Bundle savedInstanceState) {
+        
+        // Determine title
+        if (title == null) {
+            title = getString(R.string.select_location_fragment_default_title);
+        }
+        
+        getDialog().setTitle(title);
+        
+        View view = inflater.inflate(R.layout.select_location_fragment, container);
+        
+        // Set up the map
+        // Referenced
+        // http://xperiment-andro.blogspot.ca/2013/02/nested-fragments.html
+        // on 30/04/15
+        GoogleMapOptions options = new GoogleMapOptions();
+        options.liteMode(true);
+        options.zOrderOnTop(true);
+        mapFragment = MapFragment.newInstance(options);
+        
+        // Add the fragment
+        FragmentTransaction trans = getChildFragmentManager().beginTransaction();
+        trans.add(R.id.select_location_fragment_map, mapFragment).commit();
+        
+        // Attach listeners to buttons
+        Button okButton = (Button) view.findViewById(R.id.select_location_fragment_ok_button);
+        okButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                
+                if (callback != null) {
+                    if (location == null || !editable) {
+                        callback.onSelectLocationCancelled();
+                    } else {
+                        callback.onSelectLocationResult(location);
+                    }
+                }
+            }
+        });
+        
+        Button cancelButton = (Button) view.findViewById(R.id.select_location_fragment_cancel_button);
         Button setFromMapButton = (Button) view.findViewById(R.id.select_location_fragment_select_location_button);
         Button setToCurrentButton = (Button) view.findViewById(R.id.select_location_fragment_current_location_button);
         
-	    if (editable) {
-    	    cancelButton.setOnClickListener(new OnClickListener() {
-    			@Override
-    			public void onClick(View v) {
-    				dismiss();
-    				
-    				if (callback != null) {
-    					callback.onSelectLocationCancelled();
-    				}
-    			}
-    		});
-    	    
-    	    setToCurrentButton.setOnClickListener(new OnClickListener() {
-    			@Override
-    			public void onClick(View v) {
-    				Activity activity = getActivity();
-    				
-    				// Not connected yet
-    				if (connected == false) {
-    		    		String msg = getString(R.string.select_location_fragment_not_connected);
-    					Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-    					
-    					return;
-    				}
-    		    	
-    				// No location
-    		    	if (lastLocation == null) {
-    		    		String msg = getString(R.string.select_location_fragment_failed_to_get_location);
-    		    		Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-    		    		
-    	    		// Try connecting
-    		    	} else {
-    		    		setLocation(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
-    		    	}
-    			}
-    		});
-    	    
-    	    setFromMapButton.setOnClickListener(new OnClickListener() {
-    			@Override
-    			public void onClick(View v) {
-    				launchSelectLocationActivity();
-    			}
-    		});
-    		
-    	    // Connect to Google Play client
-    		googleApiClient = new GoogleApiClient.Builder(getActivity())
-    			.addConnectionCallbacks(this)
-    			.addOnConnectionFailedListener(this)
-    			.addApi(LocationServices.API)
-    			.build();
-    		
-    		googleApiClient.connect();
-	    } else {
+        if (editable) {
+            cancelButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    
+                    if (callback != null) {
+                        callback.onSelectLocationCancelled();
+                    }
+                }
+            });
+            
+            setToCurrentButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Activity activity = getActivity();
+                    
+                    // Not connected yet
+                    if (connected == false) {
+                        String msg = getString(R.string.select_location_fragment_not_connected);
+                        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+                        
+                        return;
+                    }
+                    
+                    // No location
+                    if (lastLocation == null) {
+                        String msg = getString(R.string.select_location_fragment_failed_to_get_location);
+                        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+                        
+                    // Try connecting
+                    } else {
+                        setLocation(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+                    }
+                }
+            });
+            
+            setFromMapButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchSelectLocationActivity();
+                }
+            });
+            
+            // Connect to Google Play client
+            googleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+            
+            googleApiClient.connect();
+        } else {
             cancelButton.setVisibility(View.GONE);
 
             setToCurrentButton.setVisibility(View.GONE);
             setToCurrentButton.setEnabled(false);
             
-	        setFromMapButton.setVisibility(View.GONE);
-	        setFromMapButton.setEnabled(false);
-	    }
-	    
-	    return view;
-	}
-	
-	@Override
-	public void onResume() {
-	    super.onResume();
-	    
-	    // Set up map if we haven't done so yet
-	    if (map == null) {
-		    // Remove the toolbar
-	    	map = mapFragment.getMap();
-		    UiSettings settings = map.getUiSettings();
-		    settings.setMapToolbarEnabled(false);
-		    
-		    if (editable) {
-    		    map.setOnMapClickListener(new OnMapClickListener() {
-    				@Override
-    				public void onMapClick(LatLng arg0) {
-    					launchSelectLocationActivity();
-    				}
-    			});
-		    }
-	    }
-	    
-	    updateMap();
-	}
-	
-	@Override
+            setFromMapButton.setVisibility(View.GONE);
+            setFromMapButton.setEnabled(false);
+        }
+        
+        return view;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+        // Set up map if we haven't done so yet
+        if (map == null) {
+            // Remove the toolbar
+            map = mapFragment.getMap();
+            UiSettings settings = map.getUiSettings();
+            settings.setMapToolbarEnabled(false);
+            
+            if (editable) {
+                map.setOnMapClickListener(new OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng arg0) {
+                        launchSelectLocationActivity();
+                    }
+                });
+            }
+        }
+        
+        updateMap();
+    }
+    
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    
-	    // Get the location if it was returned
-	    if (requestCode == SELECT_LOCATION_REQUEST && resultCode == Activity.RESULT_OK) {
-	    	Double lat = data.getDoubleExtra(SelectLocationActivity.RESULT_LAT, Double.NaN);
-	    	Double lng = data.getDoubleExtra(SelectLocationActivity.RESULT_LNG, Double.NaN);
-	    	
-	    	if (!lat.isNaN() && !lng.isNaN()) {
-	    		LatLng location = new LatLng(lat, lng);
-	    		setLocation(location);
-	    	}
-	    }
-	}
-
-	// Google Play location API
-	
-	@Override
-    public void onConnected(Bundle arg0) {
-		connected = true;
-		
-		lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-		
-		// Referenced
-		// http://stackoverflow.com/questions/28268642/android-location-not-updating
-		// on 02/04/15
-		LocationRequest request = new LocationRequest();
-		request.setInterval(1000);
-		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        // Get the location if it was returned
+        if (requestCode == SELECT_LOCATION_REQUEST && resultCode == Activity.RESULT_OK) {
+            Double lat = data.getDoubleExtra(SelectLocationActivity.RESULT_LAT, Double.NaN);
+            Double lng = data.getDoubleExtra(SelectLocationActivity.RESULT_LNG, Double.NaN);
+            
+            if (!lat.isNaN() && !lng.isNaN()) {
+                LatLng location = new LatLng(lat, lng);
+                setLocation(location);
+            }
+        }
     }
 
-	@Override
+    // Google Play location API
+    
+    @Override
+    public void onConnected(Bundle arg0) {
+        connected = true;
+        
+        lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        
+        // Referenced
+        // http://stackoverflow.com/questions/28268642/android-location-not-updating
+        // on 02/04/15
+        LocationRequest request = new LocationRequest();
+        request.setInterval(1000);
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
+    }
+
+    @Override
     public void onConnectionSuspended(int arg0) {}
 
-	@Override
+    @Override
     public void onConnectionFailed(ConnectionResult arg0) {}
 
-	@Override
+    @Override
     public void onLocationChanged(Location arg0) {
-	    lastLocation = arg0;
+        lastLocation = arg0;
     }
-	
-	// End Google Play location API
-	
-	/**
-	 * Set the map's location.
-	 * @param location The new location to use.
-	 */
-	public void setLocation(LatLng location) {
-		if (location == null) {
-			this.location = null;
-		} else {
-			this.location = new LatLng(location.latitude, location.longitude);
-		}
-		
-		updateMap();
-	}
-	
-	/**
-	 * Updates the map position if the map has been set up.
-	 */
-	private void updateMap() {
-		if (map == null) {
-			return;
-		}
-	    
-    	View mapView = getView().findViewById(R.id.select_location_fragment_map);
-    	View unsetView = getView().findViewById(R.id.select_location_fragment_unset_textview);
-	    
-	    // Hide map if no location
-	    if (location == null) {
-	    	mapView.setVisibility(View.GONE);
-	    	unsetView.setVisibility(View.VISIBLE);
-	    	
-	    } else {
-	    	mapView.setVisibility(View.VISIBLE);
+    
+    // End Google Play location API
+    
+    /**
+     * Set the map's location.
+     * @param location The new location to use.
+     */
+    public void setLocation(LatLng location) {
+        if (location == null) {
+            this.location = null;
+        } else {
+            this.location = new LatLng(location.latitude, location.longitude);
+        }
+        
+        updateMap();
+    }
+    
+    /**
+     * Updates the map position if the map has been set up.
+     */
+    private void updateMap() {
+        if (map == null) {
+            return;
+        }
+        
+        View mapView = getView().findViewById(R.id.select_location_fragment_map);
+        View unsetView = getView().findViewById(R.id.select_location_fragment_unset_textview);
+        
+        // Hide map if no location
+        if (location == null) {
+            mapView.setVisibility(View.GONE);
+            unsetView.setVisibility(View.VISIBLE);
+            
+        } else {
+            mapView.setVisibility(View.VISIBLE);
             unsetView.setVisibility(View.GONE);
-	    	
-			map.clear();
-			map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
-			map.addMarker(new MarkerOptions().position(location));
-	    }
-	}
-	
-	/**
-	 * Launch SelectLocationActivity.
-	 */
-	private void launchSelectLocationActivity() {
-		Activity activity = getActivity();
-		Intent intent = new Intent(activity, SelectLocationActivity.class);
-		
-		if (location != null) {
-			intent.putExtra(SelectLocationActivity.START_LAT, location.latitude);
-			intent.putExtra(SelectLocationActivity.START_LNG, location.longitude);
-		}
-    	
-    	startActivityForResult(intent, SELECT_LOCATION_REQUEST);
-	}
+            
+            map.clear();
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
+            map.addMarker(new MarkerOptions().position(location));
+        }
+    }
+    
+    /**
+     * Launch SelectLocationActivity.
+     */
+    private void launchSelectLocationActivity() {
+        Activity activity = getActivity();
+        Intent intent = new Intent(activity, SelectLocationActivity.class);
+        
+        if (location != null) {
+            intent.putExtra(SelectLocationActivity.START_LAT, location.latitude);
+            intent.putExtra(SelectLocationActivity.START_LNG, location.longitude);
+        }
+        
+        startActivityForResult(intent, SELECT_LOCATION_REQUEST);
+    }
 }

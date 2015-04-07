@@ -44,225 +44,225 @@ import cmput301w15t07.TravelTracker.util.Observer;
  */
 public class InMemoryDataSource extends Observable<DataSource> implements DataSource, Observer<Document> {
 
-	protected HashMap<UUID, Claim> claims;
-	protected HashMap<UUID, User> users;
-	protected HashMap<UUID, Item> items;
-	protected HashMap<UUID, Tag> tags;
-	
-	/** Handler that puts a Runnable onto the UI thread. */
-	Handler updateHandler;
-	
-	/** Runnable that executes update on the UI thread. */
-	Runnable updateRunnable;
+    protected HashMap<UUID, Claim> claims;
+    protected HashMap<UUID, User> users;
+    protected HashMap<UUID, Item> items;
+    protected HashMap<UUID, Tag> tags;
+    
+    /** Handler that puts a Runnable onto the UI thread. */
+    Handler updateHandler;
+    
+    /** Runnable that executes update on the UI thread. */
+    Runnable updateRunnable;
 
-	public InMemoryDataSource() {
-		claims = new HashMap<UUID, Claim>();
-		users = new HashMap<UUID, User>();
-		items = new HashMap<UUID, Item>();
-		tags = new HashMap<UUID, Tag>();
-		
-		/* Use the main looper (UI thread)
-		 * 
-		 * http://stackoverflow.com/a/27776529
-		 * Second and fourth answer, with third answer comments being
-		 * relevant.
-		 */
-		updateHandler = new Handler(Looper.getMainLooper());
-		updateRunnable = new Runnable() {
-			@Override
-			public void run() {
-				updateObservers(InMemoryDataSource.this);
-			}
-		};
-	}
-	
-	@Override
-	public void addUser(ResultCallback<User> callback) {
-		User user = new User(UUID.randomUUID());
-		user.addObserver(this);
-		
-		internalAddUser(user);
-		
-		callback.onResult(user);
-		updateHandler.post(updateRunnable);
-	}
-	
-	@Override
-	public void addClaim(User user, ResultCallback<Claim> callback) {
-		Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
-		claim.addObserver(this);
-		
-		if (!users.containsValue(user)) {
-			callback.onError("User not found.");
-			return;
-		}
-		
-		internalAddClaim(claim);
-		
-		callback.onResult(claim);
+    public InMemoryDataSource() {
+        claims = new HashMap<UUID, Claim>();
+        users = new HashMap<UUID, User>();
+        items = new HashMap<UUID, Item>();
+        tags = new HashMap<UUID, Tag>();
+        
+        /* Use the main looper (UI thread)
+         * 
+         * http://stackoverflow.com/a/27776529
+         * Second and fourth answer, with third answer comments being
+         * relevant.
+         */
+        updateHandler = new Handler(Looper.getMainLooper());
+        updateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateObservers(InMemoryDataSource.this);
+            }
+        };
+    }
+    
+    @Override
+    public void addUser(ResultCallback<User> callback) {
+        User user = new User(UUID.randomUUID());
+        user.addObserver(this);
+        
+        internalAddUser(user);
+        
+        callback.onResult(user);
         updateHandler.post(updateRunnable);
-	}
+    }
+    
+    @Override
+    public void addClaim(User user, ResultCallback<Claim> callback) {
+        Claim claim = new Claim(UUID.randomUUID(), user.getUUID());
+        claim.addObserver(this);
+        
+        if (!users.containsValue(user)) {
+            callback.onError("User not found.");
+            return;
+        }
+        
+        internalAddClaim(claim);
+        
+        callback.onResult(claim);
+        updateHandler.post(updateRunnable);
+    }
 
-	@Override
-	public void addItem(Claim claim, ResultCallback<Item> callback) {
-		Item item = new Item(UUID.randomUUID(), claim.getUUID());
-		item.addObserver(this);
-		
-		if (!claims.containsValue(claim)) {
-			callback.onError("Claim not found.");
-			return;
-		}
-		
+    @Override
+    public void addItem(Claim claim, ResultCallback<Item> callback) {
+        Item item = new Item(UUID.randomUUID(), claim.getUUID());
+        item.addObserver(this);
+        
+        if (!claims.containsValue(claim)) {
+            callback.onError("Claim not found.");
+            return;
+        }
+        
         internalAddItem(item);
         
-		callback.onResult(item);
+        callback.onResult(item);
         updateHandler.post(updateRunnable);
-	}
+    }
 
-	@Override
-	public void addTag(User user, ResultCallback<Tag> callback) {
-		Tag tag = new Tag(UUID.randomUUID(), user.getUUID());
-		tag.addObserver(this);
-		
-		if (!users.containsValue(user)) {
-			callback.onError("User not found.");
-			return;
-		}
-		
+    @Override
+    public void addTag(User user, ResultCallback<Tag> callback) {
+        Tag tag = new Tag(UUID.randomUUID(), user.getUUID());
+        tag.addObserver(this);
+        
+        if (!users.containsValue(user)) {
+            callback.onError("User not found.");
+            return;
+        }
+        
         internalAddTag(tag);
         
-		callback.onResult(tag);
+        callback.onResult(tag);
         updateHandler.post(updateRunnable);
-	}
+    }
 
-	@Override
-	public void deleteUser(UUID id, final ResultCallback<Void> callback) {
-		if (users.get(id) == null) {
-			callback.onError("User not found.");
-			
-		} else {
-			internalDeleteUser(id);
-			callback.onResult(null);
-	        updateHandler.post(updateRunnable);
-		}
-	}
+    @Override
+    public void deleteUser(UUID id, final ResultCallback<Void> callback) {
+        if (users.get(id) == null) {
+            callback.onError("User not found.");
+            
+        } else {
+            internalDeleteUser(id);
+            callback.onResult(null);
+            updateHandler.post(updateRunnable);
+        }
+    }
 
-	@Override
-	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
-		if (claims.get(id) == null) {
-			callback.onError("Claim not found.");
-			
-		} else {
-			internalDeleteClaim(id);
-			callback.onResult(null);
-	        updateHandler.post(updateRunnable);
-		}
-	}
+    @Override
+    public void deleteClaim(UUID id, ResultCallback<Void> callback) {
+        if (claims.get(id) == null) {
+            callback.onError("Claim not found.");
+            
+        } else {
+            internalDeleteClaim(id);
+            callback.onResult(null);
+            updateHandler.post(updateRunnable);
+        }
+    }
 
-	@Override
-	public void deleteItem(UUID id, ResultCallback<Void> callback) {
-		if (items.get(id) == null) {
-			callback.onError("Expense item not found.");
-			
-		} else {
-			internalDeleteItem(id);
-			callback.onResult(null);
-	        updateHandler.post(updateRunnable);
-		}
-	}
+    @Override
+    public void deleteItem(UUID id, ResultCallback<Void> callback) {
+        if (items.get(id) == null) {
+            callback.onError("Expense item not found.");
+            
+        } else {
+            internalDeleteItem(id);
+            callback.onResult(null);
+            updateHandler.post(updateRunnable);
+        }
+    }
 
-	@Override
-	public void deleteTag(UUID id, ResultCallback<Void> callback) {
-		if (tags.get(id) == null) {
-			callback.onError("Tag not found.");
-			
-		} else {
-			internalDeleteTag(id);
-			callback.onResult(null);
-	        updateHandler.post(updateRunnable);
-		}
-	}
+    @Override
+    public void deleteTag(UUID id, ResultCallback<Void> callback) {
+        if (tags.get(id) == null) {
+            callback.onError("Tag not found.");
+            
+        } else {
+            internalDeleteTag(id);
+            callback.onResult(null);
+            updateHandler.post(updateRunnable);
+        }
+    }
 
-	@Override
-	public void getUser(UUID id, ResultCallback<User> callback) {
-		User user = users.get(id);
-		
-		if (user == null) {
-			callback.onError("User not found.");
-		} else {
-			user.addObserver(this);
-			callback.onResult(user);
-		}
-	}
+    @Override
+    public void getUser(UUID id, ResultCallback<User> callback) {
+        User user = users.get(id);
+        
+        if (user == null) {
+            callback.onError("User not found.");
+        } else {
+            user.addObserver(this);
+            callback.onResult(user);
+        }
+    }
 
-	@Override
-	public void getClaim(UUID id, ResultCallback<Claim> callback) {
-		Claim claim = claims.get(id);
-		
-		if (claim == null) {
-			callback.onError("Claim not found.");
-		} else {
-			claim.addObserver(this);
-			callback.onResult(claim);
-		}
-	}
+    @Override
+    public void getClaim(UUID id, ResultCallback<Claim> callback) {
+        Claim claim = claims.get(id);
+        
+        if (claim == null) {
+            callback.onError("Claim not found.");
+        } else {
+            claim.addObserver(this);
+            callback.onResult(claim);
+        }
+    }
 
-	@Override
-	public void getItem(UUID id, ResultCallback<Item> callback) {
-		Item item = items.get(id);
-		
-		if (item == null) {
-			callback.onError("Item not found.");
-		} else {
-			item.addObserver(this);
-			callback.onResult(item);
-		}
-	}
+    @Override
+    public void getItem(UUID id, ResultCallback<Item> callback) {
+        Item item = items.get(id);
+        
+        if (item == null) {
+            callback.onError("Item not found.");
+        } else {
+            item.addObserver(this);
+            callback.onResult(item);
+        }
+    }
 
-	@Override
-	public void getTag(UUID id, ResultCallback<Tag> callback) {
-		Tag tag = tags.get(id);
-		
-		if (tag == null) {
-			callback.onError("Tag not found.");
-		} else {
-			tag.addObserver(this);
-			callback.onResult(tag);
-		}
-	}
+    @Override
+    public void getTag(UUID id, ResultCallback<Tag> callback) {
+        Tag tag = tags.get(id);
+        
+        if (tag == null) {
+            callback.onError("Tag not found.");
+        } else {
+            tag.addObserver(this);
+            callback.onResult(tag);
+        }
+    }
 
-	@Override
-	public void getAllUsers(ResultCallback<Collection<User>> callback) {
-		callback.onResult(users.values());
-	}
+    @Override
+    public void getAllUsers(ResultCallback<Collection<User>> callback) {
+        callback.onResult(users.values());
+    }
 
-	@Override
-	public void getAllClaims(ResultCallback<Collection<Claim>> callback) {
-		callback.onResult(claims.values());
+    @Override
+    public void getAllClaims(ResultCallback<Collection<Claim>> callback) {
+        callback.onResult(claims.values());
 
-	}
+    }
 
-	@Override
-	public void getAllItems(ResultCallback<Collection<Item>> callback) {
-		callback.onResult(items.values());
+    @Override
+    public void getAllItems(ResultCallback<Collection<Item>> callback) {
+        callback.onResult(items.values());
 
-	}
+    }
 
-	@Override
-	public void getAllTags(ResultCallback<Collection<Tag>> callback) {
-		callback.onResult(tags.values());
+    @Override
+    public void getAllTags(ResultCallback<Collection<Tag>> callback) {
+        callback.onResult(tags.values());
 
-	}
-	
-	@Override
-	public void update(Document observable) {
-		/* http://developer.android.com/reference/android/os/Handler.html#removeCallbacks%28java.lang.Runnable%29
-		 * Might be useful in the near future.
-		 */
-		
-		// Post the updateRunnable to the main thread (UI thread)
-		updateHandler.post(updateRunnable);
-	}
+    }
+    
+    @Override
+    public void update(Document observable) {
+        /* http://developer.android.com/reference/android/os/Handler.html#removeCallbacks%28java.lang.Runnable%29
+         * Might be useful in the near future.
+         */
+        
+        // Post the updateRunnable to the main thread (UI thread)
+        updateHandler.post(updateRunnable);
+    }
     
     /**
      * Add a User internally.
@@ -272,50 +272,50 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         users.put(u.getUUID(), u);
         u.addObserver(this);
     }
-	
-	/**
-	 * Delete a User internally, cleaning up any orphan Documents.
-	 * @param id The User's UUID.
-	 */
-	protected void internalDeleteUser(UUID id) {
-		// Get all child Claims
-		ArrayList<UUID> claimsToRemove = new ArrayList<UUID>();
-		for (Entry<UUID, Claim> entry : claims.entrySet()) {
-			Claim claim = entry.getValue();
-			
-			if (claim.getUser() == id) {
-				claimsToRemove.add(entry.getKey());
-			}
-		}
-		
-		// Handle in a separate loop to avoid modifying while iterating
-		for (UUID claimID : claimsToRemove) {
-			internalDeleteClaim(claimID);
-		}
-		
-		// Get all child Tags
-		ArrayList<UUID> tagsToRemove = new ArrayList<UUID>();
-		for (Entry<UUID, Tag> entry : tags.entrySet()) {
-			Tag claim = entry.getValue();
-			
-			if (claim.getUser() == id) {
-				tagsToRemove.add(entry.getKey());
-			}
-		}
-		
-		for (UUID tagID : tagsToRemove) {
-			internalDeleteTag(tagID);
-		}
-		
-		User toDelete = users.get(id);
-		// Finally, delete the User
-		users.remove(id);
-		if (toDelete != null) deleteUserHook(toDelete);
-	}
-	
-	protected void deleteUserHook(User deleted) {
-		return;
-	}
+    
+    /**
+     * Delete a User internally, cleaning up any orphan Documents.
+     * @param id The User's UUID.
+     */
+    protected void internalDeleteUser(UUID id) {
+        // Get all child Claims
+        ArrayList<UUID> claimsToRemove = new ArrayList<UUID>();
+        for (Entry<UUID, Claim> entry : claims.entrySet()) {
+            Claim claim = entry.getValue();
+            
+            if (claim.getUser() == id) {
+                claimsToRemove.add(entry.getKey());
+            }
+        }
+        
+        // Handle in a separate loop to avoid modifying while iterating
+        for (UUID claimID : claimsToRemove) {
+            internalDeleteClaim(claimID);
+        }
+        
+        // Get all child Tags
+        ArrayList<UUID> tagsToRemove = new ArrayList<UUID>();
+        for (Entry<UUID, Tag> entry : tags.entrySet()) {
+            Tag claim = entry.getValue();
+            
+            if (claim.getUser() == id) {
+                tagsToRemove.add(entry.getKey());
+            }
+        }
+        
+        for (UUID tagID : tagsToRemove) {
+            internalDeleteTag(tagID);
+        }
+        
+        User toDelete = users.get(id);
+        // Finally, delete the User
+        users.remove(id);
+        if (toDelete != null) deleteUserHook(toDelete);
+    }
+    
+    protected void deleteUserHook(User deleted) {
+        return;
+    }
 
     /**
      * Add a Claim internally.
@@ -325,36 +325,36 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         claims.put(c.getUUID(), c);
         c.addObserver(this);
     }
-	
-	/**
-	 * Delete a Claim internally, cleaning up any orphan Documents.
-	 * @param id The Claim's UUID.
-	 */
-	protected void internalDeleteClaim(UUID id) {
-		// Get all child Claims
-		ArrayList<UUID> itemsToRemove = new ArrayList<UUID>();
-		for (Entry<UUID, Item> entry : items.entrySet()) {
-			Item item = entry.getValue();
-			
-			if (item.getClaim() == id) {
-				itemsToRemove.add(entry.getKey());
-			}
-		}
-		
-		// Handle in a separate loop to avoid modifying while iterating
-		for (UUID claimID : itemsToRemove) {
-			internalDeleteItem(claimID);
-		}
-		
-		Claim toDelete = claims.get(id);
-		// Finally, delete the Claim
-		claims.remove(id);
-		if (toDelete != null) deleteClaimHook(toDelete);
-	}
-	
-	protected void deleteClaimHook (Claim deleted) {
-		return;
-	}
+    
+    /**
+     * Delete a Claim internally, cleaning up any orphan Documents.
+     * @param id The Claim's UUID.
+     */
+    protected void internalDeleteClaim(UUID id) {
+        // Get all child Claims
+        ArrayList<UUID> itemsToRemove = new ArrayList<UUID>();
+        for (Entry<UUID, Item> entry : items.entrySet()) {
+            Item item = entry.getValue();
+            
+            if (item.getClaim() == id) {
+                itemsToRemove.add(entry.getKey());
+            }
+        }
+        
+        // Handle in a separate loop to avoid modifying while iterating
+        for (UUID claimID : itemsToRemove) {
+            internalDeleteItem(claimID);
+        }
+        
+        Claim toDelete = claims.get(id);
+        // Finally, delete the Claim
+        claims.remove(id);
+        if (toDelete != null) deleteClaimHook(toDelete);
+    }
+    
+    protected void deleteClaimHook (Claim deleted) {
+        return;
+    }
     
     /**
      * Add an Item internally. 
@@ -364,20 +364,20 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         items.put(i.getUUID(), i);
         i.addObserver(this);
     }
-	
-	/**
-	 * Delete an Item internally.
-	 * @param id The Item's ID.
-	 */
-	protected void internalDeleteItem(UUID id) {
-		Item toDelete = items.get(id);
-		items.remove(id);
-		if (toDelete != null) deleteItemHook(toDelete);
-	}
-	
-	protected void deleteItemHook(Item deleted) {
-		return;
-	}
+    
+    /**
+     * Delete an Item internally.
+     * @param id The Item's ID.
+     */
+    protected void internalDeleteItem(UUID id) {
+        Item toDelete = items.get(id);
+        items.remove(id);
+        if (toDelete != null) deleteItemHook(toDelete);
+    }
+    
+    protected void deleteItemHook(Item deleted) {
+        return;
+    }
     
     /**
      * Add a Tag internally.
@@ -387,86 +387,86 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
         tags.put(t.getUUID(), t);
         t.addObserver(this);
     }
-	
-	/**
-	 * Delete a Tag internally.
-	 * @param id The Tag's ID.
-	 */
-	protected void internalDeleteTag(UUID id) {
-		Tag toDelete = tags.get(id);
-		tags.remove(id);
-		if (toDelete != null) deleteTagHook(toDelete);
-	}
-	
-	protected void deleteTagHook(Tag deleted) {
-		return;
-	}
-	
-	/**
-	 * @return A collection of references to the Users
-	 */
-	public Collection<User> getUsers() {
-		return users.values();
-	}
-	
-	/**
-	 * @return A collection of references to the Claims
-	 */
-	public Collection<Claim> getClaims() {
-		return claims.values();
-	}
-	
-	/**
-	 * @return A collection of references to the Items
-	 */
-	public Collection<Item> getItems() {
-		return items.values();
-	}
-	
-	/**
-	 * @return A collection of references to the Tags
-	 */
-	public Collection<Tag> getTags() {
-		return tags.values();
-	}
-	
-	/**
-	 * Get the Users that are dirty.
-	 * @return A collection of references to the Users that are marked dirty.
-	 */
-	public Collection<User> getDirtyUsers() {
-		return this.<User>getDirty(users);
-	}
-	
-	/**
-	 * Get the Claims that are dirty.
-	 * @return A collection of references to the Claims that are marked dirty.
-	 */
-	public Collection<Claim> getDirtyClaims() {
-		return this.<Claim>getDirty(claims);
-	}
-	
-	/**
-	 * Get the Items that are dirty.
-	 * @return A collection of references to the Items that are marked dirty.
-	 */
-	public Collection<Item> getDirtyItems() {
-		return this.<Item>getDirty(items);
-	}
-	
-	/**
-	 * Get the Tags that are dirty.
-	 * @return A collection of references to the Tags that are marked dirty.
-	 */
-	public Collection<Tag> getDirtyTags() {
-		return this.<Tag>getDirty(tags);
-	}
-	
-	private <T extends Document> Collection<T> getDirty(Map<UUID, T> documents) {
-		Collection<T> dirty = new ArrayList<T>();
-		for (T document : documents.values()) {
-			if (document.isDirty()) dirty.add(document);
-		}
-		return dirty;
-	}
+    
+    /**
+     * Delete a Tag internally.
+     * @param id The Tag's ID.
+     */
+    protected void internalDeleteTag(UUID id) {
+        Tag toDelete = tags.get(id);
+        tags.remove(id);
+        if (toDelete != null) deleteTagHook(toDelete);
+    }
+    
+    protected void deleteTagHook(Tag deleted) {
+        return;
+    }
+    
+    /**
+     * @return A collection of references to the Users
+     */
+    public Collection<User> getUsers() {
+        return users.values();
+    }
+    
+    /**
+     * @return A collection of references to the Claims
+     */
+    public Collection<Claim> getClaims() {
+        return claims.values();
+    }
+    
+    /**
+     * @return A collection of references to the Items
+     */
+    public Collection<Item> getItems() {
+        return items.values();
+    }
+    
+    /**
+     * @return A collection of references to the Tags
+     */
+    public Collection<Tag> getTags() {
+        return tags.values();
+    }
+    
+    /**
+     * Get the Users that are dirty.
+     * @return A collection of references to the Users that are marked dirty.
+     */
+    public Collection<User> getDirtyUsers() {
+        return this.<User>getDirty(users);
+    }
+    
+    /**
+     * Get the Claims that are dirty.
+     * @return A collection of references to the Claims that are marked dirty.
+     */
+    public Collection<Claim> getDirtyClaims() {
+        return this.<Claim>getDirty(claims);
+    }
+    
+    /**
+     * Get the Items that are dirty.
+     * @return A collection of references to the Items that are marked dirty.
+     */
+    public Collection<Item> getDirtyItems() {
+        return this.<Item>getDirty(items);
+    }
+    
+    /**
+     * Get the Tags that are dirty.
+     * @return A collection of references to the Tags that are marked dirty.
+     */
+    public Collection<Tag> getDirtyTags() {
+        return this.<Tag>getDirty(tags);
+    }
+    
+    private <T extends Document> Collection<T> getDirty(Map<UUID, T> documents) {
+        Collection<T> dirty = new ArrayList<T>();
+        for (T document : documents.values()) {
+            if (document.isDirty()) dirty.add(document);
+        }
+        return dirty;
+    }
 }

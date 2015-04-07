@@ -34,9 +34,9 @@ import java.util.UUID;
  *
  */
 public class UserData implements Serializable {
-	/**
-	 * Serializable ID.
-	 */
+    /**
+     * Serializable ID.
+     */
     private static final long serialVersionUID = 3694498368307870501L;
 
     private UUID uuid;
@@ -44,32 +44,32 @@ public class UserData implements Serializable {
     private UserRole role;
     
     public UserData(UUID uuid, String name, UserRole role) {
-	    this.uuid = uuid;
-	    this.name = name;
-	    this.role = role;
+        this.uuid = uuid;
+        this.name = name;
+        this.role = role;
     }
-	
-	/**
-	 * Get the user's UUID.
-	 * @return The user's UUID.
-	 */
-	public UUID getUUID() {
-		return uuid;
-	}
+    
+    /**
+     * Get the user's UUID.
+     * @return The user's UUID.
+     */
+    public UUID getUUID() {
+        return uuid;
+    }
     
     /**
      * Get the user's name.
      * @return The user's name.
      */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Get the user's role.
-	 * @return The user's role.
-	 */
-	public UserRole getRole() {
-		return role;
-	}
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * Get the user's role.
+     * @return The user's role.
+     */
+    public UserRole getRole() {
+        return role;
+    }
 }

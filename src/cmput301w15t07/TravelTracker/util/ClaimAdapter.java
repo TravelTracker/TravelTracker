@@ -49,130 +49,130 @@ import cmput301w15t07.TravelTracker.R;
  *
  */
 public class ClaimAdapter extends ArrayAdapter<Claim> {
-	private Collection<Item> items;
-	private Collection<User> users;
+    private Collection<Item> items;
+    private Collection<User> users;
     private Collection<Tag> tags;
-	private User user;
-	private UserRole role;
-	
-	public ClaimAdapter(Context context, UserRole role) {
-		super(context, R.layout.claims_list_row_item);
-		this.role = role;
-	}
-	
-	/**
-	 * This function rebuilds the list with the passed claims
-	 * 
-	 * @param claims The claims to display.
-	 * @param items The user's expense items (used to find totals).
-	 * @param users The list of users (to get user names).
-	 * @param tags The list of tags (to get tag titles).
-	 * @param user The user (to find home location info).
-	 * @param filterTagIDs The list of tag UUIDs to filter by, or null for no filter. Only claims tagged with at least one of these tags will be displayed.
-	 */
-	public void rebuildList(Collection<Claim> claims, Collection<Item> items,
-			Collection<User> users, Collection<Tag> tags, User user,
-			Collection<UUID> filterTagIDs){
-		this.items = items;
-		this.users = users;
-		this.tags = tags;
-		this.user = user;
+    private User user;
+    private UserRole role;
+    
+    public ClaimAdapter(Context context, UserRole role) {
+        super(context, R.layout.claims_list_row_item);
+        this.role = role;
+    }
+    
+    /**
+     * This function rebuilds the list with the passed claims
+     * 
+     * @param claims The claims to display.
+     * @param items The user's expense items (used to find totals).
+     * @param users The list of users (to get user names).
+     * @param tags The list of tags (to get tag titles).
+     * @param user The user (to find home location info).
+     * @param filterTagIDs The list of tag UUIDs to filter by, or null for no filter. Only claims tagged with at least one of these tags will be displayed.
+     */
+    public void rebuildList(Collection<Claim> claims, Collection<Item> items,
+            Collection<User> users, Collection<Tag> tags, User user,
+            Collection<UUID> filterTagIDs){
+        this.items = items;
+        this.users = users;
+        this.tags = tags;
+        this.user = user;
 
-		//possible performance bottleneck
-		clear();
-		
-		if (filterTagIDs == null) {
-			addAll(claims);
-		} else {
-			// Add claims one at a time
-			for (Claim claim : claims) {
-				ArrayList<UUID> claimTags = claim.getTags();
-				
-				// Only add if tagged correctly
-				for (UUID uuid : claimTags) {
-					if (filterTagIDs.contains(uuid)) {
-						add(claim);
-						break;
-					}
-				}
-			}
-		}
-		
-		sort(new Comparator<Claim>() {
+        //possible performance bottleneck
+        clear();
+        
+        if (filterTagIDs == null) {
+            addAll(claims);
+        } else {
+            // Add claims one at a time
+            for (Claim claim : claims) {
+                ArrayList<UUID> claimTags = claim.getTags();
+                
+                // Only add if tagged correctly
+                for (UUID uuid : claimTags) {
+                    if (filterTagIDs.contains(uuid)) {
+                        add(claim);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        sort(new Comparator<Claim>() {
 
-			@Override
-			public int compare(Claim lhs, Claim rhs) {
-				int compare = lhs.getStartDate().compareTo(rhs.getStartDate());
-				if (role.equals(UserRole.CLAIMANT)){
-					compare *= -1;
-				}
-				return compare;
-			}
+            @Override
+            public int compare(Claim lhs, Claim rhs) {
+                int compare = lhs.getStartDate().compareTo(rhs.getStartDate());
+                if (role.equals(UserRole.CLAIMANT)){
+                    compare *= -1;
+                }
+                return compare;
+            }
 
-		});
-		notifyDataSetChanged();
-	}
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View workingView;
-		if (convertView != null){
-			workingView = convertView;
-		} else {
-			LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			workingView = inflator.inflate(R.layout.claims_list_row_item, parent, false);
-		}
-		
-		// Get all fields 
-		TextView name = (TextView) workingView.findViewById(R.id.claimsListRowItemName);
-		TextView date = (TextView) workingView.findViewById(R.id.claimsListRowItemDate);
-		TextView status = (TextView) workingView.findViewById(R.id.claimsListRowItemStatus);
-		TextView distHeader = (TextView) workingView.findViewById(R.id.claimsListRowItemDistanceHeader);
-		TextView distLevel = (TextView) workingView.findViewById(R.id.claimsListRowItemDistanceLevel);
-		LinearLayout destinationContainer = (LinearLayout) workingView.findViewById(R.id.claimsListDestinationContainer);
-		LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
+        });
+        notifyDataSetChanged();
+    }
+    
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View workingView;
+        if (convertView != null){
+            workingView = convertView;
+        } else {
+            LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            workingView = inflator.inflate(R.layout.claims_list_row_item, parent, false);
+        }
+        
+        // Get all fields 
+        TextView name = (TextView) workingView.findViewById(R.id.claimsListRowItemName);
+        TextView date = (TextView) workingView.findViewById(R.id.claimsListRowItemDate);
+        TextView status = (TextView) workingView.findViewById(R.id.claimsListRowItemStatus);
+        TextView distHeader = (TextView) workingView.findViewById(R.id.claimsListRowItemDistanceHeader);
+        TextView distLevel = (TextView) workingView.findViewById(R.id.claimsListRowItemDistanceLevel);
+        LinearLayout destinationContainer = (LinearLayout) workingView.findViewById(R.id.claimsListDestinationContainer);
+        LinearLayout totalsContainer = (LinearLayout) workingView.findViewById(R.id.claimsListTotalContainer);
         LinearLayout tagsLayout = (LinearLayout) workingView.findViewById(R.id.claimsListRowItemTagsLayout);
-		Claim claim = getItem(position);
-		
-		setName(name, claim);
-		
-		if (role.equals(UserRole.APPROVER)){
-			date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
-			distHeader.setVisibility(View.GONE);
-			distLevel.setVisibility(View.GONE);
+        Claim claim = getItem(position);
+        
+        setName(name, claim);
+        
+        if (role.equals(UserRole.APPROVER)){
+            date.setText(ClaimUtilities.formatDate(claim.getStartDate()));
+            distHeader.setVisibility(View.GONE);
+            distLevel.setVisibility(View.GONE);
             tagsLayout.setVisibility(View.GONE); // Hide tags here
-		} else if (role.equals(UserRole.CLAIMANT)) {
-		    date.setVisibility(View.GONE);
-		    setDistance(distLevel, claim);
+        } else if (role.equals(UserRole.CLAIMANT)) {
+            date.setVisibility(View.GONE);
+            setDistance(distLevel, claim);
             addTags(claim, tagsLayout); // Add tags here
-		}
+        }
 
-		setStatus(status, claim);
-		
-		destinationContainer.removeAllViews();
-		totalsContainer.removeAllViews();
-		
-		addTotals(claim, totalsContainer);
-		addDestinations(claim, destinationContainer);
-		
-		return workingView;
-	}
+        setStatus(status, claim);
+        
+        destinationContainer.removeAllViews();
+        totalsContainer.removeAllViews();
+        
+        addTotals(claim, totalsContainer);
+        addDestinations(claim, destinationContainer);
+        
+        return workingView;
+    }
 
     private void setName(TextView display, Claim claim){
-		String nameStr = "";
-		if (role.equals(UserRole.APPROVER)){
-			nameStr += findUser(claim.getUser());
-		} else {
-			String sDate = ClaimUtilities.formatDate(claim.getStartDate());
-			String eDate = ClaimUtilities.formatDate(claim.getEndDate());
-			nameStr = sDate + " / " + eDate;
-			display.setTextSize(18);
-		}
-		display.setText(nameStr);
-	}
-	
-	private void setDistance(TextView display, Claim claim) {
-	    Context ctx = getContext();
+        String nameStr = "";
+        if (role.equals(UserRole.APPROVER)){
+            nameStr += findUser(claim.getUser());
+        } else {
+            String sDate = ClaimUtilities.formatDate(claim.getStartDate());
+            String eDate = ClaimUtilities.formatDate(claim.getEndDate());
+            nameStr = sDate + " / " + eDate;
+            display.setTextSize(18);
+        }
+        display.setText(nameStr);
+    }
+    
+    private void setDistance(TextView display, Claim claim) {
+        Context ctx = getContext();
         Geolocation homeLoc = user.getHomeLocation();
         ArrayList<Destination> destinations = claim.getDestinations();
         
@@ -228,69 +228,69 @@ public class ClaimAdapter extends ArrayAdapter<Claim> {
         float[] hsv = {hue, 1, 1};
         display.setTextColor(Color.HSVToColor(hsv));
         display.setBackgroundColor(Color.GRAY);
-	}
-	
-	private void setStatus(TextView display, Claim claim){
-		String statusStr = claim.getStatus().getString(getContext());
-		if (role.equals(UserRole.APPROVER)){
-			UUID approverID = claim.getApprover();
-			
-			if (approverID != null) {
-				statusStr += " (last returned by " + findUser(approverID) + ")";
-			}
-		}
-		
-		display.setText(statusStr);
-		if (claim.getStatus().equals(Status.APPROVED)){
-			display.setTextColor(Color.GREEN);
-		} else if (claim.getStatus().equals(Status.RETURNED)){
-			display.setTextColor(Color.RED);
-		} else {
-			display.setTextColor(Color.BLACK);
-		}
-	}
-	
-	private String findUser(UUID user){
-		String out = "";
-		for (User u : users){
-			if (u.getUUID().equals(user)){
-				out =  u.getUserName();
-			}
-		}
-		return out;
-	}
-	
-	private void addTotals(Claim claim, ViewGroup parent){
-		ArrayList<Item> relevantItems = new ArrayList<Item>();
-		for (Item i : items){
-			if (i.getClaim().equals(claim.getUUID())){
-				relevantItems.add(i);				
-			}
-		}
-		for (String total : ClaimUtilities.getTotals(relevantItems)){
-			addTotal(total, parent);
-		}
-		
-	}
-	
-	private void addDestinations(Claim claim, ViewGroup parent){
-		for (Destination d : claim.getDestinations()){
-			addDestination(d, parent);
-		}
-	}
-	
-	private void addTotal(String total, ViewGroup parent){
-		TextView dynamicTotal = new TextView(getContext());
-		dynamicTotal.setGravity(Gravity.END);
-		dynamicTotal.setText(total);
-		parent.addView(dynamicTotal);	
-	}
-	
-	private void addDestination(Destination dest, ViewGroup parent){
-		TextView dynamicDestination = new TextView(getContext());
-		dynamicDestination.setText(dest.getLocation());
-		parent.addView(dynamicDestination);
-	}
+    }
+    
+    private void setStatus(TextView display, Claim claim){
+        String statusStr = claim.getStatus().getString(getContext());
+        if (role.equals(UserRole.APPROVER)){
+            UUID approverID = claim.getApprover();
+            
+            if (approverID != null) {
+                statusStr += " (last returned by " + findUser(approverID) + ")";
+            }
+        }
+        
+        display.setText(statusStr);
+        if (claim.getStatus().equals(Status.APPROVED)){
+            display.setTextColor(Color.GREEN);
+        } else if (claim.getStatus().equals(Status.RETURNED)){
+            display.setTextColor(Color.RED);
+        } else {
+            display.setTextColor(Color.BLACK);
+        }
+    }
+    
+    private String findUser(UUID user){
+        String out = "";
+        for (User u : users){
+            if (u.getUUID().equals(user)){
+                out =  u.getUserName();
+            }
+        }
+        return out;
+    }
+    
+    private void addTotals(Claim claim, ViewGroup parent){
+        ArrayList<Item> relevantItems = new ArrayList<Item>();
+        for (Item i : items){
+            if (i.getClaim().equals(claim.getUUID())){
+                relevantItems.add(i);                
+            }
+        }
+        for (String total : ClaimUtilities.getTotals(relevantItems)){
+            addTotal(total, parent);
+        }
+        
+    }
+    
+    private void addDestinations(Claim claim, ViewGroup parent){
+        for (Destination d : claim.getDestinations()){
+            addDestination(d, parent);
+        }
+    }
+    
+    private void addTotal(String total, ViewGroup parent){
+        TextView dynamicTotal = new TextView(getContext());
+        dynamicTotal.setGravity(Gravity.END);
+        dynamicTotal.setText(total);
+        parent.addView(dynamicTotal);    
+    }
+    
+    private void addDestination(Destination dest, ViewGroup parent){
+        TextView dynamicDestination = new TextView(getContext());
+        dynamicDestination.setText(dest.getLocation());
+        parent.addView(dynamicDestination);
+    }
     
     private void addTags(Claim claim, LinearLayout tagsLayout) {
         Collection<UUID> claimTagIDs = claim.getTags();

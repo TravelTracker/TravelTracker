@@ -58,11 +58,11 @@ import android.widget.ListView;
  *
  */
 public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCase2<ExpenseItemsListActivity> {
-	// String constants in testing
-	private static final String CLAIMANT_USER_NAME = "claimant";
-	private static final String APPROVER_USER_NAME = "approver";
+    // String constants in testing
+    private static final String CLAIMANT_USER_NAME = "claimant";
+    private static final String APPROVER_USER_NAME = "approver";
     private static final String LOG_TAG = "ExpenseItemsListTest";
-	
+    
     //  App relevant
     private DataSource dataSource;
     private Instrumentation instrumentation;
@@ -72,17 +72,17 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
     private User approver;
     private Claim claim;
     
-	public ExpenseItemsListActivityTest() {
-		super(ExpenseItemsListActivity.class);
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-	    // Use generated data.
+    public ExpenseItemsListActivityTest() {
+        super(ExpenseItemsListActivity.class);
+    }
+    
+    @Override
+    protected void setUp() throws Exception {
+        // Use generated data.
         dataSource = new InMemoryDataSource();
         DataSourceSingleton.setDataSource(dataSource);
         
-	    super.setUp();
+        super.setUp();
         
         instrumentation = getInstrumentation();
 
@@ -92,46 +92,46 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         
         // Empty, no specific data needed. Just items later.
         claim = DataSourceUtils.addEmptyClaim(claimant, dataSource);
-	}
+    }
 
-	public void testViewListExpenseItems() throws InterruptedException {
-		ExpenseItemsListActivity activity =
-				startActivityAsClaimant();
-		
-		activity.waitUntilLoaded();
-		
-		// Get ListView and adapter
-		ListView lv = (ListView) activity.findViewById(
-				R.id.expenseItemsListListView);
-		ExpenseItemsListAdapter adapter =
-				(ExpenseItemsListAdapter) lv.getAdapter();
-		
-		// Assert empty
-		assertEquals("List view was not empty.", 0, adapter.getCount());
-		
-		// Causes main thread activity
-		Item i = DataSourceUtils.addEmptyItem(claim, dataSource);
-		
-		// Wait for main thread to be idle (i.e. update done)
-		instrumentation.waitForIdleSync();
-		Thread.sleep(300);
-		
-		// Assert 1 element
-		assertEquals("Adapter did not have 1 element: " + adapter.getCount(),
-				1, adapter.getCount());
-		assertEquals("First element was not the item added.", i,
-				adapter.getItem(0));
-		
-		// Get the first child view of the list view
+    public void testViewListExpenseItems() throws InterruptedException {
+        ExpenseItemsListActivity activity =
+                startActivityAsClaimant();
+        
+        activity.waitUntilLoaded();
+        
+        // Get ListView and adapter
+        ListView lv = (ListView) activity.findViewById(
+                R.id.expenseItemsListListView);
+        ExpenseItemsListAdapter adapter =
+                (ExpenseItemsListAdapter) lv.getAdapter();
+        
+        // Assert empty
+        assertEquals("List view was not empty.", 0, adapter.getCount());
+        
+        // Causes main thread activity
+        Item i = DataSourceUtils.addEmptyItem(claim, dataSource);
+        
+        // Wait for main thread to be idle (i.e. update done)
+        instrumentation.waitForIdleSync();
+        Thread.sleep(300);
+        
+        // Assert 1 element
+        assertEquals("Adapter did not have 1 element: " + adapter.getCount(),
+                1, adapter.getCount());
+        assertEquals("First element was not the item added.", i,
+                adapter.getItem(0));
+        
+        // Get the first child view of the list view
         View itemView = lv.getChildAt(0);
         
         // Assert it has one and is visible (the list view must have drawn if
         // this exists)
         assertNotNull("Child view was null.", itemView);
         assertEquals("View wasn't visible", View.VISIBLE, itemView.getVisibility());
-	}
-	
-	public void testCreateExpenseItem() throws InterruptedException {
+    }
+    
+    public void testCreateExpenseItem() throws InterruptedException {
         ExpenseItemsListActivity activity =
                 startActivityAsClaimant();
         
@@ -180,9 +180,9 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         newActivity.finish();
         instrumentation.waitForIdleSync();
         Thread.sleep(300);
-	}
-	
-	public void testViewExpenseItem() throws InterruptedException {
+    }
+    
+    public void testViewExpenseItem() throws InterruptedException {
         ExpenseItemsListActivity activity =
                 startActivityAsClaimant();
 
@@ -249,9 +249,9 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
                 ud.getName());
         assertEquals("UserData role wasn't equal.", UserRole.CLAIMANT,
                 ud.getRole());   
-	}
-	
-	public void testDeleteExpenseItem() throws Throwable {
+    }
+    
+    public void testDeleteExpenseItem() throws Throwable {
         final ExpenseItemsListActivity activity =
                 startActivityAsClaimant();
         
@@ -294,18 +294,18 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         // Assert no elements
         assertEquals("Adapter had elements: " + adapter.getCount(),
                 0, adapter.getCount());
-	}
-	
+    }
+    
     //////////////////////
     // Helper functions //
     //////////////////////
-	/**
-	 * @return The started activity
-	 */
-	public ExpenseItemsListActivity startActivityAsClaimant() {
+    /**
+     * @return The started activity
+     */
+    public ExpenseItemsListActivity startActivityAsClaimant() {
         // Set up start intent
         Intent intent = new Intent(instrumentation.getTargetContext(),
-        		ExpenseItemsListActivity.class);
+                ExpenseItemsListActivity.class);
         
         UserData ud = new UserData(claimant.getUUID(), CLAIMANT_USER_NAME,
                 UserRole.CLAIMANT);
@@ -316,9 +316,9 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         
         ExpenseItemsListActivity activity = getActivity();
         Log.d(LOG_TAG, activity.toString());
-		return activity;
-	}
-	
+        return activity;
+    }
+    
     /**
      * Tests if a user is in the datasource.
      * 
@@ -328,7 +328,7 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
      */
     private boolean userExists(String name) throws InterruptedException {
         SynchronizedResultCallback<Collection<User>> callback =
-        		new SynchronizedResultCallback<Collection<User>>();
+                new SynchronizedResultCallback<Collection<User>>();
         dataSource.getAllUsers(callback);
         
         boolean success = callback.waitForResult();
@@ -338,26 +338,26 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         
         // Find the user and report true
         for (User u : users) {
-        	if (u.getUserName().equals(name)) {
-        		return true;
-        	}
+            if (u.getUserName().equals(name)) {
+                return true;
+            }
         }
         
         // Report it doesn't exist
         return false;
     }
-	
-	/**
-	 * Checks if a user has at least one claim.
-	 * 
-	 * @param claimant Name of the User.
-	 * @return true if the user has at least one claim attached.
-	 * @throws InterruptedException 
-	 */
-	private boolean hasClaim(User claimant) throws InterruptedException {
-		SynchronizedResultCallback<Collection<Claim>> callback =
-				new SynchronizedResultCallback<Collection<Claim>>();
-		dataSource.getAllClaims(callback);
+    
+    /**
+     * Checks if a user has at least one claim.
+     * 
+     * @param claimant Name of the User.
+     * @return true if the user has at least one claim attached.
+     * @throws InterruptedException 
+     */
+    private boolean hasClaim(User claimant) throws InterruptedException {
+        SynchronizedResultCallback<Collection<Claim>> callback =
+                new SynchronizedResultCallback<Collection<Claim>>();
+        dataSource.getAllClaims(callback);
         
         boolean success = callback.waitForResult();
         assertTrue("Failed getting claims.", success);
@@ -366,13 +366,13 @@ public class ExpenseItemsListActivityTest extends ActivityInstrumentationTestCas
         
         // Find a claim and report true
         for (Claim c : claims) {
-        	if(c.getUser().equals(claimant.getUUID())) {
-        		return true;
-        	}
+            if(c.getUser().equals(claimant.getUUID())) {
+                return true;
+            }
         }
         
         // report no claim exists
-		return false;
-	}
+        return false;
+    }
     
 }

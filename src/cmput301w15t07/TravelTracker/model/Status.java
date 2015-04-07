@@ -32,11 +32,11 @@ import android.content.Context;
  *
  */
 public enum Status implements ContextStringable {
-	IN_PROGRESS(R.string.enum_status_in_progress),
-	SUBMITTED(R.string.enum_status_submitted),
-	RETURNED(R.string.enum_status_returned),
-	APPROVED(R.string.enum_status_approved);
-	
+    IN_PROGRESS(R.string.enum_status_in_progress),
+    SUBMITTED(R.string.enum_status_submitted),
+    RETURNED(R.string.enum_status_returned),
+    APPROVED(R.string.enum_status_approved);
+    
     private final int id;
     
     private Status(int id) {
@@ -46,21 +46,21 @@ public enum Status implements ContextStringable {
     public String getString(Context context) {
         return context.getString(id);
     }
-	
-	/**
-	 * This method returns the Status instance corresponding to the passed string.
-	 * @param text The text to search for.
-	 * @param context The Android context in which this is operating.
-	 * @return The matching Status.
-	 */
-	public static Status fromString(String text, Context context) {
-	    if (text != null) {
-	      for (Status i : Status.values()) {
-	        if (text.equalsIgnoreCase(i.getString(context))) {
-	          return i;
-	        }
-	      }
-	    }
-	    return null;
-	 }
+    
+    /**
+     * This method returns the Status instance corresponding to the passed string.
+     * @param text The text to search for.
+     * @param context The Android context in which this is operating.
+     * @return The matching Status.
+     */
+    public static Status fromString(String text, Context context) {
+        if (text != null) {
+          for (Status i : Status.values()) {
+            if (text.equalsIgnoreCase(i.getString(context))) {
+              return i;
+            }
+          }
+        }
+        return null;
+     }
 }

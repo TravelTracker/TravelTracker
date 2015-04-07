@@ -33,37 +33,37 @@ import cmput301w15t07.TravelTracker.model.DataSource;
  */
 public class DataSourceSingleton {
     static private DataSource ds;
-	
-	/**
-	 * Get the application's data source.
-	 * 
-	 * If no source has been set, a new data source is created.
-	 * 
-	 * @param appContext The application context for reporting error messages.
-	 * @return The single instance of DataSource for the application.
-	 */
-    static public DataSource getDataSource(Context appContext) {
-    	// As per
-    	//   http://goo.gl/clVKsG
-    	// we can rely on the application context never changing, so appContext is only
-    	// used once (during initialization).
-    	if (ds == null) {
-    		//ds = new InMemoryDataSource();
-    		//ds = new GeneratedDataSource();
-    		ds = new CacheDataSource(appContext, 20000);
-    	}
-    	
-		return ds;
-	}
     
-	/**
-	 * Set the application's data source.
-	 * 
-	 * This should only be used for dependency injection testing.
-	 * 
-	 * @param source The new source to use.
-	 */
+    /**
+     * Get the application's data source.
+     * 
+     * If no source has been set, a new data source is created.
+     * 
+     * @param appContext The application context for reporting error messages.
+     * @return The single instance of DataSource for the application.
+     */
+    static public DataSource getDataSource(Context appContext) {
+        // As per
+        //   http://goo.gl/clVKsG
+        // we can rely on the application context never changing, so appContext is only
+        // used once (during initialization).
+        if (ds == null) {
+            //ds = new InMemoryDataSource();
+            //ds = new GeneratedDataSource();
+            ds = new CacheDataSource(appContext, 20000);
+        }
+        
+        return ds;
+    }
+    
+    /**
+     * Set the application's data source.
+     * 
+     * This should only be used for dependency injection testing.
+     * 
+     * @param source The new source to use.
+     */
     static public void setDataSource(DataSource source) {
-		ds = source;
-	}
+        ds = source;
+    }
 }

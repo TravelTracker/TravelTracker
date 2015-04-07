@@ -34,23 +34,23 @@ import android.graphics.Bitmap;
  *
  */
 public class Receipt {
-	private Bitmap photo;
-	
-	public Receipt(Bitmap photo) {
-		this.photo = photo;
-		
-	}
-	
-	public Receipt() {
-		this(null);  
-	}
+    private Bitmap photo;
+    
+    public Receipt(Bitmap photo) {
+        this.photo = photo;
+        
+    }
+    
+    public Receipt() {
+        this(null);  
+    }
 
-	/**
-	 * Get the photo of the receipt.
-	 * @return The photo.
-	 */
-	public Bitmap getPhoto() {
-		return photo;
-	}
+    /**
+     * Get the photo of the receipt.
+     * @return The photo.
+     */
+    public Bitmap getPhoto() {
+        return photo;
+    }
 
 }

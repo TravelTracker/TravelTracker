@@ -41,34 +41,34 @@ import cmput301w15t07.TravelTracker.serverinterface.ResultCallback;
 
 public class ReceiptImageViewActivity extends TravelTrackerActivity {
    
-	/** UUID for the Item */
-	private UUID itemID; 
-	
-	/** the current expense item */
-	private Item item = null;
-	
-	@Override public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.receipt_image_view_menu, menu);
-		
-		return true; 
-	};
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()){
-		case R.id.receipt_image_view_sign_out:
-	        signOut();
-	        return true;
-	        
-	    case android.R.id.home:
-	    	onBackPressed();
-	    	return true;
-	        
-	    default:
-	        return false;
-		}
-	}
-	
+    /** UUID for the Item */
+    private UUID itemID; 
+    
+    /** the current expense item */
+    private Item item = null;
+    
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.receipt_image_view_menu, menu);
+        
+        return true; 
+    };
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+        case R.id.receipt_image_view_sign_out:
+            signOut();
+            return true;
+            
+        case android.R.id.home:
+            onBackPressed();
+            return true;
+            
+        default:
+            return false;
+        }
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -91,22 +91,22 @@ public class ReceiptImageViewActivity extends TravelTrackerActivity {
         });
     }
     
-	// There is no dataset in ReceiptImageViewActivity, this needs no implementation.
+    // There is no dataset in ReceiptImageViewActivity, this needs no implementation.
     @Override
     public void updateActivity() {}
-	
+    
     /**
      * Load the image into the imageveiw
      * @param image the bitmap image to be loaded into the imageView 
      */
-	protected void loadImage(Bitmap image) {
-		ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);
-		if (image != null) {
-			imageView.setImageBitmap(image);
-		}
-		else{
-			Toast.makeText(this, "bitmap is null", Toast.LENGTH_SHORT).show();
-		}
-		
-	}
+    protected void loadImage(Bitmap image) {
+        ImageView imageView = (ImageView) findViewById(R.id.receipt_image_veiw_imageView);
+        if (image != null) {
+            imageView.setImageBitmap(image);
+        }
+        else{
+            Toast.makeText(this, "bitmap is null", Toast.LENGTH_SHORT).show();
+        }
+        
+    }
 }

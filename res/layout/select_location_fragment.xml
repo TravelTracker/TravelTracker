@@ -15,8 +15,8 @@
         android:visibility="gone" />
     
     <!-- Referenced
-    	 http://xperiment-andro.blogspot.ca/2013/02/nested-fragments.html
-    	 on 30/04/15 -->
+         http://xperiment-andro.blogspot.ca/2013/02/nested-fragments.html
+         on 30/04/15 -->
     <FrameLayout
         android:id="@+id/select_location_fragment_map"
         android:layout_width="match_parent"

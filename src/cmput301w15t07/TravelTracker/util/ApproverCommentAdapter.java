@@ -40,46 +40,46 @@ import android.widget.TextView;
  *
  */
 public class ApproverCommentAdapter extends ArrayAdapter<ApproverComment> {
-	public ApproverCommentAdapter(Context context, List<ApproverComment> comments) {
-		super(context, R.layout.claim_info_comments_list_item, comments);
-	}
-	
-	@Override
-	public View getView(int position, View listItemView, ViewGroup listView) {
-		
-		// if not already done, grab the view from xml and inflate it
-		if (listItemView == null) {
-			LayoutInflater inflater = LayoutInflater.from(getContext());
-			listItemView = inflater.inflate(R.layout.claim_info_comments_list_item, listView, false);
-		}
-		
-		ApproverComment comment = this.getItem(position);
-		
-		if (comment != null) {
-			
-			// set list item text components
-			setText(listItemView, R.id.claimInfoCommentsListItemCommentTextView, comment.getComment());
-			setText(listItemView, R.id.claimInfoCommentsListItemDateTextView, ClaimUtilities.formatDate(comment.getDate()));
-			
-		} else {
-			Log.e("adapter", "comment " + position + " not found!");
-		}
-		return listItemView;
-	}
-	
-	/**
-	 * Fault-tolerant TextView text set wrapper.
-	 */
-	private boolean setText(View v, int id, String text) {
-		TextView t = (TextView) v.findViewById(id);
-		
-		if (t != null) {
-			t.setText(text);
-			return true;
-		} else {
-			Log.e("adapter", "could not set text " + text + " for claim list item");
-			return false;
-		}
-	}
+    public ApproverCommentAdapter(Context context, List<ApproverComment> comments) {
+        super(context, R.layout.claim_info_comments_list_item, comments);
+    }
+    
+    @Override
+    public View getView(int position, View listItemView, ViewGroup listView) {
+        
+        // if not already done, grab the view from xml and inflate it
+        if (listItemView == null) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            listItemView = inflater.inflate(R.layout.claim_info_comments_list_item, listView, false);
+        }
+        
+        ApproverComment comment = this.getItem(position);
+        
+        if (comment != null) {
+            
+            // set list item text components
+            setText(listItemView, R.id.claimInfoCommentsListItemCommentTextView, comment.getComment());
+            setText(listItemView, R.id.claimInfoCommentsListItemDateTextView, ClaimUtilities.formatDate(comment.getDate()));
+            
+        } else {
+            Log.e("adapter", "comment " + position + " not found!");
+        }
+        return listItemView;
+    }
+    
+    /**
+     * Fault-tolerant TextView text set wrapper.
+     */
+    private boolean setText(View v, int id, String text) {
+        TextView t = (TextView) v.findViewById(id);
+        
+        if (t != null) {
+            t.setText(text);
+            return true;
+        } else {
+            Log.e("adapter", "could not set text " + text + " for claim list item");
+            return false;
+        }
+    }
 
 }

@@ -6,7 +6,7 @@ package cmput301w15t07.TravelTracker.serverinterface;
  * @author kdbanman
  */
 public enum MergeResult {
-	CHANGED,
-	OVERRIDDEN,
-	NOT_FOUND;
+    CHANGED,
+    OVERRIDDEN,
+    NOT_FOUND;
 }

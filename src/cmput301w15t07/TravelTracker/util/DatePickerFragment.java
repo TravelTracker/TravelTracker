@@ -43,84 +43,84 @@ import android.widget.DatePicker;
  * @author colp
  */
 public class DatePickerFragment extends DialogFragment {
-	/** Result code for when data is returned properly. */
-	static final int RESULT_OK = 0;
-	
-	/** Extra string ID for date return. */
-	static final String DATE_CALENDAR = "cmput301w15t07.TravelTracker.dateCalendar";
-	
-	/**
-	 * Callback interface for results from DatePickerFragment.
-	 */
-	public interface ResultCallback {
-		/**
-		 * Called when the date is picked.
-		 * @param date The new date picked.
-		 */
-		void onDatePickerFragmentResult(Date date);
-		
-		/**
-		 * Called when the dialog is cancelled.
-		 */
-		void onDatePickerFragmentCancelled();
-	}
-	
-	/** The result listener. */
-	private ResultCallback callback;
-	
-	/** The calendar used to manipulate the date. */
-	Calendar calendar;
-	
-	/** Whether the dialog was cancelled. */
-	boolean cancelled;
-	
-	/**
-	 * Construct the DatePickerFragment.
-	 * 
-	 * @param date The date to start with.
-	 * @param callback The callback for when the date is set.
-	 */
-	public DatePickerFragment(Date date, ResultCallback callback) {
-	    this.callback = callback;
-	    calendar = Calendar.getInstance();
-	    calendar.setTime(date);
-	    cancelled = false;
+    /** Result code for when data is returned properly. */
+    static final int RESULT_OK = 0;
+    
+    /** Extra string ID for date return. */
+    static final String DATE_CALENDAR = "cmput301w15t07.TravelTracker.dateCalendar";
+    
+    /**
+     * Callback interface for results from DatePickerFragment.
+     */
+    public interface ResultCallback {
+        /**
+         * Called when the date is picked.
+         * @param date The new date picked.
+         */
+        void onDatePickerFragmentResult(Date date);
+        
+        /**
+         * Called when the dialog is cancelled.
+         */
+        void onDatePickerFragmentCancelled();
     }
-	
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-	    Context context = getActivity();
-		
-		// Create the dialog
-		DatePickerDialog dialog = new DatePickerDialog(context, null,
-			calendar.get(Calendar.YEAR),
-			calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH));
-		
-		// Multi-button setup based on code from:
-		// http://stackoverflow.com/a/21529892
-		// Accessed on 19/01/15
-		
-		dialog.setButton(Dialog.BUTTON_POSITIVE, context.getString(android.R.string.ok),
-				new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				    DatePickerDialog dpd = (DatePickerDialog) dialog;
-				    DatePicker picker = dpd.getDatePicker();
-				    
+    
+    /** The result listener. */
+    private ResultCallback callback;
+    
+    /** The calendar used to manipulate the date. */
+    Calendar calendar;
+    
+    /** Whether the dialog was cancelled. */
+    boolean cancelled;
+    
+    /**
+     * Construct the DatePickerFragment.
+     * 
+     * @param date The date to start with.
+     * @param callback The callback for when the date is set.
+     */
+    public DatePickerFragment(Date date, ResultCallback callback) {
+        this.callback = callback;
+        calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        cancelled = false;
+    }
+    
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Context context = getActivity();
+        
+        // Create the dialog
+        DatePickerDialog dialog = new DatePickerDialog(context, null,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH));
+        
+        // Multi-button setup based on code from:
+        // http://stackoverflow.com/a/21529892
+        // Accessed on 19/01/15
+        
+        dialog.setButton(Dialog.BUTTON_POSITIVE, context.getString(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatePickerDialog dpd = (DatePickerDialog) dialog;
+                    DatePicker picker = dpd.getDatePicker();
+                    
                     calendar.set(picker.getYear(), picker.getMonth(), picker.getDayOfMonth());
                     callback.onDatePickerFragmentResult(calendar.getTime());
-				}
-			});
-		
-		dialog.setButton(Dialog.BUTTON_NEGATIVE, context.getString(android.R.string.cancel),
-			new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        
+        dialog.setButton(Dialog.BUTTON_NEGATIVE, context.getString(android.R.string.cancel),
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                     callback.onDatePickerFragmentCancelled();
-				}
-			});
-		
-		return dialog;
-	}
+                }
+            });
+        
+        return dialog;
+    }
 }

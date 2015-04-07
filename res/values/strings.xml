@@ -41,11 +41,11 @@
         <string name="claims_list_home_location_failed">Failed to set home location</string>
         
         <!-- Used in menu -->
-	    <string name="claims_list_filter_by_tag">Filter By Tag</string>
-	    <string name="claims_list_manage_tags">Manage Tags</string>
+        <string name="claims_list_filter_by_tag">Filter By Tag</string>
+        <string name="claims_list_manage_tags">Manage Tags</string>
         <string name="claims_list_add_claim">Add Claim</string>
         <string name="claims_list_set_home_location">Set Home Location</string>
-	
+    
     <!-- Strings used in ClaimsListRowItem -->
         <!-- Used in layout -->
         <string name="claims_list_row_item_total">Total:</string>
@@ -134,29 +134,29 @@
         <string name="expense_item_info_delete_item">Delete Expense Item</string>
         
     <!-- Strings used in RecieptImageVeiwAcivity -->
-    	<string name="receipt_image_view_label">View Receipt Image</string>  
-    	
+        <string name="receipt_image_view_label">View Receipt Image</string>  
+        
     <!-- Strings used in SelectLocationActivity -->
-    	<string name="select_location_label">Select Location</string>
-    	<string name="select_location_tap_to_select_location">Tap to select a location</string>
-    	<string name="select_location_location_selected">Location selected</string>
+        <string name="select_location_label">Select Location</string>
+        <string name="select_location_tap_to_select_location">Tap to select a location</string>
+        <string name="select_location_location_selected">Location selected</string>
     
         
     <!-- Strings used in SelectLocationFragment -->
-    	<string name="select_location_fragment_select_location">Select location on map</string>
-    	<string name="select_location_fragment_current_location">Set to current location</string>
-    	<string name="select_location_fragment_default_title">Select Location</string>
+        <string name="select_location_fragment_select_location">Select location on map</string>
+        <string name="select_location_fragment_current_location">Set to current location</string>
+        <string name="select_location_fragment_default_title">Select Location</string>
         <string name="select_location_fragment_default_no_edit_title">Location</string>
-    	<string name="select_location_fragment_failed_to_get_location">Failed to get current location</string>
-    	<string name="select_location_fragment_not_connected">Not connected to Google Play</string>
-    	<string name="select_location_fragment_unset">No location set!</string>
-    	
+        <string name="select_location_fragment_failed_to_get_location">Failed to get current location</string>
+        <string name="select_location_fragment_not_connected">Not connected to Google Play</string>
+        <string name="select_location_fragment_unset">No location set!</string>
+        
     <!-- Strings used in SelectTagFragment -->
-    	<string name="select_tag_title">Select Tags</string>
-    	
+        <string name="select_tag_title">Select Tags</string>
+        
     <!-- Strings used in SelectTagFilterFragment -->
-    	<string name="select_tag_filter_fragment_enable_filter">Enable filter</string>
-    	<string name="select_tag_filter_title">Tag Filter Settings</string>
+        <string name="select_tag_filter_fragment_enable_filter">Enable filter</string>
+        <string name="select_tag_filter_title">Tag Filter Settings</string>
 
     <!-- Strings used in enum ItemCategory -->
         <string name="enum_item_category_no_category">No Category</string>

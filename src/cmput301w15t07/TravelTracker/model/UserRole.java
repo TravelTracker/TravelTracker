@@ -32,9 +32,9 @@ import android.content.Context;
  *
  */
 public enum UserRole implements ContextStringable {
-	CLAIMANT(R.string.enum_user_role_claimant),
-	APPROVER(R.string.enum_user_role_approver);
-	
+    CLAIMANT(R.string.enum_user_role_claimant),
+    APPROVER(R.string.enum_user_role_approver);
+    
     private final int id;
     
     private UserRole(int id) {
@@ -44,21 +44,21 @@ public enum UserRole implements ContextStringable {
     public String getString(Context context) {
         return context.getString(id);
     }
-	
-	/**
-	 * This method returns the UserRole instance corresponding to the passed string.
-	 * @param text The text to search for.
-	 * @param context The Android context in which this is operating.
-	 * @return The matching UserRole.
-	 */
-	public static UserRole fromString(String text, Context context) {
-	    if (text != null) {
-	    	for (UserRole i : UserRole.values()) {
-	    		if (text.equalsIgnoreCase(i.getString(context))) {
-	    			return i;
-	    		}
-	    	}
-	    }
-	    return null;
-	}
+    
+    /**
+     * This method returns the UserRole instance corresponding to the passed string.
+     * @param text The text to search for.
+     * @param context The Android context in which this is operating.
+     * @return The matching UserRole.
+     */
+    public static UserRole fromString(String text, Context context) {
+        if (text != null) {
+            for (UserRole i : UserRole.values()) {
+                if (text.equalsIgnoreCase(i.getString(context))) {
+                    return i;
+                }
+            }
+        }
+        return null;
+    }
 }

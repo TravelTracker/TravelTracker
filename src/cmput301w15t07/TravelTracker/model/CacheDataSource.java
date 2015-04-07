@@ -33,6 +33,8 @@ import com.google.gson.reflect.TypeToken;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
@@ -78,6 +80,8 @@ import cmput301w15t07.TravelTracker.util.PersistentList;
  */
 public class CacheDataSource extends InMemoryDataSource {
 
+	private static final long UPDATE_PERIOD = 3500;
+	
 	private static final String DELETE_USERS = "user_deletions.json";
 	private static final String DELETE_CLAIMS = "claim_deletions.json";
 	private static final String DELETE_ITEMS = "item_deletions.json";
@@ -141,6 +145,10 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 			
 		}).execute();
+		
+
+		Handler uiHandler = new Handler(Looper.getMainLooper());
+		uiHandler.postDelayed(new PollServerLoopTask(UPDATE_PERIOD), UPDATE_PERIOD);
 	}
 	
 	@Override
@@ -395,7 +403,7 @@ public class CacheDataSource extends InMemoryDataSource {
 
 	private void warn(String msg) {
 		Log.w("CacheDataSource", msg);
-		Toast.makeText(appContext, msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(appContext, msg, Toast.LENGTH_SHORT).show();
 	}
 	
 	private abstract class SyncWrappedResultCallback implements ResultCallback<Boolean> {
@@ -439,6 +447,43 @@ public class CacheDataSource extends InMemoryDataSource {
 				}
 			}).execute();
 			return null;
+		}
+		
+	}
+	
+	private class PollServerLoopTask implements Runnable {
+		long period;
+		
+		public PollServerLoopTask(long intervalMillis) {
+			this.period = intervalMillis;
+		}
+
+		@Override
+		public void run() {
+			//new SyncDocumentsTask().execute();
+			
+			//DEBUG with warn()
+			new SyncDocumentsTask(new ResultCallback<Boolean>() {
+
+				@Override
+				public void onResult(Boolean result) {
+					if (result) {
+				        updateHandler.post(updateRunnable);
+						warn("New data imported from server.");
+					} else {
+						warn("Data imported from server - no changes.");
+					}
+				}
+
+				@Override
+				public void onError(String message) {
+					warn(message);
+				}
+				
+			}).execute();
+			
+			Handler uiHandler = new Handler(Looper.getMainLooper());
+			uiHandler.postDelayed(new PollServerLoopTask(5000), 5000);
 		}
 		
 	}

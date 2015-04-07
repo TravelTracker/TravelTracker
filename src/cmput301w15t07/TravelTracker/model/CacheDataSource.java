@@ -470,7 +470,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		public SyncDocumentsTask(ResultCallback<Boolean> callback) {
 			this.callback = callback;
 			this.id = syncNumber++;
-			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " created");
+			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(id) + " created");
 		}
 		
 		/**
@@ -486,7 +486,7 @@ public class CacheDataSource extends InMemoryDataSource {
 		protected void onPreExecute() {
 			if (updateRunning) {
 				Log.e("CacheDataSource", "Update currently running.  Serial Executor must have failed.");
-				Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " waiting.");
+				Log.i("CacheDataSource", "SyncDocs id " + Long.toString(id) + " waiting.");
 			}
 
 			updateRunning = true;
@@ -513,13 +513,13 @@ public class CacheDataSource extends InMemoryDataSource {
 				}
 			}
 
-			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " completed.");
+			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(id) + " completed.");
 		}
 
 		@Override
 		protected String doInBackground(Void... params) {
 
-			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(syncNumber) + " running");
+			Log.i("CacheDataSource", "SyncDocs id " + Long.toString(id) + " running");
 			
 			// attempt to pull all data from main
 			// (push all in memory to backup and return if fail)

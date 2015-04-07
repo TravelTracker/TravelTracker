@@ -34,7 +34,6 @@ import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
 import cmput301w15t07.TravelTracker.testutils.DataSourceUtils;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.Suppress;
-import android.widget.EditText;
 
 public class ElasticSearchHelperTest extends AndroidTestCase{
 	ElasticSearchHelper es;

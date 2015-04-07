@@ -30,8 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.google.gson.reflect.TypeToken;
-
 import android.content.Context;
 import android.util.Log;
 

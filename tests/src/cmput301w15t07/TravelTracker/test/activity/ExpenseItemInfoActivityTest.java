@@ -22,7 +22,6 @@
 package cmput301w15t07.TravelTracker.test.activity;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import cmput301w15t07.TravelTracker.DataSourceSingleton;
 import cmput301w15t07.TravelTracker.R;
@@ -41,17 +40,12 @@ import cmput301w15t07.TravelTracker.model.UserRole;
 import cmput301w15t07.TravelTracker.testutils.SynchronizedResultCallback;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.Instrumentation;
-import android.app.AlertDialog.Builder;
-import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.CheckedTextView;

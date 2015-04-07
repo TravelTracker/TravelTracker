@@ -24,7 +24,6 @@ package cmput301w15t07.TravelTracker;
 import android.content.Context;
 import cmput301w15t07.TravelTracker.model.CacheDataSource;
 import cmput301w15t07.TravelTracker.model.DataSource;
-import cmput301w15t07.TravelTracker.model.GeneratedDataSource;
 
 /**
  * A singleton containing the applications's data source.

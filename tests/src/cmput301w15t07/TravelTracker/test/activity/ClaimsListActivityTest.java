@@ -83,7 +83,6 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 	@Override
 	protected void setUp() throws Exception
 	{
-		// TODO Auto-generated method stub
 		super.setUp();
 		
 		ds = new InMemoryDataSource();
@@ -169,7 +168,8 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.CLAIMANT));
 		ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
 		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
-		final ArrayAdapter<Claim> adapter =  (ArrayAdapter<Claim>) listView.getAdapter();
+		@SuppressWarnings("unchecked")
+        final ArrayAdapter<Claim> adapter = (ArrayAdapter<Claim>) listView.getAdapter();
 		final int position = 0;
 		
 		runTestOnUiThread(new Runnable()
@@ -217,7 +217,8 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 		final ClaimsListActivity activity = startActivity(new UserData(user2.getUUID(), user2.getUserName(), UserRole.APPROVER));
 		ActivityMonitor monitor = getInstrumentation().addMonitor(ClaimInfoActivity.class.getName(), null, false);
 		final ListView listView = (ListView) activity.findViewById(R.id.claimsListClaimListView);
-		final ArrayAdapter<Claim> adapter =  (ArrayAdapter<Claim>) listView.getAdapter();
+		@SuppressWarnings("unchecked")
+        final ArrayAdapter<Claim> adapter = (ArrayAdapter<Claim>) listView.getAdapter();
 		
 		assertEquals("Should only be 1 submitted claim", 1, listView.getCount());
 		
@@ -265,7 +266,6 @@ public class ClaimsListActivityTest extends ActivityInstrumentationTestCase2<Cla
 			@Override
 			public void run() {
 				SelectTagFilterFragment fragment = (SelectTagFilterFragment) activity.getFragmentManager().findFragmentByTag("filterByTag");
-				ListView listview = (ListView)fragment.getDialog().findViewById(R.id.select_tag_filter_listview);
 				CheckBox enable = (CheckBox) fragment.getDialog().findViewById(R.id.select_tag_filter_enable_checkbox);
 				enable.performClick();
 				AlertDialog dialog = (AlertDialog) fragment.getDialog();

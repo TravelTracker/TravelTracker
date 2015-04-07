@@ -196,6 +196,13 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
         updateActivity();
     }
     
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        datasource.removeObserver(this);
+    }
+    
     /**
      * Update the activity when the dataset changes.
      * Called in onResume() and update(DataSource observable).

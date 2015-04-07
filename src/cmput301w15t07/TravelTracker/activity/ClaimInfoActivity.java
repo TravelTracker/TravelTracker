@@ -199,6 +199,13 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         updateActivity();
     }
     
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        datasource.removeObserver(this);
+    }
+    
     /**
      * Update the activity when the dataset changes.
      * Called in onResume() and update(DataSource observable).

@@ -162,6 +162,13 @@ public class ClaimsListActivity extends TravelTrackerActivity {
         
         updateActivity();
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        datasource.removeObserver(this);
+    }
 	
     /**
      * Update the activity when the dataset changes.

@@ -532,11 +532,15 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 
 			Log.i("CacheDataSource", "Documents retrieved from remote.");
+			
+			logSizes("Sizes before deletions:");
 
 			this.<User>performPendingDeletions(this.<User>filterNonStaleDeletions(retrievedUsers, userDeletions), userDeletions);
 			this.<Claim>performPendingDeletions(this.<Claim>filterNonStaleDeletions(retrievedClaims, claimDeletions), claimDeletions);
 			this.<Item>performPendingDeletions(this.<Item>filterNonStaleDeletions(retrievedItems, itemDeletions), itemDeletions);
 			this.<Tag>performPendingDeletions(this.<Tag>filterNonStaleDeletions(retrievedTags, tagDeletions), tagDeletions);
+			
+			logSizes("Sizes after deletions:");
 			
 			Log.i("CacheDataSource", "Locally queued deletions attempted. " +
 					Integer.toString(userDeletions.size()) + " users, " + 
@@ -571,6 +575,29 @@ public class CacheDataSource extends InMemoryDataSource {
 			Log.i("CacheDataSource", "Sync cycle completed.");
 			
 			return null;
+		}
+		
+		private void logSizes(String msg) {
+			Log.v("CacheDataSource", msg);
+			
+			Log.v("CacheDataSource", "Retrieved users count: " + retrievedUsers.size());
+			Log.v("CacheDataSource", "Retrieved claims count: " + retrievedClaims.size());
+			Log.v("CacheDataSource", "Retrieved items count: " + retrievedItems.size());
+			Log.v("CacheDataSource", "Retrieved tags count: " + retrievedTags.size());
+			
+			Log.v("CacheDataSource", "In memory users count: " + users.size());
+			Log.v("CacheDataSource", "In memory claims count: " + claims.size());
+			Log.v("CacheDataSource", "In memory items count: " + items.size());
+			Log.v("CacheDataSource", "In memory tags count: " + tags.size());
+			
+			try {
+				Log.v("CacheDataSource", "Cached users count: " + backupHelper.getAllUsers().size());
+				Log.v("CacheDataSource", "Cached claims count: " + backupHelper.getAllClaims().size());
+				Log.v("CacheDataSource", "Cached items count: " + backupHelper.getAllItems().size());
+				Log.v("CacheDataSource", "Cached tags count: " + backupHelper.getAllTags().size());
+			} catch (Exception e) {
+				Log.w("CacheDataSource", "Error reading sizes from cache.");
+			}
 		}
 
 		private <T extends Document> boolean mergeRetrieved(Collection<T> retrieved, Map<UUID, T> local) {

@@ -25,11 +25,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.google.gson.reflect.TypeToken;
+
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import cmput301w15t07.TravelTracker.serverinterface.ElasticSearchHelper;
@@ -74,21 +79,29 @@ import cmput301w15t07.TravelTracker.util.PersistentList;
  * @author kdbanman
  */
 public class CacheDataSource extends InMemoryDataSource {
+
+	private  long updatePeriod = 3500;
 	
-	private static final String TODELETE_FILENAME = "cached_deletions.json";
+	private static final String DELETE_USERS = "user_deletions.json";
+	private static final String DELETE_CLAIMS = "claim_deletions.json";
+	private static final String DELETE_ITEMS = "item_deletions.json";
+	private static final String DELETE_TAGS = "tag_deletions.json";
 	
 	private Context appContext;
 	
 	private ServerHelper mainHelper;
 	private ServerHelper backupHelper;
-	
-	private PersistentList<DeletionFlag> deletions;
+
+	private PersistentList<DeletionFlag<User>> userDeletions;
+	private PersistentList<DeletionFlag<Claim>> claimDeletions;
+	private PersistentList<DeletionFlag<Item>> itemDeletions;
+	private PersistentList<DeletionFlag<Tag>> tagDeletions;
 	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
 	 */
-	public CacheDataSource(Context appContext) {
-		this(appContext, new ElasticSearchHelper(), new FileSystemHelper(appContext));
+	public CacheDataSource(Context appContext, long updatePeriod) {
+		this(appContext, updatePeriod, new ElasticSearchHelper(), new FileSystemHelper(appContext));
 	}
 	
 	/**
@@ -96,15 +109,31 @@ public class CacheDataSource extends InMemoryDataSource {
 	 * @param main The interface for remote server or test stubs.
 	 * @param backup The interface for data persistence when main fails.
 	 */
-	public CacheDataSource(Context appContext, ServerHelper main, ServerHelper backup) {
+	public CacheDataSource(Context appContext, long updatePeriod, ServerHelper main, ServerHelper backup) {
 		super();
+		
+		this.updatePeriod = updatePeriod;
 		
 		this.appContext = appContext;
 		this.mainHelper = main;
 		this.backupHelper = backup;
 		
-		this.deletions = new PersistentList<DeletionFlag>(TODELETE_FILENAME, appContext, DeletionFlag.class);
+		this.userDeletions = new PersistentList<DeletionFlag<User>>(DELETE_USERS, appContext, (new TypeToken<DeletionFlag<User>>(){}).getType());
+		this.claimDeletions = new PersistentList<DeletionFlag<Claim>>(DELETE_CLAIMS, appContext, (new TypeToken<DeletionFlag<Claim>>(){}).getType());
+		this.itemDeletions = new PersistentList<DeletionFlag<Item>>(DELETE_ITEMS, appContext, (new TypeToken<DeletionFlag<Item>>(){}).getType());
+		this.tagDeletions = new PersistentList<DeletionFlag<Tag>>(DELETE_TAGS, appContext, (new TypeToken<DeletionFlag<Tag>>(){}).getType());
 		
+		// load any cached data into memory
+		try {
+			this.<User> loadIntoMemory(backup.getAllUsers(), users);
+			this.<Claim> loadIntoMemory(backup.getAllClaims(), claims);
+			this.<Item> loadIntoMemory(backup.getAllItems(), items);
+			this.<Tag> loadIntoMemory(backup.getAllTags(), tags);
+		} catch (Exception e) {
+			warn("Failed to load local backup into memory");
+		}
+		
+		// pull data from server
 		new SyncDocumentsTask(new ResultCallback<Boolean>() {
 
 			@Override
@@ -118,54 +147,143 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 			
 		}).execute();
+		
+
+		Handler uiHandler = new Handler(Looper.getMainLooper());
+		uiHandler.postDelayed(new PollServerLoopTask(updatePeriod), updatePeriod);
+	}
+	
+	@Override
+	public void addUser(final ResultCallback<User> callback) {
+		super.addUser(callback);
+		
+
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
+	
+	@Override
+	public void addClaim(final User user, final ResultCallback<Claim> callback) {
+		super.addClaim(user, callback);
+		
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
 	}
 
-	/*
-	 * existing superclass add* methods are fine, added document will
-	 * be dirty, so it will be picked up on next sync cycle.
-	 * 
-	 * getters and deleters need some additional behaviour (like 
-	 * preliminary synchronization) before affecting in-memory Documents
-	 * 
-	 */
+	@Override
+	public void addItem(final Claim claim, final ResultCallback<Item> callback) {
+		super.addItem(claim, callback);
+		
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
 
 	@Override
-	public void deleteUser(UUID id, ResultCallback<Void> callback) {
+	public void addTag(final User user, final ResultCallback<Tag> callback) {
+		super.addTag(user, callback);
+
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
+
+	@Override
+	public void deleteUser(final UUID id, final ResultCallback<Void> callback) {
 		if (users.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(users.get(id)));
+			userDeletions.add(new DeletionFlag<User>(users.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
+			
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
 	@Override
-	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
+	public void deleteClaim(final UUID id, final ResultCallback<Void> callback) {
 		if (claims.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(claims.get(id)));
+			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
 	@Override
-	public void deleteItem(UUID id, ResultCallback<Void> callback) {
+	public void deleteItem(final UUID id, final ResultCallback<Void> callback) {
 		if (items.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(items.get(id)));
+			itemDeletions.add(new DeletionFlag<Item>(items.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
 	@Override
-	public void deleteTag(UUID id, ResultCallback<Void> callback) {
+	public void deleteTag(final UUID id, final ResultCallback<Void> callback) {
 		if (tags.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
-			deletions.add(new DeletionFlag(tags.get(id)));
+			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
@@ -180,7 +298,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getUser(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -195,7 +313,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getClaim(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -210,7 +328,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getItem(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -225,7 +343,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getTag(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -238,7 +356,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllUsers(callback);
 			}
-		});
+		}).execute();
 	}
 
 	@Override
@@ -250,7 +368,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllClaims(callback);
 			}
-		});
+		}).execute();
 	}
 
 	@Override
@@ -262,7 +380,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllItems(callback);
 			}
-		});
+		}).execute();
 
 	}
 
@@ -275,13 +393,19 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllTags(callback);
 			}
-		});
+		}).execute();
 		
+	}
+	
+	private <T extends Document> void loadIntoMemory(Collection<T> docs, Map<UUID, T> docMap) {
+		for (T doc : docs) {
+			docMap.put(doc.getUUID(), doc);
+		}
 	}
 
 	private void warn(String msg) {
 		Log.w("CacheDataSource", msg);
-		Toast.makeText(appContext, msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(appContext, msg, Toast.LENGTH_SHORT).show();
 	}
 	
 	private abstract class SyncWrappedResultCallback implements ResultCallback<Boolean> {
@@ -296,6 +420,74 @@ public class CacheDataSource extends InMemoryDataSource {
 		public void onError(String message) {
 			errCallback.onError(message);
 		}
+	}
+
+	public class ErrReportingCallback implements ResultCallback<Boolean> {
+
+		@Override
+		public void onResult(Boolean result) {
+			return;
+		}
+
+		@Override
+		public void onError(String message) {
+			warn(message);
+		}
+
+	}
+	
+	private class SyncUpdateTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			new SyncDocumentsTask(new SyncWrappedResultCallback(new ErrReportingCallback()) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
+			return null;
+		}
+		
+	}
+	
+	private class PollServerLoopTask implements Runnable {
+		long period;
+		
+		public PollServerLoopTask(long intervalMillis) {
+			this.period = intervalMillis;
+		}
+
+		@Override
+		public void run() {
+			//new SyncDocumentsTask().execute();
+			
+			//DEBUG with warn()
+			new SyncDocumentsTask(new ResultCallback<Boolean>() {
+
+				@Override
+				public void onResult(Boolean result) {
+					if (result) {
+				        updateHandler.post(updateRunnable);
+						warn("New data imported from server.");
+					} else {
+						warn("Data imported from server - no changes.");
+					}
+				}
+
+				@Override
+				public void onError(String message) {
+					warn(message);
+				}
+				
+			}).execute();
+			
+			Handler uiHandler = new Handler(Looper.getMainLooper());
+			uiHandler.postDelayed(new PollServerLoopTask(5000), 5000);
+		}
+		
 	}
 	
 	/**
@@ -361,13 +553,10 @@ public class CacheDataSource extends InMemoryDataSource {
 				return null; // normal execution - saved to backup, no error.
 			}
 
-			ArrayList<Document> pendingDeletions = new ArrayList<Document>();
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedUsers));
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedClaims));
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedItems));
-			pendingDeletions.addAll(filterNonStaleDeletions(retrievedTags));
-			
-			performPendingDeletions(pendingDeletions);
+			this.<User>performPendingDeletions(this.<User>filterNonStaleDeletions(retrievedUsers, userDeletions), userDeletions);
+			this.<Claim>performPendingDeletions(this.<Claim>filterNonStaleDeletions(retrievedClaims, claimDeletions), claimDeletions);
+			this.<Item>performPendingDeletions(this.<Item>filterNonStaleDeletions(retrievedItems, itemDeletions), itemDeletions);
+			this.<Tag>performPendingDeletions(this.<Tag>filterNonStaleDeletions(retrievedTags, tagDeletions), tagDeletions);
 			
 			// merge every remaining received document into inmemory
 			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);
@@ -434,7 +623,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 		}
 
-		private void performPendingDeletions(ArrayList<Document> pendingDeletions) {
+		private <T extends Document> void performPendingDeletions(ArrayList<Document> pendingDeletions, List<DeletionFlag<T>> deletions) {
 			// remove above pending from remote and local in batch using .deletDocuments()
 			
 			try {
@@ -457,9 +646,9 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 			
 			// remove pending deletions from deletion list since they were successful
-			ArrayList<DeletionFlag> flagsToClear = new ArrayList<DeletionFlag>();
+			ArrayList<DeletionFlag<T>> flagsToClear = new ArrayList<DeletionFlag<T>>();
 			for (Document deleted : pendingDeletions) {
-				for (DeletionFlag flag: deletions) {
+				for (DeletionFlag<T> flag: deletions) {
 					if (flag.getToDelete().equals(deleted))
 						flagsToClear.add(flag);
 				}
@@ -474,10 +663,10 @@ public class CacheDataSource extends InMemoryDataSource {
 		 * @return 
 		 * @return the deletions that were performed on retrieved (passed) documents.
 		 */
-		private ArrayList<Document> filterNonStaleDeletions(Collection<? extends Document> retrieved) {
+		private <T extends Document> ArrayList<Document> filterNonStaleDeletions(Collection<T> retrieved, List<DeletionFlag<T>> deletions) {
 			ArrayList<Document> pendingDeletions = new ArrayList<Document>();
-			ArrayList<DeletionFlag> overriddenDeletions = new ArrayList<DeletionFlag>();
-			for (DeletionFlag deletion : deletions) {
+			ArrayList<DeletionFlag<T>> overriddenDeletions = new ArrayList<DeletionFlag<T>>();
+			for (DeletionFlag<T> deletion : deletions) {
 				switch (mergeDeletion(deletion, retrieved)) {
 				case CHANGED:
 					pendingDeletions.add(deletion.getToDelete());

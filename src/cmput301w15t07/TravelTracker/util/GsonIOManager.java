@@ -32,7 +32,6 @@ import java.util.Date;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -50,13 +49,17 @@ import com.google.gson.JsonSerializer;
  *
  */
 public class GsonIOManager {
-	
-	private Context ctx;
+
+    private Context ctx;
 	private Gson gson;
 	
 	public GsonIOManager(Context ctx) {
 		this.ctx = ctx;
-		gson = new GsonBuilder().registerTypeHierarchyAdapter(Date.class, new DateAdapter()).serializeNulls().create();;
+		gson = new GsonBuilder()
+		.registerTypeHierarchyAdapter(Date.class, new DateAdapter())
+		.registerTypeAdapterFactory(new DeletionFlagTypeAdapterFactory())
+		.serializeNulls()
+		.create();
 	}
 	
 	public <T> T load(String filename, Type type) throws FileNotFoundException {
@@ -129,5 +132,4 @@ public class GsonIOManager {
 			return date == null ? null : new JsonPrimitive(date.getTime());
 		}
 	}
-			
 }

@@ -25,11 +25,20 @@ import java.util.Date;
 
 import cmput301w15t07.TravelTracker.model.Document;
 
-public class DeletionFlag {
+public class DeletionFlag<T extends Document> {
 	
 	private Date date;
-	private Document toDelete;
+	private T toDelete;
+
+    public DeletionFlag(Date date, T toDelete) {
+		this.date = date;
+		this.toDelete = toDelete;
+	}
 	
+	public DeletionFlag(T toDelete) {
+		this(new Date(), toDelete);
+	}
+
 	/**
 	 * @return the date
 	 */
@@ -40,25 +49,8 @@ public class DeletionFlag {
 	/**
 	 * @return the document to be deleted.  may not be a reference, but will satisfy .equals()
 	 */
-	public Document getToDelete() {
+	public T getToDelete() {
 		return toDelete;
-	}
-
-	public DeletionFlag(Date date, Document toDelete) {
-		this.date = new Date();
-		this.toDelete = toDelete;
-	}
-	
-	public DeletionFlag(Document toDelete) {
-		this(new Date(), toDelete);
-	}
-	
-	/**
-	 * Private no-args constructor to please GSON
-	 */
-	@SuppressWarnings("unused")
-    private DeletionFlag() {
-		this(null, null);
 	}
 
 	@Override
@@ -79,7 +71,7 @@ public class DeletionFlag {
 			return false;
 		if (!(obj instanceof DeletionFlag))
 			return false;
-		DeletionFlag other = (DeletionFlag) obj;
+		DeletionFlag<?> other = (DeletionFlag<?>) obj;
 		if (date == null) {
 			if (other.date != null)
 				return false;

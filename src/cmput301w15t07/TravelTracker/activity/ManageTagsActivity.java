@@ -289,6 +289,7 @@ public class ManageTagsActivity extends TravelTrackerActivity implements Observe
                 @Override
                 public void onResult(Tag result) {
                     result.setTitle(titleEditText.getText().toString());
+                    titleEditText.setText("");
                 }
 
                 @Override

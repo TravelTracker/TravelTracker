@@ -56,7 +56,7 @@ public class GsonIOManager {
 	public GsonIOManager(Context ctx) {
 		this.ctx = ctx;
 		gson = new GsonBuilder()
-		.registerTypeHierarchyAdapter(Date.class, new DateAdapter())
+		.registerTypeAdapter(Date.class, new DateAdapter())
 		.registerTypeAdapterFactory(new DeletionFlagTypeAdapterFactory())
 		.serializeNulls()
 		.create();

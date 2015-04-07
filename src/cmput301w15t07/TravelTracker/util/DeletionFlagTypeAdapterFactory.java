@@ -44,19 +44,16 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
         
         // Get adapters specific to the object we need so that we can delegate
         TypeAdapter<?> documentAdapter = gson.getAdapter(TypeToken.get(elementType));
-        TypeAdapter<Type> typeAdapter = gson.getAdapter(Type.class);
         
-        return (TypeAdapter<T>) new DeletionFlagAdapter<Document>((TypeAdapter<Document>) documentAdapter, typeAdapter);
+        return (TypeAdapter<T>) new DeletionFlagAdapter<Document>((TypeAdapter<Document>) documentAdapter);
     }
     
     private class DeletionFlagAdapter<E extends Document> extends
     TypeAdapter<DeletionFlag<E>> {
         private TypeAdapter<E> elementAdapter;
-        private TypeAdapter<Type> typeAdapter;
 
-        public DeletionFlagAdapter(TypeAdapter<E> elementAdapter, TypeAdapter<Type> typeAdapter) {
+        public DeletionFlagAdapter(TypeAdapter<E> elementAdapter) {
             this.elementAdapter = elementAdapter;
-            this.typeAdapter = typeAdapter;
         }
 
         @Override
@@ -68,7 +65,6 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
 
             // Pre-declare variables
             long time = 0;
-            Type type = null;
             E element = null;
             
             // Read the actual Json
@@ -77,8 +73,6 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
               String name = in.nextName();
               if (name.equals("date")) {
                   time = in.nextLong();
-              } else if (name.equals("type")) {
-                  type = (Type) typeAdapter.read(in);
               } else if (name.equals("toDelete")) {
                   element = (E) elementAdapter.read(in);
               } else {
@@ -87,11 +81,11 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
             }
             in.endObject();
             
-            if (time == 0 || type == null || element == null) {
+            if (time == 0 || element == null) {
                 throw new RuntimeException("Malformed DeletionFlag in JSON. Missing a field.");
             }
             
-            DeletionFlag<E> flag = new DeletionFlag<E>(new Date(time), element, type);
+            DeletionFlag<E> flag = new DeletionFlag<E>(new Date(time), element);
             return flag;
         }
 
@@ -105,8 +99,6 @@ public class DeletionFlagTypeAdapterFactory implements TypeAdapterFactory {
             // Write actual JSON
             out.beginObject();
             out.name("date").value(flag.getDate().getTime());
-            out.name("type");
-            typeAdapter.write(out, flag.getWrappedClass());
             out.name("toDelete");
             elementAdapter.write(out, flag.getToDelete());
             out.endObject();

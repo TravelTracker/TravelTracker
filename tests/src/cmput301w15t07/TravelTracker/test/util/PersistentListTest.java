@@ -172,11 +172,9 @@ public class PersistentListTest  extends InstrumentationTestCase {
 	
 	public void testDeletionFlag() {
 		PersistentList<DeletionFlag<Claim>> list = new PersistentList<DeletionFlag<Claim>>(TEST_FILENAME, ctx, (new TypeToken<DeletionFlag<Claim>>(){}).getType());
-		list.add(new DeletionFlag<Claim>(c1, Claim.class));
-		list.add(new DeletionFlag<Claim>(c2, Claim.class));
+		list.add(new DeletionFlag<Claim>(c1));
+		list.add(new DeletionFlag<Claim>(c2));
 		
-		// TODO I think this failing means we have to do the type refactor now rather than later.
-		// It'll be more work to put together something to create a useless field than to remove it
 		PersistentList<DeletionFlag<Claim>> copy = new PersistentList<DeletionFlag<Claim>>(TEST_FILENAME, ctx, (new TypeToken<DeletionFlag<Claim>>(){}).getType());
 		assertEquals(2, list.size());
 		assertEquals(2, copy.size());

@@ -64,7 +64,6 @@ public class GsonIOManager {
 		this.ctx = ctx;
 		gson = new GsonBuilder()
 		.registerTypeHierarchyAdapter(Date.class, new DateAdapter())
-		.registerTypeHierarchyAdapter(Tag.class, new TagTypeAdapter())
 		.serializeNulls()
 		.create();
 	}

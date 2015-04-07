@@ -142,53 +142,138 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 		}).execute();
 	}
+	
+	@Override
+	public void addUser(final ResultCallback<User> callback) {
+		super.addUser(callback);
+		
 
-	/*
-	 * existing superclass add* methods are fine, added document will
-	 * be dirty, so it will be picked up on next sync cycle.
-	 * 
-	 * getters and deleters need some additional behaviour (like 
-	 * preliminary synchronization) before affecting in-memory Documents
-	 * 
-	 */
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
+	
+	@Override
+	public void addClaim(final User user, final ResultCallback<Claim> callback) {
+		super.addClaim(user, callback);
+		
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
 
 	@Override
-	public void deleteUser(UUID id, ResultCallback<Void> callback) {
+	public void addItem(final Claim claim, final ResultCallback<Item> callback) {
+		super.addItem(claim, callback);
+		
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
+
+	@Override
+	public void addTag(final User user, final ResultCallback<Tag> callback) {
+		super.addTag(user, callback);
+
+		// TODO replace this with SyncUpdateTask
+		new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+			@Override
+			public void onResult(Boolean changesMade) {
+				if (changesMade) 
+			        updateHandler.post(updateRunnable);
+			}
+		}).execute();
+	}
+
+	@Override
+	public void deleteUser(final UUID id, final ResultCallback<Void> callback) {
 		if (users.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
 			userDeletions.add(new DeletionFlag<User>(users.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
+			
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
 	@Override
-	public void deleteClaim(UUID id, ResultCallback<Void> callback) {
+	public void deleteClaim(final UUID id, final ResultCallback<Void> callback) {
 		if (claims.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
 			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
 	@Override
-	public void deleteItem(UUID id, ResultCallback<Void> callback) {
+	public void deleteItem(final UUID id, final ResultCallback<Void> callback) {
 		if (items.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
 			itemDeletions.add(new DeletionFlag<Item>(items.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
 	@Override
-	public void deleteTag(UUID id, ResultCallback<Void> callback) {
+	public void deleteTag(final UUID id, final ResultCallback<Void> callback) {
 		if (tags.get(id) != null) {
 			// add to toDelete list - will be picked up on sync cycle
 			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
+
+			// TODO replace this with SyncUpdateTask
+			new SyncDocumentsTask(new SyncWrappedResultCallback(callback) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
 		}
 	}
 
@@ -203,7 +288,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getUser(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -218,7 +303,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getClaim(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -233,7 +318,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getItem(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -248,7 +333,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				public void onResult(Boolean changesMade) {
 					if (changesMade) CacheDataSource.super.getTag(id, callback);
 				}
-			});
+			}).execute();
 		}
 	}
 
@@ -261,7 +346,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllUsers(callback);
 			}
-		});
+		}).execute();
 	}
 
 	@Override
@@ -273,7 +358,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllClaims(callback);
 			}
-		});
+		}).execute();
 	}
 
 	@Override
@@ -285,7 +370,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllItems(callback);
 			}
-		});
+		}).execute();
 
 	}
 
@@ -298,7 +383,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			public void onResult(Boolean changesMade) {
 				if (changesMade) CacheDataSource.super.getAllTags(callback);
 			}
-		});
+		}).execute();
 		
 	}
 	
@@ -325,6 +410,37 @@ public class CacheDataSource extends InMemoryDataSource {
 		public void onError(String message) {
 			errCallback.onError(message);
 		}
+	}
+
+	public class ErrReportingCallback implements ResultCallback<Boolean> {
+
+		@Override
+		public void onResult(Boolean result) {
+			return;
+		}
+
+		@Override
+		public void onError(String message) {
+			warn(message);
+		}
+
+	}
+	
+	private class SyncUpdateTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			new SyncDocumentsTask(new SyncWrappedResultCallback(new ErrReportingCallback()) {
+				@Override
+				public void onResult(Boolean changesMade) {
+					if (changesMade) 
+				        updateHandler.post(updateRunnable);
+				}
+			}).execute();
+			return null;
+		}
+		
 	}
 	
 	/**

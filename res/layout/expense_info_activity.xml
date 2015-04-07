@@ -69,7 +69,8 @@
         android:layout_toStartOf="@+id/expenseItemInfoCurrencySpinner"
         android:ems="10"
         android:hint="@string/expense_item_info_amount_hint"
-        android:inputType="numberSigned|numberDecimal" />
+        android:inputType="numberSigned|numberDecimal"
+        android:imeOptions="actionDone" />
 
     <Spinner
         android:id="@+id/expenseItemInfoCategorySpinner"

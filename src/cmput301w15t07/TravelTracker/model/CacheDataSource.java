@@ -79,8 +79,6 @@ import cmput301w15t07.TravelTracker.util.PersistentList;
  * @author kdbanman
  */
 public class CacheDataSource extends InMemoryDataSource {
-
-	private  long updatePeriod = 3500;
 	
 	private static final String DELETE_USERS = "user_deletions.json";
 	private static final String DELETE_CLAIMS = "claim_deletions.json";
@@ -97,6 +95,8 @@ public class CacheDataSource extends InMemoryDataSource {
 	private PersistentList<DeletionFlag<Item>> itemDeletions;
 	private PersistentList<DeletionFlag<Tag>> tagDeletions;
 	
+	private boolean updateRunning = false;
+	
 	/**
 	 * @param appContext May be null. Application context for displaying errors.
 	 */
@@ -111,8 +111,6 @@ public class CacheDataSource extends InMemoryDataSource {
 	 */
 	public CacheDataSource(Context appContext, long updatePeriod, ServerHelper main, ServerHelper backup) {
 		super();
-		
-		this.updatePeriod = updatePeriod;
 		
 		this.appContext = appContext;
 		this.mainHelper = main;
@@ -157,28 +155,28 @@ public class CacheDataSource extends InMemoryDataSource {
 	public void addUser(final ResultCallback<User> callback) {
 		super.addUser(callback);
 		
-		new SyncUpdateTask().execute();
+		new SyncUpdateTask("addUser").execute();
 	}
 	
 	@Override
 	public void addClaim(final User user, final ResultCallback<Claim> callback) {
 		super.addClaim(user, callback);
 		
-		new SyncUpdateTask().execute();
+		new SyncUpdateTask("addClaim").execute();
 	}
 
 	@Override
 	public void addItem(final Claim claim, final ResultCallback<Item> callback) {
 		super.addItem(claim, callback);
 		
-		new SyncUpdateTask().execute();
+		new SyncUpdateTask("addItem").execute();
 	}
 
 	@Override
 	public void addTag(final User user, final ResultCallback<Tag> callback) {
 		super.addTag(user, callback);
 		
-		new SyncUpdateTask().execute();
+		new SyncUpdateTask("addTag").execute();
 	}
 
 	@Override
@@ -189,7 +187,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
 			
-			new SyncUpdateTask().execute();
+			new SyncUpdateTask("deleteUser").execute();
 		}
 	}
 
@@ -201,7 +199,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
 			
-			new SyncUpdateTask().execute();
+			new SyncUpdateTask("deleteClaim").execute();
 		}
 	}
 
@@ -213,7 +211,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
 			
-			new SyncUpdateTask().execute();
+			new SyncUpdateTask("deleteItem").execute();
 		}
 	}
 
@@ -225,7 +223,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
 			
-			new SyncUpdateTask().execute();
+			new SyncUpdateTask("deleteTag").execute();
 		}
 	}
 
@@ -405,10 +403,16 @@ public class CacheDataSource extends InMemoryDataSource {
 	 */
 	private class SyncUpdateTask extends AsyncTask<Void, Void, Void> {
 
+		String caller;
+		
+		public SyncUpdateTask(String caller) {
+			this.caller = caller;
+		}
+		
 		@Override
 		protected Void doInBackground(Void... params) {
 
-			new SyncDocumentsTask(new InfoReportingCallback()).execute();
+			new SyncDocumentsTask(new InfoReportingCallback(), caller).execute();
 			return null;
 		}
 		
@@ -423,13 +427,17 @@ public class CacheDataSource extends InMemoryDataSource {
 		long period;
 		
 		public PollServerLoopTask(long intervalMillis) {
+
+			Log.i("CacheDataSource", "New delayed server poll created. " + Long.toString(intervalMillis) + " millis delay.");
 			this.period = intervalMillis;
 		}
 
 		@Override
 		public void run() {
-			new SyncUpdateTask().execute();
-			
+			Log.i("CacheDataSource", "Executing server poll.");
+			new SyncUpdateTask("poll loop").execute();
+
+			Log.i("CacheDataSource", "Registering new server poll.");
 			Handler uiHandler = new Handler(Looper.getMainLooper());
 			uiHandler.postDelayed(new PollServerLoopTask(period), period);
 		}
@@ -465,8 +473,9 @@ public class CacheDataSource extends InMemoryDataSource {
 		 * 
 		 * @param callback sync result callback, or null for no action.
 		 */
-		public SyncDocumentsTask() {
-			this(null);
+		public SyncDocumentsTask(ResultCallback<Boolean> callback, String caller) {
+			this(callback);
+			Log.i("CacheDataSource", "Sync requested from " + caller);
 		}
 
 		/**
@@ -491,6 +500,13 @@ public class CacheDataSource extends InMemoryDataSource {
 
 		@Override
 		protected String doInBackground(Void... params) {
+			if (updateRunning) {
+				Log.i("CacheDataSource", "Update currently running - aborting requested one.");
+				return null;
+			}
+			
+			updateRunning = true;
+			
 			// attempt to pull all data from main
 			// (push all in memory to backup and return if fail)
 			if (!retrieveFromMain()) {
@@ -500,17 +516,22 @@ public class CacheDataSource extends InMemoryDataSource {
 				return null; // normal execution - saved to backup, no error.
 			}
 
+			Log.i("CacheDataSource", "Documents retrieved from remote.");
+
 			this.<User>performPendingDeletions(this.<User>filterNonStaleDeletions(retrievedUsers, userDeletions), userDeletions);
 			this.<Claim>performPendingDeletions(this.<Claim>filterNonStaleDeletions(retrievedClaims, claimDeletions), claimDeletions);
 			this.<Item>performPendingDeletions(this.<Item>filterNonStaleDeletions(retrievedItems, itemDeletions), itemDeletions);
 			this.<Tag>performPendingDeletions(this.<Tag>filterNonStaleDeletions(retrievedTags, tagDeletions), tagDeletions);
+			
+			Log.i("CacheDataSource", "Locally queued deletions completed.");
 			
 			// merge every remaining received document into inmemory
 			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);
 			changesMade |= this.<Claim>mergeRetrieved(retrievedClaims, claims);
 			changesMade |= this.<Item>mergeRetrieved(retrievedItems, items);
 			changesMade |= this.<Tag>mergeRetrieved(retrievedTags, tags);
-			
+
+			Log.i("CacheDataSource", "Retrieved and existing documents merged.");
 			
 			// dump post-merge in memory stuff to cache
 			if (!dumpToBackup()) {
@@ -527,6 +548,11 @@ public class CacheDataSource extends InMemoryDataSource {
 			setDirtyToClean(getDirtyClaims());
 			setDirtyToClean(getDirtyItems());
 			setDirtyToClean(getDirtyTags());
+			
+			Log.i("CacheDataSource", "Sync cycle completed.");
+			
+			updateRunning = false;
+			
 			return null;
 		}
 
@@ -534,10 +560,15 @@ public class CacheDataSource extends InMemoryDataSource {
 			boolean changes = false;
 			for (T toMerge : retrieved) {
 				if (local.containsKey(toMerge.getUUID())) {
-					changes |= local.get(toMerge.getUUID()).mergeAttributesFrom(toMerge);
+					boolean mergeResults = local.get(toMerge.getUUID()).mergeAttributesFrom(toMerge);
+					changes |= mergeResults;
+					if (mergeResults) {
+						Log.i("CacheDataSource", "Existing document updated from remote.");
+					}
 				} else {
 					changes |= true;
 					local.put(toMerge.getUUID(), toMerge);
+					Log.i("CacheDataSource", "New document retrieved from remote.");
 				}
 			}
 			return changes;
@@ -560,6 +591,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				mainHelper.saveDocuments(getClaims());
 				mainHelper.saveDocuments(getItems());
 				mainHelper.saveDocuments(getTags());
+				Log.i("CacheDataSource", "Remote dump successful.");
 				return true;
 			} catch (IOException e) {
 				Log.i("CacheDataSource", "Could not save to main (connection err).");
@@ -575,6 +607,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			
 			try {
 				mainHelper.deleteDocuments(pendingDeletions);
+				Log.i("CacheDataSource", "Remote deletion batch removed from remote storage.");
 			} catch (IOException e) {
 				Log.i("CacheDataSource", "Deletions from main unsuccessful, not clearing deletions list.");
 				return;
@@ -584,6 +617,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 			try {
 				backupHelper.deleteDocuments(pendingDeletions);
+				Log.i("CacheDataSource", "Remote deletion batch removed from local storage.");
 			} catch (IOException e) {
 				Log.w("CacheDataSource", "Failed to delete from backup helper!");
 				return;
@@ -596,8 +630,10 @@ public class CacheDataSource extends InMemoryDataSource {
 			ArrayList<DeletionFlag<T>> flagsToClear = new ArrayList<DeletionFlag<T>>();
 			for (Document deleted : pendingDeletions) {
 				for (DeletionFlag<T> flag: deletions) {
-					if (flag.getToDelete().equals(deleted))
+					if (flag.getToDelete().equals(deleted)) {
+						Log.i("CacheDataSource", "Completed deletion removed from local deletion flag queue.");
 						flagsToClear.add(flag);
+					}
 				}
 			}
 			deletions.removeAll(flagsToClear);
@@ -617,13 +653,17 @@ public class CacheDataSource extends InMemoryDataSource {
 				switch (mergeDeletion(deletion, retrieved)) {
 				case CHANGED:
 					pendingDeletions.add(deletion.getToDelete());
+					Log.i("CacheDataSource", "Local deletion added to remote removal batch.");
 					break;
 				case OVERRIDDEN:
 					overriddenDeletions.add(deletion);
+					Log.i("CacheDataSource", "Local deletion added to local ignore batch.");
 					break;
 				case NOT_FOUND:
+					Log.i("CacheDataSource", "Local deletion not found in retrieved documents.");
 					break;
 				default:
+					Log.w("CacheDataSource", "Unexpected merge result!.");
 					break;
 				}
 			}
@@ -641,8 +681,10 @@ public class CacheDataSource extends InMemoryDataSource {
 					// override deletion otherwise
 					if (deletion.getDate().after(doc.getLastChanged())) {
 						retrievedDocuments.remove(deletion.getToDelete());
+						Log.i("CacheDataSource", "Locally deleted document removed from retrieved documents.");
 						return MergeResult.CHANGED;
 					} else {
+						Log.i("CacheDataSource", "Local deletion out of date - *not* removed from retrieved documents.");
 						return MergeResult.OVERRIDDEN;
 					}
 				}
@@ -661,6 +703,7 @@ public class CacheDataSource extends InMemoryDataSource {
 				backupHelper.saveDocuments(getClaims());
 				backupHelper.saveDocuments(getItems());
 				backupHelper.saveDocuments(getTags());
+				Log.i("CacheDataSource", "local backup successful");
 				return true;
 			} catch (IOException e) {
 				Log.e("CacheDataSource", "Could not save to backup!");

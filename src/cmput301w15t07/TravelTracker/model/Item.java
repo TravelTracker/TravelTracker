@@ -238,7 +238,6 @@ public class Item extends Document {
 		result = prime * result + ((claim == null) ? 0 : claim.hashCode());
 		result = prime * result
 				+ ((currency == null) ? 0 : currency.hashCode());
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result
@@ -269,11 +268,6 @@ public class Item extends Document {
 		} else if (!claim.equals(other.claim))
 			return false;
 		if (currency != other.currency)
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
 			return false;
 		if (description == null) {
 			if (other.description != null)

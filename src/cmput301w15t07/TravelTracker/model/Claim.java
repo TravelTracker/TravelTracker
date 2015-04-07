@@ -245,9 +245,6 @@ public class Claim extends Document {
 				+ ((comments == null) ? 0 : comments.hashCode());
 		result = prime * result
 				+ ((destinations == null) ? 0 : destinations.hashCode());
-		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
-		result = prime * result
-				+ ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
@@ -277,16 +274,6 @@ public class Claim extends Document {
 			if (other.destinations != null)
 				return false;
 		} else if (!destinations.equals(other.destinations))
-			return false;
-		if (endDate == null) {
-			if (other.endDate != null)
-				return false;
-		} else if (!endDate.equals(other.endDate))
-			return false;
-		if (startDate == null) {
-			if (other.startDate != null)
-				return false;
-		} else if (!startDate.equals(other.startDate))
 			return false;
 		if (status != other.status)
 			return false;

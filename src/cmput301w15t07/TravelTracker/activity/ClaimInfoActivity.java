@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,6 +48,8 @@ import android.widget.Toast;
 import cmput301w15t07.TravelTracker.R;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.DataSource;
+import cmput301w15t07.TravelTracker.model.Destination;
+import cmput301w15t07.TravelTracker.model.Geolocation;
 import cmput301w15t07.TravelTracker.model.Item;
 import cmput301w15t07.TravelTracker.model.Status;
 import cmput301w15t07.TravelTracker.model.Tag;
@@ -58,6 +62,7 @@ import cmput301w15t07.TravelTracker.util.ApproverCommentAdapter;
 import cmput301w15t07.TravelTracker.util.ClaimUtilities;
 import cmput301w15t07.TravelTracker.util.DatePickerFragment;
 import cmput301w15t07.TravelTracker.util.DestinationAdapter;
+import cmput301w15t07.TravelTracker.util.DestinationEditorFragment;
 import cmput301w15t07.TravelTracker.util.Observer;
 import cmput301w15t07.TravelTracker.util.SelectTagFragment;
 
@@ -254,6 +259,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Destinations list
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        // Color the LinearLayout to visually cue the user that it can be edited.
         colorViewEnabled(destinationsList);
         
         // Tags list
@@ -279,9 +285,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     	
         if (userData.getRole().equals(UserRole.CLAIMANT)) {
         	if (isEditable(claim.getStatus(), userData.getRole())) {
-        	    // Color the LinearLayout to visually cue the user that it can be edited.
-                destinationAdapter.setEditable(true);
-        	    
 	            // Attach edit date listener to start date button
 	            startDateButton.setOnClickListener(new View.OnClickListener() {
 	                @Override
@@ -305,9 +308,8 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 	                    submitClaim();
 	                }
 	            });
+	            
         	} else {
-                destinationAdapter.setEditable(false);
-        	    
         	    // These views should do nothing if the claim isn't editable
         	    disableView(startDateButton);
         	    disableView(endDateButton);
@@ -347,8 +349,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
                 }
             });
             
-            destinationAdapter.setEditable(false);
-            
             // The approver should see these views, but cannot use them.
             disableView(startDateButton);
             disableView(endDateButton);
@@ -370,8 +370,9 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
     }
     
     public void addDestination() {
-        LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
-        destinationAdapter.addDestination(this, destinationsList);
+        Destination destination = new Destination("", null, "");
+        DestinationEditorFragment editor = new DestinationEditorFragment(new DestinationCallback(), null, destination, true);
+        editor.show(getFragmentManager(), "destinationEditor");
     }
 
     /**
@@ -476,7 +477,37 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         
         // Show destinations
         LinearLayout destinationsList = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
-        destinationAdapter.createList(this, destinationsList);
+        destinationAdapter = new DestinationAdapter(isEditable(claim.getStatus(), userData.getRole()));
+        destinationsList.removeAllViews();
+        final DestinationCallback callback = new DestinationCallback();
+        
+        for (Destination destination : claim.getDestinations()) {
+            View view = destinationAdapter.createView(destination, this);
+            
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setBackgroundColor(getResources().getColor(DestinationAdapter.COLOR_SELECTED));
+                    Destination destination = destinationAdapter.getDestinationFromView(v);
+                    boolean editable = destinationAdapter.isEditable();
+                    DestinationEditorFragment editor = new DestinationEditorFragment(callback, v, destination, editable);
+                    editor.show(getFragmentManager(), "destinationEditor");
+                }
+            });
+            
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    v.setBackgroundColor(getResources().getColor(DestinationAdapter.COLOR_SELECTED));
+                    Destination destination = destinationAdapter.getDestinationFromView(v);
+                    DestinationDeletionFragment deleter = new DestinationDeletionFragment(v, destination);
+                    deleter.show(getFragmentManager(), "");
+                    return false;
+                }
+            });
+            
+            destinationsList.addView(view);
+        }
         
         userTags = new ArrayList<Tag>();
         claimTags = new ArrayList<Tag>();
@@ -617,6 +648,51 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         return claimTags;
     }
 
+    /**
+     * Given a view an edited destination belongs to, or null if the destination is new and
+     * does not belong to a view yet, create a new destination from the new attributes.
+     * Update the existing view or create and add a new one, and update the list of destinations
+     * in the claim.
+     * @param view The view of the destination to be edited or added. Will be null if a new destination.
+     * @param location The new location of the destination.
+     * @param geolocation The new geolocation of the destination.
+     * @param reason The new reason of the destination.
+     */
+    private void editDestination(View view, String location, Geolocation geolocation, String reason) {
+        Destination destination = new Destination(location, geolocation, reason);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        ArrayList<Destination> destinations = claim.getDestinations();
+        
+        // A null view means a new destination.
+        if (view == null) {
+            view = destinationAdapter.createView(destination, this);
+            linearLayout.addView(view);
+            destinations.add(destination);
+        } else {
+            int index = destinations.indexOf(destinationAdapter.getDestinationFromView(view));
+            destinationAdapter.setDestinationOnView(view, destination);
+            destinations.set(index, destination);
+        }
+        
+        claim.setDestinations(destinations);
+    }
+    
+    /**
+     * Given a view, delete its destination from the claim's destinations list
+     * and remove the view from the LinearLayout.
+     * @param view The view of the destination to be deleted.
+     */
+    private void deleteDestination(View view) {
+        Destination destination = destinationAdapter.getDestinationFromView(view);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.claimInfoDestinationsLinearLayout);
+        ArrayList<Destination> destinations = claim.getDestinations();
+        
+        destinations.remove(destination);
+        linearLayout.removeView(view);
+        
+        claim.setDestinations(destinations);
+    }
+    
     /**
      * Submits the selected claim and adds a comment if there exists one in the field.
      */
@@ -784,9 +860,6 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		public void onResult(Claim claim) {
 			ClaimInfoActivity.this.claim = claim;
 
-	        // Prep the adapter for claim destinations
-	        ClaimInfoActivity.this.destinationAdapter = new DestinationAdapter(claim, claim.getDestinations(), getFragmentManager());
-			
 	        // Retrieve data
 	        MultiCallback multi = new MultiCallback(new ClaimDataMultiCallback());
 	        
@@ -912,6 +985,57 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
         @Override
         public void onError(String message){
             Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * Callback for when new destination fields are approved.
+     */
+    class DestinationCallback implements DestinationEditorFragment.ResultCallback {
+        @Override
+        public void onDestinationEditorFragmentResult(View view, String location, Geolocation geolocation, String reason) {
+            editDestination(view, location, geolocation, reason);
+        }
+
+        @Override
+        public void onDestinationEditorFragmentDismissed(View view) {
+            if (view != null)
+                view.setBackgroundColor(ClaimInfoActivity.this.getResources().getColor(DestinationAdapter.COLOR_PLAIN));
+        }
+    }
+    
+    /**
+     * Custom fragment for deleting a destination.
+     */
+    class DestinationDeletionFragment extends DialogFragment {
+        private View view;
+        private String location;
+        
+        public DestinationDeletionFragment(View view, Destination destination) {
+            this.view = view;
+            this.location = destination.getLocation();
+        }
+        
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = ClaimInfoActivity.this.getString(R.string.claim_info_delete_destination) + "\n\n\"" + location + "\"";
+            
+            return new AlertDialog.Builder(ClaimInfoActivity.this)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteDestination(view);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .create();
+        }
+        
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            view.setBackgroundColor(ClaimInfoActivity.this.getResources().getColor(DestinationAdapter.COLOR_PLAIN));
+            super.onDismiss(dialog);
         }
     }
 }

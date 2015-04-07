@@ -318,13 +318,16 @@ public class SelectLocationFragment extends DialogFragment
 		}
 	    
     	View mapView = getView().findViewById(R.id.select_location_fragment_map);
+    	View unsetView = getView().findViewById(R.id.select_location_fragment_unset_textview);
 	    
 	    // Hide map if no location
 	    if (location == null) {
 	    	mapView.setVisibility(View.GONE);
+	    	unsetView.setVisibility(View.VISIBLE);
 	    	
 	    } else {
 	    	mapView.setVisibility(View.VISIBLE);
+            unsetView.setVisibility(View.GONE);
 	    	
 			map.clear();
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));

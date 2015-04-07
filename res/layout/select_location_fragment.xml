@@ -4,6 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
+    <TextView
+        android:id="@+id/select_location_fragment_unset_textview"
+        android:text="@string/select_location_fragment_unset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:visibility="gone" />
+    
     <!-- Referenced
     	 http://xperiment-andro.blogspot.ca/2013/02/nested-fragments.html
     	 on 30/04/15 -->

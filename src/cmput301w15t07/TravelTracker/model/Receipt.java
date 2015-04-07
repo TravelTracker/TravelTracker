@@ -42,7 +42,7 @@ public class Receipt {
 	}
 	
 	public Receipt() {
-		this(null);  //TODO add a default Bitmap somehow
+		this(null);  
 	}
 
 	/**

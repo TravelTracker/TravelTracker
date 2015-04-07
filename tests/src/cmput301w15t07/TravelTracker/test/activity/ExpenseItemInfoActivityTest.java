@@ -116,7 +116,7 @@ public class ExpenseItemInfoActivityTest extends ActivityInstrumentationTestCase
 		Button dateButton = (Button) activity.findViewById(R.id.expenseItemInfoDateButton);
 		String buttonText = dateButton.getText().toString();
 		
-		assertEquals("Date should be shown in the correct format", "Apr 7, 2015", buttonText);
+		assertEquals("Date should be shown in the correct format", "May 18, 2015", buttonText);
 	}
 	
 	public void testViewExpenseItemAmount() throws InterruptedException{
@@ -196,8 +196,15 @@ public class ExpenseItemInfoActivityTest extends ActivityInstrumentationTestCase
 	public void testSetExpenseItemIsComplete() throws InterruptedException{
 		startWithItem(UserRole.CLAIMANT);
 		
-		CheckedTextView status = (CheckedTextView) activity.findViewById(R.id.expenseItemInfoStatusCheckedTextView);
-		status.setChecked(false);
+		final CheckedTextView status = (CheckedTextView) activity.findViewById(R.id.expenseItemInfoStatusCheckedTextView);
+		instrumentation.runOnMainSync(new Runnable() {
+			
+			@Override
+			public void run() {
+				status.performClick();
+				
+			}
+		});
 		
 		assertFalse("itemstatus shold not be checked", status.isChecked());
 	}
@@ -297,7 +304,7 @@ public class ExpenseItemInfoActivityTest extends ActivityInstrumentationTestCase
 		Item item = addItemToClaim(); 
 		item.setAmount(30.f);
 		item.setCurrency(ItemCurrency.GBP);
-		item.setDate(new Date());
+		item.setDate(end.getTime());
 		item.setCategory(ItemCategory.FUEL);
 		item.setComplete(true);
 		item.setReceipt(new Receipt(null)); //set this to an actual image

@@ -37,7 +37,8 @@
 	        android:value="@integer/google_play_services_version" />
         
         <activity
-            android:name=".activity.LoginActivity" >
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,37 +48,44 @@
         
         <activity
             android:name=".activity.ManageTagsActivity"
-            android:label="@string/manage_tags_label">
+            android:label="@string/manage_tags_label"
+            android:screenOrientation="portrait">
         </activity>
         
         <activity
             android:name=".activity.ClaimsListActivity"
-            android:label="@string/claims_list_label">
+            android:label="@string/claims_list_label"
+            android:screenOrientation="portrait">
         </activity>
         
         <activity
             android:name=".activity.ClaimInfoActivity"
-            android:label="@string/claim_info_label">
+            android:label="@string/claim_info_label"
+            android:screenOrientation="portrait">
         </activity>
         
         <activity
             android:name=".activity.ExpenseItemsListActivity"
-            android:label="@string/expense_items_list_label">
+            android:label="@string/expense_items_list_label"
+            android:screenOrientation="portrait">
         </activity>
         
         <activity
             android:name=".activity.ExpenseItemInfoActivity"
-            android:label="@string/expense_item_info_label">
+            android:label="@string/expense_item_info_label"
+            android:screenOrientation="portrait">
         </activity>
         
         <activity
             android:name=".activity.SelectLocationActivity"
-            android:label="@string/select_location_label">
+            android:label="@string/select_location_label"
+            android:screenOrientation="portrait">
         </activity>
         
         <activity
             android:name=".activity.ReceiptImageViewActivity"
-            android:label="@string/receipt_image_view_label" >            
+            android:label="@string/receipt_image_view_label"
+            android:screenOrientation="portrait">            
         </activity>
         
     </application>

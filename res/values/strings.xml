@@ -128,6 +128,7 @@
         <string name="expense_item_info_delete_image">Delete image</string>
         <string name="expense_item_info_view_image">View image</string>
         <string name="expense_item_info_change_image">Change image</string>
+        <string name="expense_item_info_no_receipt">No receipt attached!</string>
         
         <!-- Used in menu -->
         <string name="expense_item_info_delete_item">Delete Expense Item</string>

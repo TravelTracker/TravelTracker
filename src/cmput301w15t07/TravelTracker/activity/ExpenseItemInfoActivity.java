@@ -395,6 +395,19 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
                 disableView(currencySpinner);
                 disableView(categorySpinner);
                 disableView(geoLocRemoveButton);
+                
+                receiptImage.setOnClickListener(new View.OnClickListener() {
+                    
+                    @Override
+                    public void onClick(View v) {
+                        if (item.getReceipt().getPhoto() == null) {
+                            String msg = getString(R.string.expense_item_info_no_receipt);
+                            Toast.makeText(ExpenseItemInfoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        } else {
+                            launchReceiptImageView();
+                        }
+                    }
+                });
             }
             
         }
@@ -413,16 +426,18 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
             geoLocRemoveButton.setVisibility(View.GONE);
             geoLocCheckBox.setVisibility(View.GONE);
             
-            //set listener for receipt imagae to load view activity
             receiptImage.setOnClickListener(new View.OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					if (item.getReceipt().getPhoto() != null){
-						launchReceiptImageView();
-					}
-				}
-			});
+                
+                @Override
+                public void onClick(View v) {
+                    if (item.getReceipt().getPhoto() == null) {
+                        String msg = getString(R.string.expense_item_info_no_receipt);
+                        Toast.makeText(ExpenseItemInfoActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        launchReceiptImageView();
+                    }
+                }
+            });
             
         }
         

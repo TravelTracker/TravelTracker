@@ -117,6 +117,17 @@ public class CacheDataSource extends InMemoryDataSource {
 		this.itemDeletions = new PersistentList<DeletionFlag<Item>>(DELETE_ITEMS, appContext, (new TypeToken<DeletionFlag<Item>>(){}).getType());
 		this.tagDeletions = new PersistentList<DeletionFlag<Tag>>(DELETE_TAGS, appContext, (new TypeToken<DeletionFlag<Tag>>(){}).getType());
 		
+		// load any cached data into memory
+		try {
+			this.<User> loadIntoMemory(backup.getAllUsers(), users);
+			this.<Claim> loadIntoMemory(backup.getAllClaims(), claims);
+			this.<Item> loadIntoMemory(backup.getAllItems(), items);
+			this.<Tag> loadIntoMemory(backup.getAllTags(), tags);
+		} catch (Exception e) {
+			warn("Failed to load local backup into memory");
+		}
+		
+		// pull data from server
 		new SyncDocumentsTask(new ResultCallback<Boolean>() {
 
 			@Override
@@ -289,6 +300,12 @@ public class CacheDataSource extends InMemoryDataSource {
 			}
 		});
 		
+	}
+	
+	private <T extends Document> void loadIntoMemory(Collection<T> docs, Map<UUID, T> docMap) {
+		for (T doc : docs) {
+			docMap.put(doc.getUUID(), doc);
+		}
 	}
 
 	private void warn(String msg) {

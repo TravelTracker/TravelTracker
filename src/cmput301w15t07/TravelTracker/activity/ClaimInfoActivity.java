@@ -425,6 +425,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
      * Delete the claim and finish the activity.
      */
     public void deleteClaim() {
+        ignoreUpdates = true;
         datasource.deleteClaim(claimID, new DeleteCallback());
     }
 
@@ -841,6 +842,7 @@ public class ClaimInfoActivity extends TravelTrackerActivity implements Observer
 		@Override
 		public void onError(String message) {
 			Toast.makeText(ClaimInfoActivity.this, message, Toast.LENGTH_LONG).show();
+			ignoreUpdates = false;
 		}
 	}
     

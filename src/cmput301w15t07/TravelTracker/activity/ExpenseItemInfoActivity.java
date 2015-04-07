@@ -705,6 +705,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
     }
     
 	public void deleteExpenseItem() {
+	    ignoreUpdates = true;
 		datasource.deleteItem(itemID, new DeleteCallback());
 		
 	}
@@ -755,6 +756,7 @@ public class ExpenseItemInfoActivity extends TravelTrackerActivity implements Ob
 		@Override
 		public void onError(String message) {
 			Toast.makeText(ExpenseItemInfoActivity.this, message, Toast.LENGTH_LONG).show();
+			ignoreUpdates = false;
 		}
 	}
     

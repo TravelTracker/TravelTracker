@@ -183,37 +183,43 @@ public class CacheDataSource extends InMemoryDataSource {
 	@Override
 	public void deleteUser(final UUID id, final ResultCallback<Void> callback) {
 		if (users.get(id) != null) {
-			// add to toDelete list - will be picked up on sync cycle
-			userDeletions.add(new DeletionFlag<User>(users.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteUser(id, callback);
-			
-			new SyncUpdateTask("deleteUser").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
+	}
+	
+	@Override
+	protected void deleteUserHook(User deleted) {
+		// add to toDelete list - will be picked up on sync cycle
+		userDeletions.add(new DeletionFlag<User>(deleted));
 	}
 
 	@Override
 	public void deleteClaim(final UUID id, final ResultCallback<Void> callback) {
 		if (claims.get(id) != null) {
-			// add to toDelete list - will be picked up on sync cycle
-			claimDeletions.add(new DeletionFlag<Claim>(claims.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteClaim(id, callback);
-			
-			new SyncUpdateTask("deleteClaim").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
+	}
+	
+	@Override
+	protected void deleteClaimHook(Claim deleted) {
+		// add to toDelete list - will be picked up on sync cycle
+		claimDeletions.add(new DeletionFlag<Claim>(deleted));
 	}
 
 	@Override
 	public void deleteItem(final UUID id, final ResultCallback<Void> callback) {
 		if (items.get(id) != null) {
-			// add to toDelete list - will be picked up on sync cycle
-			itemDeletions.add(new DeletionFlag<Item>(items.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteItem(id, callback);
-			
-			new SyncUpdateTask("deleteItem").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
+	}
+	
+	@Override
+	protected void deleteItemHook(Item deleted) {
+		// add to toDelete list - will be picked up on sync cycle
+		itemDeletions.add(new DeletionFlag<Item>(deleted));
 	}
 
 	@Override
@@ -223,9 +229,13 @@ public class CacheDataSource extends InMemoryDataSource {
 			tagDeletions.add(new DeletionFlag<Tag>(tags.get(id)));
 			// remove from inmemory - may come back after sync cycle
 			super.deleteTag(id, callback);
-			
-			new SyncUpdateTask("deleteTag").executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
 		}
+	}
+	
+	@Override
+	protected void deleteTagHook(Tag deleted) {
+		// add to toDelete list - will be picked up on sync cycle
+		tagDeletions.add(new DeletionFlag<Tag>(deleted));
 	}
 
 	@Override
@@ -528,7 +538,11 @@ public class CacheDataSource extends InMemoryDataSource {
 			this.<Item>performPendingDeletions(this.<Item>filterNonStaleDeletions(retrievedItems, itemDeletions), itemDeletions);
 			this.<Tag>performPendingDeletions(this.<Tag>filterNonStaleDeletions(retrievedTags, tagDeletions), tagDeletions);
 			
-			Log.i("CacheDataSource", "Locally queued deletions completed.");
+			Log.i("CacheDataSource", "Locally queued deletions completed. " +
+					Integer.toString(userDeletions.size()) + ", " + 
+					Integer.toString(claimDeletions.size()) + ", " + 
+					Integer.toString(itemDeletions.size()) + ", " + 
+					Integer.toString(tagDeletions.size()) + ", " + "remain.");
 			
 			// merge every remaining received document into inmemory
 			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);
@@ -665,6 +679,7 @@ public class CacheDataSource extends InMemoryDataSource {
 					Log.i("CacheDataSource", "Local deletion added to local ignore batch.");
 					break;
 				case NOT_FOUND:
+					pendingDeletions.add(deletion.getToDelete());
 					Log.i("CacheDataSource", "Local deletion not found in retrieved documents.");
 					break;
 				default:

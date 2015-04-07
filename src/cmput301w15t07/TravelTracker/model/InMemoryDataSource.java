@@ -307,8 +307,13 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 			internalDeleteTag(tagID);
 		}
 		
+		if (users.get(id) != null) deleteUserHook(users.get(id));
 		// Finally, delete the User
 		users.remove(id);
+	}
+	
+	protected void deleteUserHook(User deleted) {
+		return;
 	}
 
     /**
@@ -340,8 +345,13 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 			internalDeleteItem(claimID);
 		}
 		
+		if (claims.get(id) != null) deleteClaimHook(claims.get(id));
 		// Finally, delete the Claim
 		claims.remove(id);
+	}
+	
+	protected void deleteClaimHook (Claim deleted) {
+		return;
 	}
     
     /**
@@ -358,7 +368,12 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	 * @param id The Item's ID.
 	 */
 	protected void internalDeleteItem(UUID id) {
+		if (items.get(id) != null) deleteItemHook(items.get(id));
 		items.remove(id);
+	}
+	
+	protected void deleteItemHook(Item deleted) {
+		return;
 	}
     
     /**
@@ -375,7 +390,12 @@ public class InMemoryDataSource extends Observable<DataSource> implements DataSo
 	 * @param id The Tag's ID.
 	 */
 	protected void internalDeleteTag(UUID id) {
+		if (tags.get(id) != null) deleteTagHook(tags.get(id));
 		tags.remove(id);
+	}
+	
+	protected void deleteTagHook(Tag deleted) {
+		return;
 	}
 	
 	/**

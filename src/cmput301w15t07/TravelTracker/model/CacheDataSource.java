@@ -549,10 +549,10 @@ public class CacheDataSource extends InMemoryDataSource {
 					Integer.toString(tagDeletions.size()) + " tags " + " queued deletions remain.");
 			
 			// merge every remaining received document into inmemory
-			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);
-			changesMade |= this.<Claim>mergeRetrieved(retrievedClaims, claims);
-			changesMade |= this.<Item>mergeRetrieved(retrievedItems, items);
-			changesMade |= this.<Tag>mergeRetrieved(retrievedTags, tags);
+			changesMade = this.<User>mergeRetrieved(retrievedUsers, users, userDeletions);
+			changesMade |= this.<Claim>mergeRetrieved(retrievedClaims, claims, claimDeletions);
+			changesMade |= this.<Item>mergeRetrieved(retrievedItems, items, itemDeletions);
+			changesMade |= this.<Tag>mergeRetrieved(retrievedTags, tags, tagDeletions);
 
 			Log.i("CacheDataSource", "Retrieved and existing documents merged.");
 			
@@ -580,29 +580,33 @@ public class CacheDataSource extends InMemoryDataSource {
 		private void logSizes(String msg) {
 			Log.v("CacheDataSource", msg);
 			
-			Log.v("CacheDataSource", "Retrieved users count: " + retrievedUsers.size());
-			Log.v("CacheDataSource", "Retrieved claims count: " + retrievedClaims.size());
-			Log.v("CacheDataSource", "Retrieved items count: " + retrievedItems.size());
-			Log.v("CacheDataSource", "Retrieved tags count: " + retrievedTags.size());
+			Log.v("CacheDataSource", "Retrieved users " + retrievedUsers.size() + 
+					", claims " + retrievedClaims.size() + 
+					", items " + retrievedItems.size() +
+					", tags " + retrievedTags.size());
 			
-			Log.v("CacheDataSource", "In memory users count: " + users.size());
-			Log.v("CacheDataSource", "In memory claims count: " + claims.size());
-			Log.v("CacheDataSource", "In memory items count: " + items.size());
-			Log.v("CacheDataSource", "In memory tags count: " + tags.size());
+			Log.v("CacheDataSource", "In memory users " + users.size() + 
+					", claims " + claims.size() + 
+					", items " + items.size() + 
+					", tags " + tags.size());
 			
 			try {
-				Log.v("CacheDataSource", "Cached users count: " + backupHelper.getAllUsers().size());
-				Log.v("CacheDataSource", "Cached claims count: " + backupHelper.getAllClaims().size());
-				Log.v("CacheDataSource", "Cached items count: " + backupHelper.getAllItems().size());
-				Log.v("CacheDataSource", "Cached tags count: " + backupHelper.getAllTags().size());
+				Log.v("CacheDataSource", "Cached users count: " + backupHelper.getAllUsers().size() + 
+						", claims " + backupHelper.getAllClaims().size() +
+						", items " + backupHelper.getAllItems().size() + 
+						", tags " + backupHelper.getAllTags().size());
 			} catch (Exception e) {
 				Log.w("CacheDataSource", "Error reading sizes from cache.");
 			}
 		}
 
-		private <T extends Document> boolean mergeRetrieved(Collection<T> retrieved, Map<UUID, T> local) {
+		private <T extends Document> boolean mergeRetrieved(Collection<T> retrieved, Map<UUID, T> local, List<DeletionFlag<T>> relevantDeletions) {
 			boolean changes = false;
 			for (T toMerge : retrieved) {
+				for (DeletionFlag<T> deletion : relevantDeletions) {
+					if (deletion.getToDelete().equals(toMerge))
+						continue; // do not merge pending deletions
+				}
 				if (local.containsKey(toMerge.getUUID())) {
 					boolean mergeResults = local.get(toMerge.getUUID()).mergeAttributesFrom(toMerge);
 					changes |= mergeResults;
@@ -682,7 +686,7 @@ public class CacheDataSource extends InMemoryDataSource {
 					}
 				}
 			}
-			deletions.removeAll(flagsToClear);
+			//deletions.removeAll(flagsToClear);  // Retrieved documents may contain deleted stuff after up to 3 ESHelper delete calls.  HACK: don't ever remove deletions
 		}
 		
 		/**
@@ -719,7 +723,7 @@ public class CacheDataSource extends InMemoryDataSource {
 			return pendingDeletions;
 		}
 		
-		private MergeResult mergeDeletion(DeletionFlag deletion,
+		private MergeResult mergeDeletion(DeletionFlag<? extends Document> deletion,
 				Collection<? extends Document> retrievedDocuments) {
 			
 			for (Document doc : retrievedDocuments) {

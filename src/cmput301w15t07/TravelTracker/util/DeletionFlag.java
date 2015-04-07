@@ -21,9 +21,6 @@
 
 package cmput301w15t07.TravelTracker.util;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Date;
 
 import cmput301w15t07.TravelTracker.model.Document;
@@ -32,18 +29,16 @@ public class DeletionFlag<T extends Document> {
 	
 	private Date date;
 	private T toDelete;
-	private Type wrappedClass;
 
-    public DeletionFlag(Date date, T toDelete, Type wrappedClass) {
-		this.date = new Date();
+    public DeletionFlag(Date date, T toDelete) {
+		this.date = date;
 		this.toDelete = toDelete;
-		this.wrappedClass = wrappedClass;
 	}
 	
-	public DeletionFlag(T toDelete, Type wrappedClass) {
-		this(new Date(), toDelete, wrappedClass);
+	public DeletionFlag(T toDelete) {
+		this(new Date(), toDelete);
 	}
-	
+
 	/**
 	 * @return the date
 	 */
@@ -57,13 +52,6 @@ public class DeletionFlag<T extends Document> {
 	public T getToDelete() {
 		return toDelete;
 	}
-
-    /**
-     * @return the wrapped class
-     */
-    public Type getWrappedClass() {
-        return wrappedClass;
-    }
 
 	@Override
 	public int hashCode() {
@@ -95,29 +83,6 @@ public class DeletionFlag<T extends Document> {
 		} else if (!toDelete.equals(other.toDelete))
 			return false;
 		return true;
-	}
-	
-	/*
-	 * Three methods below are courtesy of
-	 * 	http://pastebin.com/PV6cP9jc
-	 * on 4 April 2015
-	 */
-	public class DeletionFlagType implements ParameterizedType {
-		
-		@Override
-		public Type[] getActualTypeArguments() {
-			return new Type[] {wrappedClass};
-		}
-	
-		@Override
-		public Type getOwnerType() {
-			return null;
-		}
-	
-		@Override
-		public Type getRawType() {
-			return DeletionFlag.class;
-		}
 	}
 
 }

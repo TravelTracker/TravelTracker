@@ -240,7 +240,7 @@ public class PersistentList<T> implements List<T> {
 			return false;
 		if (!(obj instanceof PersistentList))
 			return false;
-		PersistentList other = (PersistentList) obj;
+		PersistentList<?> other = (PersistentList<?>) obj;
 		if (filename == null) {
 			if (other.filename != null)
 				return false;

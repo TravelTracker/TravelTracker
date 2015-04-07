@@ -616,6 +616,8 @@ public class CacheDataSource extends InMemoryDataSource {
 
 		private <T extends Document> void performPendingDeletions(ArrayList<Document> pendingDeletions, List<DeletionFlag<T>> deletions) {
 			// remove above pending from remote and local in batch using .deletDocuments()
+			if (pendingDeletions.size() == 0)
+				return;
 			
 			try {
 				mainHelper.deleteDocuments(pendingDeletions);

@@ -50,8 +50,8 @@ public class DataSourceSingleton {
     	// used once (during initialization).
     	if (ds == null) {
     		//ds = new InMemoryDataSource();
-    		ds = new GeneratedDataSource();
-    		//ds = new CacheDataSource(appContext);
+    		//ds = new GeneratedDataSource();
+    		ds = new CacheDataSource(appContext);
     	}
     	
 		return ds;

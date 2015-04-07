@@ -19,7 +19,7 @@
         android:layout_marginStart="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:hint="@string/edit_text_hint_name"
-        android:inputType="text" >
+        android:inputType="text|textCapSentences" >
         
         <requestFocus />
     </EditText>
@@ -72,6 +72,6 @@
         android:hint="@string/edit_text_hint_text"
         android:gravity="top"
         android:maxLines="3"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine|textCapSentences" />
     
 </LinearLayout>

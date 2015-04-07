@@ -538,11 +538,11 @@ public class CacheDataSource extends InMemoryDataSource {
 			this.<Item>performPendingDeletions(this.<Item>filterNonStaleDeletions(retrievedItems, itemDeletions), itemDeletions);
 			this.<Tag>performPendingDeletions(this.<Tag>filterNonStaleDeletions(retrievedTags, tagDeletions), tagDeletions);
 			
-			Log.i("CacheDataSource", "Locally queued deletions completed. " +
-					Integer.toString(userDeletions.size()) + ", " + 
-					Integer.toString(claimDeletions.size()) + ", " + 
-					Integer.toString(itemDeletions.size()) + ", " + 
-					Integer.toString(tagDeletions.size()) + ", " + "remain.");
+			Log.i("CacheDataSource", "Locally queued deletions attempted. " +
+					Integer.toString(userDeletions.size()) + " users, " + 
+					Integer.toString(claimDeletions.size()) + " claims, " + 
+					Integer.toString(itemDeletions.size()) + " items, " + 
+					Integer.toString(tagDeletions.size()) + " tags " + " queued deletions remain.");
 			
 			// merge every remaining received document into inmemory
 			changesMade = this.<User>mergeRetrieved(retrievedUsers, users);

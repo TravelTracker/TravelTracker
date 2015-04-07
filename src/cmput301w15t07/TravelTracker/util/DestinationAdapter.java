@@ -146,6 +146,9 @@ public class DestinationAdapter {
      * @param destination The destination to be edited.
      */
     private void promptEditDestination(View view, Destination destination) {
+        // We know if a new destination is being added the claim is editable.
+        editable = (view == null) ? true : editable;
+        
         DestinationEditorFragment editor = new DestinationEditorFragment(new DestinationCallback(), view, destination, editable);
         editor.show(manager, "destinationEditor");
     }

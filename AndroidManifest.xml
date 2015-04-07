@@ -61,8 +61,7 @@
         <activity
             android:name=".activity.ClaimInfoActivity"
             android:label="@string/claim_info_label"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing">
+            android:screenOrientation="portrait">
         </activity>
         
         <activity

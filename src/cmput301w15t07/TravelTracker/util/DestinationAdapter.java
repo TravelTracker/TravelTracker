@@ -170,6 +170,7 @@ public class DestinationAdapter {
         if (view == null) {
             view = createView(destination);
             linearLayout.addView(view);
+            linearLayout.postInvalidate();
             destinations.add(destination);
         } else {
             int index = destinations.indexOf(getDestinationFromView(view));

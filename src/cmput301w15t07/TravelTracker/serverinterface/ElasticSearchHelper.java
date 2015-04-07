@@ -21,11 +21,17 @@
 
 package cmput301w15t07.TravelTracker.serverinterface;
 
-import java.io.IOException;
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Bulk;
+import io.searchbox.core.Bulk.Builder;
+import io.searchbox.core.Delete;
+import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
+
 import java.util.Collection;
 import java.util.UUID;
 
-import android.R.bool;
 import ch.boye.httpclientandroidlib.conn.ConnectTimeoutException;
 import cmput301w15t07.TravelTracker.model.Claim;
 import cmput301w15t07.TravelTracker.model.Document;
@@ -37,14 +43,11 @@ import cmput301w15t07.TravelTracker.serverinterface.Constants.Type;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 
-import io.searchbox.client.JestClient;
-import io.searchbox.core.Bulk;
-import io.searchbox.core.Bulk.Builder;
-import io.searchbox.core.Delete;
-import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-
+/**
+ * A ServerHelper which interfaces with the ElasticSearch server.
+ * 
+ * @author kdbanman
+ */
 public class ElasticSearchHelper implements ServerHelper{
 	private JestClient conn;
 	

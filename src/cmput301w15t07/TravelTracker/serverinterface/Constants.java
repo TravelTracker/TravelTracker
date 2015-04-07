@@ -21,6 +21,11 @@
 
 package cmput301w15t07.TravelTracker.serverinterface;
 
+/**
+ * Contains constants used in server setup.
+ * 
+ * @author ryant26
+ */
 public class Constants {
 	
 	public static final String CONNECTION_URL = "http://cmput301.softwareprocess.es:8080/";

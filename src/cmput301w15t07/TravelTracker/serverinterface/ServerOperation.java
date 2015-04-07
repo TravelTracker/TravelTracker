@@ -26,7 +26,7 @@ import android.os.AsyncTask;
 
 /**
  * Represents an operation executed on the server.
- * @author Elliot
+ * @author ryant26
  *
  * @param <T>
  */
